@@ -1,0 +1,103 @@
+/* Reset 기본 스타일 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+}
+
+.login-container {
+    background-image: url('../../../resources/static/img/auth.jpg'); /* 이미지 경로 */
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* 로그인 박스를 최상단으로 배치하기 위해 절대 위치 지정 */
+}
+
+.login-box {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
+    position: absolute; /* 로그인 박스를 최상단으로 올리기 위해 절대 위치 지정 */
+    z-index: 1; /* 다른 요소보다 위에 표시되도록 설정 */
+}
+
+.login-header {
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 100px;
+    margin-bottom: 10px;
+}
+
+h1 {
+    color: #003399;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input-group {
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.login-btn {
+    background-color: #003399;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.login-btn:hover {
+    background-color: #0055cc;
+}
+
+.login-footer {
+    margin-top: 20px;
+    font-size: 0.85rem;
+}
+
+.login-footer a {
+    color: #003399;
+    text-decoration: none;
+    margin-right: 5px;
+}
+
+.login-footer p {
+    margin-top: 10px;
+    color: #666;
+}
