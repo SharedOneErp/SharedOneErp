@@ -1,4 +1,21 @@
 /* src/components/Layout.css */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap'); body, html { font-family: "Noto Sans KR", sans-serif; font-weight: 400; font-style: normal; } 
+
+* { margin : 0; padding : 0; box-sizing: border-box; } 
+a { text-decoration : none; color : black; } 
+ul, li, ol, dl, dd { list-style: none; margin: 0; } 
+img { max-width: 100%; height: auto; border: 0; } 
+table { border-collapse: collapse; border-spacing: 0; } 
+td, th { padding: 0; } 
+
+input[type="checkbox"] { cursor: pointer; } 
+button { appearance: none; border: 0; background: transparent; font: inherit; outline: none; cursor: pointer; } 
+button:disabled { cursor: default; } 
+label { margin: 0; font-weight: normal; } 
+p { margin: 0; } 
+.container { padding: 0; } 
+.input-field { transition: all 0.3s ease; } 
+.btn:focus,.btn:active:focus,.btn.active:focus,.btn.focus,.btn:active.focus,.btn.active.focus { outline: none; } 
 
 .main-container{
     display: flex;
