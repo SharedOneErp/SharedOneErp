@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.7.18'
-	id 'io.spring.dependency-management' version '1.1.6'
+	id 'org.springframework.boot' version '2.7.18'  // Spring Boot 플러그인
+	id 'io.spring.dependency-management' version '1.1.6'  // Spring 의존성 관리 플러그인
 }
 
 group = 'com.project'
@@ -9,31 +9,33 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(11)
+		languageVersion = JavaLanguageVersion.of(11)  // Java 11 버전 사용
 	}
 }
 
 configurations {
 	compileOnly {
-		extendsFrom annotationProcessor
+		extendsFrom annotationProcessor  // 컴파일 전용 설정에 애노테이션 프로세서 포함
 	}
 }
 
 repositories {
-	mavenCentral()
+	mavenCentral()  // Maven 중앙 저장소 사용
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'org.postgresql:postgresql'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'  // Thymeleaf 템플릿 엔진
+	implementation 'org.springframework.boot:spring-boot-starter-web'  // 웹 애플리케이션 개발을 위한 Starter
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'  // JPA와 데이터베이스 접근을 위한 Starter
+	compileOnly 'org.projectlombok:lombok'  // Lombok 라이브러리(컴파일 시점)
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'  // 개발 도구 (Hot reload)
+	runtimeOnly 'org.postgresql:postgresql'  // PostgreSQL JDBC 드라이버 (런타임)
+	annotationProcessor 'org.projectlombok:lombok'  // Lombok 애노테이션 프로세서
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'  // 테스트를 위한 Starter
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'  // JUnit 플랫폼 실행기 (테스트 런타임)
+	implementation 'org.postgresql:postgresql:42.5.4'  // PostgreSQL JDBC 드라이버 특정 버전
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+	useJUnitPlatform()  // JUnit 플랫폼 사용
 }
