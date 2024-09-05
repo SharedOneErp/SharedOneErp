@@ -2,7 +2,6 @@
 .sidebar {
     width: 250px;
     background-color: #f4f4f4;
-    height: 100vh;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
@@ -64,6 +63,7 @@
     font-size: 14px;
     font-weight: bold;
     margin-bottom: 5px;
+    margin-top: 10px;
 }
 
 .login-time {
@@ -72,7 +72,7 @@
 }
 
 .logout-button {
-    background-color: #050af4;
+    background-color: #0058A3;
     color: #fefbfb;
     border: none;
     padding: 5px 10px;
@@ -83,5 +83,5 @@
 }
 
 .logout-button:hover {
-    background-color: #0408c4;
+    background-color: #014178;
 }
