@@ -38,3 +38,5 @@ out/
 
 # Node.js and React
 node_modules/
+# 번들 파일 무시
+src/main/resources/static/bundle/*.bundle.js
