@@ -15,7 +15,6 @@ function OrderListAssigned() {
 
             <h1>담당 오더 리스트 화면입니다.</h1>
             {/* 페이지별 주요 컨텐츠 */}
-            <a href={"/join?age=20"}>회원가입 페이지</a>
         </Layout>
 
     )

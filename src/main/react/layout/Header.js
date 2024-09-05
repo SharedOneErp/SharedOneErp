@@ -6,7 +6,7 @@ function Header() {
         <header>
             <div className="header-container">
                 <div className="logo">
-                    <img src="/img/logo.png" alt="IKEA Logo"/>
+                    <a href="/"><img src="/img/logo.png" alt="IKEA Logo"/></a>
                 </div>
                 <nav className="nav-menu">
                     <ul>
