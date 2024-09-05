@@ -11,12 +11,13 @@ module.exports = {
         orderDetail:'./components/sales/OrderDetail.js',
         orderRegisterApproval: './components/sales/OrderRegisterApproval.js',
         orderReport : './components/sales/OrderReport.js',
+        login : './components/auth/Login.js',
     },
     devtool: 'sourcemaps', // 소스 맵 생성 설정
     cache: true, // 캐싱 활성화
     output: {
-        path: __dirname, // 출력 경로 설정
-        filename: './src/main/resources/static/bundle/[name].bundle.js' // 번들 파일 이름
+        path: path.resolve(__dirname, 'src/main/resources/static/bundle'), // 출력 경로 설정
+        filename: '[name].bundle.js' // 번들 파일 이름
     },
     mode: 'none', // Webpack 모드 설정 (none: 기본 설정)
     module: {
@@ -34,7 +35,19 @@ module.exports = {
             {
                 test: /\.css$/, // .css 파일에 대한 규칙
                 use: ['style-loader', 'css-loader'] // CSS 처리 로더
-            }
+            },
+            {
+                test: /\.(png|jpg|jpeg|gif|svg)$/, // 이미지 파일에 대한 규칙
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[path][name].[ext]', // 파일 이름 설정
+                            context: 'src/main/react', // 소스 경로 설정
+                        },
+                    },
+                ],
+            },
         ]
     },
     plugins: [
