@@ -8,7 +8,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class MainController {
 
-    @GetMapping("/{pageName}.do") // .do 경로로 매핑
+    @GetMapping("/")
+    public String redirectToMain() {
+        return "redirect:/main";
+    }
+
+    @GetMapping("/{pageName}") // .do 경로로 매핑
     public String page(@PathVariable String pageName, Model model) {
         model.addAttribute("pageName", pageName);
         System.out.println("뷰 이름: " + pageName);

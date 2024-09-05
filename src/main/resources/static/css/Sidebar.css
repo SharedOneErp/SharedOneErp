@@ -1,0 +1,87 @@
+/* Sidebar.css */
+.sidebar {
+    width: 250px;
+    background-color: #f4f4f4;
+    height: 100vh;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu > li {
+    margin-bottom: 10px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #ddd;
+    margin-bottom: 5px;
+}
+
+.menu a:hover {
+    background-color: #ccc;
+}
+
+.submenu {
+    list-style: none;
+    padding-left: 20px;
+    margin: 0;
+}
+
+.submenu li {
+    margin-bottom: 5px;
+}
+
+.submenu a {
+    background-color: #eee;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.submenu a:hover {
+    background-color: #ddd;
+}
+/* 사이드바 상단 로그인 정보 스타일 */
+.sidebar-top {
+    margin-bottom: 20px;
+}
+
+.user-info {
+    height: 100px;
+    margin-bottom: 10px;
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.login-time {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.logout-button {
+    background-color: #050af4;
+    color: #fefbfb;
+    border: none;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    outline: none;
+}
+
+.logout-button:hover {
+    background-color: #0408c4;
+}
