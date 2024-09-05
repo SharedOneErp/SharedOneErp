@@ -15,7 +15,6 @@ function OrderListAll() {
 
             <h1>오더 리스트 전체 화면입니다</h1>
             {/* 페이지별 주요 컨텐츠 */}
-            <a href={"/join?age=20"}>회원가입 페이지</a>
         </Layout>
 
     )
