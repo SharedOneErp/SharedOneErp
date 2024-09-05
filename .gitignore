@@ -36,5 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 
-# Node.js and React✨
-node_modules/  # Node.js 의존성 폴더, Git에서 무시
+# Node.js and React
+node_modules/
