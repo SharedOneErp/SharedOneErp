@@ -5,7 +5,6 @@ module.exports = {
     context: path.resolve(__dirname, 'src/main/react'), // 기본 디렉토리 설정
     entry: {
         main: './components/Main.js', // 엔트리 포인트 설정
-        join: './components/Join.js',
         orderListAll:'./components/sales/OrderListAll.js',
         orderListAssigned : './components/sales/OrderListAssigned.js',
         orderRegister : './components/sales/OrderRegister.js',

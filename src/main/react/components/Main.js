@@ -12,10 +12,8 @@ function Main() {
             <div>
                 <h3 className="app">IKEA 메인 페이지에 오신것을 환영합니다.</h3>
             </div>
-
             <h1>환영합니다, IKEA ERP 시스템입니다.</h1>
             {/* 페이지별 주요 컨텐츠 */}
-            <a href={"/join?age=20"}>회원가입 페이지</a>
         </Layout>
 
     )
