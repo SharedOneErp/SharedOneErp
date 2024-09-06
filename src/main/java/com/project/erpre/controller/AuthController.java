@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -26,7 +27,13 @@ public class AuthController {
 
         if (user != null) {
             session.setAttribute("user", user);
-            return ResponseEntity.ok(Map.of("message", "로그인 성공", "token", "your_jwt_token_here"));
+            // 로그인 성공 시 사용자 정보와 함께 토큰을 반환
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "로그인 성공");
+            response.put("token", "your_jwt_token_here");
+            response.put("user", user); // 사용자 정보 포함
+
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "아이디 또는 비밀번호가 올바르지 않습니다."));
         }

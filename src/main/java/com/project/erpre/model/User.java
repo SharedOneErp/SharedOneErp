@@ -22,6 +22,8 @@ public class User {
 
     private String password;
 
+    private String department;
+
     private LocalDateTime createdAt;
 
     @PrePersist
