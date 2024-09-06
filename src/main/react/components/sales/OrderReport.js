@@ -8,7 +8,7 @@ import {BrowserRouter} from "react-router-dom"; //css파일 임포트
 function OrderReport() {
 
     return (
-        <Layout>
+        <Layout currentMenu="orderReport">
             <div>
                 <h3 className="app">ORDER REPORT 화면입니다.</h3>
             </div>

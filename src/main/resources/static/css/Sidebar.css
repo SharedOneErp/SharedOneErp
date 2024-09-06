@@ -50,6 +50,10 @@
 .submenu a:hover {
     background-color: #ddd;
 }
+
+.submenu li.active a {
+    background-color: #bbb;
+}
 /* 사이드바 상단 로그인 정보 스타일 */
 .sidebar-top {
     margin-bottom: 20px;

@@ -8,7 +8,7 @@ import '../../../resources/static/css/Order.css';
 function OrderRegister() {
 
     return (
-        <Layout>
+        <Layout currentMenu="orderRegister">
             <div>
                 <h3 className="app">ORDER REGISTER 화면입니다.</h3>
             </div>

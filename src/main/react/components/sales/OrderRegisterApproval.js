@@ -8,7 +8,7 @@ import {BrowserRouter} from "react-router-dom"; //css파일 임포트
 function OrderRegisterApproval() {
 
     return (
-        <Layout>
+        <Layout currentMenu="orderRegisterApproval">
             <div>
                 <h3 className="app">ORDER REGISTER APPROVAL 화면입니다.</h3>
             </div>

@@ -5,13 +5,13 @@ import Sidebar from './Sidebar';
 import Footer from './Footer';
 import '../../resources/static/css/Layout.css';
 
-function Layout({ children }) {
+function Layout({ currentMenu, children }) {
 
     return (
         <div className="container">
             <Header />
             <div className="main-container">
-            <Sidebar />
+            <Sidebar currentMenu={ currentMenu }/>
             <main className="main-content">
                 <div className="content-wrapper">
                     { children }

@@ -9,7 +9,7 @@ import '../../../resources/static/css/OrderDetail.css';
 function OrderDetail() {
 
     return (
-        <Layout>
+        <Layout currentMenu="orderDetail">
             <div>
                 <h3 className="app">ORDER DETAIL 화면입니다.</h3>
             </div>
