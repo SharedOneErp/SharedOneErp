@@ -17,7 +17,7 @@ function Sidebar({currentMenu}) {
                         팀장 한정우
                     </div>
                     <div className="login-time">2024-09-05 13:54:06</div>
-                    <button className="logout-button">로그아웃</button>
+                    <a href="/login" className="logout-button">로그아웃</a>
                 </div>
             </div>
             <ul className="menu">
