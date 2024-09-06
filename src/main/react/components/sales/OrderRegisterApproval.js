@@ -9,7 +9,7 @@ import OrderRegisterApprovalDetail from './OrderRegisterApprovalDetail';
 function OrderRegisterApproval() {
 
     return (
-        <Layout>
+        <Layout currentMenu="orderRegisterApproval">
             <div className="top-container">
                 <h2>주문 등록 승인</h2>
                 <p>영업 관리</p>
@@ -67,7 +67,7 @@ function OrderRegisterApproval() {
                         <td>홍길동</td>
                         <td>결재완료</td>
                         <td><a href="/orderRegisterApprovalDetail">내역 보기</a></td>
-                    </tr>s
+                    </tr>
                     <tr>
                         <td><input type="checkbox"/></td>
                         <td>A002</td>

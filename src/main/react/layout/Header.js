@@ -2,6 +2,8 @@ import React from 'react';
 import '../../resources/static/css/Header.css';
 
 function Header() {
+    
+
     return (
         <header>
             <div className="header-container">
@@ -18,11 +20,12 @@ function Header() {
                 </nav>
                 <div className="header-right">
                     <div className="notifications">
-                        <i className="bell-icon">🔔</i>
+                        <img className="bell-icon" src="/img/bell.png"/>
                     </div>
                     <div className="profile">
                         {/*<img src="profile.png" alt="Profile" className="profile-pic"/>*/}
-                        <span className="username">홍길동</span>
+                        <span className="teamname">IKEA 광명점 (영업팀)</span>
+                        <p><span className="profile-username">한정우</span></p>
                     </div>
                 </div>
             </div>

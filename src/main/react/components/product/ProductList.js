@@ -5,16 +5,13 @@ import Layout from "../../layout/Layout";
 import {BrowserRouter} from "react-router-dom"; //css파일 임포트
 
 
-function OrderListAssigned() {
+function ProductList() {
 
     return (
-        <Layout currentMenu="orderListAssigned">
+        <Layout currentMenu="productList">
             <div>
-                <h3 className="app">ORDER LIST ASSIGNED 화면입니다.</h3>
+                <h3 className="app">ProductList 화면입니다.</h3>
             </div>
-
-            <h1>담당 오더 리스트 화면입니다.</h1>
-            {/* 페이지별 주요 컨텐츠 */}
         </Layout>
 
     )
@@ -23,6 +20,6 @@ function OrderListAssigned() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <OrderListAssigned />
+        <ProductList />
     </BrowserRouter>
 );

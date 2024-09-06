@@ -49,14 +49,22 @@
 .submenu a:hover {
     background-color: #ddd;
 }
+
+.submenu li.active a {
+    background-color: #bbb;
+}
 /* 사이드바 상단 로그인 정보 스타일 */
 .sidebar-top {
     margin-bottom: 20px;
 }
 
 .user-info {
-    height: 100px;
-    margin-bottom: 10px;
+    height: 115px;
+    border: 1px solid #dfdcdc;
+    border-radius: 5px;
+    margin-left: 5px;
+    margin-top: 20px;
+    text-align: center;
 }
 
 .user-name {
@@ -69,6 +77,8 @@
 .login-time {
     font-size: 12px;
     color: #6c757d;
+    margin-bottom: 5px;
+
 }
 
 .logout-button {

@@ -12,6 +12,8 @@ module.exports = {
         orderRegisterApproval: './components/sales/OrderRegisterApproval.js',
         orderReport : './components/sales/OrderReport.js',
         login : './components/auth/Login.js',
+        productList : './components/product/ProductList.js',
+        productDetail : './components/product/ProductDetail.js',
     },
     devtool: 'sourcemaps', // 소스 맵 생성 설정
     cache: true, // 캐싱 활성화
