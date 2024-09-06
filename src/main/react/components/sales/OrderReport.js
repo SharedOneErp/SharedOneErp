@@ -8,13 +8,13 @@ import {BrowserRouter} from "react-router-dom"; //css파일 임포트
 function OrderReport() {
 
     return (
-        <Layout>
+        <Layout currentMenu="orderReport">
             <div>
                 <h3 className="app">ORDER REPORT 화면입니다.</h3>
             </div>
 
             <h1>오더리포트 생성 화면입니다.</h1>
-            {/* 페이지별 주요 컨텐츠 */}
+            {/* test 페이지별 주요 컨텐츠 */}
         </Layout>
 
     )

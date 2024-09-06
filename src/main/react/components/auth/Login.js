@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client';
 import '../../Main.css';
 import { BrowserRouter } from "react-router-dom";
 import '../../../resources/static/css/Login.css';
-import authImage from '../../../resources/static/img/auth.jpg'; 
+import authImage from '../../../resources/static/img/auth.jpg';
+
 
 function Login() {
     return (
