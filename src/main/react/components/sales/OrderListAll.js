@@ -36,21 +36,23 @@ function OrderListAll() {
 
     return (
         <Layout>
-                <div className="filter-section">
-                    <select onChange={(e) => setFilterType(e.target.value)}>
-                        <option value="customer">고객사</option>
-                        <option value="date">주문 등록일</option>
-                        <option value="status">주문 상태</option>
-                        <option value="items">물품(계약) 리스트</option>
-                    </select>
-                    <input type="text" placeholder="검색어 입력" value={filter} onChange={(e) => setFilter(e.target.value)}/>
-                    <button className="search-button" onClick={() => setCurrentPage(1)}>검색</button>
-                    <br/>
-                    <button className="filter-button" onClick={() => setFilter('')}>전체</button>
-                    <button className="filter-button" onClick={() => setFilter('결제중')}>결제중</button>
-                    <button className="filter-button" onClick={() => setFilter('결제완료')}>결제완료</button>
-                    <button className="filter-button" onClick={() => setFilter('반려')}>반려</button>
-                </div>
+
+            <div className="filter-section">
+                <select onChange={(e) => setFilterType(e.target.value)}>
+                    <option value="customer">고객사</option>
+                    <option value="date">주문 등록일</option>
+                    <option value="status">주문 상태</option>
+                    <option value="items">물품(계약) 리스트</option>
+                </select>
+                <input type="text" placeholder="검색어 입력" value={filter} onChange={(e) => setFilter(e.target.value)}/>
+                <button className="search-button" onClick={() => setCurrentPage(1)}>검색</button>
+                <br/>
+                <button className="filter-button" onClick={() => setFilter('')}>전체</button>
+                <button className="filter-button" onClick={() => setFilter('결제중')}>결제중</button>
+                <button className="filter-button" onClick={() => setFilter('결제완료')}>결제완료</button>
+                <button className="filter-button" onClick={() => setFilter('반려')}>반려</button>
+            </div>
+
             <div className="pagination-section">
                 전체 {filteredOrders.length}건 페이지 당
                 <select onChange={(e) => setItemsPerPage(Number(e.target.value))} value={itemsPerPage}>
