@@ -11,7 +11,7 @@ function OrderRegisterApproval() {
     return (
         <Layout>
             <div className="top-container">
-                <h2>주문 등록 승인</h2>
+                <h2>주문 등록 승인d</h2>
                 <p>영업 관리</p>
             </div>
                 <div className="middle-container">
