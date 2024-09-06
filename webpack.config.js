@@ -10,6 +10,7 @@ module.exports = {
         orderRegister : './components/sales/OrderRegister.js',
         orderDetail:'./components/sales/OrderDetail.js',
         orderRegisterApproval: './components/sales/OrderRegisterApproval.js',
+        orderRegisterApprovalDetail: './components/sales/OrderRegisterApprovalDetail.js',
         orderReport : './components/sales/OrderReport.js',
         login : './components/auth/Login.js',
         productList : './components/product/ProductList.js',

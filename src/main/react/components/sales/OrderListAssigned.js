@@ -106,6 +106,6 @@ function OrderListAssigned() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <OrderListAssigned />
+        <OrderListAssinged />
     </BrowserRouter>
 );

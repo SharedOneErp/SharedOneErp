@@ -51,7 +51,6 @@ function OrderListAll() {
                     <button className="filter-button" onClick={() => setFilter('결제완료')}>결제완료</button>
                     <button className="filter-button" onClick={() => setFilter('반려')}>반려</button>
                 </div>
-
             <div className="pagination-section">
                 전체 {filteredOrders.length}건 페이지 당
                 <select onChange={(e) => setItemsPerPage(Number(e.target.value))} value={itemsPerPage}>
