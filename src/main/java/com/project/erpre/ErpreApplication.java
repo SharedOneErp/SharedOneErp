@@ -20,7 +20,7 @@ public class ErpreApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         String sql = "SELECT NOW()"; // PostgreSQL에서 현재 날짜와 시간을 가져오는 쿼리
         String result = jdbcTemplate.queryForObject(sql, String.class);
-        System.out.println("현재 데이터베이스 시간: " + result);
+        System.out.println("현재 데이터베이스 시간: " + result); //test
     }
 
 }
