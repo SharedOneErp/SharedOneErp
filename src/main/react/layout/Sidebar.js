@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../../resources/static/css/Sidebar.css'; // 스타일을 위한 CSS 파일
 
-function Sidebar() {
+function Sidebar({currentMenu}) {
     // 상태를 초기화할 때 localStorage에서 값을 가져옵니다.
     const [activeMenu, setActiveMenu] = useState(() => {
         return localStorage.getItem('activeMenu') || null;
