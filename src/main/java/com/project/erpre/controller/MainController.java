@@ -17,7 +17,7 @@ public class MainController {
     public String page(@PathVariable String pageName, Model model) {
         model.addAttribute("pageName", pageName);
         System.out.println("뷰 이름: " + pageName);
-//        아아아아아아
+
         return "view"; // 항상 'view' 템플릿으로 이동
     }
 }
