@@ -72,8 +72,10 @@ function Sidebar({currentMenu}) {
                     <a href="#" onClick={() => handleMenuClick('product')}>상품관리</a>
                     {activeMenu === 'product' && (
                         <ul className="submenu">
-                            <li><a href="#">상품관리</a></li>
-                            <li><a href="#">상품요청</a></li>
+                            <li className={currentMenu === 'productList' ? 'active' : ''}><a href="/ProductList">전체 상품 목록</a></li>
+                            <li><a href="#">품목 관리</a></li>
+                            <li><a href="#">상품 재고 관리</a></li>
+                            <li><a href="#">상품 가격 관리</a></li>
                             {/* 필요한 만큼 추가 */}
                         </ul>
                     )}
