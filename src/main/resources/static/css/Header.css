@@ -12,11 +12,8 @@ header {
     align-items: center;
     max-width: 1800px;
     margin: 0 auto;
-    height: 80px;
     margin-left: 50px;
     margin-right: 50px;
-
-
 }
 
 .logo img {
@@ -26,38 +23,6 @@ header {
 
 .logo img:hover {
     transform: scale(1.1);
-}
-
-.nav-menu ul {
-    list-style: none;
-    display: flex;
-    gap: 30px;
-}
-
-.nav-menu ul li a {
-    text-decoration: none;
-    color: white;
-    font-size: 17px;
-    font-weight: bold;
-    transition: color 0.3s ease;
-    padding: 5px 0;
-    position: relative;
-}
-
-.nav-menu ul li a::after {
-    content: '';
-    display: block;
-    width: 0;
-    height: 2px;
-    background: #ffcc00;
-    transition: width 0.3s ease;
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-}
-
-.nav-menu ul li a:hover::after {
-    width: 100%;
 }
 
 .header-right {
@@ -92,6 +57,7 @@ header {
     font-weight: 500;
     transition: color 0.3s ease;
     margin-top: 5px;
+    font-size: 15px;
 }
 
 .username:hover {
@@ -103,4 +69,8 @@ header {
     height: 20px;
     margin-top: 10px;
 }
+.teamname{
+    font-size: 10px;
+}
+
 
