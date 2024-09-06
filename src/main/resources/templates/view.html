@@ -9,10 +9,13 @@
 </head>
 <body>
 
-<div id="root"></div>
-
+<div th:if="${session.user != null}" id="root"></div>
+<div th:unless="${session.user != null}">
+    <script>
+        location.href='/login';
+    </script>
+</div>
 <script th:src="@{'/bundle/' + ${pageName} + '.bundle.js'}"></script>
-
 </body>
 </html>
 
