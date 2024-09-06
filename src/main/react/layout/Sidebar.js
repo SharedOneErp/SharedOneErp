@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../../resources/static/css/Sidebar.css'; // 스타일을 위한 CSS 파일
 
-function Sidebar() {
+function Sidebar({currentMenu}) {
     const [activeMenu, setActiveMenu] = useState(null);
 
     const handleMenuClick = (menu) => {
@@ -9,7 +9,7 @@ function Sidebar() {
     };
 
     return (
-        <aside className="sidebar">
+        <aside className="sidebar" >
             <div className="sidebar-top">
                 <div className="user-info">
                     <div className="user-name">
@@ -36,11 +36,11 @@ function Sidebar() {
                     <a href="#" onClick={() => handleMenuClick('sales')}>영업관리</a>
                     {activeMenu === 'sales' && (
                         <ul className="submenu">
-                            <li><a href="/orderRegister">주문 등록</a></li>
-                            <li><a href="/orderListAll">전체 주문 목록</a></li>
-                            <li><a href="/orderListAssigned">담당 주문 목록</a></li>
-                            <li><a href="/orderRegisterApproval">주문 등록 승인</a></li>
-                            <li><a href="/orderReport">영업 실적 보고서</a></li>
+                            <li className={currentMenu === 'orderRegister' ? 'active' : ''}><a href="/orderRegister">주문 등록</a></li>
+                            <li className={currentMenu === 'orderListAll' ? 'active' : ''}><a href="/orderListAll">전체 주문 목록</a></li>
+                            <li className={currentMenu === 'orderListAssigned' ? 'active' : ''}><a href="/orderListAssigned">담당 주문 목록</a></li>
+                            <li className={currentMenu === 'orderRegisterApproval' ? 'active' : ''}><a href="/orderRegisterApproval">주문 등록 승인</a></li>
+                            <li className={currentMenu === 'orderReport' ? 'active' : ''}><a href="/orderReport">영업 실적 보고서</a></li>
                         </ul>
                     )}
                 </li>
