@@ -1,11 +1,9 @@
-
 import React, {useState} from 'react'; //어느 컴포넌트이든 React임포트가 필요합니다.
 import ReactDOM from 'react-dom/client'; //root에 리액트 돔방식으로 렌더링시 필요합니다.
 import '../../Main.css' //css파일 임포트
 import Layout from "../../layout/Layout";
 import {BrowserRouter} from "react-router-dom"; //css파일 임포트
 import '../../../resources/static/css/OrderListAssigned.css';
-
 
 function OrderListAssigned() {
 
@@ -35,7 +33,10 @@ function OrderListAssigned() {
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
     return (
+
         <Layout>
+            <h1>담당 주문 목록</h1>
+
             <div className="filter-section">
                 <select onChange={(e) => setFilterType(e.target.value)}>
                     <option value="customer">고객사</option>
@@ -50,7 +51,6 @@ function OrderListAssigned() {
                 <button className="filter-button" onClick={() => setFilter('결제중')}>결제중</button>
                 <button className="filter-button" onClick={() => setFilter('결제완료')}>결제완료</button>
                 <button className="filter-button" onClick={() => setFilter('반려')}>반려</button>
-            </div>
 
                 <div className="pagination-section">
                     전체 {filteredOrders.length}건 페이지 당
@@ -107,6 +107,6 @@ function OrderListAssigned() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <OrderListAssinged />
+        <OrderListAssigned/>
     </BrowserRouter>
 );
