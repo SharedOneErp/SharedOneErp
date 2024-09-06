@@ -14,7 +14,7 @@ function OrderReport() {
             </div>
 
             <h1>오더리포트 생성 화면입니다.</h1>
-            {/* 페이지별 주요 컨텐츠 */}
+            {/* test 페이지별 주요 컨텐츠 */}
         </Layout>
 
     )
