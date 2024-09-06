@@ -5,6 +5,7 @@ import com.project.erpre.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -31,4 +32,23 @@ public class AuthController {
         }
     }
 
+
+        @PostMapping("/logout")
+        public ResponseEntity<?> logout(HttpSession session) {
+            session.invalidate(); // 세션 무효화
+            return ResponseEntity.ok().build(); // 성공적으로 로그아웃
+        }
+
+    @GetMapping("/user")
+    public ResponseEntity<User> getUser(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(401).build(); // Unauthorized if no user is found
+        }
+    }
 }
+
+
+
