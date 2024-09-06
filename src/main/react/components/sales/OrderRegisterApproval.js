@@ -52,7 +52,7 @@ function OrderRegisterApproval() {
                             <th>주문 등록일</th>
                             <th>담당자</th>
                             <th>주문 상태</th>
-                            <th>내역보기</th>
+                            <th>내역보기d</th>
                         </tr>
                     </thead>
                     <tbody className="approval-list-content">
