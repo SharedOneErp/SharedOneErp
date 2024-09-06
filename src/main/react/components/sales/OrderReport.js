@@ -9,12 +9,9 @@ function OrderReport() {
 
     return (
         <Layout currentMenu="orderReport">
-            <div>
-                <h3 className="app">ORDER REPORT 화면입니다.</h3>
-            </div>
+            <div></div>
 
-            <h1>오더리포트 생성 화면입니다.</h1>
-            {/* test 페이지별 주요 컨텐츠 */}
+            <h1>영업실적 보고서 화면입니다</h1>
         </Layout>
 
     )
