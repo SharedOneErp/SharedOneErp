@@ -1,3 +1,4 @@
+
 import React, {useState} from 'react'; //어느 컴포넌트이든 React임포트가 필요합니다.
 import ReactDOM from 'react-dom/client'; //root에 리액트 돔방식으로 렌더링시 필요합니다.
 import '../../Main.css' //css파일 임포트
@@ -42,9 +43,7 @@ function OrderListAll() {
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
     return (
-
         <Layout>
-            <h1>전체 주문 목록</h1>
 
             <div className="filter-section">
                 <select onChange={(e) => setFilterType(e.target.value)}>
@@ -60,6 +59,7 @@ function OrderListAll() {
                 <button className="filter-button" onClick={() => setFilter('결제중')}>결제중</button>
                 <button className="filter-button" onClick={() => setFilter('결제완료')}>결제완료</button>
                 <button className="filter-button" onClick={() => setFilter('반려')}>반려</button>
+            </div>
 
                 <div className="pagination-section">
                     전체 {filteredOrders.length}건 페이지 당
@@ -69,7 +69,6 @@ function OrderListAll() {
                         <option value={20}>20</option>
                     </select>
                 </div>
-
                 <table className="order-table">
                     <thead>
                     <tr>
@@ -112,6 +111,6 @@ function OrderListAll() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <OrderListAll/>
+        <OrderListAll />
     </BrowserRouter>
 );

@@ -4,7 +4,6 @@ import '../../Main.css' //css파일 임포트
 import Layout from "../../layout/Layout";
 import {BrowserRouter, Routes, Route} from "react-router-dom"; //css파일 임포트
 import '../../../resources/static/css/OrderRegisterApproval.css'; // CSS 모듈 임포트
-import OrderRegisterApprovalDetail from './OrderRegisterApprovalDetail';
 
 function OrderRegisterApproval() {
 
@@ -52,7 +51,7 @@ function OrderRegisterApproval() {
                             <th>주문 등록일</th>
                             <th>담당자</th>
                             <th>주문 상태</th>
-                            <th>내역보기d</th>
+                            <th>내역보기</th>
                         </tr>
                     </thead>
                     <tbody className="approval-list-content">

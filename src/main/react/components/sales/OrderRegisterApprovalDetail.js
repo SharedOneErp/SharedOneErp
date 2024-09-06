@@ -9,9 +9,10 @@ import '../../../resources/static/css/OrderRegisterApprovalDetail.css'; // CSS �
 function OrderRegisterApprovalDetail() {
 
     return (
-        <Layout>
+        <>
             <h1>내역보기화면</h1>
-        </Layout>
+        </>
+
     )
 }
 
