@@ -18,6 +18,6 @@ public class MainController {
         model.addAttribute("pageName", pageName);
         System.out.println("뷰 이름: " + pageName);
 
-        return "view"; // 항상 'view' 템플릿으로 이동
+        return "view"; // 항상 'view' 템플릿으로 이동 //test
     }
 }
