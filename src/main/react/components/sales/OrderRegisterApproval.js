@@ -12,7 +12,7 @@ function OrderRegisterApproval() {
         <Layout>
             <div className="top-container">
                 <h2>주문 등록 승인d</h2>
-                <p>영업 관리</p>
+                <p>영업 d관리</p>
             </div>
                 <div className="middle-container">
                     <form className="search-box">
