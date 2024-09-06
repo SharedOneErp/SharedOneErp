@@ -64,13 +64,14 @@ function Sidebar({ currentMenu }) {
             <div className="sidebar-top">
                 <div className="user-info">
                     <div className="user-name">
+
                         {user ? (
                             <>
                                 IKEA 광명점 ({user.department})<br />
                                 팀장 {user.username}
                             </>
                         ) : (
-                            '사용자 정보를 불러오는 중...'
+                            'LOADING'
                         )}
                     </div>
                     <div className="login-time">2024-09-05 13:54:06</div>
