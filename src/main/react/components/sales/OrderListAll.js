@@ -1,3 +1,4 @@
+
 import React, {useState} from 'react'; //어느 컴포넌트이든 React임포트가 필요합니다.
 import ReactDOM from 'react-dom/client'; //root에 리액트 돔방식으로 렌더링시 필요합니다.
 import '../../Main.css' //css파일 임포트
@@ -34,24 +35,22 @@ function OrderListAll() {
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
     return (
-
         <Layout>
-            <h1>전체 주문 목록</h1>
-
-            <div className="filter-section">
-                <select onChange={(e) => setFilterType(e.target.value)}>
-                    <option value="customer">고객사</option>
-                    <option value="date">주문 등록일</option>
-                    <option value="status">주문 상태</option>
-                    <option value="items">물품(계약) 리스트</option>
-                </select>
-                <input type="text" placeholder="검색어 입력" value={filter} onChange={(e) => setFilter(e.target.value)}/>
-                <button className="search-button" onClick={() => setCurrentPage(1)}>검색</button>
-                <br/>
-                <button className="filter-button" onClick={() => setFilter('')}>전체</button>
-                <button className="filter-button" onClick={() => setFilter('결제중')}>결제중</button>
-                <button className="filter-button" onClick={() => setFilter('결제완료')}>결제완료</button>
-                <button className="filter-button" onClick={() => setFilter('반려')}>반려</button>
+                <div className="filter-section">
+                    <select onChange={(e) => setFilterType(e.target.value)}>
+                        <option value="customer">고객사</option>
+                        <option value="date">주문 등록일</option>
+                        <option value="status">주문 상태</option>
+                        <option value="items">물품(계약) 리스트</option>
+                    </select>
+                    <input type="text" placeholder="검색어 입력" value={filter} onChange={(e) => setFilter(e.target.value)}/>
+                    <button className="search-button" onClick={() => setCurrentPage(1)}>검색</button>
+                    <br/>
+                    <button className="filter-button" onClick={() => setFilter('')}>전체</button>
+                    <button className="filter-button" onClick={() => setFilter('결제중')}>결제중</button>
+                    <button className="filter-button" onClick={() => setFilter('결제완료')}>결제완료</button>
+                    <button className="filter-button" onClick={() => setFilter('반려')}>반려</button>
+                </div>
 
             <div className="pagination-section">
                 전체 {filteredOrders.length}건 페이지 당
@@ -62,51 +61,51 @@ function OrderListAll() {
                 </select>
             </div>
 
-            <table className="order-table">
-                <thead>
-                <tr>
-                    <th>주문번호</th>
-                    <th>고객사</th>
-                    <th>주문 등록일</th>
-                    <th>주문 상태</th>
-                    <th>물품(계약) 리스트</th>
-                    <th>총액(원)</th>
-                    <th>내역 보기</th>
-                </tr>
-                </thead>
-                <tbody>
-                {filteredOrders
-                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                    .map(order => (
-                        <tr key={order.id}>
-                            <td>{String(order.id).padStart(3, '0')}</td>
-                            <td>{order.customer}</td>
-                            <td>{order.date}</td>
-                            <td>{order.status}</td>
-                            <td>{order.items}</td>
-                            <td>{order.total.toLocaleString()}</td>
-                            <td><a href={`/order/${order.id}`}>내역 보기</a></td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-            <div className="pagination-buttons">
-                <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>이전</button>
-                {Array.from({length: totalPages}, (_, i) => (
-                    <button key={i + 1} onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+        <table className="order-table">
+            <thead>
+            <tr>
+                <th>주문번호</th>
+                <th>고객사</th>
+                <th>주문 등록일</th>
+                <th>주문 상태</th>
+                <th>물품(계약) 리스트</th>
+                <th>총액(원)</th>
+                <th>내역 보기</th>
+            </tr>
+            </thead>
+            <tbody>
+            {filteredOrders
+                .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                .map(order => (
+                    <tr key={order.id}>
+                        <td>{String(order.id).padStart(3, '0')}</td>
+                        <td>{order.customer}</td>
+                        <td>{order.date}</td>
+                        <td>{order.status}</td>
+                        <td>{order.items}</td>
+                        <td>{order.total.toLocaleString()}</td>
+                        <td><a href={`/order/${order.id}`}>내역 보기</a></td>
+                    </tr>
                 ))}
-                <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>다음
-                </button>
-            </div>
-        </Layout>
-    )
+            </tbody>
+        </table>
+
+        <div className="pagination-buttons">
+            <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>이전</button>
+            {Array.from({length: totalPages}, (_, i) => (
+                <button key={i + 1} onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+            ))}
+            <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>다음
+            </button>
+        </div>
+    </Layout>
+)
 }
 
 //페이지 root가 되는 JS는 root에 삽입되도록 처리
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <OrderListAll/>
+        <OrderListAll />
     </BrowserRouter>
 );
