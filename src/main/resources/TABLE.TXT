@@ -2,7 +2,7 @@ create table m_product (
 	product_cd	varchar(10)		not null,
 	category_no	int		null,
 	product_nm	varchar(100)		not null,
-	product_insert_date	timestamp		not null default current_date,
+	product_insert_date	timestamp		not null default current_timestamp,
 	product_update_date	timestamp		null
 );
 
@@ -11,7 +11,7 @@ create table m_category (
 	category_level	int		not null,
 	parent_category_no	int		null,
 	category_nm	varchar(100)		not null,
-	category_insert_date	timestamp	not null default current_date,
+	category_insert_date	timestamp	not null default current_timestamp,
 	category_update_date	timestamp		null
 );
 
@@ -21,7 +21,7 @@ create table m_order_h (
 	employee_id	varchar(50)		not null,
 	order_h_total_price	decimal(15, 2)		not null,
 	order_d_status	varchar(10)		null,
-	order_d_insert_date	timestamp		not null default current_date,
+	order_d_insert_date	timestamp		not null default current_timestamp,
 	order_d_update_date	timestamp		null
 );
 
@@ -31,7 +31,7 @@ create table m_employee (
 	employee_update_date	timestamp		null,
 	employee_email	varchar(30)		null,
 	employee_contact	varchar(20)		not null,
-	employee_insert_date	timestamp		not null default current_date,
+	employee_insert_date	timestamp		not null default current_timestamp,
 	employee_grade	varchar(20)		not null
 );
 
@@ -53,7 +53,7 @@ create table m_price (
 	price_discount_rate	decimal(4, 2)		null,
 	price_discount_start_date	timestamp		null,
 	price_discount_end_date	timestamp		null,
-	price_insert_date	timestamp	default current_date	not null default current_date,
+	price_insert_date	timestamp	default current_date	not null default current_timestamp,
 	price_update_date	timestamp		null
 );
 
@@ -66,7 +66,7 @@ create table m_customer (
 	customer_manager_name	varchar(50)		not null,
 	customer_manager_email	varchar(100)		null,
 	customer_manager_contact_no	varchar(20)		not null,
-	customer_insert_date	timestamp		not null default current_date,
+	customer_insert_date	timestamp		not null default current_timestamp,
 	customer_update_date	timestamp		null
 );
 
