@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import '../../../resources/static/css/Login.css';
 import authImage from '../../../resources/static/img/auth.jpg';
 
+
 function Login() {
     return (
         <div className="login-container" style={{ backgroundImage: `url(${authImage})` }}>
