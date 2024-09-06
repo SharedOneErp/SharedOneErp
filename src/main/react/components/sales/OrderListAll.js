@@ -1,4 +1,3 @@
-
 import React, {useState} from 'react'; //어느 컴포넌트이든 React임포트가 필요합니다.
 import ReactDOM from 'react-dom/client'; //root에 리액트 돔방식으로 렌더링시 필요합니다.
 import '../../Main.css' //css파일 임포트
@@ -14,21 +13,13 @@ function OrderListAll() {
     const [itemsPerPage, setItemsPerPage] = useState(20); // 페이지기본값
     const [currentPage, setCurrentPage] = useState(1);
 
-    const orders = [{id: 1, customer: '네이버', date: '2024-08-27', status: '결제완료', items: '사무용 의자 블랙시 S 외 1종', total: 1500000}, {
-        id: 2,
-        customer: '카카오',
-        date: '2024-08-27',
-        status: '결제완료',
-        items: '사무용 의자 블랙시 A',
-        total: 200000
-    }, {id: 3, customer: '쿠팡', date: '2024-08-28', status: '결제완료', items: '구매 의자 C', total: 800000}, {id: 4, customer: '쿠팡', date: '2024-08-28', status: '반려', items: '미팅용 소파 A', total: 3000000}, {
-        id: 5,
-        customer: '쿠팡',
-        date: '2024-09-03',
-        status: '반려',
-        items: '미팅용 소파 B',
-        total: 3000000
-    }, // 추가 데이터
+    const orders = [
+        {id: 1, customer: '네이버', date: '2024-08-27', status: '결제완료', items: '사무용 의자 블랙시 S 외 1종', total: 1500000},
+        {id: 2, customer: '카카오', date: '2024-08-27', status: '결제완료', items: '사무용 의자 블랙시 A', total: 200000},
+        {id: 3, customer: '쿠팡', date: '2024-08-28', status: '결제완료', items: '구매 의자 C', total: 800000},
+        {id: 4, customer: '쿠팡', date: '2024-08-28', status: '반려', items: '미팅용 소파 A', total: 3000000},
+        {id: 5, customer: '쿠팡', date: '2024-09-03', status: '반려', items: '미팅용 소파 B', total: 3000000},
+        // 추가 데이터
     ];
 
     // 필터 처리
@@ -43,7 +34,9 @@ function OrderListAll() {
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
     return (
+
         <Layout>
+            <h1>전체 주문 목록</h1>
 
             <div className="filter-section">
                 <select onChange={(e) => setFilterType(e.target.value)}>
@@ -59,7 +52,6 @@ function OrderListAll() {
                 <button className="filter-button" onClick={() => setFilter('결제중')}>결제중</button>
                 <button className="filter-button" onClick={() => setFilter('결제완료')}>결제완료</button>
                 <button className="filter-button" onClick={() => setFilter('반려')}>반려</button>
-            </div>
 
                 <div className="pagination-section">
                     전체 {filteredOrders.length}건 페이지 당
@@ -69,6 +61,7 @@ function OrderListAll() {
                         <option value={20}>20</option>
                     </select>
                 </div>
+
                 <table className="order-table">
                     <thead>
                     <tr>
@@ -84,21 +77,25 @@ function OrderListAll() {
                     <tbody>
                     {filteredOrders
                         .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                        .map(order => (<tr key={order.id}>
-                            <td>{String(order.id).padStart(3, '0')}</td>
-                            <td>{order.customer}</td>
-                            <td>{order.date}</td>
-                            <td>{order.status}</td>
-                            <td>{order.items}</td>
-                            <td>{order.total.toLocaleString()}</td>
-                            <td><a href={`/order/${order.id}`}>내역 보기</a></td>
-                        </tr>))}
+                        .map(order => (
+                            <tr key={order.id}>
+                                <td>{String(order.id).padStart(3, '0')}</td>
+                                <td>{order.customer}</td>
+                                <td>{order.date}</td>
+                                <td>{order.status}</td>
+                                <td>{order.items}</td>
+                                <td>{order.total.toLocaleString()}</td>
+                                <td><a href={`/order/${order.id}`}>내역 보기</a></td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
 
                 <div className="pagination-buttons">
                     <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>이전</button>
-                    {Array.from({length: totalPages}, (_, i) => (<button key={i + 1} onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>))}
+                    {Array.from({length: totalPages}, (_, i) => (
+                        <button key={i + 1} onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+                    ))}
                     <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>다음
                     </button>
                 </div>
@@ -111,6 +108,6 @@ function OrderListAll() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <OrderListAll />
+        <OrderListAll/>
     </BrowserRouter>
 );
