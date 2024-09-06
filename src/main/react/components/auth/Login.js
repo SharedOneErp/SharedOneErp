@@ -1,28 +1,78 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import '../../Main.css';
-import { BrowserRouter } from "react-router-dom";
 import '../../../resources/static/css/Login.css';
-import authImage from '../../../resources/static/img/auth.jpg';
-
 
 function Login() {
+    const [id, setId] = useState('');
+    const [pw, setPw] = useState('');
+    const [error, setError] = useState('');
+
+    const handleLogin = async (e) => {
+        e.preventDefault(); // 폼 제출 방지
+
+        try {
+            console.log('Attempting login with:', { username: id, password: pw }); // 디버깅용 로그
+
+            const response = await fetch('http://localhost:8787/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: id, password: pw }),
+                credentials: 'include'  // 쿠키를 서버에 전송
+            });
+
+            console.log('Response status:', response.status); // 디버깅용 로그
+
+            const result = await response.json();
+
+            if (response.ok) {
+                console.log('Login successful:', result); // 디버깅용 로그
+                location.href = "/main";
+            } else {
+                console.log('Login failed:', result); // 디버깅용 로그
+                setError(result.message || '로그인에 실패했습니다.');
+            }
+        } catch (err) {
+            console.error('로그인 중 오류 발생:', err);
+            setError('서버와의 연결에 실패했습니다.');
+        }
+    };
+
     return (
-        <div className="login-container" style={{ backgroundImage: `url(${authImage})` }}>
+        <div className="login-container" style={{ backgroundImage: `url(/img/auth.jpg)` }}>
             <div className="login-box">
                 <div className="login-header">
                     <img src="/img/ikea.png" alt="IKEA 로고" className="logo" />
                     <h1>IKEA ERP 관리자 시스템</h1>
                 </div>
-                <form className="login-form">
+                <form className="login-form" onSubmit={handleLogin}>
                     <div className="input-group">
                         <label htmlFor="id">ID</label>
-                        <input type="text" id="id" placeholder="아이디를 입력하세요" required />
+                        <input
+                            type="text"
+                            id="id"
+                            placeholder="아이디를 입력하세요"
+                            value={id}
+                            onChange={(e) => setId(e.target.value)}
+                            required
+                        />
                     </div>
                     <div className="input-group">
                         <label htmlFor="pw">PW</label>
-                        <input type="password" id="pw" placeholder="비밀번호를 입력하세요" required />
+                        <input
+                            type="password"
+                            id="pw"
+                            placeholder="비밀번호를 입력하세요"
+                            value={pw}
+                            onChange={(e) => setPw(e.target.value)}
+                            required
+                        />
                     </div>
+
+                    {error && <p className="error-message">{error}</p>}
+
                     <button type="submit" className="login-btn">로그인</button>
                 </form>
                 <div className="login-footer">
@@ -38,7 +88,5 @@ function Login() {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <BrowserRouter>
-        <Login />
-    </BrowserRouter>
+    <Login />
 );

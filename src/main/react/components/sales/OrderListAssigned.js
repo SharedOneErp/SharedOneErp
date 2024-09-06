@@ -1,3 +1,4 @@
+
 import React, {useState} from 'react'; //어느 컴포넌트이든 React임포트가 필요합니다.
 import ReactDOM from 'react-dom/client'; //root에 리액트 돔방식으로 렌더링시 필요합니다.
 import '../../Main.css' //css파일 임포트
@@ -6,7 +7,7 @@ import {BrowserRouter} from "react-router-dom"; //css파일 임포트
 import '../../../resources/static/css/OrderListAssigned.css';
 
 
-function OrderListAssinged() {
+function OrderListAssigned() {
 
     const [filter, setFilter] = useState('');
     const [filterType, setFilterType] = useState('customer'); // 필터기본값

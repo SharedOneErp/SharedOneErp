@@ -1,0 +1,105 @@
+create table m_product (
+	product_cd	varchar(10)		not null,
+	category_no	int		null,
+	product_nm	varchar(100)		not null,
+	product_insert_date	timestamp		not null default current_date,
+	product_update_date	timestamp		null
+);
+
+create table m_category (
+	category_no	serial		not null,
+	category_level	int		not null,
+	parent_category_no	int		null,
+	category_nm	varchar(100)		not null,
+	category_insert_date	timestamp	not null default current_date,
+	category_update_date	timestamp		null
+);
+
+create table m_order_h (
+	order_h_no	serial		not null,
+	customer_no	int		not null,
+	employee_id	varchar(50)		not null,
+	order_h_total_price	decimal(15, 2)		not null,
+	order_d_status	varchar(10)		null,
+	order_d_insert_date	timestamp		not null default current_date,
+	order_d_update_date	timestamp		null
+);
+
+create table m_employee (
+	employee_id	varchar(50)		not null,
+	employee_pw	varchar(50)		not null,
+	employee_update_date	timestamp		null,
+	employee_email	varchar(30)		null,
+	employee_contact	varchar(20)		not null,
+	employee_insert_date	timestamp		not null default current_date,
+	employee_grade	varchar(20)		not null
+);
+
+create table m_order_d (
+	order_d_no	serial		not null,
+	order_h_no	int		not null,
+	product_cd	varchar(10)		not null,
+	order_d_price	decimal(15,2)		not null,
+	order_d_qty	int		not null,
+	order_d_total_price	decimal(15, 2)		not null,
+	order_d_delivery_request_date	timestamp		null
+);
+
+create table m_price (
+	price_no	serial		not null,
+	customer_no	int		not null,
+	product_cd	varchar(10)		not null,
+	price_customer	decimal(15, 2)		not null,
+	price_discount_rate	decimal(4, 2)		null,
+	price_discount_start_date	timestamp		null,
+	price_discount_end_date	timestamp		null,
+	price_insert_date	timestamp	default current_date	not null default current_date,
+	price_update_date	timestamp		null
+);
+
+create table m_customer (
+	customer_no	serial		not null,
+	customer_name	varchar(100)		not null,
+	customer_addr	varchar(200)		null,
+	customer_contact_no	varchar(20)		not null,
+	customer_business_reg_no	varchar(20)		null,
+	customer_manager_name	varchar(50)		not null,
+	customer_manager_email	varchar(100)		null,
+	customer_manager_contact_no	varchar(20)		not null,
+	customer_insert_date	timestamp		not null default current_date,
+	customer_update_date	timestamp		null
+);
+
+alter table m_product add constraint pk_m_product primary key (
+	product_cd
+);
+
+alter table m_category add constraint pk_m_category primary key (
+	category_no
+);
+
+alter table m_order_h add constraint pk_m_order_h primary key (
+	order_h_no
+);
+
+alter table m_employee add constraint pk_m_employee primary key (
+	employee_id
+);
+
+alter table m_order_d add constraint pk_m_order_d primary key (
+	order_d_no
+);
+
+alter table m_price add constraint pk_m_price primary key (
+	price_no
+);
+
+alter table m_customer add constraint pk_m_customer primary key (
+	customer_no
+);
+
+
+
+
+
+
