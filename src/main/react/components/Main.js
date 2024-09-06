@@ -7,10 +7,6 @@ import { BrowserRouter } from "react-router-dom";
 function Main() {
     return (
         <Layout>
-                <a className="image-container">
-                    <img src="/img/ikea.png" alt="IKEA Logo" className="logo-image"/>
-                </a>
-
             <div className="dashboard-container">
                 <div className="card card-large">
                     <h3>인사 관리</h3>
