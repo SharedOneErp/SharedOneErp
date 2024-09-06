@@ -1,12 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../resources/static/css/Sidebar.css'; // 스타일을 위한 CSS 파일
 
-function Sidebar({currentMenu}) {
-    const [activeMenu, setActiveMenu] = useState(null);
+function Sidebar() {
+    // 상태를 초기화할 때 localStorage에서 값을 가져옵니다.
+    const [activeMenu, setActiveMenu] = useState(() => {
+        return localStorage.getItem('activeMenu') || null;
+    });
 
+    // 메뉴 클릭 시 상태를 업데이트하고 localStorage에 저장합니다.
     const handleMenuClick = (menu) => {
-        setActiveMenu(activeMenu === menu ? null : menu);
+        const newActiveMenu = activeMenu === menu ? null : menu;
+        setActiveMenu(newActiveMenu);
+        localStorage.setItem('activeMenu', newActiveMenu);
     };
+
+    useEffect(() => {
+        // 페이지가 처음 로드될 때 localStorage에서 상태를 읽어옵니다.
+        const savedMenu = localStorage.getItem('activeMenu');
+        if (savedMenu) {
+            setActiveMenu(savedMenu);
+        }
+    }, []);
 
     return (
         <aside className="sidebar" >
