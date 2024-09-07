@@ -4,6 +4,7 @@ header {
     padding: 15px 20px;
     color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
 .header-container {
@@ -73,4 +74,12 @@ header {
     font-size: 10px;
 }
 
-
+.bottom-border {
+    width: 100%;
+    height: 1px;
+    background-color: #dfdfe5;
+    position: absolute;
+    top: calc(100% - 1px);
+    left: 0;
+    overflow: hidden;
+}

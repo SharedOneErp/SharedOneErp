@@ -9,13 +9,19 @@
 </head>
 <body>
 
-<div th:if="${session.user != null}" id="root"></div>
-<div th:unless="${session.user != null}">
-    <script>
-        location.href='/login';
-    </script>
-</div>
-<script th:src="@{'/bundle/' + ${pageName} + '.bundle.js'}"></script>
+<!--<div th:if="${session.user != null}" id="root"></div>-->
+<!--<div th:unless="${session.user != null}">-->
+<!--    <script>-->
+<!--        location.href='/login';-->
+<!--    </script>-->
+<!--</div>-->
+<!--<script th:src="@{'/bundle/' + ${pageName} + '.bundle.js'}"></script>-->
+<!-- 로그인 페이지 세션 검증하는 코드임 ! 실제 배포시 아래 코드 두줄 삭제 후 운영 바람 -- 정우-->
+
+<div id="root"></div>
+<script th:src="@{'/bundle/'+${pageName}+'.bundle.js'}"></script>
+
+
 </body>
 </html>
 

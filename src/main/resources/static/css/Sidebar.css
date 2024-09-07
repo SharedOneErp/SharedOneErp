@@ -1,9 +1,54 @@
-/* Sidebar.css */
+
 .sidebar {
     width: 250px;
-    background-color: #f4f4f4;
+    background-color: #ffffff;
     padding: 20px;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid #e1e1e1;
+}
+
+.sidebar-top {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e1e1e1;
+    padding-bottom: 15px;
+}
+
+.user-info {
+    height: 130px;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    background-color: #f9f9f9;
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.login-time {
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 10px;
+}
+
+.logout-button {
+    background-color: #004c6d;
+    color: #ffffff;
+    border: none;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    outline: none;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #00394f;
 }
 
 .menu {
@@ -13,21 +58,23 @@
 }
 
 .menu > li {
-    margin-bottom: 10px;
+    margin-bottom: 0;
 }
 
 .menu a {
-    text-decoration: none;
-    color: #333;
     display: block;
-    padding: 10px;
+    text-decoration: none;
+    color: #004c6d;
+    padding: 12px;
+    background-color: #f4f6f9;
     border-radius: 4px;
-    background-color: #ddd;
-    margin-bottom: 5px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
 }
 
 .menu a:hover {
-    background-color: #ccc;
+    background-color: #e0e4e9;
 }
 
 .submenu {
@@ -37,61 +84,38 @@
 }
 
 .submenu li {
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
 .submenu a {
-    background-color: #eee;
-    padding: 8px;
+    background-color: #f0f6f9;
+    padding: 12px;
     border-radius: 4px;
+    display: block;
+    text-decoration: none;
+    color: #004c6d;
+    transition: background-color 0.3s ease;
 }
 
 .submenu a:hover {
-    background-color: #ddd;
+    background-color: #d0d6dd;
 }
 
-.submenu li.active a {
-    background-color: #bbb;
-}
-/* 사이드바 상단 로그인 정보 스타일 */
-.sidebar-top {
-    margin-bottom: 20px;
+.menu a.active, .submenu a.active {
+    background-color: #004c6d;
+    color: #ffffff;
 }
 
-.user-info {
-    height: 115px;
-    border: 1px solid #dfdcdc;
-    border-radius: 5px;
-    margin-left: 5px;
-    margin-top: 20px;
-    text-align: center;
-}
+@media screen and (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
 
-.user-name {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 5px;
-    margin-top: 10px;
-}
+    .menu a {
+        padding: 10px;
+    }
 
-.login-time {
-    font-size: 12px;
-    color: #6c757d;
-    margin-bottom: 5px;
-
-}
-
-.logout-button {
-    background-color: #0058A3;
-    color: #fefbfb;
-    border: none;
-    padding: 5px 10px;
-    font-size: 12px;
-    cursor: pointer;
-    border-radius: 4px;
-    outline: none;
-}
-
-.logout-button:hover {
-    background-color: #014178;
+    .submenu a {
+        padding: 10px;
+    }
 }
