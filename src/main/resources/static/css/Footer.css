@@ -1,8 +1,12 @@
+footer {
+    display: none;
+}
+
 .container-footer{
     background-color: #f4f4f4;
     padding: 25px 0;
     text-align: center;
-    margin-top: 1px;
+    /*margin-top: 1px;*/
 }
 
 .info-area {

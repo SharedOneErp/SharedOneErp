@@ -136,7 +136,7 @@ function OrderDetail() {
                                             value={product.name}
                                             onChange={(e) => handleProductChange(index, 'name', e.target.value)}
                                         />
-                                        <button className="search-button" onClick={openModal}>🔍</button>
+                                        <button className="search-button" onClick={openModal}><i class="bi bi-search"></i></button>
                                     </div>
                                 </td>
                                 <td>

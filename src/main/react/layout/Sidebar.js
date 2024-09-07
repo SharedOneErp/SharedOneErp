@@ -103,9 +103,8 @@ function Sidebar({ currentMenu }) {
             </div>
             <ul className="menu">
                 <li className={activeMenu === 'hr' ? 'active' : ''}>
-                    <a href="#" onClick={() => handleMenuClick('hr')}
-                       className={activeMenu === 'hr' ? 'active' : ''}>인사관리</a>
-                    {activeMenu === 'hr' && (
+                    <a href="#" onClick={(e) => { e.preventDefault(); handleMenuClick('hr')}}
+                       className={activeMenu === 'hr' ? 'active' : ''}>인사관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
                         <ul className="submenu">
                             <li className={activeSubMenu === 'newHireManagement' ? 'active' : ''}>
                                 <a href="#"
@@ -122,12 +121,10 @@ function Sidebar({ currentMenu }) {
                             </li>
                             {/* 필요한 만큼 추가 */}
                         </ul>
-                    )}
                 </li>
                 <li className={activeMenu === 'sales' ? 'active' : ''}>
-                    <a href="#" onClick={() => handleMenuClick('sales')}
-                       className={activeMenu === 'sales' ? 'active' : ''}>영업관리</a>
-                    {activeMenu === 'sales' && (
+                    <a href="#" onClick={(e) => { e.preventDefault(); handleMenuClick('sales')}}
+                        className={activeMenu === 'sales' ? 'active' : ''}>영업관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
                         <ul className="submenu">
                             <li className={activeSubMenu === 'order' ? 'active' : ''}>
                                 <a href="#" onClick={() => handleSubMenuClick('order', '/order')}>주문
@@ -152,12 +149,10 @@ function Sidebar({ currentMenu }) {
                                     보고서</a>
                             </li>
                         </ul>
-                    )}
                 </li>
                 <li className={activeMenu === 'customer' ? 'active' : ''}>
-                    <a href="#" onClick={() => handleMenuClick('customer')}
-                       className={activeMenu === 'customer' ? 'active' : ''}>고객관리</a>
-                    {activeMenu === 'customer' && (
+                    <a href="#" onClick={(e) => { e.preventDefault(); handleMenuClick('customer')}}
+                        className={activeMenu === 'customer' ? 'active' : ''}>고객관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
                         <ul className="submenu">
                             <li className={activeSubMenu === 'customerManagement' ? 'active' : ''}>
                                 <a href="#"
@@ -169,12 +164,10 @@ function Sidebar({ currentMenu }) {
                             </li>
                             {/* 필요한 만큼 추가 */}
                         </ul>
-                    )}
                 </li>
                 <li className={activeMenu === 'product' ? 'active' : ''}>
-                    <a href="#" onClick={() => handleMenuClick('product')}
-                       className={activeMenu === 'product' ? 'active' : ''}>상품관리</a>
-                    {activeMenu === 'product' && (
+                    <a href="#" onClick={(e) => { e.preventDefault(); handleMenuClick('product')}}
+                        className={activeMenu === 'product' ? 'active' : ''}>상품관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
                         <ul className="submenu">
                             <li className={activeSubMenu === 'productList' ? 'active' : ''}>
                                 <a href="#" onClick={() => handleSubMenuClick('productList', '/productList')}>전체 상품
@@ -195,7 +188,6 @@ function Sidebar({ currentMenu }) {
                             </li>
                             {/* 필요한 만큼 추가 */}
                         </ul>
-                    )}
                 </li>
             </ul>
         </aside>
