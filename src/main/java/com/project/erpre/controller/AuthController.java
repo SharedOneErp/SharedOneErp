@@ -5,7 +5,6 @@ import com.project.erpre.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -27,10 +26,10 @@ public class AuthController {
 
         if (user != null) {
             session.setAttribute("user", user);
-            // 로그인 성공 시 사용자 정보와 함께 토큰을 반환
+
+            // 로그인 성공 시 사용자 정보와 함께 응답
             Map<String, Object> response = new HashMap<>();
             response.put("message", "로그인 성공");
-            response.put("token", "your_jwt_token_here");
             response.put("user", user); // 사용자 정보 포함
 
             return ResponseEntity.ok(response);
@@ -39,12 +38,11 @@ public class AuthController {
         }
     }
 
-
-        @PostMapping("/logout")
-        public ResponseEntity<?> logout(HttpSession session) {
-            session.invalidate(); // 세션 무효화
-            return ResponseEntity.ok().build(); // 성공적으로 로그아웃
-        }
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        session.invalidate(); // 세션 무효화
+        return ResponseEntity.ok().build(); // 성공적으로 로그아웃
+    }
 
     @GetMapping("/user")
     public ResponseEntity<User> getUser(HttpSession session) {
@@ -52,7 +50,7 @@ public class AuthController {
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {
-            return ResponseEntity.status(401).build(); // Unauthorized if no user is found
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 }

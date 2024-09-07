@@ -46,6 +46,7 @@ function Header() {
                     </div>
                 </div>
             </div>
+            <div className="bottom-border"></div>
         </header>
     );
 }
