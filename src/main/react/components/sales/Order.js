@@ -70,6 +70,10 @@ function Order() {
         window.location.href = '/orderListAll';
     };
 
+    // 수정 완료 버튼 클릭
+    const handleEditSubmitClick = () => {
+    };
+
     // 닫기 버튼 클릭
     const handleCloseClick = () => {
         window.location.href = '/orderListAll';
@@ -155,7 +159,7 @@ function Order() {
                                             value={product.name}
                                             onChange={(e) => handleProductChange(index, 'name', e.target.value)}
                                         />
-                                        <button className="search-button" onClick={openModal}>🔍</button>
+                                        <button className="search-button" onClick={openModal}><i class="bi bi-search"></i></button>
                                     </div>
                                 </td>
                                 <td>
@@ -225,6 +229,7 @@ function Order() {
                         {mode === 'edit' && (
                             <button className="orderDetail-edit" onClick={handleEditClick}>수정</button>
                         )}
+                        <button className="orderDetail-edit" onClick={handleEditSubmitClick}>수정 완료</button>
                         <button className="orderDetail-close" onClick={handleCloseClick}>삭제</button>
                     </>
                 ) : (

@@ -85,7 +85,7 @@ function OrderListAll() {
                                 <td>{order.status}</td>
                                 <td>{order.items}</td>
                                 <td>{order.total.toLocaleString()}</td>
-                                <td><a href={`/order/${order.id}`}>내역 보기</a></td>
+                                <td><a href={`/order?no=${order.id}`}>내역 보기</a></td>
                             </tr>
                         ))}
                     </tbody>

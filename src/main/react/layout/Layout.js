@@ -5,20 +5,20 @@ import Sidebar from './Sidebar';
 import Footer from './Footer';
 import '../../resources/static/css/Layout.css';
 
-function Layout({ currentMenu, children }) {
+function Layout({currentMenu, children}) {
 
     return (
         <div className="container">
-            <Header />
+            <Header/>
             <div className="main-container">
-            <Sidebar currentMenu={ currentMenu }/>
-            <main className="main-content">
-                <div className="content-wrapper">
-                    { children }
-                </div>
-            </main>
+                <Sidebar currentMenu={currentMenu}/>
+                <main className={`main-content ${currentMenu === 'main' ? 'main-active' : ''}`}>
+                    <div className="content-wrapper">
+                        {children}
+                    </div>
+                </main>
             </div>
-            <Footer />
+            <Footer/>
         </div>
     );
 }
