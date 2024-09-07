@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 콘솔에 로그를 출력하기 위한 STDOUT 앱ender 정의 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- 로그 출력 형식 정의: 날짜, 스레드 이름, 로그 레벨, 로거 이름, 메시지 -->
+            <pattern>%d{yyyyMMdd HH:mm:ss.SSS} [%thread] %-3level %logger{5} - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ▶▶JDBC 관련 로그 설정◀◀ -->
+    <logger name="jdbc" level="OFF"/> <!-- JDBC 호출에 대한 로그를 출력하지 않음 -->
+    <logger name="jdbc.sqlonly" level="OFF"/> <!-- SQL문만 로그로 남기기 (OFF로 설정되어 출력되지 않음) -->
+    <logger name="jdbc.sqltiming" level="DEBUG"/> <!-- SQL문 및 실행 시간 로그 (DEBUG 레벨로 설정) -->
+    <logger name="jdbc.audit" level="OFF"/> <!-- JDBC 호출 정보 로그 (OFF로 설정되어 출력되지 않음) -->
+    <logger name="jdbc.resultset" level="OFF"/> <!-- ResultSet 포함 JDBC 호출 로그 (OFF로 설정되어 출력되지 않음) -->
+    <logger name="jdbc.resultsettable" level="DEBUG"/> <!-- SQL 결과 조회 데이터 로그 (DEBUG 레벨로 설정) -->
+    <logger name="jdbc.connection" level="OFF"/> <!-- JDBC 연결 로그 (OFF로 설정되어 출력되지 않음) -->
+
+    <!-- 루트 로거 설정: 기본 로그 레벨은 INFO -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT" /> <!-- STDOUT 앱ender를 루트 로거에 연결 -->
+    </root>
+
+    <!-- 로그 레벨 조정 가능성 -->
+    <!--
+        로그 레벨은 TRACE, DEBUG, INFO, WARN, ERROR, OFF의 6가지가 있으며,
+        필요에 따라 조정할 수 있습니다.
+        - TRACE: 가장 상세한 로그
+        - DEBUG: 디버깅을 위한 로그
+        - INFO: 일반적인 정보 로그
+        - WARN: 경고 로그
+        - ERROR: 오류 로그
+        - OFF: 로그 출력을 중지
+    -->
+</configuration>

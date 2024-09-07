@@ -129,8 +129,8 @@ function Sidebar({ currentMenu }) {
                        className={activeMenu === 'sales' ? 'active' : ''}>영업관리</a>
                     {activeMenu === 'sales' && (
                         <ul className="submenu">
-                            <li className={activeSubMenu === 'orderRegister' ? 'active' : ''}>
-                                <a href="#" onClick={() => handleSubMenuClick('orderRegister', '/orderRegister')}>주문
+                            <li className={activeSubMenu === 'order' ? 'active' : ''}>
+                                <a href="#" onClick={() => handleSubMenuClick('order', '/order')}>주문
                                     등록</a>
                             </li>
                             <li className={activeSubMenu === 'orderListAll' ? 'active' : ''}>
