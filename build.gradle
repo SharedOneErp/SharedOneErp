@@ -34,6 +34,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'  // 테스트를 위한 Starter
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'  // JUnit 플랫폼 실행기 (테스트 런타임)
 	implementation 'org.postgresql:postgresql:42.5.4'  // PostgreSQL JDBC 드라이버 특정 버전
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16' // Log4jdbc 의존성 추가
 }
 
 tasks.named('test') {
