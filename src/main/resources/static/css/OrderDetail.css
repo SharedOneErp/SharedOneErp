@@ -1,6 +1,193 @@
-.orderdetail-container{
-    height: 80%;
-    weight : 80%;
-    background-color: blue;
-    margin: 0 auto;
+.orderDetail-title h3 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333333;
+    letter-spacing: -0.1px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #999999;
+    margin: 26px 0 0;
+    position: relative;
+}
+
+
+.order-detail-container {
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 5px;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.form-group {
+    flex: 1 1 30%;
+    display: flex;
+    flex-direction: column;
+}
+.form-group > input {
+    width: 50%;
+}
+
+.readonly {
+    background-color: #e9ecef;
+    border: 1px solid #ddd;
+    cursor: not-allowed;
+    width: 118px;
+}
+.manager{
+    border: 0px;
+    background-color: #f5f5f5;
+}
+
+.gray-background {
+    background-color: #f5f5f5;
+}
+
+.product-table {
+    margin-top: 20px;
+}
+
+.styled-table {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+}
+
+
+.styled-table th, .styled-table td {
+    padding: 7px 7px;
+    text-align: center;
+    border: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #0058A3;
+}
+
+.product-name-cell {
+    display: flex;
+}
+
+.add-button {
+    margin-top: 10px;
+    background-color: #007CC1;
+    color: white;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.status-button {
+    background-color: #f5f5f5;
+    border: none;
+    cursor: not-allowed;
+    color: #555;
+    padding: 5px 10px;
+    text-align: center;
+}
+
+/*모달 시작*/
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    z-index: 1000;
+    width: 80%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: row;
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+}
+
+.search-input-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.search-results {
+    flex: 2;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    width: 100%;
+}
+
+.search-item {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.search-button {
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.close-modal {
+    background-color: #007CC1;
+    color: white;
+    border: none;
+    padding: 3px;
+    border-radius: 5px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+.search-modal{
+    background-color: darkgray;
+    color: white;
+    border: none;
+    padding: 3px;
+    border-radius: 5px;
+    margin-left: 5px;
+    cursor: pointer;
+
+}
+
+
+.total-amount {
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.total-amount span {
+    color: #0058A3;
+}
+.orderDetail-button {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.orderDetail-button > button{
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+    border: none;
+}
+
+.orderDetail-edit{
+    background-color: #007CC1;
+}
+.orderDetail-close{
+    background-color: gray;
 }
