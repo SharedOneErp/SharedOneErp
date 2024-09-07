@@ -5,7 +5,7 @@ import Layout from "../../layout/Layout";
 import {BrowserRouter, useNavigate, useSearchParams} from "react-router-dom";
 import '../../../resources/static/css/OrderDetail.css';
 
-function OrderRegister() {
+function Order() {
 
     // 쿼리 파라미터에서 주문번호와 mode 추출 (등록/상세/수정 한 페이지에서 제어)
     const [searchParams] = useSearchParams();
@@ -239,8 +239,8 @@ function OrderRegister() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <OrderRegister/>
+        <Order/>
     </BrowserRouter>
 );
 
-export default OrderDetail;
+export default Order;
