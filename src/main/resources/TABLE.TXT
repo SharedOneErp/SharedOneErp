@@ -1,105 +1,85 @@
-create table m_product (
-	product_cd	varchar(10)		not null,
-	category_no	int		null,
-	product_nm	varchar(100)		not null,
-	product_insert_date	timestamp		not null default current_timestamp,
-	product_update_date	timestamp		null
-);
-
-create table m_category (
-	category_no	serial		not null,
-	category_level	int		not null,
-	parent_category_no	int		null,
-	category_nm	varchar(100)		not null,
-	category_insert_date	timestamp	not null default current_timestamp,
-	category_update_date	timestamp		null
-);
-
-create table m_order_h (
-	order_h_no	serial		not null,
-	customer_no	int		not null,
-	employee_id	varchar(50)		not null,
-	order_h_total_price	decimal(15, 2)		not null,
-	order_d_status	varchar(10)		null,
-	order_d_insert_date	timestamp		not null default current_timestamp,
-	order_d_update_date	timestamp		null
-);
-
-create table m_employee (
-	employee_id	varchar(50)		not null,
-	employee_pw	varchar(50)		not null,
-	employee_update_date	timestamp		null,
-	employee_email	varchar(30)		null,
-	employee_contact	varchar(20)		not null,
-	employee_insert_date	timestamp		not null default current_timestamp,
-	employee_grade	varchar(20)		not null
-);
-
-create table m_order_d (
-	order_d_no	serial		not null,
-	order_h_no	int		not null,
-	product_cd	varchar(10)		not null,
-	order_d_price	decimal(15,2)		not null,
-	order_d_qty	int		not null,
-	order_d_total_price	decimal(15, 2)		not null,
-	order_d_delivery_request_date	timestamp		null
-);
-
-create table m_price (
-	price_no	serial		not null,
-	customer_no	int		not null,
-	product_cd	varchar(10)		not null,
-	price_customer	decimal(15, 2)		not null,
-	price_discount_rate	decimal(4, 2)		null,
-	price_discount_start_date	timestamp		null,
-	price_discount_end_date	timestamp		null,
-	price_insert_date	timestamp	default current_date	not null default current_timestamp,
-	price_update_date	timestamp		null
-);
-
+-- 1. 고객사
 create table m_customer (
-	customer_no	serial		not null,
-	customer_name	varchar(100)		not null,
-	customer_addr	varchar(200)		null,
-	customer_contact_no	varchar(20)		not null,
-	customer_business_reg_no	varchar(20)		null,
-	customer_manager_name	varchar(50)		not null,
-	customer_manager_email	varchar(100)		null,
-	customer_manager_contact_no	varchar(20)		not null,
-	customer_insert_date	timestamp		not null default current_timestamp,
-	customer_update_date	timestamp		null
+    customer_no            serial           not null, -- 고객 번호
+    customer_name          varchar(100)     not null, -- 고객 이름
+    customer_addr          varchar(200)     null,     -- 고객 주소
+    customer_contact_no    varchar(20)      not null, -- 고객 연락처
+    customer_business_reg_no varchar(20)    null,     -- 사업자 등록 번호
+    customer_manager_name  varchar(50)      not null, -- 담당자 이름
+    customer_manager_email varchar(100)     null,     -- 담당자 이메일
+    customer_manager_contact_no varchar(20) not null, -- 담당자 연락처
+    customer_insert_date   timestamp        not null default current_timestamp, -- 고객 등록 일시
+    customer_update_date   timestamp        null,     -- 고객 수정 일시
+    primary key (customer_no) -- 기본 키 설정
 );
 
-alter table m_product add constraint pk_m_product primary key (
-	product_cd
+-- 2. 상품
+create table m_product (
+    product_cd             varchar(10)      not null, -- 제품 코드
+    category_no            int              null,     -- 카테고리 번호 (m_category 테이블 참조)
+    product_nm             varchar(100)     not null, -- 제품 이름
+    product_insert_date    timestamp        not null default current_timestamp, -- 제품 등록 일시
+    product_update_date    timestamp        null,     -- 제품 수정 일시
+    primary key (product_cd) -- 기본 키 설정
 );
 
-alter table m_category add constraint pk_m_category primary key (
-	category_no
+-- 3. 고객사별 상품 가격
+create table m_price (
+    price_no               serial           not null, -- 가격 번호
+    customer_no            int              not null, -- 고객 번호 (m_customer 테이블 참조)
+    product_cd             varchar(10)      not null, -- 제품 코드 (m_product 테이블 참조)
+    price_customer         decimal(15, 2)   not null, -- 고객별 가격
+    price_discount_rate    decimal(4, 2)    null,     -- 할인율
+    price_discount_start_date timestamp     null,     -- 할인 시작 일자
+    price_discount_end_date timestamp       null,     -- 할인 종료 일자
+    price_insert_date      timestamp        not null default current_timestamp, -- 가격 등록 일시
+    price_update_date      timestamp        null,     -- 가격 수정 일시
+    primary key (price_no) -- 기본 키 설정
 );
 
-alter table m_order_h add constraint pk_m_order_h primary key (
-	order_h_no
+-- 4. 상품 카테고리
+create table m_category (
+    category_no            serial           not null, -- 카테고리 번호
+    category_level         int              not null, -- 카테고리 레벨
+    parent_category_no     int              null,     -- 상위 카테고리 번호
+    category_nm            varchar(100)     not null, -- 카테고리 이름
+    category_insert_date   timestamp        not null default current_timestamp, -- 카테고리 등록 일시
+    category_update_date   timestamp        null,     -- 카테고리 수정 일시
+    primary key (category_no) -- 기본 키 설정
 );
 
-alter table m_employee add constraint pk_m_employee primary key (
-	employee_id
+-- 5. 주문
+create table m_order_h (
+    order_h_no             serial           not null, -- 주문 헤더 번호
+    customer_no            int              not null, -- 고객 번호 (m_customer 테이블 참조)
+    employee_id            varchar(50)      not null, -- 담당자 ID (m_employee 테이블 참조)
+    order_h_total_price    decimal(15, 2)   not null, -- 총 주문 금액
+    order_d_status         varchar(10)      null,     -- 주문 상태
+    order_d_insert_date    timestamp        not null default current_timestamp, -- 주문 등록 일시
+    order_d_update_date    timestamp        null,     -- 주문 수정 일시
+    primary key (order_h_no) -- 기본 키 설정
 );
 
-alter table m_order_d add constraint pk_m_order_d primary key (
-	order_d_no
+-- 6. 주문 상세
+create table m_order_d (
+    order_d_no             serial           not null, -- 주문 상세 번호
+    order_h_no             int              not null, -- 주문 헤더 번호 (m_order_h 테이블 참조)
+    product_cd             varchar(10)      not null, -- 제품 코드 (m_product 테이블 참조)
+    order_d_price          decimal(15, 2)   not null, -- 주문 가격
+    order_d_qty            int              not null, -- 주문 수량
+    order_d_total_price    decimal(15, 2)   not null, -- 총 주문 금액
+    order_d_delivery_request_date timestamp null,     -- 납품 요청 일자
+    primary key (order_d_no) -- 기본 키 설정
 );
 
-alter table m_price add constraint pk_m_price primary key (
-	price_no
+-- 7. 직원
+create table m_employee (
+    employee_id            varchar(50)      not null, -- 직원 ID
+    employee_pw            varchar(50)      not null, -- 직원 비밀번호
+    employee_update_date   timestamp        null,     -- 직원 수정 일자
+    employee_email         varchar(30)      null,     -- 직원 이메일
+    employee_contact       varchar(20)      not null, -- 직원 연락처
+    employee_insert_date   timestamp        not null default current_timestamp, -- 직원 등록 일시
+    employee_grade         varchar(20)      not null, -- 직원 등급(승인 권한)
+    primary key (employee_id) -- 기본 키 설정
 );
-
-alter table m_customer add constraint pk_m_customer primary key (
-	customer_no
-);
-
-
-
-
-
-
