@@ -61,12 +61,12 @@ function OrderDetail() {
 
     // 수정 버튼 클릭
     const handleEditClick = () => {
-        window.location.href = '/orderList';
+        window.location.href = '/orderListAll';
     };
 
     // 닫기 버튼 클릭
     const handleCloseClick = () => {
-        window.location.href = '/orderList';
+        window.location.href = '/orderListAll';
     };
 
     return (
