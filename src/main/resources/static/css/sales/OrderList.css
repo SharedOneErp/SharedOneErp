@@ -1,0 +1,68 @@
+/* 테이블*/
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+.order-table th, .order-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+.order-table th {
+    background-color: #f2f2f2;
+}
+.order-table tr:hover {
+    background-color: #f1f1f1;
+    background-color: #ffdb0036; /* 이케아 노란색 */
+}
+.order-table a {
+    color: blue;
+    text-decoration: underline;
+}
+
+/* 검색 필터*/
+.filter-section {
+    margin-bottom: 20px;
+}
+
+.filter-section select,
+.filter-section input,
+.filter-section .search-button {
+    background-color: #f2f2f2;
+    margin-right: 10px;
+    padding: 5px;
+}
+.filter-button {
+    background-color: #007CC1;
+    color: white;
+    padding: 6px 15px;
+    margin: 5px;
+    margin-right: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.filter-button:hover {
+    background-color: #005a91; /* 호버 시 조금 더 어두운 색으로 변경 */
+}
+
+/* 페이지네이션*/
+.pagination-buttons {
+    margin-top: 20px;
+    text-align: center;
+}
+.pagination-buttons button {
+    display: inline-block; /* 버튼들을 한 줄로 표시 */
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    background-color: #f2f2f2;
+    border: none;
+}
+.pagination-buttons button:hover {
+    background-color: #e0e0e0;
+}
+.pagination-buttons span {
+    margin: 0 10px;
+}
