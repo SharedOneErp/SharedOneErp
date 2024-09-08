@@ -47,6 +47,7 @@
 }
 
 .product-table {
+    position: relative;
     margin-top: 20px;
 }
 
@@ -73,7 +74,9 @@
 }
 
 .add-button {
-    margin-top: 10px;
+    position: absolute; /* 절대 위치 지정 */
+    top: -40px;
+    right: 0;           /* 테이블 오른쪽 끝에 배치 */
     background-color: #007CC1;
     color: white;
     padding: 5px;
@@ -221,4 +224,22 @@
 }
 .orderDetail-close{
     background-color: gray;
+}
+.order-buttons{
+    display: flex;
+    justify-content: center; /* 버튼들을 정 중앙에 배치 */
+    margin-top: 20px;
+}
+
+.order-buttons > button{
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+    border: none;
+    background-color: #007CC1;
+    margin: 0 10px;
+}
+.search-button{
+    margin-left: 5px;
 }
