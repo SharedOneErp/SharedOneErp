@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import '../../Main.css';
 import Layout from "../../layout/Layout";
 import { BrowserRouter } from "react-router-dom";
-import '../../../resources/static/css/ProductDetail.css';
+import '../../../resources/static/css/product/ProductDetail.css';
 
 function ProductDetail({ category1="넘어온대", category2="넘어온중", category3="넘어온소" }) { // productlist에서 props로 받아온 카테고리 값
     const handleListClick = () => {
