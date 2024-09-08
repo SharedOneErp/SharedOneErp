@@ -321,4 +321,10 @@ root.render(
     <BrowserRouter>
         <Order/>
     </BrowserRouter>
+<<<<<<< Updated upstream
 );
+=======
+);
+
+export default OrderRegister;
+>>>>>>> Stashed changes
