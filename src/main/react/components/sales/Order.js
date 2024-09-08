@@ -2,22 +2,20 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import '../../Main.css';
 import Layout from "../../layout/Layout";
-import {BrowserRouter, useNavigate, useSearchParams} from "react-router-dom";
+import { BrowserRouter, useNavigate, useSearchParams } from "react-router-dom";
 import '../../../resources/static/css/OrderDetail.css';
 
 function Order() {
-
     // 쿼리 파라미터에서 주문번호와 mode 추출 (등록/상세/수정 한 페이지에서 제어)
     const [searchParams] = useSearchParams();
     const orderNo = searchParams.get('no'); // 등록일 경우 order, 상세일 경우 order?no=1, 수정일 경우 order?no=1&mode=edit
     const mode = searchParams.get('mode') || 'view'; // mode가 없으면 기본값 'view'
 
     const [products, setProducts] = useState([{ name: '사무용 의자 블랙 A', price: 35000, quantity: 100 }]);
-    const [status] = useState('처리중'); // 결재 상태
     const [showModal, setShowModal] = useState(false); // 모달 창 상태
     const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태
+    const [searchCode, setSearchCode] = useState(''); // 상품코드 상태
     const [searchResults, setSearchResults] = useState([]); // 검색 결과 상태
-    const navigate = useNavigate();
 
     // 상품 변경
     const handleProductChange = (index, field, value) => {
@@ -48,21 +46,26 @@ function Order() {
 
     // 검색어 변경
     const handleSearchChange = (e) => {
-        const query = e.target.value;
-        setSearchQuery(query);
-        const filteredResults = products.filter(product =>
-            product.name.toLowerCase().includes(query.toLowerCase())
-        );
-        setSearchResults(filteredResults);
+        setSearchQuery(e.target.value);
     };
 
-    // 검색 버튼 클릭
-    const handleSearch = () => {
-        // 검색 결과 필터링
-        const filteredResults = products.filter(product =>
-            product.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        setSearchResults(filteredResults);
+    // 상품코드 변경
+    const handleSearchCodeChange = (e) => {
+        setSearchCode(e.target.value);
+    };
+
+    // 검색 버튼 클릭시 RestAPI 실행 후 SQL에서 값 받아올 수 있도록 설정 , INPUT값 2중 1이 NULL 일때도 값 받아올 수 있음.
+    //차후에 쿼리값 변경 필요할지도 모름.
+    const handleSearch = async () => {
+        try {
+            const response = await fetch(`http://localhost:8787/api/products/search?productCd=${searchCode}&productNm=${searchQuery}`);
+            if (!response.ok) throw new Error('RESPONSE.OK ERROR "응답이 올바르지 않습니다."');
+            const data = await response.json();
+            setSearchResults(data);
+        } catch (error) {
+            console.error('검색 값이 없습니다.', error);
+            setSearchResults([]); // 오류 발생 시 빈 결과로 설정
+        }
     };
 
     // 수정 버튼 클릭
@@ -72,6 +75,7 @@ function Order() {
 
     // 수정 완료 버튼 클릭
     const handleEditSubmitClick = () => {
+        // 수정 완료 처리
     };
 
     // 닫기 버튼 클릭
@@ -81,7 +85,17 @@ function Order() {
 
     // 결재 요청
     const handleRequestApproval = () => {
-        // 주문 등록
+        window.location.href = '/orderListAll';
+        // 주문 등록 처리(구현예정)
+    };
+
+    // 상품 선택 시 처리 함수
+    const handleProductSelect = (selectedProduct) => {
+        const updatedProducts = [...products];
+        updatedProducts[0] = selectedProduct; // 첫 번째 상품을 선택한 것으로 가정 (구현예정)
+        // 선택하면 표로 뿌려줘야죠 ? >> 구현예정
+        setProducts(updatedProducts);
+        closeModal();
     };
 
     return (
@@ -138,7 +152,7 @@ function Order() {
                 {/* 상품 목록 테이블 */}
                 <div className="product-table">
                     <table className="styled-table">
-                    <thead>
+                        <thead>
                         <tr>
                             <th>번호</th>
                             <th>상품명(영문)</th>
@@ -159,7 +173,7 @@ function Order() {
                                             value={product.name}
                                             onChange={(e) => handleProductChange(index, 'name', e.target.value)}
                                         />
-                                        <button className="search-button" onClick={openModal}><i class="bi bi-search"></i></button>
+                                        <button className="search-button" onClick={openModal}><i className="bi bi-search"></i></button>
                                     </div>
                                 </td>
                                 <td>
@@ -191,52 +205,80 @@ function Order() {
                 {showModal && (
                     <div className="modal">
                         <div className="modal-content">
-                            <div>
+                            <div className="modal-header">
                                 <h4>상품 검색</h4>
+                                <button className="close-modal" onClick={closeModal}>&times;</button>
+                            </div>
+
+                            <div className="category-selectors">
+                                <select>
+                                    <option value="">대분류</option>
+                                    <option value="furniture">가구</option>
+                                </select>
+
+                                <select>
+                                    <option value="">중분류</option>
+                                    <option value="chair">의자</option>
+                                    <option value="table">테이블</option>
+                                </select>
+
+                                <select>
+                                    <option value="">소분류</option>
+                                    <option value="office-chair">사무용 의자</option>
+                                    <option value="dining-chair">식탁 의자</option>
+                                </select>
+                            </div>
+
+                            {/* 검색 div (상품명 / 상품코드 / 검색) */}
+                            <div className="search-fields">
                                 <input
                                     type="text"
-                                    placeholder="상품명 검색"
+                                    placeholder="상품명"
                                     value={searchQuery}
                                     onChange={handleSearchChange}
                                 />
+                                <input
+                                    type="text"
+                                    placeholder="상품코드"
+                                    value={searchCode}
+                                    onChange={handleSearchCodeChange}
+                                />
                                 <button className="search-modal" onClick={handleSearch}>검색</button>
-                                <button className="close-modal" onClick={closeModal}>닫기</button>
                             </div>
+
+                            {/* 검색 결과 */}
                             <div className="search-results">
                                 {searchResults.length > 0 ? (
-                                    searchResults.map((result, index) => (
-                                        <div key={index} className="search-item">
-                                            {result.name} - {result.price} - {result.quantity}
-                                        </div>
-                                    ))
+                                    <table className="search-results-table">
+                                        <thead>
+                                        <tr>
+                                            <th>상품코드</th>
+                                            <th>카테고리코드</th>
+                                            <th>상품명</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {searchResults.map((result, index) => (
+                                            <tr key={index} onClick={() => handleProductSelect(result)}>
+                                                <td>{result.productCd}</td>
+                                                <td>{result.categoryNo}</td>
+                                                <td>{result.productNm}</td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </table>
                                 ) : (
-                                    <div>검색 결과가 없습니다.</div>
+                                    <p>검색 결과가 없습니다.</p>
                                 )}
                             </div>
                         </div>
                     </div>
                 )}
-
-                <div className="total-amount">
-                    <label>총 금액: </label>
-                    <span>{products.reduce((sum, product) => sum + product.price * product.quantity, 0)}원</span>
-                </div>
             </div>
 
-            <div className="orderDetail-button">
-                {orderNo ? (
-                    <>
-                        {mode === 'edit' && (
-                            <button className="orderDetail-edit" onClick={handleEditClick}>수정</button>
-                        )}
-                        <button className="orderDetail-edit" onClick={handleEditSubmitClick}>수정 완료</button>
-                        <button className="orderDetail-close" onClick={handleCloseClick}>삭제</button>
-                    </>
-                ) : (
-                    <button className="orderDetail-edit" onClick={handleRequestApproval}>결재요청</button>
-                )}
+            <div className="order-buttons">
+                <button className="order-request" onClick={handleRequestApproval}>결재요청</button>
             </div>
-
         </Layout>
     );
 }
@@ -248,4 +290,3 @@ root.render(
     </BrowserRouter>
 );
 
-export default Order;

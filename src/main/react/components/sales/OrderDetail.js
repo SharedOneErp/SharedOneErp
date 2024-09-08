@@ -7,17 +7,21 @@ import '../../../resources/static/css/OrderDetail.css';
 
 function OrderDetail() {
     const [products, setProducts] = useState([{ name: '코딩용 정우 블랙 A', price: 5000000, quantity: 1 }]);
-    const [status] = useState('처리중'); // 결재 상태
     const [showModal, setShowModal] = useState(false); // 모달 창 상태
     const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태
+    const [searchCode, setSearchCode] = useState(''); // 상품코드 상태
     const [searchResults, setSearchResults] = useState([]); // 검색 결과 상태
-    const navigate = useNavigate();
 
     // 상품 변경
     const handleProductChange = (index, field, value) => {
         const updatedProducts = [...products];
         updatedProducts[index][field] = value;
         setProducts(updatedProducts);
+    };
+
+    // 상품코드 변경
+    const handleSearchCodeChange = (e) => {
+        setSearchCode(e.target.value);
     };
 
     // 상품 행 추가
@@ -42,21 +46,21 @@ function OrderDetail() {
 
     // 검색어 변경
     const handleSearchChange = (e) => {
-        const query = e.target.value;
-        setSearchQuery(query);
-        const filteredResults = products.filter(product =>
-            product.name.toLowerCase().includes(query.toLowerCase())
-        );
-        setSearchResults(filteredResults);
+        setSearchQuery(e.target.value);
     };
 
-    // 검색 버튼 클릭
-    const handleSearch = () => {
-        // 검색 결과 필터링
-        const filteredResults = products.filter(product =>
-            product.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        setSearchResults(filteredResults);
+    // 검색 버튼 클릭시 RestAPI 실행 후 SQL에서 값 받아올 수 있도록 설정 , INPUT값 2중 1이 NULL 일때도 값 받아올 수 있음.
+    //차후에 쿼리값 변경 필요할지도 모름.
+    const handleSearch = async () => {
+        try {
+            const response = await fetch(`http://localhost:8787/api/products/search?productCd=${searchCode}&productNm=${searchQuery}`);
+            if (!response.ok) throw new Error('RESPONSE.OK ERROR "응답이 올바르지 않습니다."');
+            const data = await response.json();
+            setSearchResults(data);
+        } catch (error) {
+            console.error('검색 값이 없습니다.', error);
+            setSearchResults([]); // 오류 발생 시 빈 결과로 설정
+        }
     };
 
     // 수정 버튼 클릭
@@ -67,6 +71,15 @@ function OrderDetail() {
     // 닫기 버튼 클릭
     const handleCloseClick = () => {
         window.location.href = '/orderListAll';
+    };
+
+    // 상품 선택 시 처리 함수
+    const handleProductSelect = (selectedProduct) => {
+        // 모달을 닫고 선택한 상품 정보를 입력 필드에 반영
+        const updatedProducts = [...products];
+        updatedProducts[0] = selectedProduct; // 첫 번째 상품을 선택한 것으로 가정
+        setProducts(updatedProducts);
+        closeModal();
     };
 
     return (
@@ -168,24 +181,74 @@ function OrderDetail() {
                 {showModal && (
                     <div className="modal">
                         <div className="modal-content">
-                            <div>
+                            <div className="modal-header">
                                 <h4>상품 검색</h4>
+                                <button className="close-modal" onClick={closeModal}>&times;</button>
+                            </div>
+
+                            <div className="category-selectors">
+                            <select>
+                                    <option value="">대분류</option>
+                                    <option value="furniture">가구</option>
+                                </select>
+
+                                <select>
+                                    <option value="">중분류</option>
+                                    <option value="chair">의자</option>
+                                    <option value="table">테이블</option>
+                                </select>
+
+                                <select>
+                                    <option value="">소분류</option>
+                                    <option value="office-chair">사무용 의자</option>
+                                    <option value="dining-chair">식탁 의자</option>
+                                </select>
+                            </div>
+
+                            {/*검색 div (상품명 / 상품코드 / 검색)*/}
+                            <div className="search-fields">
                                 <input
                                     type="text"
-                                    placeholder="상품명 검색"
+                                    placeholder="상품명"
                                     value={searchQuery}
                                     onChange={handleSearchChange}
                                 />
+                                <input
+                                    type="text"
+                                    placeholder="상품코드"
+                                    value={searchCode}
+                                    onChange={handleSearchCodeChange}
+                                />
                                 <button className="search-modal" onClick={handleSearch}>검색</button>
-                                <button className="close-modal" onClick={closeModal}>닫기</button>
                             </div>
+
+                            {/* 검색 결과 */}
                             <div className="search-results">
-                            {searchResults.length > 0 ? (
-                                    searchResults.map((result, index) => (
-                                        <div key={index} className="search-item">
-                                            {result.name} - {result.price} - {result.quantity}
-                                        </div>
-                                    ))
+                                {searchResults.length > 0 ? (
+                                    <table className="search-results-table">
+                                        <thead>
+                                        <tr>
+                                            <th>상품코드</th>
+                                            <th>카테고리</th>
+                                            <th>상품명</th>
+                                            <th>가격</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {searchResults.map((result, index) => (
+                                            <tr key={index} onClick={() => handleProductSelect(result)}>
+                                                <td>{result.productCd}</td> 
+                                                {/*상품코드 (임시)*/}
+                                                <td>{result.categoryNo}</td> 
+                                                {/*카테고리코드 (임시)*/}
+                                                <td>{result.productNm}</td> 
+                                                {/*상품 이름*/}
+                                                {/*<td>{result.price}</td> */}
+                                                {/*가격 (받아올 수 없으므로 주석)*/}
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </table>
                                 ) : (
                                     <div>검색 결과가 없습니다.</div>
                                 )}
@@ -211,8 +274,6 @@ function OrderDetail() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <OrderDetail />
+        <OrderDetail/>
     </BrowserRouter>
 );
-
-export default OrderDetail;
