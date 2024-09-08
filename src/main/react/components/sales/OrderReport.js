@@ -62,9 +62,9 @@ function OrderReport() {
                         </select>
 
                         <div className='date-form'>
-                            <input type='date' className='date-input' />
+                            <input type='date' className='date-input' value='2024-01-01' />
                             <p>~</p>
-                            <input type='date' className='date-input' />
+                            <input type='date' className='date-input' value='2024-12-31' />
                         </div>
                     </div>
                 </div>
@@ -86,7 +86,7 @@ function OrderReport() {
                             <tr>
                                 <th>품목코드</th>
                                 <td></td>
-                                <th></th>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -94,8 +94,8 @@ function OrderReport() {
                             </tr>
                             <tr>
                                 <th>품목명</th>
-                                <th></th>
-                                <th></th>
+                                <td></td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -103,8 +103,8 @@ function OrderReport() {
                             </tr>
                             <tr>
                                 <th>팀명</th>
-                                <th></th>
-                                <th></th>
+                                <td></td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -112,8 +112,8 @@ function OrderReport() {
                             </tr>
                             <tr>
                                 <th>담당자</th>
-                                <th></th>
-                                <th></th>
+                                <td></td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -121,8 +121,8 @@ function OrderReport() {
                             </tr>
                             <tr>
                                 <th>영업매출</th>
-                                <th></th>
-                                <th></th>
+                                <td></td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
