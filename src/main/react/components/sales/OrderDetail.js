@@ -4,7 +4,7 @@ import '../../Main.css';
 import Layout from "../../layout/Layout";
 import { BrowserRouter, useNavigate } from "react-router-dom";
 import '../../../resources/static/css/OrderDetail.css';
-
+// 백업용 js 화면입니다 (사용하지 않음)
 function OrderDetail() {
     const [products, setProducts] = useState([{ name: '코딩용 정우 블랙 A', price: 5000000, quantity: 1 }]);
     const [showModal, setShowModal] = useState(false); // 모달 창 상태
@@ -237,11 +237,11 @@ function OrderDetail() {
                                         <tbody>
                                         {searchResults.map((result, index) => (
                                             <tr key={index} onClick={() => handleProductSelect(result)}>
-                                                <td>{result.productCd}</td> 
+                                                <td>{result.productCd}</td>
                                                 {/*상품코드 (임시)*/}
-                                                <td>{result.categoryNo}</td> 
+                                                <td>{result.categoryNo}</td>
                                                 {/*카테고리코드 (임시)*/}
-                                                <td>{result.productNm}</td> 
+                                                <td>{result.productNm}</td>
                                                 {/*상품 이름*/}
                                                 {/*<td>{result.price}</td> */}
                                                 {/*가격 (받아올 수 없으므로 주석)*/}
