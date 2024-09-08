@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import '../../resources/static/css/Sidebar.css';
 import {useLocation} from "react-router-dom"; // 스타일을 위한 CSS 파일
 
-function Sidebar({ currentMenu }) {
+function Sidebar({currentMenu}) {
     const [activeMenu, setActiveMenu] = useState(() => localStorage.getItem('activeMenu') || null);
     //     로컬 스토리지에서 getItem으로 activeMenu 값을 가져와요 (sidemenu 값 저장)
     const [activeSubMenu, setActiveSubMenu] = useState(() => {  // 서브 메뉴에 대한 useState
@@ -43,8 +43,6 @@ function Sidebar({ currentMenu }) {
             localStorage.removeItem('activeMenu'); //activemenu값 삭제
         }
     }, [location.pathname]);
-
-
 
 
     // 사용자 정보를 서버에서 가져오는 useEffect ((info 세션))
@@ -102,92 +100,86 @@ function Sidebar({ currentMenu }) {
                 </div>
             </div>
             <ul className="menu">
-                <li className={activeMenu === 'hr' ? 'active' : ''}>
-                    <a href="#" onClick={(e) => { e.preventDefault(); handleMenuClick('hr')}}
-                       className={activeMenu === 'hr' ? 'active' : ''}>인사관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
-                        <ul className="submenu">
-                            <li className={activeSubMenu === 'newHireManagement' ? 'active' : ''}>
-                                <a href="#"
-                                   onClick={() => handleSubMenuClick('newHireManagement', '/newHireManagement')}>신입
-                                    관리</a>
-                            </li>
-                            <li className={activeSubMenu === 'mentorManagement' ? 'active' : ''}>
-                                <a href="#" onClick={() => handleSubMenuClick('mentorManagement', '/mentorManagement')}>사수
-                                    관리</a>
-                            </li>
-                            <li className={activeSubMenu === 'salarySetting' ? 'active' : ''}>
-                                <a href="#" onClick={() => handleSubMenuClick('salarySetting', '/salarySetting')}>연봉
-                                    책정</a>
-                            </li>
-                            {/* 필요한 만큼 추가 */}
-                        </ul>
-                </li>
                 <li className={activeMenu === 'sales' ? 'active' : ''}>
-                    <a href="#" onClick={(e) => { e.preventDefault(); handleMenuClick('sales')}}
-                        className={activeMenu === 'sales' ? 'active' : ''}>영업관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
-                        <ul className="submenu">
-                            <li className={activeSubMenu === 'order' ? 'active' : ''}>
-                                <a href="#" onClick={() => handleSubMenuClick('order', '/order')}>주문
-                                    등록</a>
-                            </li>
-                            <li className={activeSubMenu === 'orderListAll' ? 'active' : ''}>
-                                <a href="#" onClick={() => handleSubMenuClick('orderListAll', '/orderListAll')}>전체 주문
-                                    목록</a>
-                            </li>
-                            <li className={activeSubMenu === 'orderListAssigned' ? 'active' : ''}>
-                                <a href="#"
-                                   onClick={() => handleSubMenuClick('orderListAssigned', '/orderListAssigned')}>담당 주문
-                                    목록</a>
-                            </li>
-                            <li className={activeSubMenu === 'orderRegisterApproval' ? 'active' : ''}>
-                                <a href="#"
-                                   onClick={() => handleSubMenuClick('orderRegisterApproval', '/orderRegisterApproval')}>주문
-                                    등록 승인</a>
-                            </li>
-                            <li className={activeSubMenu === 'orderReport' ? 'active' : ''}>
-                                <a href="#" onClick={() => handleSubMenuClick('orderReport', '/orderReport')}>영업 실적
-                                    보고서</a>
-                            </li>
-                        </ul>
-                </li>
-                <li className={activeMenu === 'customer' ? 'active' : ''}>
-                    <a href="#" onClick={(e) => { e.preventDefault(); handleMenuClick('customer')}}
-                        className={activeMenu === 'customer' ? 'active' : ''}>고객관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
-                        <ul className="submenu">
-                            <li className={activeSubMenu === 'customerManagement' ? 'active' : ''}>
-                                <a href="#"
-                                   onClick={() => handleSubMenuClick('customerManagement', '/customerManagement')}>고객관리</a>
-                            </li>
-                            <li className={activeSubMenu === 'customerRequest' ? 'active' : ''}>
-                                <a href="#"
-                                   onClick={() => handleSubMenuClick('customerRequest', '/customerRequest')}>고객요청</a>
-                            </li>
-                            {/* 필요한 만큼 추가 */}
-                        </ul>
+                    <a href="#" onClick={(e) => {
+                        e.preventDefault();
+                        handleMenuClick('sales')
+                    }}
+                       className={activeMenu === 'sales' ? 'active' : ''}>영업관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
+                    <ul className="submenu">
+                        <li className={activeSubMenu === 'order' ? 'active' : ''}>
+                            <a href="#" onClick={() => handleSubMenuClick('order', '/order')}>주문 등록</a>
+                        </li>
+                        <li className={activeSubMenu === 'orderList' && currentMenu === 'orderList_admin' ? 'active' : ''}>
+                            <a href="#" onClick={() => handleSubMenuClick('orderList', '/orderList?role=admin')}>전체 주문 목록</a>
+                        </li>
+                        <li className={activeSubMenu === 'orderList' && currentMenu != 'orderList_admin' ? 'active' : ''}>
+                            <a href="#"
+                               onClick={() => handleSubMenuClick('orderList', '/orderList?role=staff')}>담당 주문 목록</a>
+                        </li>
+                        <li className={activeSubMenu === 'orderRegisterApproval' ? 'active' : ''}>
+                            <a href="#"
+                               onClick={() => handleSubMenuClick('orderRegisterApproval', '/orderRegisterApproval')}>주문 등록 승인</a>
+                        </li>
+                        <li className={activeSubMenu === 'orderReport' ? 'active' : ''}>
+                            <a href="#" onClick={() => handleSubMenuClick('orderReport', '/orderReport')}>영업 실적 보고서</a>
+                        </li>
+                    </ul>
                 </li>
                 <li className={activeMenu === 'product' ? 'active' : ''}>
-                    <a href="#" onClick={(e) => { e.preventDefault(); handleMenuClick('product')}}
-                        className={activeMenu === 'product' ? 'active' : ''}>상품관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
-                        <ul className="submenu">
-                            <li className={activeSubMenu === 'productList' ? 'active' : ''}>
-                                <a href="#" onClick={() => handleSubMenuClick('productList', '/productList')}>전체 상품
-                                    목록</a>
-                            </li>
-                            <li className={activeSubMenu === 'itemManagement' ? 'active' : ''}>
-                                <a href="#" onClick={() => handleSubMenuClick('itemManagement', '/itemManagement')}>품목
-                                    관리</a>
-                            </li>
-                            <li className={activeSubMenu === 'inventoryManagement' ? 'active' : ''}>
-                                <a href="#"
-                                   onClick={() => handleSubMenuClick('inventoryManagement', '/inventoryManagement')}>상품
-                                    재고 관리</a>
-                            </li>
-                            <li className={activeSubMenu === 'priceManagement' ? 'active' : ''}>
-                                <a href="#" onClick={() => handleSubMenuClick('priceManagement', '/priceManagement')}>상품
-                                    가격 관리</a>
-                            </li>
-                            {/* 필요한 만큼 추가 */}
-                        </ul>
+                    <a href="#" onClick={(e) => {
+                        e.preventDefault();
+                        handleMenuClick('product')
+                    }}
+                       className={activeMenu === 'product' ? 'active' : ''}>상품관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
+                    <ul className="submenu">
+                        <li className={activeSubMenu === 'productList' ? 'active' : ''}>
+                            <a href="#" onClick={() => handleSubMenuClick('productList', '/productList')}>전체 상품 목록</a>
+                        </li>
+                        <li className={activeSubMenu === 'product' ? 'active' : ''}>
+                            <a href="#" onClick={() => handleSubMenuClick('product', '/product')}>상품 등록</a>
+                        </li>
+                        <li className={activeSubMenu === 'ProductPrice' ? 'active' : ''}>
+                            <a href="#"
+                               onClick={() => handleSubMenuClick('ProductPrice', '/ProductPrice')}>상품 가격 관리</a>
+                        </li>
+                        <li className={activeSubMenu === 'ProductCategory' ? 'active' : ''}>
+                            <a href="#" onClick={() => handleSubMenuClick('ProductCategory', '/ProductCategory')}>상품 카테고리 관리</a>
+                        </li>
+                    </ul>
+                </li>
+                <li className={activeMenu === 'customer' ? 'active' : ''}>
+                    <a href="#" onClick={(e) => {
+                        e.preventDefault();
+                        handleMenuClick('customer')
+                    }}
+                       className={activeMenu === 'customer' ? 'active' : ''}>고객관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
+                    <ul className="submenu">
+                        <li className={activeSubMenu === 'CustomerList' ? 'active' : ''}>
+                            <a href="#"
+                               onClick={() => handleSubMenuClick('CustomerList', '/CustomerList')}>고객사 목록</a>
+                        </li>
+                        <li className={activeSubMenu === 'Customer' ? 'active' : ''}>
+                            <a href="#"
+                               onClick={() => handleSubMenuClick('Customer', '/Customer')}>고객사 등록</a>
+                        </li>
+                    </ul>
+                </li>
+                <li className={activeMenu === 'hr' ? 'active' : ''}>
+                    <a href="#" onClick={(e) => {
+                        e.preventDefault();
+                        handleMenuClick('hr')
+                    }}
+                       className={activeMenu === 'hr' ? 'active' : ''}>인사관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
+                    <ul className="submenu">
+                        <li className={activeSubMenu === 'EmployeeList' ? 'active' : ''}>
+                            <a href="#"
+                               onClick={() => handleSubMenuClick('EmployeeList', '/EmployeeList')}>직원 목록</a>
+                        </li>
+                        <li className={activeSubMenu === 'Employee' ? 'active' : ''}>
+                            <a href="#" onClick={() => handleSubMenuClick('Employee', '/Employee')}>직원 등록</a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </aside>

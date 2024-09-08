@@ -1,34 +1,56 @@
 var path = require('path');
 const webpack = require('webpack');
 
+// 경로 변수 정의
+const salesPath = './components/sales/';
+const productPath = './components/product/';
+const customerPath = './components/customer/';
+const hrPath = './components/hr/';
+
 module.exports = {
     context: path.resolve(__dirname, 'src/main/react'), // 기본 디렉토리 설정
     entry: {
-        main: './components/Main.js', // 엔트리 포인트 설정
-        order:'./components/sales/Order.js', // 주문 등록or상세or수정
-        orderListAll:'./components/sales/OrderListAll.js',
-        orderListAssigned : './components/sales/OrderListAssigned.js',
-        orderRegister : './components/sales/OrderRegister.js',
-        orderDetail:'./components/sales/OrderDetail.js',
-        orderRegisterApproval: './components/sales/OrderRegisterApproval.js',
-        orderRegisterApprovalDetail: './components/sales/OrderRegisterApprovalDetail.js',
-        orderReport : './components/sales/OrderReport.js',
-        login : './components/auth/Login.js',
-        productList : './components/product/ProductList.js',
-        productDetail : './components/product/ProductDetail.js',
+        login: './components/auth/Login.js', // 로그인
+        main: './components/Main.js', // 메인 대시보드
+
+        // Sales 관련 엔트리 포인트
+        order: `${salesPath}Order.js`, // 주문 등록or상세or수정
+        orderRegister: `${salesPath}OrderRegister.js`, // 주문 등록
+        orderDetail: `${salesPath}OrderDetail.js`, // 주문 상세
+        orderList: `${salesPath}OrderList.js`, // 전체/담당 주문 목록
+        orderListAll: `${salesPath}OrderListAll.js`, // 전체 주문 목록
+        orderListAssigned: `${salesPath}OrderListAssigned.js`, // 담당 주문 목록
+        orderRegisterApproval: `${salesPath}OrderRegisterApproval.js`, // 주문 등록 승인
+        orderRegisterApprovalDetail: `${salesPath}OrderRegisterApprovalDetail.js`, // 주문 등록 승인 상세
+        orderReport: `${salesPath}OrderReport.js`, // 영업실적 보고서
+
+        // Product 관련 엔트리 포인트
+        productList: `${productPath}ProductList.js`, // 상품 목록
+        productDetail: `${productPath}ProductDetail.js`, // 상품 상세
+        product: `${productPath}Product.js`, // 상품 등록or상세or수정
+        productPrice: `${productPath}ProductPrice.js`, // 고객사별 상품 가격 관리(목록/등록/수정)
+        productCategory: `${productPath}ProductCategory.js`, // 상품 카테고리 관리(목록/등록/수정)
+
+        // Customer 관련 엔트리 포인트
+        customerList: `${customerPath}CustomerList.js`, // 고객사 목록
+        customer: `${customerPath}Customer.js`, // 고객사 등록or상세or수정
+
+        // HR 관련 엔트리 포인트
+        employeeList: `${hrPath}EmployeeList.js`, // 직원 목록
+        employee: `${hrPath}Employee.js`, // 직원 등록or상세or수정
     },
     devtool: 'sourcemaps', // 소스 맵 생성 설정
     cache: true, // 캐싱 활성화
     output: {
         path: path.resolve(__dirname, 'src/main/resources/static/bundle'), // 출력 경로 설정
-        filename: '[name].bundle.js' // 번들 파일 이름
+        filename: '[name].bundle.js' // 번들 파일 이름 설정
     },
     mode: 'none', // Webpack 모드 설정 (none: 기본 설정)
     module: {
         rules: [
             {
-                test: /\.js?$/, // .js 파일에 대한 규칙
-                exclude: /(node_modules)/, // 제외할 디렉토리
+                test: /\.js?$/, // .js 파일 처리
+                exclude: /(node_modules)/, // node_modules 제외
                 use: {
                     loader: 'babel-loader', // Babel 로더 사용
                     options: {
@@ -37,16 +59,16 @@ module.exports = {
                 }
             },
             {
-                test: /\.css$/, // .css 파일에 대한 규칙
-                use: ['style-loader', 'css-loader'] // CSS 처리 로더
+                test: /\.css$/, // .css 파일 처리
+                use: ['style-loader', 'css-loader'] // 스타일 및 CSS 로더 사용
             },
             {
-                test: /\.(png|jpg|jpeg|gif|svg)$/, // 이미지 파일에 대한 규칙
+                test: /\.(png|jpg|jpeg|gif|svg)$/, // 이미지 파일 처리
                 use: [
                     {
                         loader: 'file-loader',
                         options: {
-                            name: '[path][name].[ext]', // 파일 이름 설정
+                            name: '[path][name].[ext]', // 파일 이름 및 경로 설정
                             context: 'src/main/react', // 소스 경로 설정
                         },
                     },
