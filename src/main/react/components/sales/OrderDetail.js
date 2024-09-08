@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴포넌트를 DOM에 렌더링
-import { BrowserRouter, useNavigate } from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
+import {BrowserRouter} from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
 import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
-import '../../../resources/static/css/sales/OrderDetail.css'; // 개별 CSS 스타일 적용
-
+import '../../../resources/static/css/sales/OrderDetail.css';
+// 백업용 js 화면입니다 (사용하지 않음)
 function OrderDetail() {
     const [products, setProducts] = useState([{ name: '코딩용 정우 블랙 A', price: 5000000, quantity: 1 }]);
     const [showModal, setShowModal] = useState(false); // 모달 창 상태
@@ -119,7 +119,7 @@ function OrderDetail() {
                     </div>
 
                     <div className="form-group">
-                    <label>주문 상태</label>
+                        <label>주문 상태</label>
                         <span type="text"> 처리중 </span>
                     </div>
                 </div>
@@ -186,7 +186,7 @@ function OrderDetail() {
                             </div>
 
                             <div className="category-selectors">
-                            <select>
+                                <select>
                                     <option value="">대분류</option>
                                     <option value="furniture">가구</option>
                                 </select>
@@ -236,11 +236,11 @@ function OrderDetail() {
                                         <tbody>
                                         {searchResults.map((result, index) => (
                                             <tr key={index} onClick={() => handleProductSelect(result)}>
-                                                <td>{result.productCd}</td> 
+                                                <td>{result.productCd}</td>
                                                 {/*상품코드 (임시)*/}
-                                                <td>{result.categoryNo}</td> 
+                                                <td>{result.categoryNo}</td>
                                                 {/*카테고리코드 (임시)*/}
-                                                <td>{result.productNm}</td> 
+                                                <td>{result.productNm}</td>
                                                 {/*상품 이름*/}
                                                 {/*<td>{result.price}</td> */}
                                                 {/*가격 (받아올 수 없으므로 주석)*/}
