@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom/client';
-import '../../Main.css';
-import Layout from "../../layout/Layout";
-import { BrowserRouter, useNavigate, useSearchParams } from "react-router-dom";
-import '../../../resources/static/css/OrderDetail.css';
+import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴포넌트를 DOM에 렌더링
+import { BrowserRouter, useNavigate, useSearchParams } from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
+import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
+import '../../../resources/static/css/sales/OrderDetail.css'; // 개별 CSS 스타일 적용
 
 function Order() {
     // 쿼리 파라미터에서 주문번호와 mode 추출 (등록/상세/수정 한 페이지에서 제어)

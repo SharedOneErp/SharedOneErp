@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import '../Main.css';
-import Layout from "../layout/Layout";
 import { BrowserRouter } from "react-router-dom";
+import Layout from "../layout/Layout";
+import '../../resources/static/css/Main.css';
 
 function Main() {
     return (

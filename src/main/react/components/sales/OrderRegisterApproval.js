@@ -1,9 +1,8 @@
-import React, {useState} from 'react'; //어느 컴포넌트이든 React임포트가 필요합니다.
-import ReactDOM from 'react-dom/client'; //root에 리액트 돔방식으로 렌더링시 필요합니다.
-import '../../Main.css' //css파일 임포트
-import Layout from "../../layout/Layout";
-import {BrowserRouter, Routes, Route} from "react-router-dom"; //css파일 임포트
-import '../../../resources/static/css/OrderRegisterApproval.css'; // CSS 모듈 임포트
+import React, {useState} from 'react';
+import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴포넌트를 DOM에 렌더링
+import {BrowserRouter, Routes, Route} from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
+import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
+import '../../../resources/static/css/sales/OrderRegisterApproval.css'; // 개별 CSS 스타일 적용
 
 function OrderRegisterApproval() {
 

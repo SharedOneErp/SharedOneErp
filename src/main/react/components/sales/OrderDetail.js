@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom/client';
-import '../../Main.css';
-import Layout from "../../layout/Layout";
-import { BrowserRouter, useNavigate } from "react-router-dom";
-import '../../../resources/static/css/OrderDetail.css';
+import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴포넌트를 DOM에 렌더링
+import { BrowserRouter, useNavigate } from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
+import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
+import '../../../resources/static/css/sales/OrderDetail.css'; // 개별 CSS 스타일 적용
 
 function OrderDetail() {
     const [products, setProducts] = useState([{ name: '코딩용 정우 블랙 A', price: 5000000, quantity: 1 }]);
