@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import '../../resources/static/css/Sidebar.css';
-import {useLocation} from "react-router-dom"; // 스타일을 위한 CSS 파일
+import {useLocation} from "react-router-dom";
 
 function Sidebar({currentMenu}) {
     const [activeMenu, setActiveMenu] = useState(() => localStorage.getItem('activeMenu') || null);
@@ -113,7 +113,7 @@ function Sidebar({currentMenu}) {
                         <li className={activeSubMenu === 'orderList' && currentMenu === 'orderList_admin' ? 'active' : ''}>
                             <a href="#" onClick={() => handleSubMenuClick('orderList', '/orderList?role=admin')}>전체 주문 목록</a>
                         </li>
-                        <li className={activeSubMenu === 'orderList' && currentMenu != 'orderList_admin' ? 'active' : ''}>
+                        <li className={activeSubMenu === 'orderList' && (currentMenu === 'orderList_staff' || currentMenu === 'orderList_manager') ? 'active' : ''}>
                             <a href="#"
                                onClick={() => handleSubMenuClick('orderList', '/orderList?role=staff')}>담당 주문 목록</a>
                         </li>
