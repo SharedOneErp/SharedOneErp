@@ -13,7 +13,7 @@ header {
     align-items: center;
     max-width: 1800px;
     margin: 0 auto;
-    margin-left: 50px;
+    margin-left: 38px;
     margin-right: 50px;
 }
 
@@ -37,8 +37,9 @@ header {
 }
 
 .profile {
-    align-items: center;
-    gap: 15px;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
 }
 
 .profile-pic {
@@ -54,11 +55,9 @@ header {
 }
 
 .profile-username {
-    font-size: 16px;
     font-weight: 500;
     transition: color 0.3s ease;
-    margin-top: 5px;
-    font-size: 15px;
+    font-size: 0.8rem;
 }
 
 .username:hover {

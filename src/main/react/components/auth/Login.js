@@ -49,22 +49,22 @@ function Login() {
                 </div>
                 <form className="login-form" onSubmit={handleLogin}>
                     <div className="input-group">
-                        <label htmlFor="id">ID</label>
+                        <label htmlFor="id">아이디</label>
                         <input
                             type="text"
                             id="id"
-                            placeholder="아이디를 입력하세요"
+                            placeholder="아이디를 입력하세요."
                             value={id}
                             onChange={(e) => setId(e.target.value)}
                             required
                         />
                     </div>
                     <div className="input-group">
-                        <label htmlFor="pw">PW</label>
+                        <label htmlFor="pw">비밀번호</label>
                         <input
                             type="password"
                             id="pw"
-                            placeholder="비밀번호를 입력하세요"
+                            placeholder="비밀번호를 입력하세요."
                             value={pw}
                             onChange={(e) => setPw(e.target.value)}
                             required
@@ -76,8 +76,7 @@ function Login() {
                     <button type="submit" className="login-btn">로그인</button>
                 </form>
                 <div className="login-footer">
-                    <a href="#"> 비밀번호 초기화 </a> |
-                    <a href="#"> 2단계 인증 안내 </a>
+                    <a href="#">비밀번호 초기화</a> | <a href="#">2단계 인증 안내</a>
                     <p>본 시스템은 IKEA의 자산으로 인가된 사용자만 접근 가능합니다.</p>
                     <p>COPYRIGHT © IKEA. ALL RIGHTS RESERVED.</p>
                 </div>

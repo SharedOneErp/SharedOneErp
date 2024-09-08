@@ -2,7 +2,7 @@
     width: 250px;
     background-color: #ffffff;
     padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /*box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);*/
     border-right: 1px solid #e1e1e1;
 }
 
@@ -13,7 +13,7 @@
 }
 
 .user-info {
-    height: 130px;
+    /*height: 130px;*/
     border: 1px solid #e1e1e1;
     border-radius: 8px;
     padding: 15px;
@@ -70,10 +70,19 @@
     transition: background-color 0.3s ease;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     margin-bottom: 10px;
+    position: relative; /* 내부에 화살표 아이콘 */
 }
 
 .menu a:hover {
     background-color: #e0e4e9;
+    background-color: #ffdb0036; /* 이케아 노란색 */
+}
+
+/* 아이콘 스타일 */
+.menu a span.menu-icon {
+    position: absolute;
+    right: 11px;
+    transition: transform 0.3s ease;
 }
 
 /* 활성 상태 메뉴 항목 */
@@ -87,8 +96,11 @@
     list-style: none;
     padding-left: 20px;
     margin: 0;
-    display: none; /* 서브메뉴 기본적으로 숨김 */
     border-left: 1px solid #e1e1e1; /* 서브메뉴의 왼쪽 경계선 추가 */
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, max-height 0.3s ease;
 }
 
 .submenu li {
@@ -106,18 +118,25 @@
 }
 
 .submenu a:hover {
-    background-color: #d0d6dd;
+    background-color: #daeaed;
+    background-color: #ffdb0036; /* 이케아 노란색 */
 }
 
 /* 활성 상태 서브메뉴 항목 */
 .submenu li.active > a {
     background-color: rgba(25, 142, 245, 0.9);
+    background-color: #007CC1; /* 버튼 색상과 동일하게 */
     color: #ffffff;
 }
 
 /* 활성화된 메뉴 항목의 서브메뉴 표시 */
 .menu > li.active .submenu {
-    display: block; /* 활성화된 메뉴의 서브메뉴 표시 */
+    opacity: 1;
+    max-height: 290px; /* 서브메뉴 개수에 따라 조정 */
+}
+
+.menu > li.active a span.menu-icon {
+    transform: rotate(180deg); /* 메뉴가 열릴 때 아이콘 회전 */
 }
 
 @media screen and (max-width: 768px) {

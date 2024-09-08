@@ -6,7 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 
 function Main() {
     return (
-        <Layout>
+        <Layout currentMenu="main">
             <div className="dashboard-container">
                 <div className="card card-large">
                     <h3>인사 관리</h3>

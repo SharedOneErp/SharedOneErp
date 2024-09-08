@@ -88,6 +88,7 @@
 
 .bottom-container .approval-list tbody tr:hover {
     background-color: rgba(255, 237, 112, 0.75);
+    background-color: #ffdb0036; /* 이케아 노란색 */
 }
 
 .bottom-container .approval-list .approval-list-content {

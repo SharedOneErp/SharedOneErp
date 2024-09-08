@@ -3,24 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>[[${pageName}]]</title>
-
-    <link rel="icon" th:href="@{/img/favicon.ico}" />
-
+    <link rel="icon" th:href="@{/img/favicon.ico}"/>
+    <!-- 부트스트랩 아이콘 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 
-<!--<div th:if="${session.user != null}" id="root"></div>-->
-<!--<div th:unless="${session.user != null}">-->
-<!--    <script>-->
-<!--        location.href='/login';-->
-<!--    </script>-->
-<!--</div>-->
-<!--<script th:src="@{'/bundle/' + ${pageName} + '.bundle.js'}"></script>-->
-<!-- 로그인 페이지 세션 검증하는 코드임 ! 실제 배포시 아래 코드 두줄 삭제 후 운영 바람 -- 정우-->
+    <!--<div th:if="${session.user != null}" id="root"></div>-->
+    <!--<div th:unless="${session.user != null}">-->
+    <!--    <script>-->
+    <!--        location.href='/login';-->
+    <!--    </script>-->
+    <!--</div>-->
+    <!--<script th:src="@{'/bundle/' + ${pageName} + '.bundle.js'}"></script>-->
+    <!-- 로그인 페이지 세션 검증하는 코드임 ! 실제 배포시 아래 코드 두줄 삭제 후 운영 바람 -- 정우-->
 
-<div id="root"></div>
-<script th:src="@{'/bundle/'+${pageName}+'.bundle.js'}"></script>
-
+    <div id="root"></div>
+    <script th:src="@{'/bundle/'+${pageName}+'.bundle.js'}"></script>
 
 </body>
 </html>
@@ -39,7 +38,6 @@
 <!--    [[${session.user}]]-->
 <!--    <div id="root" th:if="${session.user != null}"></div>-->
 <!--    <div th:unless="${session.user != null}">접근불가능합니다</div>-->
-
 
 <!--    <script th:src="@{'/bundle/' + ${pageName} + '.bundle.js'}"></script>-->
 
