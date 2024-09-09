@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -47,8 +48,8 @@ public class Employee {
 
     // 하나의 직원이 여러 개의 주문을 가질 수 있따
     @ToString.Exclude
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderHead> orderHeads;
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    private List<Order> order;
 
     @PrePersist
     protected void onCreate() {
