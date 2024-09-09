@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴포넌트를 DOM에 렌더링
 import { BrowserRouter } from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
 import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
 import '../../../resources/static/css/sales/OrderReport.css'; // 개별 CSS 스타일 적용
+import axios from 'axios';
 
 
 
@@ -20,6 +21,21 @@ const Category = ({ label, option }) => {
 }
 
 function OrderReport() {
+
+    // const [topCategory, setTopCategory] = useState([]);
+    // const [middleCategory, setMiddleCategory] = useState([]);
+    // const [lowCategory, setLowCategory] = useState([]);
+    // const [selectedTopCategory, setSelectedTopCategory] = useState(null);
+    // const [selectedMiddleCategory, setSelectedMiddleCategory] = useState(null);
+    
+    // useEffect(() => {
+    //     axios.get('/api/category/top')
+    //     .then(response => {
+    //         console.log(response.data);
+            
+    //     })
+    // },[]);
+
 
     return (
         <Layout currentMenu="orderReport">

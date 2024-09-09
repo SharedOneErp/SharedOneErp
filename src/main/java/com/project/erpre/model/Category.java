@@ -10,6 +10,9 @@ import java.util.List;
 @Entity
 @Table(name = "m_category")
 @Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Category {

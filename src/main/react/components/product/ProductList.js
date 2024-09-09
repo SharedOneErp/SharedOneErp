@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴포넌트를 DOM에 렌더링
-import {BrowserRouter, Routes, Route} from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
+import {BrowserRouter, Routes, Route, Link} from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
 import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
 import '../../../resources/static/css/product/ProductList.css'; // 개별 CSS 스타일 적용
 
@@ -66,6 +66,7 @@ function ProductList() {
                 <table className="approval-list">
                     <thead>
                     <tr>
+                        <th><input type="checkbox"/></th>
                         <th>상품번호</th>
                         <th>상품명</th>
                         <th>대분류</th>
@@ -77,18 +78,19 @@ function ProductList() {
                     </tr>
                     </thead>
                     <tbody className="approval-list-content">
-                        {products.map((product, index) => (
-                            <tr key={product.Id}>
-                                <td>{product.productCd}</td>
-                                <td>{product.productNm}</td>
-                                <td>{product.category?.categoryNo}</td>
-                                <td>{product.category?.categoryNo}</td>
-                                <td>{product.category?.categoryNo}</td>
-                                <td>{formatDate(product.productInsertDate)}</td>
-                                <td>{formatDate(product.productInsertDate)}</td>
-                                <td><a href={`/productDetail?no=${product.productCd}`}>상세보기</a></td>
-                            </tr>
-                        ))}
+                    {products.map((product, index) => (
+                        <tr key={product.Id}>
+                            <td><input type="checkbox"/></td>
+                            <td>{product.productCd}</td>
+                            <td>{product.productNm}</td>
+                            <td>{product.category?.categoryNo}</td>
+                            <td>{product.category?.categoryNo}</td>
+                            <td>{product.category?.categoryNo}</td>
+                            <td>{formatDate(product.productInsertDate)}</td>
+                            <td>{formatDate(product.productInsertDate)}</td>
+                            <td><a href={`/productDetail?no=${product.productCd}`}>상세보기</a></td>
+                        </tr>
+                    ))}
                     </tbody>
                 </table>
                 <div className="approval-page">
@@ -97,6 +99,12 @@ function ProductList() {
                     <button className="approval-page3">3</button>
                     <button className="approval-page4">4</button>
                     <button className="approval-page5">5</button>
+                </div>
+
+                <div className="button-container">
+                    <button className="filter-button">수정</button>
+                    <button className="filter-button">삭제</button>
+                    <button className="filter-button" onClick={() => window.location.href = '/product'}>등록</button>
                 </div>
             </div>
 

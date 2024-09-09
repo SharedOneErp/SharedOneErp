@@ -3,12 +3,14 @@ import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴�
 import {BrowserRouter, Routes, Route, useSearchParams} from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
 import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
 import '../../../resources/static/css/product/ProductPrice.css'; // 개별 CSS 스타일 적용
+import { formatDate } from '../../util/dateUtils'
+import axios from 'axios';
 
 // 컴포넌트(고객사별 상품 가격 관리)
 function ProductPrice() {
 
     // useState
-    const [priceList, setPriceList] = useState(''); // 가격 목록
+    const [priceList, setPriceList] = useState([]); // 가격 목록 초기값을 빈 배열로 설정
 
     // useEffect
     useEffect(() => {
@@ -17,12 +19,11 @@ function ProductPrice() {
 
     const fetchList = async () => {
         try {
-            const response = await fetch(`http://localhost:8787/api/price/getList`);
-            if (!response.ok) throw new Error('데이터를 가져올 수 없습니다.');
-            const data = await response.json();
-            //setPriceList(data);
+            //const response = await axios.get('/api/price/getList'); // axios는 자동으로 JSON 파싱
+            const response = await axios.get('http://localhost:8787/api/price/getList'); // 서버 포트 명시
+            setPriceList(response.data);
         } catch (error) {
-            console.error('정보를 가져오는 중 오류가 발생했습니다.', error);
+            console.error('가격 정보를 가져오는 중 오류가 발생했습니다.', error);
         }
     };
 
@@ -67,7 +68,7 @@ function ProductPrice() {
                             {/*        <td>{m_price.price_customer}</td>*/}
                             {/*        <td>{m_price.price_start_date} ~ {m_price.price_end_date}</td>*/}
                             {/*        <td>{m_price.price_insert_date}</td>*/}
-                            {/*        <td>{m_price.price_update_date}</td>*/}
+                            {/*        <td>{formatDate(m_price.price_update_date)}</td>*/}
                             {/*    </tr>*/}
                             {/*))}*/}
                             </tbody>
