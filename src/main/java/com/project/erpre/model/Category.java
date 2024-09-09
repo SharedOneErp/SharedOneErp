@@ -19,7 +19,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_no")
-    private Long categoryNo;
+    private Integer categoryNo;
 
     @Column(name = "category_level", nullable = false)
     private Integer categoryLevel;
