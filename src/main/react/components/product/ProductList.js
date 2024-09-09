@@ -81,12 +81,12 @@ function ProductList() {
                             <tr key={product.Id}>
                                 <td>{product.productCd}</td>
                                 <td>{product.productNm}</td>
-                                <td>{product.categoryNo}</td>
-                                <td></td>
-                                <td></td>
+                                <td>{product.category?.categoryNo}</td>
+                                <td>{product.category?.categoryNo}</td>
+                                <td>{product.category?.categoryNo}</td>
                                 <td>{formatDate(product.productInsertDate)}</td>
                                 <td>{formatDate(product.productInsertDate)}</td>
-                                <td><a href="/productDetail">상세보기</a></td>
+                                <td><a href={`/productDetail?no=${product.productCd}`}>상세보기</a></td>
                             </tr>
                         ))}
                     </tbody>

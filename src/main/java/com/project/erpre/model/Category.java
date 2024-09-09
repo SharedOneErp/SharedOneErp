@@ -1,5 +1,6 @@
 package com.project.erpre.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -38,6 +39,7 @@ public class Category {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<Product> products;
 
 }
