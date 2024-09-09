@@ -1,5 +1,6 @@
 package com.project.erpre.controller;
 
+import com.project.erpre.model.Category;
 import com.project.erpre.model.Product;
 import com.project.erpre.service.ProductService;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +20,9 @@ public class ProductController {
     @GetMapping("/search")
     public List<Product> searchProducts(
             @RequestParam(required = false) String productCd,
-            @RequestParam(required = false) Integer categoryNo,
+            @RequestParam(required = false) Category category,
             @RequestParam(required = false) String productNm
     ) {
-        return productService.searchProducts(productCd, categoryNo, productNm);
+        return productService.searchProducts(productCd, category, productNm);
     }
 }
