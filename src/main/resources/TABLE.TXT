@@ -1,18 +1,18 @@
 -- 1. 고객사
 create table m_customer (
 	customer_no	SERIAL	NOT NULL, --고객 번호
-	customer_name	VARCHAR(100)	NOT NULL, --고객 이름
-	customer_tel	VARCHAR(20)	NULL, --고객사 연락처
-	customer_representative_name	VARCHAR(50)	NULL, --대표자명
-	customer_business_reg_no	VARCHAR(20)	NOT NULL, --사업자 등록번호
+	customer_name	VARCHAR(30)	NOT NULL, --고객 이름
+	customer_tel	VARCHAR(50)	NULL, --고객사 연락처
+	customer_representative_name	VARCHAR(30)	NULL, --대표자명
+	customer_business_reg_no	VARCHAR(50)	NOT NULL, --사업자 등록번호
 	customer_addr	VARCHAR(200)	NULL, --사업장 주소
 	customer_fax_no	VARCHAR(50)	NULL, --팩스번호
 	customer_manager_name	VARCHAR(50)	NULL, --고객사 담당자명
 	customer_manager_email	VARCHAR(100)	NULL, --고객사 담당자 이메일
-	customer_manager_tel	VARCHAR(20)	NULL, --고객사 담당자 연락처
+	customer_manager_tel	VARCHAR(50)	NULL, --고객사 담당자 연락처
 	customer_country_code	VARCHAR(20)	NULL, --국가코드
-	customer_type	timestamp	NULL, --거래처분류
-	customer_e_tax_invoice_yn	VARCHAR(10)	NULL, --전자세금계산서 여부
+	customer_type	VARCHAR(20)	NULL, --거래처분류
+	customer_e_tax_invoice_yn	VARCHAR(20)	NULL, --전자세금계산서 여부
 	customer_transaction_start_date	timestamp	NULL, --거래시작일
 	customer_transaction_end_date	timestamp	NULL, --거래종료일
 	customer_insert_date	timestamp	NOT NULL	DEFAULT CURRENT_TIMESTAMP, --등록일시
