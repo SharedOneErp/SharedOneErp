@@ -1,10 +1,20 @@
-import React, {useState} from 'react';
+import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴포넌트를 DOM에 렌더링
-import {BrowserRouter, Routes, Route} from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
+import {BrowserRouter} from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
 import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
 import '../../../resources/static/css/product/ProductList.css'; // 개별 CSS 스타일 적용
 
 function ProductList() {
+
+    // 상품 목록 저장 state
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        fetch('/api/products/productList')
+            .then(response => response.json())
+            .then(data => setProducts(data))
+            .catch(error => console.error('전체 상품 목록 조회 실패', error))
+    }, []);
 
     return (<Layout currentMenu="productList">
             <div className="top-container">
@@ -35,7 +45,7 @@ function ProductList() {
             </div>
             <div className="bottom-container">
                 <label>
-                    <p>전체 100건 페이지 당:</p>
+                    <p>전체 {products.length}건 페이지 당:</p>
                     <select>
                         <option value={10}>10</option>
                         <option value={20}>20</option>
@@ -59,19 +69,20 @@ function ProductList() {
                     </tr>
                     </thead>
                     <tbody className="approval-list-content">
-                    <tr>
-                        <td><input type="checkbox"/></td>
-                        <td>A003</td>
-                        <td>삼성</td>
-                        <td>책장 외 1건</td>
-                        <td>2555,999</td>
-                        <td>2024-12-30</td>
-                        <td>2024-9-8</td>
-                        <td>김세종</td>
-                        <td>결재중</td>
-                        <td><a href="/productDetail">상세보기</a></td>
-                    </tr>
-                    {/* 반복문으로 데이터 */}
+                        {products.map((product) => (
+                            <tr>
+                                <td><input type="checkbox"/></td>
+                                <td></td>
+                                <td>삼성</td>
+                                <td>책장 외 1건</td>
+                                <td>2555,999</td>
+                                <td>2024-12-30</td>
+                                <td>2024-9-8</td>
+                                <td>김세종</td>
+                                <td>결재중</td>
+                                <td><a href="/productDetail">상세보기</a></td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
                 <div className="approval-page">

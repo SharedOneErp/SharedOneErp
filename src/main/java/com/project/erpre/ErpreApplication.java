@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @SpringBootApplication
-public class ErpreApplication implements CommandLineRunner {
+public class  ErpreApplication implements CommandLineRunner {
 
     @Autowired
     private JdbcTemplate jdbcTemplate; // JdbcTemplate을 자동으로 주입받기 위해 선언
