@@ -21,21 +21,21 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     //중분류
     @Query("select c2 from Category c2" +
-            "join Category c1 on c2.parentCategoryNo = c1.categoryNo" +
-            "where c1.categoryLevel = 1" +
-            "and c2.categoryLevel = 2" +
-            "and c1.categoryNo = c2.topCategoryNo")
+            " join Category c1 on c2.parentCategoryNo = c1.categoryNo" +
+            " where c1.categoryLevel = 1" +
+            " and c2.categoryLevel = 2" +
+            " and c1.categoryNo = :topCategoryNo")
     List<Category> findMiddleCategory(@Param("topCategoryNo") Long topCategoryNo);
 
     //소분류
     @Query("select c3 from Category c3" +
-            "join Category c2 on c3.parentCategoryNo = c2.categoryNo" +
-            "join Category c1 on c2.parentCategoryNo = c1.categoryNo" +
-            "where c1.categoryLevel = 1" +
-            "and c2.categoryLevel = 2" +
-            "and c3.categoryLevel = 3" +
-            "and c1.categoryNo = :topCategoryNo" +
-            "and c2.categoryNo = :middleCategoryNo")
+            " join Category c2 on c3.parentCategoryNo = c2.categoryNo" +
+            " join Category c1 on c2.parentCategoryNo = c1.categoryNo" +
+            " where c1.categoryLevel = 1" +
+            " and c2.categoryLevel = 2" +
+            " and c3.categoryLevel = 3" +
+            " and c1.categoryNo = :topCategoryNo" +
+            " and c2.categoryNo = :middleCategoryNo")
     List<Category> findLowCategoryByTopAndMiddleCategory(@Param("topCategoryNo") Long topCategoryNo,
                                                          @Param("middleCategoryNo") Long middleCategoryNo);
 }
