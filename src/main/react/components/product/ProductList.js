@@ -16,6 +16,16 @@ function ProductList() {
             .catch(error => console.error('전체 상품 목록 조회 실패', error))
     }, []);
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+    };
+
     return (<Layout currentMenu="productList">
             <div className="top-container">
                 <h2>전체 상품 목록</h2>
@@ -56,31 +66,27 @@ function ProductList() {
                 <table className="approval-list">
                     <thead>
                     <tr>
-                        <th>선택</th>
-                        <th>주문번호</th>
-                        <th>거래처</th>
-                        <th>물품</th>
-                        <th>총액(원)</th>
-                        <th>납품 요청일</th>
-                        <th>주문 등록일</th>
-                        <th>담당자</th>
-                        <th>주문 상태</th>
+                        <th>상품번호</th>
+                        <th>상품명</th>
+                        <th>대분류</th>
+                        <th>중분류</th>
+                        <th>소분류</th>
+                        <th>상품 등록일</th>
+                        <th>상품 수정일</th>
                         <th>상세보기</th>
                     </tr>
                     </thead>
                     <tbody className="approval-list-content">
-                        {products.map((product) => (
-                            <tr>
-                                <td><input type="checkbox"/></td>
-                                <td></td>
-                                <td>삼성</td>
-                                <td>책장 외 1건</td>
-                                <td>2555,999</td>
-                                <td>2024-12-30</td>
-                                <td>2024-9-8</td>
-                                <td>김세종</td>
-                                <td>결재중</td>
-                                <td><a href="/productDetail">상세보기</a></td>
+                        {products.map((product, index) => (
+                            <tr key={product.Id}>
+                                <td>{product.productCd}</td>
+                                <td>{product.productNm}</td>
+                                <td>{product.category?.categoryNo}</td>
+                                <td>{product.category?.categoryNo}</td>
+                                <td>{product.category?.categoryNo}</td>
+                                <td>{formatDate(product.productInsertDate)}</td>
+                                <td>{formatDate(product.productInsertDate)}</td>
+                                <td><a href={`/productDetail?no=${product.productCd}`}>상세보기</a></td>
                             </tr>
                         ))}
                     </tbody>
