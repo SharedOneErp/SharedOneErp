@@ -53,7 +53,7 @@ create table m_order_h (
     customer_no            int              not null, -- 고객 번호 (m_customer 테이블 참조)
     employee_id            varchar(50)      not null, -- 직원 ID (m_employee 테이블 참조)
     order_h_total_price    decimal(15, 2)   not null, -- 총 주문 금액
-    order_d_status         varchar(10)      null,     -- 주문 상태(ing, approved, denied)
+    order_d_status         varchar(10)      null default 'ing', -- 주문 상태(ing, approved, denied) 기본값 설정
     order_d_insert_date    timestamp        not null default current_timestamp, -- 주문 등록 일시
     order_d_update_date    timestamp        null,     -- 주문 수정 일시
     primary key (order_h_no) -- 기본 키 설정
@@ -75,8 +75,9 @@ create table m_order_d (
 create table m_employee (
     employee_id            varchar(50)      not null, -- 직원 ID
     employee_pw            varchar(50)      not null, -- 직원 비밀번호
+    employee_name          varchar(30)      not null  -- 직원 이름
     employee_email         varchar(30)      null,     -- 직원 이메일
-    employee_contact       varchar(20)      not null, -- 직원 연락처
+    employee_tel           varchar(20)      not null, -- 직원 연락처
     employee_role          varchar(20)      not null, -- 직원 권한(staff, manager, admin)
     employee_insert_date   timestamp        not null default current_timestamp, -- 직원 등록 일시
     employee_update_date   timestamp        null,     -- 직원 수정 일시
