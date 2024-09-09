@@ -150,7 +150,7 @@ function Order() {
 
 
     return (
-        <Layout currentMenu="orderDetail">
+        <Layout currentMenu="order">
             <div className="orderDetail-title">
                 <h3>{isCreateMode ? '주문 등록' : isEditMode ? '주문 수정' : '주문 상세보기'}</h3>
             </div>
@@ -355,3 +355,6 @@ root.render(
         <Order/>
     </BrowserRouter>
 );
+
+export default OrderRegister;
+

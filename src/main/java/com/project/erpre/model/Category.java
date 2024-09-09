@@ -1,5 +1,6 @@
 package com.project.erpre.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,15 +12,12 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_no")
-    private Integer categoryNo;
+    private Long categoryNo;
 
     @Column(name = "category_level", nullable = false)
     private Integer categoryLevel;
@@ -38,6 +36,8 @@ public class Category {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<Product> products;
+
 
 }

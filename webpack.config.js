@@ -37,7 +37,7 @@ module.exports = {
 
         // HR 관련 엔트리 포인트
         employeeList: `${hrPath}EmployeeList.js`, // 직원 목록
-        employee: `${hrPath}Employee.js`, // 직원 등록or상세or수정
+        employeeRegister: `${hrPath}EmployeeRegister.js`, // 직원 등록
     },
     devtool: 'sourcemaps', // 소스 맵 생성 설정
     cache: true, // 캐싱 활성화

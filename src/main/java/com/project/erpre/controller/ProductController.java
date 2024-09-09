@@ -3,6 +3,7 @@ package com.project.erpre.controller;
 import com.project.erpre.model.Category;
 import com.project.erpre.model.Product;
 import com.project.erpre.service.ProductService;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,6 +16,15 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    // 전체 상품 목록 조회 API
+    @GetMapping("/productList")
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
+    }
+
+
+
 
     // 검색 API
     @GetMapping("/search")
