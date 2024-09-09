@@ -9,6 +9,9 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
 
+    // 전체 상품 목록 조회
+    List<Product> findAll();
+
     // category_no가 null인 경우를 처리하는 메서드
     List<Product> findByProductCdContainingIgnoreCaseAndProductNmContainingIgnoreCase(
             String productCd, String productNm);
