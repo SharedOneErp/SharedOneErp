@@ -19,14 +19,14 @@ public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_d_no")
-    private Long orderDNo;
+    private Integer orderDNo;
 
     @ManyToOne
-    @JoinColumn(name = "order_h_no", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private OrderHead orderHead;
+    @JoinColumn(name = "order_h_no", nullable = false)
+    private Order order;
 
     @ManyToOne
-    @JoinColumn(name = "product_cd", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "product_cd", nullable = false)
     private Product product;
 
     @Column(name = "order_d_price", nullable = false, precision = 15, scale = 2)
