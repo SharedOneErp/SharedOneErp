@@ -1,6 +1,9 @@
 package com.project.erpre.model;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -11,20 +14,15 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
 public class Employee {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_id", length = 50, nullable = false)
     private String employeeId;
 
     @Column(name = "employee_pw", length = 50, nullable = false)
     private String employeePw;
-
-    @Column(name = "employee_name", length = 30, nullable = false)
-    private String employeeName;
 
     @Column(name = "employee_email", length = 30)
     private String employeeEmail;
@@ -32,7 +30,7 @@ public class Employee {
     @Column(name = "employee_tel", length = 20, nullable = false)
     private String employeeTel;
 
-    @Column(name = "employee_role", length = 20, nullable = false)
+    @Column(name = "employeeRole", length = 20, nullable = false)
     private String employeeRole;
 
     @Column(name = "employee_insert_date", nullable = false)
@@ -41,8 +39,7 @@ public class Employee {
     @Column(name = "employee_update_date")
     private Timestamp employeeUpdateDate;
 
-    @ToString.Exclude
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<OrderHead> orderHeads;
-
+    @JsonIgnore
+    private List<Order> orders;
 }

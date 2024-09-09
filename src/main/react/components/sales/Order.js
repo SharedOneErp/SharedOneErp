@@ -21,6 +21,8 @@ function Order() {
     const [searchCode, setSearchCode] = useState(''); // 상품코드 상태
     const [searchResults, setSearchResults] = useState([]); // 검색 결과 상태
 
+
+
     // 주문 상세 정보 가져오기 (상세보기/수정용)
     useEffect(() => {
         if (orderNo) {
@@ -33,7 +35,7 @@ function Order() {
             const response = await fetch(`http://localhost:8787/api/orders/${orderNo}`);
             if (!response.ok) throw new Error('주문 데이터를 가져올 수 없습니다.');
             const data = await response.json();
-            setProducts(data.products);
+            setProducts(data ? data.products : []);
         } catch (error) {
             console.error('주문 정보를 가져오는 중 오류가 발생했습니다.', error);
         }
@@ -105,19 +107,50 @@ function Order() {
     };
 
 
+    const handleSubmit = async () => {
+        // DOM에서 직접 값을 가져오는 대신 상태에서 관리하는 값을 사용하세요.
+        const customerNo = document.querySelector('input[name="customerNo"]').value.trim(); // 고객번호
+        const totalAmount = products.reduce((sum, product) => sum + product.price * product.quantity, 0); // 총 금액
+        const employeeIdElement = document.querySelector('.employee-id');
+        const employeeId = employeeIdElement ? employeeIdElement.textContent.trim() : null; // 담당자의 ID를 가져오는 방법
 
-    // 등록, 수정, 결재 요청 처리
-    const handleSubmit = () => {
-        if (isCreateMode) {
-            console.log('주문 등록 처리');
-        } else if (isEditMode) {
-            console.log('주문 수정 처리');
+        console.log(customerNo);
+        console.log(employeeId);
+        console.log(totalAmount);
+
+        // 고객번호와 직원 ID를 숫자로 변환합니다.
+        const orderData = {
+            customer: { customerNo: customerNo },  // 서버에서 Expecting Customer 객체
+            employee: { employeeId: employeeId },  // 서버에서 Expecting Employee 객체
+            orderHTotalPrice: totalAmount,
+            orderDStatus: "ing",
+            orderDInsertDate: new Date().toISOString(),
+            orderDUpdateDate: null
+        };
+
+        try {
+            const response = await fetch('http://localhost:8787/api/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`주문 처리 중 오류 발생: ${errorText}`);
+            }
+
+            window.location.href = '/orderListAll';
+        } catch (error) {
+            console.error('주문 처리 중 오류 발생:', error.message);
         }
-        window.location.href = '/orderListAll';
     };
 
+
     return (
-        <Layout currentMenu="order">
+        <Layout currentMenu="orderDetail">
             <div className="orderDetail-title">
                 <h3>{isCreateMode ? '주문 등록' : isEditMode ? '주문 수정' : '주문 상세보기'}</h3>
             </div>
@@ -131,8 +164,8 @@ function Order() {
                     )}
 
                     <div className="form-group">
-                        <label>고객사</label>
-                        <input type="text" defaultValue="쉐어드원" readOnly={!isEditMode && !isCreateMode}/>
+                        <label>고객번호</label>
+                        <input type="text" name="customerNo" defaultValue="쉐어드원" readOnly={!isEditMode && !isCreateMode}/>
                     </div>
 
                     {!isCreateMode && (
@@ -155,7 +188,7 @@ function Order() {
 
                     <div className="form-group">
                         <label>담당자</label>
-                        <span>한정우</span>
+                        <span className="employee-id">abc123</span>
                     </div>
 
                     <div className="form-group">
@@ -322,6 +355,3 @@ root.render(
         <Order/>
     </BrowserRouter>
 );
-
-export default OrderRegister;
-
