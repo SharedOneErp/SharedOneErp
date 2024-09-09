@@ -23,9 +23,6 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-
-
-
     // 검색 API
     @GetMapping("/search")
     public List<Product> searchProducts(

@@ -1,5 +1,6 @@
 package com.project.erpre.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -71,10 +72,12 @@ public class Customer {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // 순환 참조 방지(무한 재귀 호출-스택 오버플로우 해결) -> 해당 필드를 완전히 직렬화/역직렬화에서 배제합니다. 특정 필드를 직렬화에서 아예 제외하고 싶을 때 사용됩니다.
     private List<OrderHead> orderHeads;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Price> prices;
 
 }
