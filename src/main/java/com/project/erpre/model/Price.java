@@ -32,14 +32,11 @@ public class Price {
     @Column(name = "price_customer", nullable = false, precision = 15, scale = 2)
     private BigDecimal priceCustomer;
 
-    @Column(name = "price_discount_rate", precision = 4, scale = 2)
-    private BigDecimal priceDiscountRate;
+    @Column(name = "price_start_date")
+    private Timestamp priceStartDate;
 
-    @Column(name = "price_discount_start_date")
-    private Timestamp priceDiscountStartDate;
-
-    @Column(name = "price_discount_end_date")
-    private Timestamp priceDiscountEndDate;
+    @Column(name = "price_end_date")
+    private Timestamp priceEndDate;
 
     @Column(name = "price_insert_date", nullable = false)
     private Timestamp priceInsertDate;

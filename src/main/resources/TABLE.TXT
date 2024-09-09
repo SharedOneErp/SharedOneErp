@@ -3,11 +3,11 @@ create table m_customer (
     customer_no            serial           not null, -- 고객 번호
     customer_name          varchar(100)     not null, -- 고객 이름
     customer_addr          varchar(200)     null,     -- 고객 주소
-    customer_contact_no    varchar(20)      not null, -- 고객 연락처
+    customer_tel           varchar(20)      not null, -- 고객 연락처
     customer_business_reg_no varchar(20)    null,     -- 사업자 등록 번호
     customer_manager_name  varchar(50)      not null, -- 담당자 이름
     customer_manager_email varchar(100)     null,     -- 담당자 이메일
-    customer_manager_contact_no varchar(20) not null, -- 담당자 연락처
+    customer_manager_tel   varchar(20) not null, -- 담당자 연락처
     customer_insert_date   timestamp        not null default current_timestamp, -- 고객 등록 일시
     customer_update_date   timestamp        null,     -- 고객 수정 일시
     primary key (customer_no) -- 기본 키 설정

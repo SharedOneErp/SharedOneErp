@@ -27,8 +27,8 @@ public class Customer {
     @Column(name = "customer_addr", length = 200)
     private String customerAddr;
 
-    @Column(name = "customer_contact_no", length = 20, nullable = false)
-    private String customerContactNo;
+    @Column(name = "customer_tel", length = 20, nullable = false)
+    private String customerTel;
 
     @Column(name = "customer_business_reg_no", length = 20)
     private String customerBusinessRegNo;
@@ -39,8 +39,8 @@ public class Customer {
     @Column(name = "customer_manager_email", length = 100)
     private String customerManagerEmail;
 
-    @Column(name = "customer_manager_contact_no", length = 20, nullable = false)
-    private String customerManagerContactNo;
+    @Column(name = "customer_manager_tel", length = 20, nullable = false)
+    private String customerManagerTel;
 
     @Column(name = "customer_insert_date", nullable = false)
     private Timestamp customerInsertDate;
