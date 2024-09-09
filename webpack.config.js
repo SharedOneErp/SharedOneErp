@@ -37,7 +37,7 @@ module.exports = {
 
         // HR 관련 엔트리 포인트
         employeeList: `${hrPath}EmployeeList.js`, // 직원 목록
-        employee: `${hrPath}Employee.js`, // 직원 등록or상세or수정
+        employeeRegister: `${hrPath}EmployeeRegister.js`, // 직원 등록
     },
     devtool: 'sourcemaps', // 소스 맵 생성 설정
     cache: true, // 캐싱 활성화
@@ -48,6 +48,12 @@ module.exports = {
     mode: 'none', // Webpack 모드 설정 (none: 기본 설정)
     module: {
         rules: [
+            {
+                test: /\.m?js$/, // .mjs 또는 .js 파일을 처리
+                resolve: {
+                    fullySpecified: false // 확장자를 명시하지 않아도 되도록 설정(특히 axios나 다른 모듈에서 발생하는 확장자 문제를 피할 수 있다.)
+                }
+            },
             {
                 test: /\.js?$/, // .js 파일 처리
                 exclude: /(node_modules)/, // node_modules 제외
@@ -73,7 +79,7 @@ module.exports = {
                         },
                     },
                 ],
-            },
+            }
         ]
     },
     plugins: [
@@ -92,4 +98,16 @@ module.exports = {
             });
         },
     ],
+    // resolve는 모듈을 해석할 때, 필요한 설정을 지정하는 옵션
+    resolve: {
+        // fallback 옵션은 브라우저 환경에서 Node.js의 일부 기능을 사용할 수 있도록 대체 모듈을 지정하는 데 사용됩니다.
+        fallback: {
+            // 'process' 모듈을 브라우저에서 사용할 수 있도록 'process/browser' 모듈을 대체로 지정합니다.
+            process: require.resolve('process/browser')
+        },
+        alias: {
+            'process': 'process/browser',
+        },
+
+    }
 };

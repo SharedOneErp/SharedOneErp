@@ -19,11 +19,11 @@ public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_d_no")
-    private Long orderDNo;
+    private Integer orderDNo;
 
     @ManyToOne
     @JoinColumn(name = "order_h_no", nullable = false)
-    private OrderHead orderHead;
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = "product_cd", nullable = false)

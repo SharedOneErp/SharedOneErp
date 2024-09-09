@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom"; // 리액트 라우팅 관련 
 import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
 import '../../../resources/static/css/product/ProductDetail.css'; // 개별 CSS 스타일 적용
 
-function ProductDetail({ category1="넘어온대", category2="넘어온중", category3="넘어온소" }) { // productlist에서 props로 받아온 카테고리 값
+function ProductDetail() {
     const handleListClick = () => {
         window.location.href = "/productList";
     };
@@ -24,9 +24,9 @@ function ProductDetail({ category1="넘어온대", category2="넘어온중", cat
                 <div className="form-group">
                     <label>카테고리</label>
                     <div className="category-inputs">
-                        <span className="category-item" id="category1">{category1}</span>
-                        <span className="category-item" id="category2">{category2}</span>
-                        <span className="category-item" id="category3">{category3}</span>
+                        <span className="category-item" id="category1">대분류</span>
+                        <span className="category-item" id="category2">중분류</span>
+                        <span className="category-item" id="category3">소분류</span>
                     </div>
                 </div>
                 <div className="form-group">
@@ -56,34 +56,6 @@ function ProductDetail({ category1="넘어온대", category2="넘어온중", cat
                             <td>999,999</td>
                             <td>홍길동</td>
                         </tr>
-                        <tr>
-                            <td>2024.09.02</td>
-                            <td>삼성</td>
-                            <td>200</td>
-                            <td>999,999</td>
-                            <td>이순신</td>
-                        </tr>
-                        <tr>
-                            <td>2024.09.01</td>
-                            <td>카카오</td>
-                            <td>200</td>
-                            <td>999,999</td>
-                            <td>유관순</td>
-                        </tr>
-                        <tr>
-                            <td>2024.08.29</td>
-                            <td>학교</td>
-                            <td>200</td>
-                            <td>999,999</td>
-                            <td>김세종</td>
-                        </tr>
-                        <tr>
-                            <td>2024.08.25</td>
-                            <td>식당A</td>
-                            <td>200</td>
-                            <td>999,999</td>
-                            <td>황길자</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -103,6 +75,7 @@ function ProductDetail({ category1="넘어온대", category2="넘어온중", cat
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
+
         <ProductDetail />
     </BrowserRouter>
 );
