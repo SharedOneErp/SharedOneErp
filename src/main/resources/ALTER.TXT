@@ -1,0 +1,43 @@
+
+-- 참조무결성을 위한 외래키 제약
+-- 필요한 테이블만 명시
+-- 보다가 수정할 게 있으면 수정하는게 좋을 듯 싶네요
+-- 일단 작성한 table.txt보고 추가했습니다
+
+ALTER TABLE m_product
+ADD CONSTRAINT fk_category_no
+FOREIGN KEY (category_no) REFERENCES m_category(category_no);
+
+ALTER TABLE m_price
+ADD CONSTRAINT fk_customer_no
+FOREIGN KEY (customer_no) REFERENCES m_customer(customer_no);
+
+ALTER TABLE m_price
+ADD CONSTRAINT fk_product_cd
+FOREIGN KEY (product_cd) REFERENCES m_product(product_cd);
+
+ALTER TABLE m_category
+ADD CONSTRAINT fk_parent_category_no
+FOREIGN KEY (parent_category_no) REFERENCES m_category(category_no);
+
+ALTER TABLE m_order_h
+ADD CONSTRAINT fk_customer_no
+FOREIGN KEY (customer_no) REFERENCES m_customer(customer_no);
+
+ALTER TABLE m_order_h
+ADD CONSTRAINT fk_employee_id
+FOREIGN KEY (employee_id) REFERENCES m_employee(employee_id);
+
+ALTER TABLE m_order_d
+ADD CONSTRAINT fk_order_h_no
+FOREIGN KEY (order_h_no) REFERENCES m_order_h(order_h_no);
+
+ALTER TABLE m_order_d
+ADD CONSTRAINT fk_product_cd
+FOREIGN KEY (product_cd) REFERENCES m_product(product_cd);
+
+--employee에 부서 추가 어떻게? 하게되면 들어가있는 데이터도 다 수정해야되나? 얘기좀 해봐야할듯
+--ALTER TABLE m_employee
+--ADD COLUMN department VARCHAR(20) NOT NULL;
+
+
