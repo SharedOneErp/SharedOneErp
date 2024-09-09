@@ -23,5 +23,6 @@
   "scripts": {
     "start": "gradlew bootRun",
     "watch": "node_modules\\.bin\\webpack --watch --devtool inline-source-map"
-  }
+  },
+  "proxy": "http://localhost:8787"
 }

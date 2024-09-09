@@ -322,3 +322,6 @@ root.render(
         <Order/>
     </BrowserRouter>
 );
+
+export default OrderRegister;
+

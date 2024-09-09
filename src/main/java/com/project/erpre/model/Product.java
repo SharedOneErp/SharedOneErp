@@ -1,25 +1,30 @@
 package com.project.erpre.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "m_product")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@ToString
 public class Product {
 
     @Id
     @Column(name = "product_cd", length = 10, nullable = false)
     private String productCd;
 
-    @Column(name = "category_no")
-    private Integer categoryNo;
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "category_no")
+    private Category category;
 
     @Column(name = "product_nm", length = 100, nullable = false)
     private String productNm;
@@ -29,4 +34,14 @@ public class Product {
 
     @Column(name = "product_update_date", columnDefinition = "timestamp")
     private LocalDateTime productUpdateDate;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private List<Price> prices;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private List<OrderDetail> orderDetails;
 }
