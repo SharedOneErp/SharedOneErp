@@ -21,7 +21,7 @@ public class Product {
     private String productCd;
 
     @ManyToOne
-    @JoinColumn(name = "category_no")
+    @JoinColumn(name = "category_no", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Category category;
 
     @Column(name = "product_nm", length = 100, nullable = false)

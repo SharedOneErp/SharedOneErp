@@ -23,11 +23,11 @@ public class OrderHead {
     private Long orderHNo;
 
     @ManyToOne
-    @JoinColumn(name = "customer_no", nullable = false)
+    @JoinColumn(name = "customer_no", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "employee_id", nullable = false)
+    @JoinColumn(name = "employee_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Employee employee;
 
     @Column(name = "order_h_total_price", nullable = false, precision = 15, scale = 2)
