@@ -1,0 +1,42 @@
+.h1 {
+    margin-bottom : 40px;
+}
+
+/* 테이블*/
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+.order-table th, .order-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+.order-table th {
+    background-color: #f2f2f2;
+}
+.order-table tr:hover {
+    background-color: #f1f1f1;
+    background-color: #ffdb0036; /* 이케아 노란색 */
+}
+.order-table a {
+    color: blue;
+    text-decoration: underline;
+}
+
+
+.filter-button {
+    background-color: #007CC1;
+    color: white;
+    padding: 6px 15px;
+    margin: 5px;
+    margin-right: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.filter-button:hover {
+    background-color: #005a91; /* 호버 시 조금 더 어두운 색으로 변경 */
+}
+
