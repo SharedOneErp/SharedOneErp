@@ -5,7 +5,6 @@ import com.project.erpre.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,4 +34,16 @@ public class CategoryService {
         categoryRepository.deleteById(categoryNo);
     }
 
+
+    public List<Category> getTopCategory() {
+        return categoryRepository.findTopCategory();
+    }
+
+    public List<Category> getMiddleCategory(Long topCategoryId) {
+        return categoryRepository.findMiddleCategory(topCategoryId);
+    }
+
+    public List<Category> getLowCategory(Long topCategoryId, Long middleCategoryId) {
+        return categoryRepository.findLowCategoryByTopAndMiddleCategory(topCategoryId, middleCategoryId);
+    }
 }
