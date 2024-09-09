@@ -23,11 +23,14 @@ public class Employee {
     @Column(name = "employee_pw", length = 50, nullable = false)
     private String employeePw;
 
+    @Column(name = "employee_name", length = 30, nullable = false)
+    private String employeeName;
+
     @Column(name = "employee_email", length = 30)
     private String employeeEmail;
 
-    @Column(name = "employee_contact", length = 20, nullable = false)
-    private String employeeContact;
+    @Column(name = "employee_tel", length = 20, nullable = false)
+    private String employeeTel;
 
     @Column(name = "employee_role", length = 20, nullable = false)
     private String employeeRole;
