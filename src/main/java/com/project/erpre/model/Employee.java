@@ -29,8 +29,8 @@ public class Employee {
     @Column(name = "employee_contact", length = 20, nullable = false)
     private String employeeContact;
 
-    @Column(name = "employee_grade", length = 20, nullable = false)
-    private String employeeGrade;
+    @Column(name = "employee_role", length = 20, nullable = false)
+    private String employeeRole;
 
     @Column(name = "employee_insert_date", nullable = false)
     private Timestamp employeeInsertDate;
