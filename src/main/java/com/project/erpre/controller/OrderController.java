@@ -3,19 +3,17 @@ package com.project.erpre.controller;
 import com.project.erpre.model.Customer;
 import com.project.erpre.model.Employee;
 import com.project.erpre.model.Order;
+import com.project.erpre.model.User;
 import com.project.erpre.repository.CustomerRepository;
 import com.project.erpre.repository.EmployeeRepository;
 import com.project.erpre.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/orders")
+
 public class OrderController {
 
     @Autowired
@@ -27,8 +25,16 @@ public class OrderController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    @PostMapping
+    @PostMapping("/api/example1")
+    @CrossOrigin("*")
+    public String example(@RequestBody User user) {
+        return "heloo";
+    }
+
+    @PostMapping(value = "/api/orders" )
+    @CrossOrigin("*")
     public ResponseEntity<?> createOrder(@RequestBody Order order) {
+        System.out.println(111111);
         try {
             // Customer와 Employee를 ID로 조회
             if (order.getCustomer() != null && order.getCustomer().getCustomerNo() != null) {
@@ -55,5 +61,6 @@ public class OrderController {
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
     }
 }

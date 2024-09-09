@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "m_order_h")
-@Data
+@Setter
+@Getter
+//@ToString()
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder // 빌더 패턴을 추가합니다.

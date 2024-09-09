@@ -1,5 +1,6 @@
 package com.project.erpre.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,5 +40,6 @@ public class Employee {
     private Timestamp employeeUpdateDate;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Order> orders;
 }
