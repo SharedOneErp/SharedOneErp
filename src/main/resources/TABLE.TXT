@@ -1,16 +1,23 @@
 -- 1. 고객사
 create table m_customer (
-    customer_no            serial           not null, -- 고객 번호
-    customer_name          varchar(100)     not null, -- 고객 이름
-    customer_addr          varchar(200)     null,     -- 고객 주소
-    customer_tel           varchar(20)      not null, -- 고객 연락처
-    customer_business_reg_no varchar(20)    null,     -- 사업자 등록 번호
-    customer_manager_name  varchar(50)      not null, -- 담당자 이름
-    customer_manager_email varchar(100)     null,     -- 담당자 이메일
-    customer_manager_tel   varchar(20) not null, -- 담당자 연락처
-    customer_insert_date   timestamp        not null default current_timestamp, -- 고객 등록 일시
-    customer_update_date   timestamp        null,     -- 고객 수정 일시
-    primary key (customer_no) -- 기본 키 설정
+	customer_no	SERIAL	NOT NULL, --고객 번호
+	customer_name	VARCHAR(100)	NOT NULL, --고객 이름
+	customer_tel	VARCHAR(20)	NULL, --고객사 연락처
+	customer_representative_name	VARCHAR(50)	NULL, --대표자명
+	customer_business_reg_no	VARCHAR(20)	NOT NULL, --사업자 등록번호
+	customer_addr	VARCHAR(200)	NULL, --사업장 주소
+	customer_fax_no	VARCHAR(50)	NULL, --팩스번호
+	customer_manager_name	VARCHAR(50)	NULL, --고객사 담당자명
+	customer_manager_email	VARCHAR(100)	NULL, --고객사 담당자 이메일
+	customer_manager_tel	VARCHAR(20)	NULL, --고객사 담당자 연락처
+	customer_country_code	VARCHAR(20)	NULL, --국가코드
+	customer_type	timestamp	NULL, --거래처분류
+	customer_e_tax_invoice_yn	VARCHAR(10)	NULL, --전자세금계산서 여부
+	customer_transaction_start_date	timestamp	NULL, --거래시작일
+	customer_transaction_end_date	timestamp	NULL, --거래종료일
+	customer_insert_date	timestamp	NOT NULL	DEFAULT CURRENT_TIMESTAMP, --등록일시
+	customer_update_date	timestamp	NULL, --수정일시
+	primary key (customer_no) -- 기본 키 설정
 );
 
 -- 2. 상품
@@ -29,8 +36,13 @@ create table m_price (
     customer_no            int              not null, -- 고객 번호 (m_customer 테이블 참조)
     product_cd             varchar(10)      not null, -- 제품 코드 (m_product 테이블 참조)
     price_customer         decimal(15, 2)   not null, -- 고객별 가격
-    price_start_date       timestamp        null,     -- 가격 적용 시작 일자
-    price_end_date         timestamp        null,     -- 가격 적용 종료 일자
+
+    price_discount_rate         decimal(4, 2)    null,     -- 할인율
+    price_discount_start_date   timestamp       null,     -- 할인 시작 일자
+    price_discount_end_date     timestamp       null,     -- 할인 종료 일자
+    -- price_start_date            timestamp       null,     -- 가격 적용 시작 일자
+    -- price_end_date              timestamp       null,     -- 가격 적용 종료 일자
+
     price_insert_date      timestamp        not null default current_timestamp, -- 가격 등록 일시
     price_update_date      timestamp        null,     -- 가격 수정 일시
     primary key (price_no) -- 기본 키 설정
@@ -53,7 +65,7 @@ create table m_order_h (
     customer_no            int              not null, -- 고객 번호 (m_customer 테이블 참조)
     employee_id            varchar(50)      not null, -- 직원 ID (m_employee 테이블 참조)
     order_h_total_price    decimal(15, 2)   not null, -- 총 주문 금액
-    order_d_status         varchar(10)      null default 'ing', -- 주문 상태(ing, approved, denied) 기본값 설정
+    order_d_status         varchar(10)      null,     -- 주문 상태(ing, approved, denied)
     order_d_insert_date    timestamp        not null default current_timestamp, -- 주문 등록 일시
     order_d_update_date    timestamp        null,     -- 주문 수정 일시
     primary key (order_h_no) -- 기본 키 설정
@@ -75,10 +87,10 @@ create table m_order_d (
 create table m_employee (
     employee_id            varchar(50)      not null, -- 직원 ID
     employee_pw            varchar(50)      not null, -- 직원 비밀번호
-    employee_name          varchar(30)      not null  -- 직원 이름
     employee_email         varchar(30)      null,     -- 직원 이메일
-    employee_tel           varchar(20)      not null, -- 직원 연락처
-    employee_role          varchar(20)      not null, -- 직원 권한(staff, manager, admin)
+    employee_contact       varchar(20)      not null, -- 직원 연락처
+    employee_grade         varchar(20)      not null, -- 직원 등급(staff, manager, admin)
+    -- employee_role          varchar(20)      not null, -- 직원 권한(staff, manager, admin)
     employee_insert_date   timestamp        not null default current_timestamp, -- 직원 등록 일시
     employee_update_date   timestamp        null,     -- 직원 수정 일시
     primary key (employee_id) -- 기본 키 설정
