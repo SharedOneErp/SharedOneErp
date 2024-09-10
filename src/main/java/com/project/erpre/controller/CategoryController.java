@@ -1,5 +1,4 @@
 package com.project.erpre.controller;
-
 import com.project.erpre.model.Category;
 import com.project.erpre.model.CategoryDTO;
 import com.project.erpre.service.CategoryService;
@@ -15,7 +14,7 @@ import java.util.Optional;
 @RequestMapping("/api/category")
 public class CategoryController {
 
-    private static final Logger logger = LoggerFactory.getLogger(PriceController.class); // Logger 선언
+    private static final Logger logger = LoggerFactory.getLogger(CategoryController.class); // Logger 선언
 
     @Autowired
     public CategoryService categoryService;
@@ -40,16 +39,16 @@ public class CategoryController {
 
     //카테고리 수정
     @PutMapping("/{categoryNo}")
-    public Category updateCategory(@PathVariable Integer categoryNo, @RequestBody Category category ) {
-        category.setCategoryNo(categoryNo);
-        return null;
-        //return categoryService.saveCategory(category);
+    public Category updateCategory(@PathVariable Integer categoryNo, @RequestBody CategoryDTO categoryDTO ) {
+        categoryDTO.setCategoryNo(categoryNo);
+        return categoryService.updateCategory(categoryNo, categoryDTO);
+
     }
 
     //카테고리 삭제
     @DeleteMapping("/{categoryNo}")
     public void deleteCategory(@PathVariable Integer categoryNo) {
-        categoryService.deleteCategory(categoryNo);
+        categoryService.deleteById(categoryNo);
     }
 
     //카테고리 대분류
@@ -58,11 +57,13 @@ public class CategoryController {
         return categoryService.getTopCategory();
     }
 
+    //카테고리 중분류
     @GetMapping("/middle/{topCategoryId}")
     public List<Category> getMiddleCategory(@PathVariable Integer topCategoryId) {
         return categoryService.getMiddleCategory(topCategoryId);
     }
 
+    //카테고리 소분류
     @GetMapping("/low/{middleCategoryId}/{topCategoryId}")
     public List<Category> getLowCategory(@PathVariable Integer topCategoryId,
                                          @PathVariable Integer middleCategoryId) {

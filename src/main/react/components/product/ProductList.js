@@ -17,10 +17,10 @@ function ProductList() {
             .catch(error => console.error('전체 상품 목록 조회 실패', error))
     }, []);
 
-    // 전체 선택
+    // 전체 선택/
     const handleAllSelectProducts = (checked) => {
         if (checked) {
-            const allProductCds = products.map(product => product.productCd); // 모든 상품의 ID를 배열로 만듭니다.
+            const allProductCds = products.map(product => product.productCd);
             setSelectedProducts(allProductCds);
         } else {
             setSelectedProducts([]);
@@ -42,6 +42,13 @@ function ProductList() {
     
     // 선택 상품 삭제 요청
     const handleDeleteSelected = () => {
+        if(selectedProducts.length == 0) {
+            alert('삭제할 상품을 선택해주세요.');
+            return;
+        }
+        if (!confirm('상품을 정말 삭제하시겠습니까?')) {
+            return;
+        }
         fetch('http://localhost:8787/api/products/productDelete', {
             method: 'DELETE',
             headers: {
@@ -54,7 +61,7 @@ function ProductList() {
                 if (!response.ok) {
                     throw new Error('상품 삭제 실패');
                 }
-                alert('상품이 삭제되었습니다');
+                alert('상품이 삭제되었습니다.');
                 return response.json();
             })
             .then(data => {
@@ -135,9 +142,9 @@ function ProductList() {
                                        checked={selectedProducts.includes(product.productCd)}/></td>
                             <td>{product.productCd}</td>
                             <td>{product.productNm}</td>
-                            <td>{product.category?.categoryNo}</td>
-                            <td>{product.category?.categoryNo}</td>
-                            <td>{product.category?.categoryNo}</td>
+                            <td>{product.topCategory}</td>
+                            <td>{product.middleCategory}</td>
+                            <td>{product.lowCategory}</td>
                             <td>{formatDate(product.productInsertDate)}</td>
                             <td>{formatDate(product.productInsertDate)}</td>
                             <td><a href={`/productDetail?no=${product.productCd}`}>상세보기</a></td>
