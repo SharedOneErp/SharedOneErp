@@ -1,9 +1,11 @@
 package com.project.erpre.repository;
 
-import com.project.erpre.model.Customer;
 import com.project.erpre.model.Price;
-import com.project.erpre.model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,6 +23,26 @@ public interface PriceRepository extends JpaRepository<Price, Integer> {
     delete(S entity) : 특정 엔티티 삭제
     ---------------------------------------
      */
-    // 고객과 제품을 기준으로 가격 정보 조회
-    List<Price> findByCustomerAndProduct(Customer customer, Product product);
+
+    // 특정 제품(Product)의 가격 정보 조회
+    List<Price> findByProduct_ProductCd(String productCd);
+
+    // 특정 고객(Customer)의 가격 정보 조회
+    List<Price> findByCustomer_CustomerNo(Integer customerNo);
+
+    // 날짜 범위에 따라 가격 정보를 조회하는 쿼리
+    @Query("SELECT p FROM Price p WHERE p.priceStartDate >= :startDate AND p.priceEndDate <= :endDate")
+    List<Price> findPricesByDateRange(@Param("startDate") String startDate, @Param("endDate") String endDate);
+
+    @Query("SELECT p FROM Price p " +
+            "WHERE (:customer IS NULL OR p.customer.customerNo = :customer) " +
+            "AND (:product IS NULL OR p.product.productCd = :product) " +
+            "AND (:startDate IS NULL OR p.priceStartDate >= :startDate) " +
+            "AND (:endDate IS NULL OR p.priceEndDate <= :endDate)")
+    Page<Price> findPricesWithFilters(@Param("customer") String customer,
+                                      @Param("product") String product,
+                                      @Param("startDate") String startDate,
+                                      @Param("endDate") String endDate,
+                                      PageRequest pageRequest);
+
 }
