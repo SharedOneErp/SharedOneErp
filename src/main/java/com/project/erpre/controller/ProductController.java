@@ -2,6 +2,7 @@ package com.project.erpre.controller;
 
 import com.project.erpre.model.Category;
 import com.project.erpre.model.Product;
+import com.project.erpre.model.ProductDTO;
 import com.project.erpre.service.ProductService;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class ProductController {
 
     // 전체 상품 목록 조회 API
     @GetMapping("/productList")
-    public List<Object[]> getAllProducts() {
+    public List<ProductDTO> getAllProducts() {
         return productService.getAllProducts();
     }
 

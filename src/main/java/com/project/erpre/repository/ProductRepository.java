@@ -1,6 +1,7 @@
 package com.project.erpre.repository;
 import com.project.erpre.model.Category;
 import com.project.erpre.model.Product;
+import com.project.erpre.model.ProductDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,16 +15,15 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, String> {
 
     // 전체 상품 목록 조회
-    @Query("SELECT p, " +
-            "c1.categoryNm AS topCategory, " +
-            "c2.categoryNm AS middleCategory, " +
-            "c3.categoryNm AS lowCategory " +
+    @Query("SELECT new com.project.erpre.model.ProductDTO(" +
+            "p.productCd, p.productNm, p.productInsertDate, p.productUpdateDate, " +
+            "c3.categoryNo, c1.categoryNm, c2.categoryNm, c3.categoryNm) " +
             "FROM Product p " +
             "JOIN p.category c3 " +
             "JOIN c3.parentCategory c2 " +
             "JOIN c2.parentCategory c1 " +
             "ORDER BY p.productCd ASC")
-    List<Object[]> getAllProducts();
+    List<ProductDTO> getAllProducts();
 
     // 선택한 상품 삭제
     void deleteByProductCdIn(List<String> productCds);

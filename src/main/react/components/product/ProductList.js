@@ -17,7 +17,7 @@ function ProductList() {
             .catch(error => console.error('전체 상품 목록 조회 실패', error))
     }, []);
 
-    // 전체 선택
+    // 전체 선택/
     const handleAllSelectProducts = (checked) => {
         if (checked) {
             const allProductCds = products.map(product => product.productCd);
@@ -142,9 +142,9 @@ function ProductList() {
                                        checked={selectedProducts.includes(product.productCd)}/></td>
                             <td>{product.productCd}</td>
                             <td>{product.productNm}</td>
-                            <td>{product.category?.categoryNo}</td>
-                            <td>{product.category?.categoryNo}</td>
-                            <td>{product.category?.categoryNo}</td>
+                            <td>{product.topCategory}</td>
+                            <td>{product.middleCategory}</td>
+                            <td>{product.lowCategory}</td>
                             <td>{formatDate(product.productInsertDate)}</td>
                             <td>{formatDate(product.productInsertDate)}</td>
                             <td><a href={`/productDetail?no=${product.productCd}`}>상세보기</a></td>
