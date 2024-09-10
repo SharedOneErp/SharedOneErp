@@ -28,7 +28,7 @@ function Header() {
         <header>
             <div className="header-container">
                 <div className="logo">
-                    <a href="/"><img src="/img/logo.png" alt="IKEA Logo"/></a>
+                    <a href="/"><img src="/img/logo2.png" alt="IKEA Logo"/></a>
                 </div>
                 <div className="header-right">
                     <div className="notifications">
@@ -37,8 +37,7 @@ function Header() {
                     <div className="profile">
                         {employee ? (
                             <>
-                                <span className="teamname">IKEA ({employee.employeeRole})</span>
-                                <p><span className="profile-username">{employee.employeeId}</span></p>
+                                <span className="teamname">{employee.employeeId} ({employee.employeeRole}</span>
                             </>
                         ) : (
                             <span>LOADING</span> // 로딩 중 표시

@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class ProductDTO {
     private String productCd;
     private String productNm;
+    private String categoryNm;   // 카테고리 이름
     private LocalDateTime productInsertDate;
     private LocalDateTime productUpdateDate;
     private String employeeName;

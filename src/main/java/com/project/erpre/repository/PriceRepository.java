@@ -35,12 +35,12 @@ public interface PriceRepository extends JpaRepository<Price, Integer> {
     List<Price> findPricesByDateRange(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query("SELECT p FROM Price p " +
-            "WHERE (:customer IS NULL OR p.customer.customerNo = :customer) " +
-            "AND (:product IS NULL OR p.product.productCd = :product) " +
+            "WHERE (:customerNo IS NULL OR p.customer.customerNo = :customerNo) " +
+            "AND (:productCd IS NULL OR p.product.productCd = :productCd) " +
             "AND (:startDate IS NULL OR p.priceStartDate >= :startDate) " +
             "AND (:endDate IS NULL OR p.priceEndDate <= :endDate)")
-    Page<Price> findPricesWithFilters(@Param("customer") String customer,
-                                      @Param("product") String product,
+    Page<Price> findPricesWithFilters(@Param("customerNo") Integer customerNo,
+                                      @Param("productCd") String productCd,
                                       @Param("startDate") String startDate,
                                       @Param("endDate") String endDate,
                                       PageRequest pageRequest);
