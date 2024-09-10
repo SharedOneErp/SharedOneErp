@@ -31,6 +31,7 @@ function Order() {
     }, [orderNo]);
 
     const fetchOrderDetail = async (orderNo) => {
+        console.log("-------------------------------------fetchOrderDetail");
         try {
             const response = await fetch(`http://localhost:8787/api/orders/${orderNo}`);
             if (!response.ok) throw new Error('주문 데이터를 가져올 수 없습니다.');
@@ -71,6 +72,7 @@ function Order() {
 
     // 상품 검색 처리
     const handleSearch = async () => {
+        console.log("-------------------------------------handleSearch");
         try {
             const response = await fetch(`http://localhost:8787/api/products/search?productCd=${searchCode}&productNm=${searchQuery}`);
             if (!response.ok) throw new Error('검색 결과가 없습니다.');
@@ -97,8 +99,10 @@ function Order() {
                 name: selectedProduct.productNm,
                 price: selectedProduct.price || 0,
                 quantity: selectedProduct.quantity || 0,
+                code: selectedProduct.productCd // 상품 코드를 추가
             };
             console.log('Updated products:', updatedProducts);
+            console.log('Updated product codes:', updatedProducts.map(product => product.code));
             setProducts(updatedProducts);
         } else {
             console.error('No selectedProductIndex set');
@@ -128,6 +132,7 @@ function Order() {
             orderDUpdateDate: null
         };
 
+        console.log("-------------------------------------handleSubmit");
         try {
             const response = await fetch('http://localhost:8787/api/orders', {
                 method: 'POST',
@@ -137,20 +142,101 @@ function Order() {
                 body: JSON.stringify(orderData),
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`주문 처리 중 오류 발생: ${errorText}`);
-            }
 
-            window.location.href = '/orderListAll';
+            // 오류
+            if (response.ok) {
+                // 서버 응답에서 orderNo 값을 추출
+                const data = await response.json();
+                const order_h_no = data.orderNo; // JSON에서 'orderNo'을 추출하여 'order_h_no'로 사용
+
+
+                console.log("order_h_no : " + order_h_no);
+
+
+                // 각 제품의 상세 주문 정보를 서버에 전송
+                for (let product of products) {
+                    const deliveryDateElement = document.querySelector('.delivery-date');
+                    const deliveryRequestDate = deliveryDateElement ? deliveryDateElement.value : null;
+
+                    const orderDetailData = {
+                        orderNo: order_h_no,
+                        productCd: product.code, // 상품 코드
+                        orderDPrice: product.price,
+                        orderDQty: product.quantity,
+                        orderDTotalPrice: product.price * product.quantity,
+                        orderDDeliveryRequestDate: deliveryRequestDate,
+                    };
+
+                    console.log("product.code : " + product.code);
+
+                    const detailResponse = await fetch('http://localhost:8787/api/orderDetails', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(orderDetailData),
+                    });
+
+                    if (!detailResponse.ok) {
+                        const errorText = await detailResponse.text();
+                        throw new Error(`상세 주문 처리 중 오류 발생: ${errorText}`);
+                    }
+                }
+
+                // 주문 처리 후 페이지 이동
+                window.location.href = '/orderListAll';
+            } else {
+                console.error('Order creation failed.');
+            }
         } catch (error) {
             console.error('주문 처리 중 오류 발생:', error.message);
         }
     };
 
+    // const handleSubmit = async () => {
+    //     // DOM에서 직접 값을 가져오는 대신 상태에서 관리하는 값을 사용하세요.
+    //     const customerNo = document.querySelector('input[name="customerNo"]').value.trim(); // 고객번호
+    //     const totalAmount = products.reduce((sum, product) => sum + product.price * product.quantity, 0); // 총 금액
+    //     const employeeIdElement = document.querySelector('.employee-id');
+    //     const employeeId = employeeIdElement ? employeeIdElement.textContent.trim() : null; // 담당자의 ID를 가져오는 방법
+    //
+    //     console.log(customerNo);
+    //     console.log(employeeId);
+    //     console.log(totalAmount);
+    //
+    //     // 고객번호와 직원 ID를 숫자로 변환합니다.
+    //     const orderData = {
+    //         customer: { customerNo: customerNo },  // 서버에서 Expecting Customer 객체
+    //         employee: { employeeId: employeeId },  // 서버에서 Expecting Employee 객체
+    //         orderHTotalPrice: totalAmount,
+    //         orderDStatus: "ing",
+    //         orderDInsertDate: new Date().toISOString(),
+    //         orderDUpdateDate: null
+    //     };
+    //
+    //     try {
+    //         const response = await fetch('http://localhost:8787/api/orders', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(orderData),
+    //         });
+    //
+    //         if (!response.ok) {
+    //             const errorText = await response.text();
+    //             throw new Error(`주문 처리 중 오류 발생: ${errorText}`);
+    //         }
+    //
+    //         window.location.href = '/orderListAll';
+    //     } catch (error) {
+    //         console.error('주문 처리 중 오류 발생:', error.message);
+    //     }
+    // };
+
 
     return (
-        <Layout currentMenu="orderDetail">
+        <Layout currentMenu="order" >
             <div className="orderDetail-title">
                 <h3>{isCreateMode ? '주문 등록' : isEditMode ? '주문 수정' : '주문 상세보기'}</h3>
             </div>
@@ -183,12 +269,12 @@ function Order() {
 
                     <div className="form-group">
                         <label>납품요청일</label>
-                        <input type="date" defaultValue="2024-10-07" readOnly={!isEditMode && !isCreateMode}/>
+                        <input type="date" className="delivery-date" defaultValue="2024-10-07" readOnly={!isEditMode && !isCreateMode}/>
                     </div>
 
                     <div className="form-group">
                         <label>담당자</label>
-                        <span className="employee-id">abc123</span>
+                        <span className="employee-id">emp01</span>
                     </div>
 
                     <div className="form-group">
@@ -249,6 +335,10 @@ function Order() {
                                         <button onClick={() => removeProductRow(index)}>삭제</button>
                                     </td>
                                 )}
+                                {/* 숨겨진 상품 코드 */}
+                                <td style={{ display: 'none' }}>
+                                    <input type="text" value={product.code || ''} readOnly />
+                                </td>
                             </tr>
                         ))}
                         </tbody>

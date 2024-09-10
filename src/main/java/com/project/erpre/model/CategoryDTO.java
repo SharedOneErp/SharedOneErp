@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class CategoryDTO {
-    private Long categoryNo;
+    private Integer categoryNo;
     private Integer categoryLevel;
     private Integer parentCategoryNo;
     private String categoryNm;

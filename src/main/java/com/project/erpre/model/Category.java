@@ -21,7 +21,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_no")
-    private Long categoryNo;
+    private Integer categoryNo;
 
     @Column(name = "category_level", nullable = false)
     private Integer categoryLevel = 1; // 기본값 설정
@@ -41,9 +41,7 @@ public class Category {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    @JsonBackReference
     @JsonIgnore
     private List<Product> products;
-
 
 }

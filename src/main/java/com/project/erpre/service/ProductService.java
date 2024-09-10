@@ -4,6 +4,7 @@ import com.project.erpre.model.Product;
 import com.project.erpre.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,6 +16,16 @@ public class ProductService {
 
     // 전체 상품 목록 조회
     public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    // 선택한 상품 삭제
+    @Transactional
+    public List<Product> deleteProducts(List<String> productCds) {
+        if (productCds == null || productCds.isEmpty()) {
+            throw new IllegalArgumentException("상품 코드 목록이 비어 있습니다.");
+        }
+        productRepository.deleteByProductCdIn(productCds);
         return productRepository.findAll();
     }
 
