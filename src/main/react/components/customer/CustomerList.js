@@ -9,30 +9,31 @@ import '../../../resources/static/css/customer/CustomerList.css'; // 개별 CSS 
 function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
 
     const [isEditMode, setIsEditMode] = useState(false); // 수정 모드 상태
-    const [editableCustomer, setEditableCustomer] = useState(customer); // 수정 가능한 고객 정보
+    const [editableCustomer, setEditableCustomer] = useState(customer);
 
-    // 고객 정보가 변경될 때마다 editableCustomer를 갱신
+    // 고객 정보가 변경될 때마다 editableCustomer 업데이트
     useEffect(() => {
         if (customer) {
-            setEditableCustomer(customer); // customer 변경 시 editableCustomer 재설정
+            setEditableCustomer(customer);
         }
     }, [customer]);
 
-    // 수정 모드로 전환
+    // 수정 모드 토글
     const toggleEditMode = () => {
         setIsEditMode(!isEditMode);
     };
 
-    // 고객 정보 수정 시 필드 업데이트
+    // 입력 값 변경 처리
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setEditableCustomer({
-            ...editableCustomer,
+        setEditableCustomer((prev) => ({
+            ...prev,
             [name]: value,
-        });
+        }));
     };
 
-    if (!show || !customer) return null; // 모달을 보여주지 않을 때 null 반환
+    // 모달창이 열려 있지 않거나 고객 정보가 없으면 렌더링하지 않음
+    if (!show || !customer) return null;
 
     return (
         <div className="modal-overlay">
@@ -188,13 +189,9 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
 
                 <div className="modal-footer">
                     {isEditMode ? (
-                        <button className="save-button" onClick={() => onSave(editableCustomer)}>
-                            저장
-                        </button>
+                        <button className="save-button" onClick={() => onSave(editableCustomer)}>저장</button>
                     ) : (
-                        <button className="edit-button" onClick={toggleEditMode}>
-                            수정
-                        </button>
+                        <button className="edit-button" onClick={toggleEditMode}>수정</button>
                     )}
                     <button className="delete-button" onClick={onDelete}>삭제</button>
                 </div>
@@ -261,8 +258,8 @@ function CustomerList() {
         //추가 데이터
     ]);
 
-    const [selectedCustomer, setSelectedCustomer] = useState(null); // 선택된 고객 정보
-    const [showModal, setShowModal] = useState(false); // 모달 표시 상태
+    const [selectedCustomer, setSelectedCustomer] = useState(null); // 선택된 고객
+    const [showModal, setShowModal] = useState(false); // 모달창 표시 여부
 
     // 고객 정보 수정 저장
     const handleSaveCustomer = (updatedCustomer) => {
@@ -271,7 +268,7 @@ function CustomerList() {
                 customer.customerId === updatedCustomer.customerId ? updatedCustomer : customer
             )
         );
-        setShowModal(false); // 수정 후 모달 닫기
+        setShowModal(false); // 저장 후 모달 닫기
     };
 
     // 고객 정보 삭제
@@ -287,12 +284,12 @@ function CustomerList() {
     // 모달 열기
     const openModal = (customer) => {
         setSelectedCustomer(customer);
-        setShowModal(true);
+        setShowModal(true); // 모달 표시
     };
 
     // 모달 닫기
     const closeModal = () => {
-        setShowModal(false);
+        setShowModal(false); // 모달 닫기
     };
 
     // 필터 처리
