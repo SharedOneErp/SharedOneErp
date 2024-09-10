@@ -1,5 +1,6 @@
 package com.project.erpre.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,10 +20,11 @@ public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_d_no")
-    private Integer orderDNo;
+    private Integer orderNo;
 
     @ManyToOne
     @JoinColumn(name = "order_h_no", nullable = false)
+    @JsonIgnore
     private Order order;
 
     @ManyToOne

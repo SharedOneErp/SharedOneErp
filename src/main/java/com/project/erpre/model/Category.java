@@ -41,9 +41,7 @@ public class Category {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    @JsonBackReference
     @JsonIgnore
     private List<Product> products;
-
 
 }
