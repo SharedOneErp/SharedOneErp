@@ -44,4 +44,14 @@ public class Category {
     @JsonIgnore
     private List<Product> products;
 
+    // 부모 카테고리를 참조하는 필드
+    @ManyToOne
+    @JoinColumn(name = "parent_category_no", insertable = false, updatable = false) // 외래 키 설정
+    @JsonBackReference // 순환 참조 방지
+    private Category parentCategory;
+
+    // 자식 카테고리를 참조하는 필드
+    @OneToMany(mappedBy = "parentCategory")
+    @JsonIgnore
+    private List<Category> subCategories;
 }
