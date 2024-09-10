@@ -47,5 +47,12 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     // 선택한 상품 삭제
     void deleteByProductCdIn(List<String> productCds);
 
+    // category_no가 null인 경우를 처리하는 메서드
+    List<Product> findByProductCdContainingIgnoreCaseAndProductNmContainingIgnoreCase(
+            String productCd, String productNm);
+
+    // category_no가 null이 아닌 경우를 처리하는 메서드
+    List<Product> findByProductCdContainingIgnoreCaseAndCategoryAndProductNmContainingIgnoreCase(
+            String productCd, Category category, String productNm);
 
 }

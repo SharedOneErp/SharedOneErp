@@ -1,10 +1,11 @@
 
 header {
     background-color: #0058A3;
-    padding: 15px 20px;
+    padding: 10px 8px;
     color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
+    flex-shrink: 0; /* header의 크기가 줄어들지 않도록 설정 */
 }
 
 .header-container {
@@ -13,12 +14,16 @@ header {
     align-items: center;
     max-width: 1800px;
     margin: 0 auto;
-    margin-left: 38px;
-    margin-right: 50px;
+    /*margin-left: 38px;*/
+    margin-right: 30px;
+}
+
+.logo a {
+    display: flex; /* 로고 수직 정렬 */
 }
 
 .logo img {
-    height: 50px;
+    height: 23px;
     transition: transform 0.3s ease;
 }
 
@@ -70,7 +75,7 @@ header {
     margin-top: 10px;
 }
 .teamname{
-    font-size: 10px;
+    font-size: 14px;
 }
 
 .bottom-border {

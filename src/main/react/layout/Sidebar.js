@@ -91,8 +91,7 @@ function Sidebar({currentMenu}) {
                     <div className="user-name">
                         {employee ? (
                             <>
-                                IKEA ({employee.employeeRole})<br/>
-                                {employee.employeeId}
+                                {employee.employeeId} ({employee.employeeRole}
                             </>
                         ) : (
                             'LOADING'

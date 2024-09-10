@@ -36,4 +36,13 @@ public class ProductController {
         return productService.deleteProducts(productCds);
     }
 
+    // 검색 API
+    @GetMapping("/search")
+    public List<Product> searchProducts(
+            @RequestParam(required = false) String productCd,
+            @RequestParam(required = false) Category category,
+            @RequestParam(required = false) String productNm
+    ) {
+        return productService.searchProducts(productCd, category, productNm);
+    }
 }

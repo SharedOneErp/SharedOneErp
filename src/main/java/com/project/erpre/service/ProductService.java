@@ -41,5 +41,12 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public List<Product> searchProducts(String productCd, Category category, String productNm) {
+        if (category == null) {
+            return productRepository.findByProductCdContainingIgnoreCaseAndProductNmContainingIgnoreCase(productCd, productNm);
+        } else {
+            return productRepository.findByProductCdContainingIgnoreCaseAndCategoryAndProductNmContainingIgnoreCase(productCd, category, productNm);
+        }
+    }
 
 }

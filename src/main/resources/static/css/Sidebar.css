@@ -4,6 +4,14 @@
     padding: 20px;
     /*box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);*/
     border-right: 1px solid #e1e1e1;
+    height: 100%; /* sidebar가 전체 높이를 차지하도록 설정 */
+    overflow-y: scroll; /* sidebar의 세로 스크롤을 활성화 */
+    flex-shrink: 0; /* sidebar의 크기가 줄어들지 않도록 설정 */
+}
+
+/* 스크롤바 숨기기 */
+.sidebar::-webkit-scrollbar {
+    display: none; /* 웹킷 브라우저에서 스크롤바를 숨김 */
 }
 
 .sidebar-top {
