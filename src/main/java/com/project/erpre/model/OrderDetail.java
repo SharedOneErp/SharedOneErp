@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @ToString
+@Builder // 빌더 패턴을 추가합니다.
 public class OrderDetail {
 
     @Id

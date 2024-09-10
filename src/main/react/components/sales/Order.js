@@ -31,6 +31,7 @@ function Order() {
     }, [orderNo]);
 
     const fetchOrderDetail = async (orderNo) => {
+        console.log("-------------------------------------fetchOrderDetail");
         try {
             const response = await fetch(`http://localhost:8787/api/orders/${orderNo}`);
             if (!response.ok) throw new Error('주문 데이터를 가져올 수 없습니다.');
@@ -71,6 +72,7 @@ function Order() {
 
     // 상품 검색 처리
     const handleSearch = async () => {
+        console.log("-------------------------------------handleSearch");
         try {
             const response = await fetch(`http://localhost:8787/api/products/search?productCd=${searchCode}&productNm=${searchQuery}`);
             if (!response.ok) throw new Error('검색 결과가 없습니다.');
@@ -130,6 +132,7 @@ function Order() {
             orderDUpdateDate: null
         };
 
+        console.log("-------------------------------------handleSubmit");
         try {
             const response = await fetch('http://localhost:8787/api/orders', {
                 method: 'POST',
@@ -138,13 +141,16 @@ function Order() {
                 },
                 body: JSON.stringify(orderData),
             });
+
+
+            // 오류
             if (response.ok) {
                 // 서버 응답에서 orderNo 값을 추출
                 const data = await response.json();
                 const order_h_no = data.orderNo; // JSON에서 'orderNo'을 추출하여 'order_h_no'로 사용
 
 
-                console.log(order_h_no);
+                console.log("order_h_no : " + order_h_no);
 
 
                 // 각 제품의 상세 주문 정보를 서버에 전송
@@ -154,12 +160,14 @@ function Order() {
 
                     const orderDetailData = {
                         orderNo: order_h_no,
-                        product: {productCd : product.code}, // 상품 코드를 올바르게 참조
+                        productCd: product.code, // 상품 코드
                         orderDPrice: product.price,
                         orderDQty: product.quantity,
                         orderDTotalPrice: product.price * product.quantity,
                         orderDDeliveryRequestDate: deliveryRequestDate,
                     };
+
+                    console.log("product.code : " + product.code);
 
                     const detailResponse = await fetch('http://localhost:8787/api/orderDetails', {
                         method: 'POST',
