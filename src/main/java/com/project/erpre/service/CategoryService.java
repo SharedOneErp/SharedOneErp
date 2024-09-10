@@ -51,7 +51,7 @@ public class CategoryService {
     }
 
     //카테고리 수정
-    public Category updateCategory(Long categoryNo, CategoryDTO categoryDTO) {
+    public Category updateCategory(Integer categoryNo, CategoryDTO categoryDTO) {
         logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
         logger.info("[CUSTOM_LOG] CategoryService > updateCategory");
 
