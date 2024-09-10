@@ -32,6 +32,7 @@ public class CategoryService {
 
     //카테고리 저장
     public Category saveCategory(CategoryDTO categoryDTO) {
+        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
         // DTO -> Entity 변환
         Category category = new Category();
         category.setCategoryLevel(categoryDTO.getCategoryLevel() );
@@ -78,7 +79,7 @@ public class CategoryService {
 
 
     //카테고리 삭제
-    public void deleteCategory(Integer categoryNo) {
+    public void deleteById(Integer categoryNo) {
         categoryRepository.deleteById(categoryNo);
     }
 
@@ -94,4 +95,5 @@ public class CategoryService {
     public List<Category> getLowCategory(Integer topCategoryId, Integer middleCategoryId) {
         return categoryRepository.findLowCategoryByTopAndMiddleCategory(topCategoryId, middleCategoryId);
     }
+
 }
