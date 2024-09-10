@@ -26,14 +26,12 @@ public class CategoryService {
     }
 
     //특정 카테고리
-    public Optional<Category> getCategoryById(Long categoryNo) {
+    public Optional<Category> getCategoryById(Integer categoryNo) {
         return categoryRepository.findById(categoryNo);
     }
 
     //카테고리 저장
     public Category saveCategory(CategoryDTO categoryDTO) {
-        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
-        logger.info("[CUSTOM_LOG] CategoryService > saveCategory");
         // DTO -> Entity 변환
         Category category = new Category();
         category.setCategoryLevel(categoryDTO.getCategoryLevel() );
@@ -43,6 +41,7 @@ public class CategoryService {
         logger.info("[CUSTOM_LOG] categoryDTO.getCategoryNm() : " + categoryDTO.getCategoryNm() );
         logger.info("[CUSTOM_LOG] categoryDTO.getParentCategoryNo() : " + categoryDTO.getParentCategoryNo() );
         logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+
 
 //        // 삽입 날짜 설정 (새로 삽입할 때만)
 //        category.setCategoryInsertDate(new Timestamp(System.currentTimeMillis()));
@@ -79,7 +78,7 @@ public class CategoryService {
 
 
     //카테고리 삭제
-    public void deleteCategory(Long categoryNo) {
+    public void deleteCategory(Integer categoryNo) {
         categoryRepository.deleteById(categoryNo);
     }
 
@@ -88,11 +87,11 @@ public class CategoryService {
         return categoryRepository.findTopCategory();
     }
 
-    public List<Category> getMiddleCategory(Long topCategoryId) {
+    public List<Category> getMiddleCategory(Integer topCategoryId) {
         return categoryRepository.findMiddleCategory(topCategoryId);
     }
 
-    public List<Category> getLowCategory(Long topCategoryId, Long middleCategoryId) {
+    public List<Category> getLowCategory(Integer topCategoryId, Integer middleCategoryId) {
         return categoryRepository.findLowCategoryByTopAndMiddleCategory(topCategoryId, middleCategoryId);
     }
 }

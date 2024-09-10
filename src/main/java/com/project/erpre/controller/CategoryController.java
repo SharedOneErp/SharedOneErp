@@ -27,7 +27,7 @@ public class CategoryController {
 
     //특정 카테고리
     @GetMapping("/{categoryNo}")
-    public Optional<Category> getCategoryById(@PathVariable Long categoryNo) {
+    public Optional<Category> getCategoryById(@PathVariable Integer categoryNo) {
         return categoryService.getCategoryById(categoryNo);
     }
 
@@ -42,11 +42,12 @@ public class CategoryController {
     public Category updateCategory(@PathVariable Long categoryNo, @RequestBody CategoryDTO categoryDTO ) {
         categoryDTO.setCategoryNo(categoryNo);
         return categoryService.saveCategory(categoryDTO);
+
     }
 
     //카테고리 삭제
     @DeleteMapping("/{categoryNo}")
-    public void deleteCategory(@PathVariable Long categoryNo) {
+    public void deleteCategory(@PathVariable Integer categoryNo) {
         categoryService.deleteCategory(categoryNo);
     }
 
@@ -58,14 +59,14 @@ public class CategoryController {
 
     //카테고리 중분류
     @GetMapping("/middle/{topCategoryId}")
-    public List<Category> getMiddleCategory(@PathVariable Long topCategoryId) {
+    public List<Category> getMiddleCategory(@PathVariable Integer topCategoryId) {
         return categoryService.getMiddleCategory(topCategoryId);
     }
 
     //카테고리 소분류
     @GetMapping("/low/{middleCategoryId}/{topCategoryId}")
-    public List<Category> getLowCategory(@PathVariable Long topCategoryId,
-                                         @PathVariable Long middleCategoryId) {
+    public List<Category> getLowCategory(@PathVariable Integer topCategoryId,
+                                         @PathVariable Integer middleCategoryId) {
         return categoryService.getLowCategory(topCategoryId, middleCategoryId);
     }
 
