@@ -1,6 +1,7 @@
 package com.project.erpre.service;
 import com.project.erpre.model.Category;
 import com.project.erpre.model.Product;
+import com.project.erpre.model.ProductDTO;
 import com.project.erpre.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,9 @@ public class ProductService {
     private ProductRepository productRepository;
 
     // 전체 상품 목록 조회
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductDTO> getAllProducts() {
+
+        return productRepository.getAllProducts();
     }
 
     // 선택한 상품 삭제

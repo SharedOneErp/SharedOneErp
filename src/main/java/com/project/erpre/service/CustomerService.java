@@ -28,4 +28,7 @@ public class CustomerService {
         customerRepository.deleteById(customerNo);
     }
 
+    public List<Customer> searchCustomers(String name) {
+        return customerRepository.findByCustomerNameContainingIgnoreCase(name);
+    }
 }

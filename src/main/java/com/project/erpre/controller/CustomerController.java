@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/customer")
+@RequestMapping("/api/customers")
 //@CrossOrigin(origins = "http://localhost:8787") // React 개발 서버 포트
 public class CustomerController {
 
@@ -45,6 +45,11 @@ public class CustomerController {
     public void deleteCustomer(@PathVariable Integer customerNo) {
         logger.info("deleteCustomer 호출");
         customerService.deleteCustomer(customerNo);
+    }
+
+    @GetMapping("/search")
+    public List<Customer> searchCustomers(@RequestParam("name") String name) {
+        return customerService.searchCustomers(name);
     }
 
 }
