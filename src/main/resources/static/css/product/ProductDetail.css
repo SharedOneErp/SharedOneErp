@@ -22,9 +22,9 @@ h1 {
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 30px;
     display: flex;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
     align-items: center;
     padding-left: 20px;
 }
@@ -44,7 +44,6 @@ input[type="text"] {
 
 .category-group .category-inputs {
     display: flex;
-    justify-content: space-between;
     gap: 10px;
     position: relative;
 }
@@ -72,7 +71,7 @@ input[type="text"]:not([id="salesAmount"]) {
 
 .transaction-table {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 10px;
     border-collapse: collapse;
     text-align: center;
     padding-left: 20px;
@@ -88,7 +87,8 @@ input[type="text"]:not([id="salesAmount"]) {
     font-size: 12px;
     color: #888;
     text-align: center;
-    margin-left: -920px;
+    margin-left: 200px;
+
 }
 
 .button-container {
