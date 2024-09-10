@@ -36,7 +36,7 @@ public class Employee {
     @Column(name = "employee_tel", length = 20, nullable = false)
     private String employeeTel;
 
-    @Column(name = "employeeRole", length = 20, nullable = false)
+    @Column(name = "employee_role", length = 20, nullable = false)
     private String employeeRole;
 
     @Column(name = "employee_insert_date", nullable = false, updatable = false)
