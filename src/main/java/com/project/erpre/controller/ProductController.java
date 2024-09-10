@@ -23,6 +23,12 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
+    // 선택한 상품 삭제 API
+    @DeleteMapping("/productDelete")
+    public List<Product> deleteProducts(@RequestBody List<String> productCds) {
+        return productService.deleteProducts(productCds);
+    }
+
     // 검색 API
     @GetMapping("/search")
     public List<Product> searchProducts(

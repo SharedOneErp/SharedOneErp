@@ -7,7 +7,8 @@ import '../../../resources/static/css/product/ProductList.css'; // 개별 CSS �
 function ProductList() {
 
     // 상품 목록 저장 state
-    const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState([]); // 전체 상품 목록
+    const [selectedProducts, setSelectedProducts] = useState([]); // 체크된 상품 목록
 
     useEffect(() => {
         fetch('/api/products/productList')
@@ -15,6 +16,53 @@ function ProductList() {
             .then(data => setProducts(data))
             .catch(error => console.error('전체 상품 목록 조회 실패', error))
     }, []);
+
+    // 전체 선택
+    const handleAllSelectProducts = (checked) => {
+        if (checked) {
+            const allProductCds = products.map(product => product.productCd); // 모든 상품의 ID를 배열로 만듭니다.
+            setSelectedProducts(allProductCds);
+        } else {
+            setSelectedProducts([]);
+        }
+    };
+
+    // 상품 선택
+    const handleSelectProduct = (productCd) => {
+        setSelectedProducts(prevSelected => {
+            if(prevSelected.includes(productCd)) {
+                return prevSelected.filter(cd => cd !== productCd);
+            } else {
+                const newSelectedProducts = [...prevSelected, productCd];
+                console.log('선택된 상품코드', newSelectedProducts);
+                return newSelectedProducts;
+            }
+        });
+    };
+    
+    // 선택 상품 삭제 요청
+    const handleDeleteSelected = () => {
+        fetch('http://localhost:8787/api/products/productDelete', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'},
+            body: JSON.stringify(selectedProducts)
+        })
+            .then(response => {
+                console.log(selectedProducts) // 현재 선택된 상품코드들
+                if (!response.ok) {
+                    throw new Error('상품 삭제 실패');
+                }
+                alert('상품이 삭제되었습니다');
+                return response.json();
+            })
+            .then(data => {
+                setProducts(data);
+                setSelectedProducts([]);
+            })
+            .catch(error => console.error(error));
+    };
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -66,7 +114,8 @@ function ProductList() {
                 <table className="approval-list">
                     <thead>
                     <tr>
-                        <th><input type="checkbox"/></th>
+                        <th><input type="checkbox"
+                                   onChange={(e) => handleAllSelectProducts(e.target.checked)}/></th>
                         <th>상품번호</th>
                         <th>상품명</th>
                         <th>대분류</th>
@@ -79,8 +128,11 @@ function ProductList() {
                     </thead>
                     <tbody className="approval-list-content">
                     {products.map((product, index) => (
-                        <tr key={product.Id}>
-                            <td><input type="checkbox"/></td>
+                        <tr key={product.productCd}
+                            className={selectedProducts.includes(product.productCd) ? 'selected' : ''}>
+                            <td><input type="checkbox"
+                                       onChange={() => handleSelectProduct(product.productCd)}
+                                       checked={selectedProducts.includes(product.productCd)}/></td>
                             <td>{product.productCd}</td>
                             <td>{product.productNm}</td>
                             <td>{product.category?.categoryNo}</td>
@@ -103,9 +155,10 @@ function ProductList() {
 
                 <div className="button-container">
                     <button className="filter-button">수정</button>
-                    <button className="filter-button">삭제</button>
+                    <button className="filter-button" onClick={handleDeleteSelected}>삭제</button>
                     <button className="filter-button" onClick={() => window.location.href = '/product'}>등록</button>
                 </div>
+
             </div>
 
         </Layout>
