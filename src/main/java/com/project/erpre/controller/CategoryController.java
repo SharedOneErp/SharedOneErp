@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/category")
-@CrossOrigin(origins = "http://localhost:8787") // React 개발 서버 포트
+//@CrossOrigin(origins = "http://localhost:8787") // React 개발 서버 포트
 public class CategoryController {
 
     @Autowired
@@ -30,7 +30,7 @@ public class CategoryController {
 
     //카테고리 저장
     @PostMapping("/save")
-    public Category saveCategory(Category category) {
+    public Category saveCategory(@RequestBody Category category) {
         return categoryService.saveCategory(category);
     }
 
@@ -58,7 +58,7 @@ public class CategoryController {
         return categoryService.getMiddleCategory(topCategoryId);
     }
 
-    @GetMapping("/low/{middleCategoryId}")
+    @GetMapping("/low/{middleCategoryId}/{topCategoryId}")
     public List<Category> getLowCategory(@PathVariable Long topCategoryId,
                                          @PathVariable Long middleCategoryId) {
         return categoryService.getLowCategory(topCategoryId, middleCategoryId);
