@@ -47,7 +47,7 @@ public class CategoryController {
     }
 
     //카테고리 삭제
-    @DeleteMapping
+    @DeleteMapping("/{categoryNo}")
     public void deleteCategory(@PathVariable Long categoryNo) {
         categoryService.deleteCategory(categoryNo);
     }
@@ -63,7 +63,7 @@ public class CategoryController {
         return categoryService.getMiddleCategory(topCategoryId);
     }
 
-    @GetMapping("/low/{middleCategoryId}")
+    @GetMapping("/low/{middleCategoryId}/{topCategoryId}")
     public List<Category> getLowCategory(@PathVariable Long topCategoryId,
                                          @PathVariable Long middleCategoryId) {
         return categoryService.getLowCategory(topCategoryId, middleCategoryId);

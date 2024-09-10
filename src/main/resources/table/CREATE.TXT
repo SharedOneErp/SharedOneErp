@@ -36,13 +36,8 @@ create table m_price (
     customer_no            int              not null, -- 고객 번호 (m_customer 테이블 참조)
     product_cd             varchar(10)      not null, -- 제품 코드 (m_product 테이블 참조)
     price_customer         decimal(15, 2)   not null, -- 고객별 가격
-
-    --price_discount_rate         decimal(4, 2)    null,     -- 할인율
-    --price_discount_start_date   timestamp       null,     -- 할인 시작 일자
-    --price_discount_end_date     timestamp       null,     -- 할인 종료 일자
     price_start_date            timestamp       null,     -- 가격 적용 시작 일자
     price_end_date              timestamp       null,     -- 가격 적용 종료 일자
-
     price_insert_date      timestamp        not null default current_timestamp, -- 가격 등록 일시
     price_update_date      timestamp        null,     -- 가격 수정 일시
     primary key (price_no) -- 기본 키 설정
@@ -89,8 +84,7 @@ create table m_employee (
     employee_pw            varchar(50)      not null, -- 직원 비밀번호
     employee_name          varchar(50)      not null,  -- 직원 이름
     employee_email         varchar(30)      null,     -- 직원 이메일
-    employee_contact       varchar(20)      not null, -- 직원 연락처
-    --employee_grade         varchar(20)      not null, -- 직원 등급(staff, manager, admin)
+    employee_tel       varchar(20)      not null, -- 직원 연락처
     employee_role          varchar(20)      not null, -- 직원 권한(staff, manager, admin)
     employee_insert_date   timestamp        not null default current_timestamp, -- 직원 등록 일시
     employee_update_date   timestamp        null,     -- 직원 수정 일시
