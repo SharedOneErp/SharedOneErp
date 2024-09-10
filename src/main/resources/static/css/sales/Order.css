@@ -30,7 +30,7 @@
     width: 50%;
     margin-left: 20px;
 }
-.employee-id{
+.employee-name{
     margin-left: 20px;
 }
 .order-status {
@@ -81,11 +81,11 @@
 
 .add-button {
     position: absolute; /* 절대 위치 지정 */
-    top: -40px;
+    top: -30px;
     right: 0;           /* 테이블 오른쪽 끝에 배치 */
     background-color: #007CC1;
     color: white;
-    padding: 5px;
+    padding: 1px 8px;
     border: none;
     cursor: pointer;
     border-radius: 5px;
@@ -245,8 +245,12 @@
     text-align: center;
     border: none;
     background-color: #007CC1;
-    margin: 0 10px;
+    margin: 0 5px;
 }
+.order-buttons .close-btn{
+    background-color: gray;
+}
+
 .search-button{
     margin-left: 5px;
 }
