@@ -130,7 +130,7 @@ function Order() {
     const customerSearch = async () => {
         console.log("-------------------------------------customerSearch");
         try {
-            const response = await fetch(`http://localhost:8787/api/customers/search?name=${encodeURIComponent(searchQuery)}`);
+            const response = await fetch(`http://localhost:8787/api/customer/search?name=${encodeURIComponent(searchQuery)}`);
             if (!response.ok) throw new Error('검색 결과가 없습니다.');
             const data = await response.json();
             setCustomerSearchResults(data);

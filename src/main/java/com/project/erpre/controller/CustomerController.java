@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/customers")
+@RequestMapping("/api/customer")
 //@CrossOrigin(origins = "http://localhost:8787") // React 개발 서버 포트
 public class CustomerController {
 
