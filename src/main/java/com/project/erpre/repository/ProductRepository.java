@@ -14,7 +14,16 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, String> {
 
     // 전체 상품 목록 조회
-    List<Product> findAll();
+    @Query("SELECT p, " +
+            "c1.categoryNm AS topCategory, " +
+            "c2.categoryNm AS middleCategory, " +
+            "c3.categoryNm AS lowCategory " +
+            "FROM Product p " +
+            "JOIN p.category c3 " +
+            "JOIN c3.parentCategory c2 " +
+            "JOIN c2.parentCategory c1 " +
+            "ORDER BY p.productCd ASC")
+    List<Object[]> getAllProducts();
 
     // 선택한 상품 삭제
     void deleteByProductCdIn(List<String> productCds);

@@ -15,8 +15,9 @@ public class ProductService {
     private ProductRepository productRepository;
 
     // 전체 상품 목록 조회
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<Object[]> getAllProducts() {
+
+        return productRepository.getAllProducts();
     }
 
     // 선택한 상품 삭제

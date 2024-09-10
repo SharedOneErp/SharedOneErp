@@ -19,7 +19,7 @@ public class ProductController {
 
     // 전체 상품 목록 조회 API
     @GetMapping("/productList")
-    public List<Product> getAllProducts() {
+    public List<Object[]> getAllProducts() {
         return productService.getAllProducts();
     }
 

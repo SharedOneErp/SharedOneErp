@@ -41,7 +41,7 @@ function ProductDetail() {
                 <table className="transaction-table">
                     <thead>
                         <tr>
-                            <th>최근 거래일</th>
+                            <th>최근 납품일</th>
                             <th>거래처</th>
                             <th>수량</th>
                             <th>매출액(원)</th>
