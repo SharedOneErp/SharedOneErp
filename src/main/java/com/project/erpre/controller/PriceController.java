@@ -43,7 +43,7 @@ public class PriceController {
         return priceService.saveOrUpdate(price);
     }
 
-    // 가격 정보 수정 (UPDATE)
+    // 가격 정보 수정
     @PutMapping("/update")
     public Price updatePrice(@RequestBody Price price) {
         return priceService.saveOrUpdate(price);
