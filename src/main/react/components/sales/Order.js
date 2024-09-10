@@ -87,6 +87,9 @@ function Order() {
     const openModal = (index) => {
         setSelectedProductIndex(index);
         setShowModal(true);
+        setSearchQuery('');
+        setSearchCode('');
+        setSearchResults([]);
     };
 
     // 모달 닫기
@@ -97,6 +100,8 @@ function Order() {
     // Customer 모달 열기
     const openCustomerModal = () => {
         setCustomerModalOpen(true);
+        setSearchQuery('');
+        setSearchResults([]);
     };
 
     // Customer 모달 닫기
@@ -134,10 +139,6 @@ function Order() {
             setCustomerSearchResults([]);
         }
     };
-
-
-
-
 
     const [selectedProductIndex, setSelectedProductIndex] = useState(null);
 
@@ -196,7 +197,6 @@ function Order() {
                 },
                 body: JSON.stringify(orderData),
             });
-
 
             // 오류
             if (response.ok) {
