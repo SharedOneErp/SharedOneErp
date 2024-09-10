@@ -7,13 +7,13 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface CategoryRepository extends JpaRepository<Category, Long> {
+public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     //카테고리 이름 조회
     List<Category> findByCategoryNm(String categoryNm);
 
     //카테고리 번호 조회
-    Category findByCategoryNo(Long categoryNo);
+    Category findByCategoryNo(Integer categoryNo);
 
     //대분류
     @Query("select c from Category c where c.categoryLevel = 1")
@@ -25,7 +25,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             " where c1.categoryLevel = 1" +
             " and c2.categoryLevel = 2" +
             " and c1.categoryNo = :topCategoryNo")
-    List<Category> findMiddleCategory(@Param("topCategoryNo") Long topCategoryNo);
+    List<Category> findMiddleCategory(@Param("topCategoryNo") Integer topCategoryNo);
 
     //소분류
     @Query("select c3 from Category c3" +
@@ -36,6 +36,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             " and c3.categoryLevel = 3" +
             " and c1.categoryNo = :topCategoryNo" +
             " and c2.categoryNo = :middleCategoryNo")
-    List<Category> findLowCategoryByTopAndMiddleCategory(@Param("topCategoryNo") Long topCategoryNo,
-                                                         @Param("middleCategoryNo") Long middleCategoryNo);
+    List<Category> findLowCategoryByTopAndMiddleCategory(@Param("topCategoryNo") Integer topCategoryNo,
+                                                         @Param("middleCategoryNo") Integer middleCategoryNo);
 }
