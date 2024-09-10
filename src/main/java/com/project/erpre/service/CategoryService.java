@@ -1,7 +1,11 @@
 package com.project.erpre.service;
 
+import com.project.erpre.controller.PriceController;
 import com.project.erpre.model.Category;
+import com.project.erpre.model.CategoryDTO;
 import com.project.erpre.repository.CategoryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +14,8 @@ import java.util.Optional;
 
 @Service
 public class CategoryService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PriceController.class); // Logger 선언
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -25,7 +31,18 @@ public class CategoryService {
     }
 
     //카테고리 저장
-    public Category saveCategory(Category category) {
+    public Category saveCategory(CategoryDTO categoryDTO) {
+        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+        logger.info("[CUSTOM_LOG] CategoryService > saveCategory");
+        // DTO -> Entity 변환
+        Category category = new Category();
+        category.setCategoryLevel(categoryDTO.getCategoryLevel());
+        category.setCategoryNm(categoryDTO.getCategoryNm());
+        logger.info("[CUSTOM_LOG] categoryDTO.getCategoryLevel() : " + categoryDTO.getCategoryLevel());
+        logger.info("[CUSTOM_LOG] categoryDTO.getCategoryNm() : " + categoryDTO.getCategoryNm());
+        logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+
+        // 엔터티 저장
         return categoryRepository.save(category);
     }
 

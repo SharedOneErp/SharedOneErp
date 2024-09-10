@@ -127,3 +127,17 @@
 .bottom-container .bottom-button .print-button {
     margin-left: 10px;
 }
+
+.filter-button {
+    background-color: #007CC1;
+    color: white;
+    padding: 6px 15px;
+    margin: 5px;
+    margin-right: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.filter-button:hover {
+    background-color: #005a91; /* 호버 시 조금 더 어두운 색으로 변경 */
+}
