@@ -142,7 +142,7 @@ VALUES
 (20, 'P0020', 200000.00, 20, 4000000.00, '2024-08-01'),
 (21, 'P0021', 210000.00, 21, 4410000.00, '2024-09-01');
 
-INSERT INTO m_employee (employee_id, employee_pw, employee_name, employee_email, employee_contact, employee_role)
+INSERT INTO m_employee (employee_id, employee_pw, employee_name, employee_email, employee_tel, employee_role)
 VALUES
 ('emp01', 'pw01', '직원1', 'emp1@company.com', '010-1111-1111', 'staff'),
 ('emp02', 'pw02', '직원2', 'emp2@company.com', '010-2222-2222', 'staff'),
