@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/price")
-@CrossOrigin(origins = "http://localhost:8787") // React 개발 서버 포트
+//@CrossOrigin(origins = "http://localhost:8787") // React 개발 서버 포트
 public class PriceController {
 
     @Autowired
