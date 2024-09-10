@@ -2,6 +2,7 @@ package com.project.erpre.controller;
 
 import com.project.erpre.model.Employee;
 import com.project.erpre.repository.EmployeeRepository;
+import com.project.erpre.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,6 +20,10 @@ public class EmployeeController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Autowired
+    private EmployeeService employeeService;
+
+    // 로그인 엔드포인트
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest, HttpSession session) {
         String employeeId = loginRequest.get("employeeId");
@@ -38,12 +44,14 @@ public class EmployeeController {
         }
     }
 
+    // 로그아웃 엔드포인트
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {
         session.invalidate(); // 세션 무효화
         return ResponseEntity.ok().build(); // 성공적으로 로그아웃
     }
 
+    // 현재 로그인한 직원 정보 조회
     @GetMapping("/employee")
     public ResponseEntity<Employee> getEmployee(HttpSession session) {
         Employee employee = (Employee) session.getAttribute("employee");
@@ -53,7 +61,11 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+
+    // 전체 직원 목록 조회
+    @GetMapping("/employeeList")
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        List<Employee> employeeList = employeeService.getAllEmployees();
+        return ResponseEntity.ok(employeeList);
+    }
 }
-
-
-
