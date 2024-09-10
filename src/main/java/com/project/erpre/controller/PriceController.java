@@ -4,6 +4,8 @@ import com.project.erpre.model.Customer;
 import com.project.erpre.model.Price;
 import com.project.erpre.model.Product;
 import com.project.erpre.service.PriceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,12 +16,15 @@ import java.util.List;
 //@CrossOrigin(origins = "http://localhost:8787") // React 개발 서버 포트
 public class PriceController {
 
+    private static final Logger logger = LoggerFactory.getLogger(PriceController.class); // Logger 선언
+
     @Autowired
     private PriceService priceService;
 
     // 전체 목록 조회
     @GetMapping("/getList")
     public List<Price> getList() {
+        logger.info("[CUSTOM_LOG] test");
         return priceService.getList();
     }
 
