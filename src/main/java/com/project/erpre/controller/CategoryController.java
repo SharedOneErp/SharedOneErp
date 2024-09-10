@@ -1,7 +1,10 @@
 package com.project.erpre.controller;
 
 import com.project.erpre.model.Category;
+import com.project.erpre.model.CategoryDTO;
 import com.project.erpre.service.CategoryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,8 +13,9 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/category")
-//@CrossOrigin(origins = "http://localhost:8787") // React 개발 서버 포트
 public class CategoryController {
+
+    private static final Logger logger = LoggerFactory.getLogger(PriceController.class); // Logger 선언
 
     @Autowired
     public CategoryService categoryService;
@@ -30,15 +34,16 @@ public class CategoryController {
 
     //카테고리 저장
     @PostMapping("/save")
-    public Category saveCategory(@RequestBody Category category) {
-        return categoryService.saveCategory(category);
+    public Category saveCategory(@RequestBody CategoryDTO categoryDTO) { // Entity는 폼 데이터나 쿼리 파라미터로 자동 바인딩되지만, DTO는 JSON 본문을 객체로 변환하기 위해 @RequestBody가 필요합니다.
+        return categoryService.saveCategory(categoryDTO);
     }
 
     //카테고리 수정
     @PutMapping("/{categoryNo}")
     public Category updateCategory(@PathVariable Long categoryNo, @RequestBody Category category ) {
         category.setCategoryNo(categoryNo);
-        return categoryService.saveCategory(category);
+        return null;
+        //return categoryService.saveCategory(category);
     }
 
     //카테고리 삭제
