@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴포넌트를 DOM에 렌더링
 import {BrowserRouter, useSearchParams} from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
 import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
@@ -15,7 +15,7 @@ function Order() {
     const isDetailView = !!orderNo && mode === 'view'; // 상세보기 모드
 
     // 상태들
-    const [products, setProducts] = useState([{ name: '', price:'' , quantity: '' }]);
+    const [products, setProducts] = useState([{name: '', price: '', quantity: ''}]);
     const [showModal, setShowModal] = useState(false); // 모달 상태
     const [customerModalOpen, setCustomerModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태
@@ -23,7 +23,9 @@ function Order() {
     const [searchResults, setSearchResults] = useState([]); // 검색 결과 상태
     const [customerSearchResults, setCustomerSearchResults] = useState([]); // 고객 검색 결과
 
+    //직원
     const [employee, setEmployee] = useState(null); // 사용자 정보 넘기는 변수
+
 
     // 사용자 정보를 서버에서 가져오는 useEffect
     useEffect(() => {
@@ -68,7 +70,7 @@ function Order() {
 
     // 상품 행 추가
     const addProductRow = () => {
-        setProducts([...products, { name: '', price: 0, quantity: 0 }]);
+        setProducts([...products, {name: '', price: 0, quantity: 0}]);
     };
 
     // 상품 행 제거
@@ -110,8 +112,6 @@ function Order() {
     };
 
 
-
-
     // 상품 검색 처리
     const handleSearch = async () => {
         console.log("-------------------------------------handleSearch");
@@ -130,7 +130,7 @@ function Order() {
     const customerSearch = async () => {
         console.log("-------------------------------------customerSearch");
         try {
-            const response = await fetch(`http://localhost:8787/api/customers/search?name=${encodeURIComponent(searchQuery)}`);
+            const response = await fetch(`http://localhost:8787/api/customer/search?name=${encodeURIComponent(searchQuery)}`);
             if (!response.ok) throw new Error('검색 결과가 없습니다.');
             const data = await response.json();
             setCustomerSearchResults(data);
@@ -180,8 +180,8 @@ function Order() {
 
         // 고객번호와 직원 ID를 숫자로 변환합니다.
         const orderData = {
-            customer: { customerNo: customerNo },  // 서버에서 Expecting Customer 객체
-            employee: { employeeId: employeeId },  // 서버에서 Expecting Employee 객체
+            customer: {customerNo: customerNo},  // 서버에서 Expecting Customer 객체
+            employee: {employeeId: employeeId},  // 서버에서 Expecting Employee 객체
             orderHTotalPrice: totalAmount,
             orderDStatus: "ing",
             orderDInsertDate: new Date().toISOString(),
@@ -254,14 +254,17 @@ function Order() {
         // 예를 들어, 고객 번호를 폼에 설정할 수 있습니다.
         document.querySelector('input[name="customerNo"]').value = selectedCustomer.customerNo;
         document.querySelector('input[name="customerName"]').value = selectedCustomer.customerName;
+        document.querySelector('input[name="customerAddr"]').value = selectedCustomer.customerAddr;
+        document.querySelector('input[name="customerTel"]').value = selectedCustomer.customerTel;
+        document.querySelector('input[name="customerRepresentativeName"]').value = selectedCustomer.customerRepresentativeName;
+
 
         closeCustomerModal();
     };
 
 
-
     return (
-        <Layout currentMenu="order" >
+        <Layout currentMenu="order">
             <div className="orderDetail-title">
                 <h3>{isCreateMode ? '주문 등록' : isEditMode ? '주문 수정' : '주문 상세보기'}</h3>
             </div>
@@ -290,35 +293,61 @@ function Order() {
                     {!isCreateMode && (
                         <>
                             <div className="form-group">
-                            <label>물품 총액</label>
-                                <input type="text" value="300,000" readOnly/>
+                                <label>물품 총액</label>
+                                <input type="text" value="" readOnly/>
                             </div>
                             <div className="form-group">
                                 <label>주문 등록일</label>
-                                <input type="date" defaultValue="2024-09-07" readOnly className="readonly"/>
+                                <input type="date" defaultValue="" readOnly className="readonly"/>
                             </div>
                         </>
                     )}
 
                     <div className="form-group">
                         <label>납품요청일</label>
-                        <input type="date" className="delivery-date" defaultValue="2024-10-07" readOnly={!isEditMode && !isCreateMode}/>
+                        <input type="date" className="delivery-date" defaultValue="2024-10-07"
+                               readOnly={!isEditMode && !isCreateMode}/>
                     </div>
 
                     <div className="form-group">
                         <label>담당자</label>
-                        <span className="employee-id">{employee ? (
+                        <span className="employee-id" style={{display: 'none'}}>{employee ? (
                             <>
-                               {employee.employeeId}
+                                {employee.employeeId}
+                            </>
+                        ) : (
+                            'LOADING'
+                        )}</span>
+                        <span className="employee-name">{employee ? (
+                            <>
+                                {employee.employeeName}
                             </>
                         ) : (
                             'LOADING'
                         )}</span>
                     </div>
+                    <div className="form-group">
+                        <label>주소</label>
+                        <input type="text" name="customerAddr" readOnly/>
+                    </div>
 
                     <div className="form-group">
+                        <label>연락처</label>
+                        <input type="text" name="customerTel" readOnly/>
+                    </div>
+
+                    <div className="form-group">
+                        <label>대표명</label>
+                        <input type="text" name="customerRepresentativeName" readOnly/>
+                    </div>
+
+
+                    <div
+                        className="form-group"
+                        style={{display: isCreateMode ? 'none' : 'block'}}
+                    >
                         <label>주문 상태</label>
-                        <span className="order-status">처리중</span>
+                        <span className="order-status"></span>
                     </div>
                 </div>
 
@@ -371,19 +400,19 @@ function Order() {
                                 <td>{product.price * product.quantity}</td>
                                 {(isCreateMode || isEditMode) && (
                                     <td>
-                                        <button onClick={() => removeProductRow(index)}>삭제</button>
+                                        <button onClick={() => removeProductRow(index)}>&times;</button>
                                     </td>
                                 )}
                                 {/* 숨겨진 상품 코드 */}
-                                <td style={{ display: 'none' }}>
-                                    <input type="text" value={product.code || ''} readOnly />
+                                <td style={{display: 'none'}}>
+                                    <input type="text" value={product.code || ''} readOnly/>
                                 </td>
                             </tr>
                         ))}
                         </tbody>
                     </table>
                     {(isCreateMode || isEditMode) &&
-                        <button className="add-button" onClick={addProductRow}>상품 추가</button>}
+                        <button className="add-button" onClick={addProductRow}>+</button>}
                 </div>
 
 
@@ -561,81 +590,6 @@ function Order() {
 
 
 
-                {/* 모달 창 */}
-                {showModal && (
-                    <div className="modal">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h4>상품 검색</h4>
-                                <button className="close-modal" onClick={closeModal}>&times;</button>
-                            </div>
-
-                            <div className="category-selectors">
-                                <select>
-                                    <option value="">대분류</option>
-                                    <option value="furniture">가구</option>
-                                </select>
-
-                                <select>
-                                    <option value="">중분류</option>
-                                    <option value="chair">의자</option>
-                                    <option value="table">테이블</option>
-                                </select>
-
-                                <select>
-                                    <option value="">소분류</option>
-                                    <option value="office-chair">사무용 의자</option>
-                                    <option value="dining-chair">식탁 의자</option>
-                                </select>
-                            </div>
-
-                            {/*검색 div (상품명 / 상품코드 / 검색)*/}
-                            <div className="search-fields">
-                                <input
-                                    type="text"
-                                    placeholder="상품명"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="상품코드"
-                                    value={searchCode}
-                                    onChange={(e) => setSearchCode(e.target.value)}
-                                />
-                                <button className="search-modal" onClick={handleSearch}>검색</button>
-                            </div>
-
-                            {/* 검색 결과 */}
-                            <div className="search-results">
-                                {searchResults.length > 0 ? (
-                                    <table className="search-results-table">
-                                        <thead>
-                                        <tr>
-                                            <th>상품코드</th>
-                                            <th>카테고리</th>
-                                            <th>상품명</th>
-                                            <th>가격</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {searchResults.map((result, index) => (
-                                            <tr key={index} onClick={() => handleProductSelect(result)}>
-                                                <td>{result.productCd}</td>
-                                                <td>{result.category.categoryNo}</td>
-                                                <td>{result.productNm}</td>
-                                                {/* 가격은 join 후 연결 */}
-                                            </tr>
-                                        ))}
-                                        </tbody>
-                                    </table>
-                                ) : (
-                                    <div>검색 결과가 없습니다.</div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                )}
                 <div className="total-amount">
                     <label>총 금액: </label>
                     <span>{products.reduce((sum, product) => sum + product.price * product.quantity, 0)}원</span>
@@ -646,12 +600,13 @@ function Order() {
                     {isEditMode && <button onClick={handleSubmit}>주문 수정</button>}
                     {isDetailView &&
                         <button onClick={() => window.location.href = `/order?no=${orderNo}&mode=edit`}>수정</button>}
-                    <button onClick={() => window.location.href = '/orderListAll'}>닫기</button>
+                    <button className="close-btn" onClick={() => window.location.href = '/orderListAll'}>닫기</button>
                 </div>
             </div>
         </Layout>
     );
 }
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
