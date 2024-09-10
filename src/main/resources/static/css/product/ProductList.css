@@ -91,6 +91,14 @@
     background-color: #ffdb0036; /* 이케아 노란색 */
 }
 
+.selected {
+    background-color: #ffdb0036; /* 이케아 노란색 */
+}
+
+.selected:hover {
+    background-color: #ffdb0036; /* 이케아 노란색 */
+}
+
 .bottom-container .approval-list .approval-list-content {
     text-align: center;
 }
