@@ -25,10 +25,16 @@
 .form-group {
     flex: 1 1 30%;
     display: flex;
-    flex-direction: column;
 }
 .form-group > input {
     width: 50%;
+    margin-left: 20px;
+}
+.employee-id{
+    margin-left: 20px;
+}
+.order-status {
+    margin-left: 20px;
 }
 
 .readonly {
@@ -136,6 +142,7 @@
     border: 1px solid #ccc;
     background-color: #fff;
     font-size: 14px;
+    width: 250px;
 }
 
 .search-modal {

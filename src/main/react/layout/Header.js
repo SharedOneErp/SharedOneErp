@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react';
 import '../../resources/static/css/Header.css';
 
 function Header() {
-    const [user, setUser] = useState(null); // 사용자 정보 넘기는 변수
+    const [employee, setEmployee] = useState(null); // 사용자 정보 넘기는 변수
 
     // 사용자 정보를 서버에서 가져오는 useEffect
     useEffect(() => {
-        const fetchUser = async () => {
+        const fetchEmployee = async () => {
             try {
-                const response = await fetch('/api/user', {
+                const response = await fetch('/api/employee', {
                     credentials: "include", // 세션 포함
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    setUser(data);
+                    setEmployee(data);
                 } else {
                     console.error('사용자 정보를 가져오는 데 실패했습니다.');
                 }
@@ -21,7 +21,7 @@ function Header() {
                 console.error('사용자 정보를 가져오는 중 오류 발생:', error);
             }
         };
-        fetchUser();
+        fetchEmployee();
     }, []);
 
     return (
@@ -35,10 +35,10 @@ function Header() {
                         <img className="bell-icon" src="/img/bell.png"/>
                     </div>
                     <div className="profile">
-                        {user ? (
+                        {employee ? (
                             <>
-                                <span className="teamname">IKEA 광명점 ({user.department})</span>
-                                <p><span className="profile-username">{user.username}</span></p>
+                                <span className="teamname">IKEA ({employee.employeeRole})</span>
+                                <p><span className="profile-username">{employee.employeeId}</span></p>
                             </>
                         ) : (
                             <span>LOADING</span> // 로딩 중 표시

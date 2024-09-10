@@ -11,14 +11,14 @@ function Login() {
         e.preventDefault(); // 폼 제출 방지
 
         try {
-            console.log('Attempting login with:', { username: id, password: pw }); // 디버깅용 로그
+            console.log('Attempting login with:', { employeeId: id, employeePw: pw }); // 디버깅용 로그
 
             const response = await fetch('http://localhost:8787/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username: id, password: pw }),
+                body: JSON.stringify({ employeeId: id, employeePw: pw }),
                 credentials: 'include'  // 쿠키를 서버에 전송
             });
 

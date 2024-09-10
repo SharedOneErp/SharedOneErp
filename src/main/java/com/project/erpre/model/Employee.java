@@ -61,6 +61,7 @@ public class Employee {
     protected void onUpdate() {
         this.employeeUpdateDate = Timestamp.valueOf(LocalDateTime.now());
     }
+
 }
 
 

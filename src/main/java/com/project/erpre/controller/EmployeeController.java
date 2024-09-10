@@ -1,7 +1,7 @@
 package com.project.erpre.controller;
 
-import com.project.erpre.model.User;
-import com.project.erpre.repository.UserRepository;
+import com.project.erpre.model.Employee;
+import com.project.erpre.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,24 +13,24 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class AuthController {
+public class EmployeeController {
 
     @Autowired
-    private UserRepository userRepository;
+    private EmployeeRepository employeeRepository;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest, HttpSession session) {
-        String username = loginRequest.get("username");
-        String password = loginRequest.get("password");
-        User user = userRepository.findByUsernameAndPassword(username, password).orElse(null);
+        String employeeId = loginRequest.get("employeeId");
+        String employeePw = loginRequest.get("employeePw");
+        Employee employee = employeeRepository.findByEmployeeIdAndEmployeePw(employeeId, employeePw).orElse(null);
 
-        if (user != null) {
-            session.setAttribute("user", user);
+        if (employee != null) {
+            session.setAttribute("employee", employee);
 
             // 로그인 성공 시 사용자 정보와 함께 응답
             Map<String, Object> response = new HashMap<>();
             response.put("message", "로그인 성공");
-            response.put("user", user); // 사용자 정보 포함
+            response.put("employee", employee); // 사용자 정보 포함
 
             return ResponseEntity.ok(response);
         } else {
@@ -44,11 +44,11 @@ public class AuthController {
         return ResponseEntity.ok().build(); // 성공적으로 로그아웃
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<User> getUser(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user != null) {
-            return ResponseEntity.ok(user);
+    @GetMapping("/employee")
+    public ResponseEntity<Employee> getEmployee(HttpSession session) {
+        Employee employee = (Employee) session.getAttribute("employee");
+        if (employee != null) {
+            return ResponseEntity.ok(employee);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
