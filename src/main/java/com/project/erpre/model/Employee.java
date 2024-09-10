@@ -27,14 +27,14 @@ public class Employee {
     private String employeePw;
 
 
-    @Column(name = "employee_name", length = 50, nullable = false) // 길이 수정
+    @Column(name = "employee_name", length = 50, nullable = false)
     private String employeeName;
 
-
+    @Column(name = "employee_email", length = 30)
     private String employeeEmail;
 
-    @Column(name = "employee_contact", length = 20, nullable = false) // employee_tel -> employee_contact로 수정
-    private String employeeContact;
+    @Column(name = "employee_tel", length = 20, nullable = false)
+    private String employeeTel;
 
     @Column(name = "employeeRole", length = 20, nullable = false)
     private String employeeRole;
