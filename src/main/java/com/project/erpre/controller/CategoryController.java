@@ -40,7 +40,7 @@ public class CategoryController {
 
     //카테고리 수정
     @PutMapping("/{categoryNo}")
-    public Category updateCategory(@PathVariable Long categoryNo, @RequestBody Category category ) {
+    public Category updateCategory(@PathVariable Integer categoryNo, @RequestBody Category category ) {
         category.setCategoryNo(categoryNo);
         return null;
         //return categoryService.saveCategory(category);
