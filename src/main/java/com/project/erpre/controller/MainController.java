@@ -1,6 +1,6 @@
 package com.project.erpre.controller;
 
-import com.project.erpre.model.User;
+import com.project.erpre.model.Employee;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +14,7 @@ public class MainController {
 
     @GetMapping("/")
     public String home(HttpSession session) {
-        if (session.getAttribute("user") == null) {
+        if (session.getAttribute("employee") == null) {
             return "login";
         }
         return "redirect:/main";
@@ -22,7 +22,7 @@ public class MainController {
 
     @GetMapping("/login")
     public String login(HttpSession session) {
-        if (session.getAttribute("user") != null) {
+        if (session.getAttribute("employee") != null) {
             return "redirect:/main";
         }
         return "login";
@@ -30,11 +30,11 @@ public class MainController {
 
     @GetMapping("/{pageName}")
     public String page(@PathVariable String pageName, HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if ("main".equals(pageName) && user != null) {
-            model.addAttribute("user", user);
+        Employee employee = (Employee) session.getAttribute("employee");
+        if ("main".equals(pageName) && employee != null) {
+            model.addAttribute("employee", employee);
             return "view";
-        } else if ("login".equals(pageName) && user == null) {
+        } else if ("login".equals(pageName) && employee == null) {
             return "login";
         }
         // 페이지가 로그인 또는 메인 페이지가 아닌 경우에 대해 처리

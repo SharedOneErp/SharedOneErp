@@ -10,8 +10,28 @@ function Sidebar({currentMenu}) {
         return path.split('/').pop();
     });
 
-    const [user, setUser] = useState(null);  // 사용자 정보 넘기는 변수 지정 (useState)
     const location = useLocation(); // 현재 경로를 가져오는 useLocation
+    const [employee, setEmployee] = useState(null); // 사용자 정보 넘기는 변수
+
+    // 사용자 정보를 서버에서 가져오는 useEffect
+    useEffect(() => {
+        const fetchEmployee = async () => {
+            try {
+                const response = await fetch('/api/employee', {
+                    credentials: "include", // 세션 포함
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setEmployee(data);
+                } else {
+                    console.error('사용자 정보를 가져오는 데 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('사용자 정보를 가져오는 중 오류 발생:', error);
+            }
+        };
+        fetchEmployee();
+    }, []);
 
     const handleMenuClick = (menu) => {
         // 메뉴 클릭 시 상태
@@ -45,25 +65,8 @@ function Sidebar({currentMenu}) {
     }, [location.pathname]);
 
 
-    // 사용자 정보를 서버에서 가져오는 useEffect ((info 세션))
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const response = await fetch('/api/user', {
-                    credentials: "include", // 세션 포함
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setUser(data);
-                } else {
-                    console.error('사용자 정보를 가져오는 데 실패했습니다.');
-                }
-            } catch (error) {
-                console.error('사용자 정보를 가져오는 중 오류 발생:', error);
-            }
-        };
-        fetchUser();
-    }, []);
+
+
 
     const handleLogout = async () => {
         try {
@@ -86,10 +89,10 @@ function Sidebar({currentMenu}) {
             <div className="sidebar-top">
                 <div className="user-info">
                     <div className="user-name">
-                        {user ? (
+                        {employee ? (
                             <>
-                                IKEA 광명점 ({user.department})<br/>
-                                팀장 {user.username}
+                                IKEA ({employee.employeeRole})<br/>
+                                {employee.employeeId}
                             </>
                         ) : (
                             'LOADING'

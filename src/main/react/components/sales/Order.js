@@ -15,12 +15,34 @@ function Order() {
     const isDetailView = !!orderNo && mode === 'view'; // 상세보기 모드
 
     // 상태들
-    const [products, setProducts] = useState([{ name: '사무용 의자 블랙 A', price: 35000, quantity: 100 }]);
+    const [products, setProducts] = useState([{ name: '', price:'' , quantity: '' }]);
     const [showModal, setShowModal] = useState(false); // 모달 상태
+    const [customerModalOpen, setCustomerModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태
     const [searchCode, setSearchCode] = useState(''); // 상품코드 상태
     const [searchResults, setSearchResults] = useState([]); // 검색 결과 상태
 
+    const [employee, setEmployee] = useState(null); // 사용자 정보 넘기는 변수
+
+    // 사용자 정보를 서버에서 가져오는 useEffect
+    useEffect(() => {
+        const fetchEmployee = async () => {
+            try {
+                const response = await fetch('/api/employee', {
+                    credentials: "include", // 세션 포함
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setEmployee(data);
+                } else {
+                    console.error('사용자 정보를 가져오는 데 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('사용자 정보를 가져오는 중 오류 발생:', error);
+            }
+        };
+        fetchEmployee();
+    }, []);
 
 
     // 주문 상세 정보 가져오기 (상세보기/수정용)
@@ -41,6 +63,8 @@ function Order() {
             console.error('주문 정보를 가져오는 중 오류가 발생했습니다.', error);
         }
     };
+
+
 
     // 상품 행 추가
     const addProductRow = () => {
@@ -70,6 +94,19 @@ function Order() {
         setShowModal(false);
     };
 
+    // Customer 모달 열기
+    const openCustomerModal = () => {
+        setCustomerModalOpen(true);
+    };
+
+    // Customer 모달 닫기
+    const closeCustomerModal = () => {
+        setCustomerModalOpen(false);
+    };
+
+
+
+
     // 상품 검색 처리
     const handleSearch = async () => {
         console.log("-------------------------------------handleSearch");
@@ -83,6 +120,23 @@ function Order() {
             setSearchResults([]);
         }
     };
+
+    //고객사 검색
+    const customerSearch = async () => {
+        console.log("-------------------------------------customerSearch");
+        try {
+            const response = await fetch(`http://localhost:8787/api/customers/search?name=${encodeURIComponent(searchQuery)}`);
+            if (!response.ok) throw new Error('검색 결과가 없습니다.');
+            const data = await response.json();
+            setSearchResults(data);
+        } catch (error) {
+            console.error('검색 중 오류 발생:', error);
+            setSearchResults([]);
+        }
+    };
+
+
+
 
     const [selectedProductIndex, setSelectedProductIndex] = useState(null);
 
@@ -193,46 +247,16 @@ function Order() {
         }
     };
 
-    // const handleSubmit = async () => {
-    //     // DOM에서 직접 값을 가져오는 대신 상태에서 관리하는 값을 사용하세요.
-    //     const customerNo = document.querySelector('input[name="customerNo"]').value.trim(); // 고객번호
-    //     const totalAmount = products.reduce((sum, product) => sum + product.price * product.quantity, 0); // 총 금액
-    //     const employeeIdElement = document.querySelector('.employee-id');
-    //     const employeeId = employeeIdElement ? employeeIdElement.textContent.trim() : null; // 담당자의 ID를 가져오는 방법
-    //
-    //     console.log(customerNo);
-    //     console.log(employeeId);
-    //     console.log(totalAmount);
-    //
-    //     // 고객번호와 직원 ID를 숫자로 변환합니다.
-    //     const orderData = {
-    //         customer: { customerNo: customerNo },  // 서버에서 Expecting Customer 객체
-    //         employee: { employeeId: employeeId },  // 서버에서 Expecting Employee 객체
-    //         orderHTotalPrice: totalAmount,
-    //         orderDStatus: "ing",
-    //         orderDInsertDate: new Date().toISOString(),
-    //         orderDUpdateDate: null
-    //     };
-    //
-    //     try {
-    //         const response = await fetch('http://localhost:8787/api/orders', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(orderData),
-    //         });
-    //
-    //         if (!response.ok) {
-    //             const errorText = await response.text();
-    //             throw new Error(`주문 처리 중 오류 발생: ${errorText}`);
-    //         }
-    //
-    //         window.location.href = '/orderListAll';
-    //     } catch (error) {
-    //         console.error('주문 처리 중 오류 발생:', error.message);
-    //     }
-    // };
+    const handleCustomerSelect = (selectedCustomer) => {
+        // 선택된 고객 정보 처리
+        console.log('Selected customer:', selectedCustomer);
+        // 예를 들어, 고객 번호를 폼에 설정할 수 있습니다.
+        document.querySelector('input[name="customerNo"]').value = selectedCustomer.customerNo;
+        document.querySelector('input[name="customerName"]').value = selectedCustomer.customerName;
+
+        closeCustomerModal();
+    };
+
 
 
     return (
@@ -250,14 +274,22 @@ function Order() {
                     )}
 
                     <div className="form-group">
-                        <label>고객번호</label>
-                        <input type="text" name="customerNo" defaultValue="쉐어드원" readOnly={!isEditMode && !isCreateMode}/>
+                        <label>고객사</label>
+                        <input type="hidden" name="customerNo" readOnly={!isEditMode && !isCreateMode}/>
+                        <input type="text" name="customerName"/>
+                        <button
+                            className="search-button"
+                            onClick={openCustomerModal}
+                            style={{display: !isEditMode && !isCreateMode ? 'none' : 'block'}}
+                        >
+                            <i className="bi bi-search"></i>
+                        </button>
                     </div>
 
                     {!isCreateMode && (
                         <>
                             <div className="form-group">
-                                <label>물품 총액</label>
+                            <label>물품 총액</label>
                                 <input type="text" value="300,000" readOnly/>
                             </div>
                             <div className="form-group">
@@ -274,12 +306,18 @@ function Order() {
 
                     <div className="form-group">
                         <label>담당자</label>
-                        <span className="employee-id">emp01</span>
+                        <span className="employee-id">{employee ? (
+                            <>
+                               {employee.employeeId}
+                            </>
+                        ) : (
+                            'LOADING'
+                        )}</span>
                     </div>
 
                     <div className="form-group">
                         <label>주문 상태</label>
-                        <span>처리중</span>
+                        <span className="order-status">처리중</span>
                     </div>
                 </div>
 
@@ -347,6 +385,65 @@ function Order() {
                         <button className="add-button" onClick={addProductRow}>상품 추가</button>}
                 </div>
 
+
+                {customerModalOpen && (
+                    <div className="modal">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h4>고객사 검색</h4>
+                                <button className="close-modal" onClick={closeCustomerModal}>&times;</button>
+                            </div>
+
+                            {/* 검색 (고객사 이름 검색) */}
+                            <div className="search-fields">
+                                <input
+                                    type="text"
+                                    placeholder="검색하실 고객사를 입력하세요"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                                <button className="search-modal" onClick={customerSearch}>검색</button>
+                            </div>
+
+                            {/* 검색 결과 */}
+                            <div className="search-results">
+                                {searchResults.length > 0 ? (
+                                    <table className="search-results-table">
+                                        <thead>
+                                        <tr>
+                                            <th>고객사 코드</th>
+                                            <th>고객사 이름</th>
+                                            <th>주소 </th>
+                                            <th>연락처</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {searchResults.map((result) => (
+                                            <tr key={result.customerNo} onClick={() => handleCustomerSelect(result)}>
+                                                <td>{result.customerNo}</td>
+                                                <td>{result.customerName}</td>
+                                                <td>{result.customerAddr}</td>
+                                                <td>{result.customerTel}</td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <div>검색 결과가 없습니다.</div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+
+
+
+
+
+
+
+
                 {/* 모달 창 */}
                 {showModal && (
                     <div className="modal">
@@ -408,7 +505,7 @@ function Order() {
                                         {searchResults.map((result, index) => (
                                             <tr key={index} onClick={() => handleProductSelect(result)}>
                                                 <td>{result.productCd}</td>
-                                                <td>{result.categoryNo}</td>
+                                                <td>{result.category.categoryNo}</td>
                                                 <td>{result.productNm}</td>
                                                 {/* 가격은 join 후 연결 */}
                                             </tr>
