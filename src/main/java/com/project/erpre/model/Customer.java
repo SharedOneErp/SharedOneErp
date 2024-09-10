@@ -64,7 +64,7 @@ public class Customer {
     @Column(name = "customer_transaction_end_date")
     private Timestamp customerTransactionEndDate;
 
-    @Column(name = "customer_insert_date")
+    @Column(name = "customer_insert_date", insertable = false)
     private Timestamp customerInsertDate;
 
     @Column(name = "customer_update_date")
