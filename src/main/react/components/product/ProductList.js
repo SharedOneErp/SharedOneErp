@@ -17,7 +17,7 @@ function ProductList() {
             .catch(error => console.error('전체 상품 목록 조회 실패', error))
     }, []);
 
-    // 전체 선택/
+    // 전체 선택
     const handleAllSelectProducts = (checked) => {
         if (checked) {
             const allProductCds = products.map(product => product.productCd);
@@ -30,19 +30,19 @@ function ProductList() {
     // 상품 선택
     const handleSelectProduct = (productCd) => {
         setSelectedProducts(prevSelected => {
-            if(prevSelected.includes(productCd)) {
+            if (prevSelected.includes(productCd)) {
                 return prevSelected.filter(cd => cd !== productCd);
             } else {
                 const newSelectedProducts = [...prevSelected, productCd];
-                console.log('선택된 상품코드', newSelectedProducts);
+                // console.log('선택된 상품코드', newSelectedProducts);
                 return newSelectedProducts;
             }
         });
     };
-    
+
     // 선택 상품 삭제 요청
     const handleDeleteSelected = () => {
-        if(selectedProducts.length == 0) {
+        if (selectedProducts.length == 0) {
             alert('삭제할 상품을 선택해주세요.');
             return;
         }
@@ -53,11 +53,12 @@ function ProductList() {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'},
+                'Accept': 'application/json'
+            },
             body: JSON.stringify(selectedProducts)
         })
             .then(response => {
-                console.log(selectedProducts) // 현재 선택된 상품코드들
+                // console.log(selectedProducts) // 현재 선택된 상품코드들
                 if (!response.ok) {
                     throw new Error('상품 삭제 실패');
                 }
@@ -71,6 +72,7 @@ function ProductList() {
             .catch(error => console.error(error));
     };
 
+    // 시간 형식
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const year = date.getFullYear();
@@ -81,6 +83,19 @@ function ProductList() {
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     };
 
+    // 카테고리 분류 state
+    const [selectedTopCategory, setSeletedTopCategory] = useState('');
+    const [selectedMiddleCategory, setSeletedMiddleCategory] = useState('');
+
+    // 카테고리 옵션 필터링
+    const topCategories = [...new Set(products.map(product => product.topCategory))];
+    const middleCategories = [...new Set(products
+        .filter(product => product.topCategory === selectedTopCategory)
+        .map(product => product.middleCategory))];
+    const lowCategories = [...new Set(products
+        .filter(product => product.middleCategory === selectedMiddleCategory)
+        .map(product => product.lowCategory))];
+
     return (<Layout currentMenu="productList">
             <div className="top-container">
                 <h2>전체 상품 목록</h2>
@@ -89,19 +104,29 @@ function ProductList() {
                 <form className="search-box-container">
                     <div style={{marginBottom: "10px"}}>
                         <span style={{marginRight: "5px"}}>카테고리 </span>
-                        <select className="approval-select">
+                        <select className="approval-select" onChange={e => setSeletedTopCategory(e.target.value)}>
                             <option>대분류</option>
+                            {topCategories.map((category, index) => (
+                                <option key={index} value={category}>{category}</option>
+                            ))}
                         </select>
-                        <select className="approval-select">
+                        <select className="approval-select" onChange={e => setSeletedMiddleCategory(e.target.value)}>
                             <option>중분류</option>
+                            {middleCategories.map((category, index) => (
+                                <option key={index} value={category}>{category}</option>
+                            ))}
                         </select>
                         <select className="approval-select">
                             <option>소분류</option>
+                            {lowCategories.map((category, index) => (
+                                <option key={index} value={category}>{category}</option>
+                            ))}
                         </select>
                     </div>
                     <div>
                         <select className="approval-select">
                             <option>상품명</option>
+                            <option>상품번호</option>
                         </select>
                         <input type="text" className="search-box" placeholder="검색어를 입력하세요"></input>
                         <button type="submit" className="search-button">검색</button>
