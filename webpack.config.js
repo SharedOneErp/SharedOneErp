@@ -103,7 +103,8 @@ module.exports = {
         // fallback 옵션은 브라우저 환경에서 Node.js의 일부 기능을 사용할 수 있도록 대체 모듈을 지정하는 데 사용됩니다.
         fallback: {
             // 'process' 모듈을 브라우저에서 사용할 수 있도록 'process/browser' 모듈을 대체로 지정합니다.
-            process: require.resolve('process/browser')
+            process: require.resolve('process/browser'),
+            "url": require.resolve("url/") // 브라우저에서 'url' 모듈을 사용할 수 있도록 합니다.
         },
         alias: {
             'process': 'process/browser',

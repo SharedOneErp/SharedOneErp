@@ -41,7 +41,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
             "JOIN o.employee e " +
             "JOIN o.customer c " +
             "WHERE p.productCd IN :productCd " +
-            "ORDER BY od.orderDDeliveryRequestDate ASC")
+            "ORDER BY od.orderDDeliveryRequestDate DESC ")
     Page<ProductDTO> getProductDetailsByProductCd(@Param("productCd") String productCd, Pageable pageable);
 
     // 선택한 상품 삭제
