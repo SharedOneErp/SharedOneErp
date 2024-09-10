@@ -18,8 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 public class Employee {
 
+//    @GeneratedValue(strategy = GenerationType.IDENTITY) 직원id는 자동증가하는 값이 아님
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_id", length = 50, nullable = false)
     private String employeeId;
 

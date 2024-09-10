@@ -1,24 +1,35 @@
-import React, {useState} from 'react'; //어느 컴포넌트이든 React임포트가 필요합니다.
-import ReactDOM from 'react-dom/client'; //root에 리액트 돔방식으로 렌더링시 필요합니다.
-import '../../../resources/static/css/Main.css' //css파일 임포트
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom/client';
+import '../../../resources/static/css/Main.css';
 import Layout from "../../layout/Layout";
-import {BrowserRouter, useNavigate} from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
-import '../../../resources/static/css/hr/EmployeeList.css'; // 개별 CSS 스타일 적용
-
+import { BrowserRouter } from "react-router-dom";
+import '../../../resources/static/css/hr/EmployeeList.css';
+import axios from 'axios';
 
 function EmployeeList() {
-
+    const [employees, setEmployees] = useState([]);
 
     const handleRegiClick = () => {
         window.location.href = "/employeeRegister";
     };
+
+    const handleSearchEmployees = () => {
+        axios.get('/api/employeeList')
+            .then(response => {
+                console.log('응답 데이터:', response.data);
+                setEmployees(response.data);
+            })
+
+    };
+
+
     return (
-            <Layout>
+        <Layout>
             <h1>직원 목록</h1>
-            <button className="filter-button" >조회</button>
-            <button className="filter-button" >수정</button>
+            <button className="filter-button" onClick={handleSearchEmployees}>조회</button>
+            <button className="filter-button">수정</button>
             <button className="filter-button" onClick={handleRegiClick}>등록</button>
-            <button className="filter-button" >삭제</button>
+            <button className="filter-button">삭제</button>
 
             <table className="order-table">
                 <thead>
@@ -34,19 +45,34 @@ function EmployeeList() {
                     </tr>
                 </thead>
                 <tbody>
-
+                    {employees.length > 0 ? (
+                        employees.map((employee) => (
+                            <tr key={employee.employeeId}>
+                                <td><input type="checkbox" /></td>
+                                <td>{employee.employeeId}</td>
+                                <td>{employee.employeeName}</td>
+                                <td>{employee.employeeTel}</td>
+                                <td>{employee.employeeEmail}</td>
+                                <td>{employee.employeeRole}</td>
+                                <td>{employee.employeeInsertDate}</td>
+                                <td>{employee.employeeUpdateDate}</td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="8">직원 데이터를 조회해보세요</td>
+                        </tr>
+                    )}
                 </tbody>
             </table>
-
-
-</Layout>
-)
+        </Layout>
+    );
 }
 
-//페이지 root가 되는 JS는 root에 삽입되도록 처리
+// 페이지 root가 되는 JS는 root에 삽입되도록 처리
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <EmployeeList/>
+        <EmployeeList />
     </BrowserRouter>
 );
