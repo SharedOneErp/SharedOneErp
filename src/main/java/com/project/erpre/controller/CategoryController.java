@@ -17,7 +17,7 @@ public class CategoryController {
     public CategoryService categoryService;
 
     //전체 카테고리
-    @GetMapping
+    @GetMapping("/all")
     public List<Category> getAllCategory() {
         return categoryService.getAllCategory();
     }
@@ -29,7 +29,7 @@ public class CategoryController {
     }
 
     //카테고리 저장
-    @PostMapping
+    @PostMapping("/save")
     public Category saveCategory(Category category) {
         return categoryService.saveCategory(category);
     }
@@ -42,7 +42,7 @@ public class CategoryController {
     }
 
     //카테고리 삭제
-    @DeleteMapping
+    @DeleteMapping("/{categoryNo}")
     public void deleteCategory(@PathVariable Long categoryNo) {
         categoryService.deleteCategory(categoryNo);
     }
