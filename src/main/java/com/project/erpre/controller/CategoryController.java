@@ -41,14 +41,14 @@ public class CategoryController {
     @PutMapping("/{categoryNo}")
     public Category updateCategory(@PathVariable Integer categoryNo, @RequestBody CategoryDTO categoryDTO ) {
         categoryDTO.setCategoryNo(categoryNo);
-        return categoryService.saveCategory(categoryDTO);
+        return categoryService.updateCategory(categoryNo, categoryDTO);
 
     }
 
     //카테고리 삭제
     @DeleteMapping("/{categoryNo}")
     public void deleteCategory(@PathVariable Integer categoryNo) {
-        categoryService.deleteCategory(categoryNo);
+        categoryService.deleteById(categoryNo);
     }
 
     //카테고리 대분류

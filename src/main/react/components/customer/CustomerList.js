@@ -4,6 +4,7 @@ import '../../../resources/static/css/Main.css' //css파일 임포트
 import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
 import {BrowserRouter} from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
 import '../../../resources/static/css/customer/CustomerList.css'; // 개별 CSS 스타일 적용
+import axios from 'axios';  // Axios 임포트
 
 //모달창
 function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
@@ -206,78 +207,46 @@ function CustomerList() {
     const [filterType, setFilterType] = useState('customerName'); // 필터 기본값
     const [itemsPerPage, setItemsPerPage] = useState(20); // 페이지 기본값
     const [currentPage, setCurrentPage] = useState(1);
-    const [customers, setCustomers] = useState([
-        {
-            customerId: 1,
-            customerName: '쿠팡',
-            customerTel: '010-1234-5678',
-            customerRepresentativeName: '홍길동',
-            customerBusinessRegNo: '123-45-67890',
-            customerAddr: '서울시 강남구',
-            customerFaxNo: '02-123-4567',
-            customerManagerName: '이몽룡',
-            customerManagerEmail: 'test1@example.com',
-            customerManagerTel: '010-2345-6789',
-            customerCountryCode: 'KR',
-            customerTransactionStartDate: '2023-01-01',
-            customerTransactionEndDate: '2023-12-31',
-            customerETaxInvoiceYn: true
-        },
-        {
-            customerId: 2,
-            customerName: '쿠팡2',
-            customerTel: '010-1234-5678',
-            customerRepresentativeName: '조예원',
-            customerBusinessRegNo: '123-45-67890',
-            customerAddr: '서울시 강남구',
-            customerFaxNo: '02-123-4567',
-            customerManagerName: '박서희',
-            customerManagerEmail: 'test2@example.com',
-            customerManagerTel: '010-2345-6789',
-            customerCountryCode: 'KR',
-            customerTransactionStartDate: '2024-01-01',
-            customerTransactionEndDate: '2024-12-31',
-            customerETaxInvoiceYn: true
-        },
-        {
-            customerId: 3,
-            customerName: '올리브영',
-            customerTel: '010-1234-5678',
-            customerRepresentativeName: '박인욱',
-            customerBusinessRegNo: '123-45-67890',
-            customerAddr: '서울시 강남구',
-            customerFaxNo: '02-123-4567',
-            customerManagerName: '광장818',
-            customerManagerEmail: 'test3@example.com',
-            customerManagerTel: '010-2345-6789',
-            customerCountryCode: 'KR',
-            customerTransactionStartDate: '2024-01-01',
-            customerTransactionEndDate: '2024-12-31',
-            customerETaxInvoiceYn: true
-        }
-        //추가 데이터
-    ]);
-
+    const [customers, setCustomers] = useState([]); //데이터값 불러오기
     const [selectedCustomer, setSelectedCustomer] = useState(null); // 선택된 고객
     const [showModal, setShowModal] = useState(false); // 모달창 표시 여부
 
+    // 서버에서 고객 목록 가져오기
+    useEffect(() => {
+        axios.get('/api/customer/getList')
+            .then(response => {
+                setCustomers(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching customer data:', error);
+            });
+    }, []);
+
     // 고객 정보 수정 저장
     const handleSaveCustomer = (updatedCustomer) => {
-        setCustomers((prevCustomers) =>
-            prevCustomers.map((customer) =>
-                customer.customerId === updatedCustomer.customerId ? updatedCustomer : customer
-            )
-        );
-        setShowModal(false); // 저장 후 모달 닫기
+        axios.put('/api/customer/update', updatedCustomer)
+            .then(() => {
+                setCustomers((prevCustomers) =>
+                    prevCustomers.map((customer) =>
+                        customer.customerId === updatedCustomer.customerId ? updatedCustomer : customer
+                    )
+                );
+                setShowModal(false);
+            })
+            .catch(error => console.error('Error updating customer:', error));
     };
 
     // 고객 정보 삭제
     const handleDeleteCustomer = () => {
         if (window.confirm('정말 삭제하시겠습니까?')) {
-            setCustomers((prevCustomers) =>
-                prevCustomers.filter((customer) => customer.customerId !== selectedCustomer.customerId)
-            );
-            setShowModal(false); // 삭제 후 모달 닫기
+            axios.delete(`/api/customer/delete/${selectedCustomer.customerId}`)
+                .then(() => {
+                    setCustomers((prevCustomers) =>
+                        prevCustomers.filter((customer) => customer.customerId !== selectedCustomer.customerId)
+                    );
+                    setShowModal(false);
+                })
+                .catch(error => console.error('Error deleting customer:', error));
         }
     };
 
