@@ -17,6 +17,7 @@ function Order() {
 
     // 상태들
     const [products, setProducts] = useState([{name: '', price: '', quantity: ''}]);
+    const [orderDetails, setOrderDetails] = useState([]); // 추가된 상태
     const [showModal, setShowModal] = useState(false); // 모달 상태
     const [customerModalOpen, setCustomerModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태
@@ -84,6 +85,7 @@ function Order() {
     }, []);
 
 
+
     // 주문 상세 정보 가져오기 (상세보기/수정용)
     useEffect(() => {
         if (orderNo) {
@@ -94,10 +96,12 @@ function Order() {
     const fetchOrderDetail = async (orderNo) => {
         console.log("-------------------------------------fetchOrderDetail");
         try {
-            const response = await fetch(`http://localhost:8787/api/order/${orderNo}`);
+            const response = await fetch(`/api/order?no=${orderNo}`);
             if (!response.ok) throw new Error('주문 데이터를 가져올 수 없습니다.');
             const data = await response.json();
-            setProducts(data ? data.products : []);
+            setOrderDetails(data.orderDetails || []);
+            setProducts(data.products || []);
+            setEmployee(data.employee || null);
         } catch (error) {
             console.error('주문 정보를 가져오는 중 오류가 발생했습니다.', error);
         }
@@ -152,7 +156,7 @@ function Order() {
     const handleSearch = async () => {
         console.log("-------------------------------------handleSearch");
         try {
-            const response = await fetch(`http://localhost:8787/api/order/search?productCd=${searchCode}&productNm=${searchQuery}`);
+            const response = await fetch(`/api/order/search?productCd=${searchCode}&productNm=${searchQuery}`);
             if (!response.ok) throw new Error('검색 결과가 없습니다.');
             const data = await response.json();
             setSearchResults(data);
@@ -167,7 +171,7 @@ function Order() {
     const customerSearch = async () => {
         console.log("-------------------------------------customerSearch");
         try {
-            const response = await fetch(`http://localhost:8787/api/customer/search?name=${encodeURIComponent(searchQuery)}`);
+            const response = await fetch(`/api/customer/search?name=${encodeURIComponent(searchQuery)}`);
             if (!response.ok) throw new Error('검색 결과가 없습니다.');
             const data = await response.json();
             setCustomerSearchResults(data);
@@ -401,15 +405,18 @@ function Order() {
                         </tr>
                         </thead>
                         <tbody>
-                        {products.map((product, index) => (
+                        {(isCreateMode ? products : orderDetails).map((item, index) => (
                             <tr key={index}>
                                 <td>{index + 1}</td>
                                 <td>
                                     <input
                                         type="text"
-                                        value={product.name}
+                                        value={isCreateMode ? item.name : item.product.name}
                                         readOnly={!isEditMode && !isCreateMode}
-                                        onChange={(e) => handleProductChange(index, 'name', e.target.value)}
+                                        onChange={(e) => isCreateMode
+                                            ? handleProductChange(index, 'name', e.target.value)
+                                            : null
+                                        }
                                     />
                                     {(isCreateMode || isEditMode) && (
                                         <button className="search-button" onClick={() => openModal(index)}>
@@ -420,20 +427,26 @@ function Order() {
                                 <td>
                                     <input
                                         type="number"
-                                        value={product.price || 0} // 기본값을 0으로 설정
+                                        value={isCreateMode ? (item.price || 0) : (item.orderDPrice || 0)} // 기본값을 0으로 설정
                                         readOnly={!isEditMode && !isCreateMode}
-                                        onChange={(e) => handleProductChange(index, 'price', Number(e.target.value))}
+                                        onChange={(e) => isCreateMode
+                                            ? handleProductChange(index, 'price', Number(e.target.value))
+                                            : null
+                                        }
                                     />
                                 </td>
                                 <td>
                                     <input
                                         type="number"
-                                        value={product.quantity || 0} // 기본값을 0으로 설정
+                                        value={isCreateMode ? (item.quantity || 0) : (item.orderDQty || 0)} // 기본값을 0으로 설정
                                         readOnly={!isEditMode && !isCreateMode}
-                                        onChange={(e) => handleProductChange(index, 'quantity', Number(e.target.value))}
+                                        onChange={(e) => isCreateMode
+                                            ? handleProductChange(index, 'quantity', Number(e.target.value))
+                                            : null
+                                        }
                                     />
                                 </td>
-                                <td>{product.price * product.quantity}</td>
+                                <td>{(isCreateMode ? item.price * item.quantity : item.orderDPrice * item.orderDQty) || 0}</td>
                                 {(isCreateMode || isEditMode) && (
                                     <td>
                                         <button onClick={() => removeProductRow(index)}>&times;</button>
@@ -441,7 +454,7 @@ function Order() {
                                 )}
                                 {/* 숨겨진 상품 코드 */}
                                 <td style={{display: 'none'}}>
-                                    <input type="text" value={product.code || ''} readOnly/>
+                                    <input type="text" value={isCreateMode ? item.code : item.product.code || ''} readOnly/>
                                 </td>
                             </tr>
                         ))}

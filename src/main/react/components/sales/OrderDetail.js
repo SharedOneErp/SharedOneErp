@@ -52,7 +52,7 @@ function OrderDetail() {
     //차후에 쿼리값 변경 필요할지도 모름.
     const handleSearch = async () => {
         try {
-            const response = await fetch(`http://localhost:8787/api/products/search?productCd=${searchCode}&productNm=${searchQuery}`);
+            const response = await fetch(`/api/products/search?productCd=${searchCode}&productNm=${searchQuery}`);
             if (!response.ok) throw new Error('RESPONSE.OK ERROR "응답이 올바르지 않습니다."');
             const data = await response.json();
             setSearchResults(data);
