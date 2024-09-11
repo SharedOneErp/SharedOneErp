@@ -37,7 +37,8 @@ function Header() {
                     <div className="profile">
                         {employee ? (
                             <>
-                                <span className="teamname">{employee.employeeId} ({employee.employeeRole}</span>
+                                <span className="employee-name">{employee.employeeName} ({employee.employeeRole.toUpperCase()}) </span>
+                                <span className="employee-id" style={{display: 'none'}}>{employee.employeeId} </span>
                             </>
                         ) : (
                             <span>LOADING</span> // 로딩 중 표시
