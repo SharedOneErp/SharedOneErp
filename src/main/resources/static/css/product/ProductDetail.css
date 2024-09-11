@@ -44,8 +44,9 @@ input[type="text"] {
 
 .category-group .category-inputs {
     display: flex;
-    gap: 10px;
     position: relative;
+    width: 100%;
+    align-items: center;
 }
 
 .category-item {
@@ -58,12 +59,18 @@ input[type="text"] {
     text-align: center;
     cursor: default;
     white-space: nowrap;
-    box-sizing: border-box;
+    flex-grow: 1; /* 너비를 동일하게 */
+    margin-right: 10px;
 }
 
-.category-item:hover {
-    background-color: #f0f0f0;
+.update-button {
+    margin-left: 10px;
+    height: 100%;
 }
+
+/*.category-item:hover {*/
+/*    background-color: #f0f0f0;*/
+/*}*/
 
 input[type="text"]:not([id="salesAmount"]) {
     width: 100px;
@@ -114,4 +121,8 @@ button {
 
 button:hover {
     background-color: #004080;
+}
+
+.update-button {
+    margin-left: 10px;
 }
