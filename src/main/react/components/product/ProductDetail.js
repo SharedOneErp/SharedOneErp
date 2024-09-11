@@ -14,7 +14,7 @@ function ProductDetail() {
 
     useEffect(() => {
         if (productCd) { // productCd가 있을 때만 fetch 요청
-            fetch(`http://localhost:8787/api/products/productDetail/${productCd}`)
+            fetch(`/api/products/productDetail/${productCd}`)
                 .then(response => response.json())
                 .then(data => setProductDetail(data))
                 .catch(error => console.error('상세 정보 조회 실패', error))

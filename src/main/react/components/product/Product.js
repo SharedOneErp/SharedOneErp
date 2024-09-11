@@ -32,7 +32,7 @@ function Product() {
 
     const fetchOrderDetail = async (orderNo) => {
         try {
-            const response = await fetch(`http://localhost:8787/api/order/${orderNo}`);
+            const response = await fetch(`/api/order/${orderNo}`);
             if (!response.ok) throw new Error('주문 데이터를 가져올 수 없습니다.');
             const data = await response.json();
             setProducts(data ? data.products : []);
@@ -72,7 +72,7 @@ function Product() {
     // 상품 검색 처리
     const handleSearch = async () => {
         try {
-            const response = await fetch(`http://localhost:8787/api/products/search?productCd=${searchCode}&productNm=${searchQuery}`);
+            const response = await fetch(`/api/products/search?productCd=${searchCode}&productNm=${searchQuery}`);
             if (!response.ok) throw new Error('검색 결과가 없습니다.');
             const data = await response.json();
             setSearchResults(data);
