@@ -95,8 +95,9 @@
     background-color: #ffdb0036; /* 이케아 노란색 */
 }
 
-.selected:hover {
-    background-color: #ffdb0036; /* 이케아 노란색 */
+.edit-mode-active,
+.edit-mode-active:hover {
+    background-color: rgba(208, 208, 208, 0.34) !important;
 }
 
 .bottom-container .approval-list .approval-list-content {
@@ -148,4 +149,32 @@
 }
 .filter-button:hover {
     background-color: #005a91; /* 호버 시 조금 더 어두운 색으로 변경 */
+}
+
+.bottom-container .approval-list a {
+    color: #007CC1; /* 하늘색 */
+    text-decoration: underline; /* 밑줄 추가 */
+    cursor: pointer; /* 커서 모양을 손가락 모양으로 변경 */
+}
+
+.bottom-container .approval-list a:hover {
+    color: #005a91; /* 호버 시 색상 변경 */
+}
+
+.product-edit-button {
+    background-color: #007CC1;
+    color:white;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    padding: 6px 15px;
+}
+
+.product-confirm-button {
+    background-color: rgba(255, 219, 0, 0.61);
+    color: black;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    padding: 6px 15px;
 }

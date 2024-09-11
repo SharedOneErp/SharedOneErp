@@ -46,4 +46,9 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<OrderDetail> orderDetails;
+
+    @PreUpdate
+    public void preUpdate() {
+        this.productUpdateDate = LocalDateTime.now();
+    }
 }

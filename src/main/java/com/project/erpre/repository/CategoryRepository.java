@@ -38,4 +38,17 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
             " and c2.categoryNo = :middleCategoryNo")
     List<Category> findLowCategoryByTopAndMiddleCategory(@Param("topCategoryNo") Integer topCategoryNo,
                                                          @Param("middleCategoryNo") Integer middleCategoryNo);
+
+
+    // topCategory, middleCategory, lowCategory 이름으로 카테고리 조회
+    @Query("SELECT c3 FROM Category c3 " +
+            "JOIN Category c2 ON c3.parentCategoryNo = c2.categoryNo " +
+            "JOIN Category c1 ON c2.parentCategoryNo = c1.categoryNo " +
+            "WHERE c1.categoryNm = :topCategory " +
+            "AND c2.categoryNm = :middleCategory " +
+            "AND c3.categoryNm = :lowCategory")
+    Category findCategoryByNames(@Param("topCategory") String topCategory,
+                                 @Param("middleCategory") String middleCategory,
+                                 @Param("lowCategory") String lowCategory);
+
 }

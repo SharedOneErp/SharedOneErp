@@ -2,6 +2,7 @@ package com.project.erpre.service;
 import com.project.erpre.model.Category;
 import com.project.erpre.model.Product;
 import com.project.erpre.model.ProductDTO;
+import com.project.erpre.repository.CategoryRepository;
 import com.project.erpre.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,9 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     // 전체 상품 목록 조회
     public List<ProductDTO> getAllProducts() {
         return productRepository.getAllProducts();
@@ -29,6 +33,20 @@ public class ProductService {
         Pageable pageable = PageRequest.of(0, 5);
         Page<ProductDTO> pageResult = productRepository.getProductDetailsByProductCd(productCd, pageable);
         return pageResult.getContent();
+    }
+
+    // 상품 업데이트
+    @Transactional
+    public void updateProductWithCategories(String productCd, String productNm, String topCategory, String middleCategory, String lowCategory) {
+        // 카테고리를 조회합니다.
+        Category category = categoryRepository.findCategoryByNames(topCategory, middleCategory, lowCategory);
+
+        if (category == null) {
+            throw new RuntimeException("해당 카테고리를 찾을 수 없습니다.");
+        }
+
+        // 제품을 업데이트합니다.
+        productRepository.updateProductWithCategories(productCd, productNm, category);
     }
 
     // 선택한 상품 삭제

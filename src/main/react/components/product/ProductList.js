@@ -1,23 +1,54 @@
-import React, {useEffect, useState} from 'react';
-import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴포넌트를 DOM에 렌더링
-import {BrowserRouter, Routes, Route, Link} from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
-import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
-import '../../../resources/static/css/product/ProductList.css'; // 개별 CSS 스타일 적용
+import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from "react-router-dom";
+import Layout from "../../layout/Layout";
+import '../../../resources/static/css/product/ProductList.css';
 
 function ProductList() {
-
     // 상품 목록 저장 state
-    const [products, setProducts] = useState([]); // 전체 상품 목록
-    const [selectedProducts, setSelectedProducts] = useState([]); // 체크된 상품 목록
+    const [products, setProducts] = useState([]);
+    const [selectedProducts, setSelectedProducts] = useState([]);
+
+    // 상품 수정 state
+    const [editMode, setEditMode] = useState(null); // 수정 중인 상품 코드 저장
+    const [editableProduct, setEditableProduct] = useState({}); // 수정 중인 상품의 임시 데이터 저장
 
     useEffect(() => {
         fetch('/api/products/productList')
             .then(response => response.json())
             .then(data => setProducts(data))
-            .catch(error => console.error('전체 상품 목록 조회 실패', error))
+            .catch(error => console.error('전체 상품 목록 조회 실패', error));
     }, []);
 
-    // 전체 선택
+    const handleEditClick = (product) => {
+        setEditMode(product.productCd); // 수정할 상품의 코드 저장
+        setEditableProduct(product); // 수정할 상품의 데이터 저장
+    };
+
+    const handleConfirmClick = () => {
+        console.log('업데이트 데이터:', JSON.stringify(editableProduct));
+        fetch(`http://localhost:8787/api/products/update`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(editableProduct)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text) });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('업데이트 성공:', data);
+                confirm('상품을 수정하시겠습니까?');
+                setEditMode(null); // 수정 모드 종료
+                setProducts(products.map(p => p.productCd === data.productCd ? data : p));
+            })
+            .catch(error => console.error('업데이트 실패:', error));
+    };
+
     const handleAllSelectProducts = (checked) => {
         if (checked) {
             const allProductCds = products.map(product => product.productCd);
@@ -27,22 +58,23 @@ function ProductList() {
         }
     };
 
-    // 상품 선택
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setEditableProduct({ ...editableProduct, [name]: value });
+    };
+
     const handleSelectProduct = (productCd) => {
         setSelectedProducts(prevSelected => {
             if (prevSelected.includes(productCd)) {
                 return prevSelected.filter(cd => cd !== productCd);
             } else {
-                const newSelectedProducts = [...prevSelected, productCd];
-                // console.log('선택된 상품코드', newSelectedProducts);
-                return newSelectedProducts;
+                return [...prevSelected, productCd];
             }
         });
     };
 
-    // 선택 상품 삭제 요청
     const handleDeleteSelected = () => {
-        if (selectedProducts.length == 0) {
+        if (selectedProducts.length === 0) {
             alert('삭제할 상품을 선택해주세요.');
             return;
         }
@@ -58,7 +90,6 @@ function ProductList() {
             body: JSON.stringify(selectedProducts)
         })
             .then(response => {
-                // console.log(selectedProducts) // 현재 선택된 상품코드들
                 if (!response.ok) {
                     throw new Error('상품 삭제 실패');
                 }
@@ -72,7 +103,6 @@ function ProductList() {
             .catch(error => console.error(error));
     };
 
-    // 시간 형식
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const year = date.getFullYear();
@@ -83,11 +113,9 @@ function ProductList() {
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     };
 
-    // 카테고리 분류 state
     const [selectedTopCategory, setSeletedTopCategory] = useState('');
     const [selectedMiddleCategory, setSeletedMiddleCategory] = useState('');
 
-    // 카테고리 옵션 필터링
     const topCategories = [...new Set(products.map(product => product.topCategory))];
     const middleCategories = [...new Set(products
         .filter(product => product.topCategory === selectedTopCategory)
@@ -96,14 +124,15 @@ function ProductList() {
         .filter(product => product.middleCategory === selectedMiddleCategory)
         .map(product => product.lowCategory))];
 
-    return (<Layout currentMenu="productList">
+    return (
+        <Layout currentMenu="productList">
             <div className="top-container">
                 <h2>전체 상품 목록</h2>
             </div>
             <div className="middle-container">
                 <form className="search-box-container">
-                    <div style={{marginBottom: "10px"}}>
-                        <span style={{marginRight: "5px"}}>카테고리 </span>
+                    <div style={{ marginBottom: "10px" }}>
+                        <span style={{ marginRight: "5px" }}>카테고리 </span>
                         <select className="approval-select" onChange={e => setSeletedTopCategory(e.target.value)}>
                             <option>대분류</option>
                             {topCategories.map((category, index) => (
@@ -146,8 +175,7 @@ function ProductList() {
                 <table className="approval-list">
                     <thead>
                     <tr>
-                        <th><input type="checkbox"
-                                   onChange={(e) => handleAllSelectProducts(e.target.checked)}/></th>
+                        <th><input type="checkbox" onChange={(e) => handleAllSelectProducts(e.target.checked)} /></th>
                         <th>상품번호</th>
                         <th>상품명</th>
                         <th>대분류</th>
@@ -155,24 +183,66 @@ function ProductList() {
                         <th>소분류</th>
                         <th>상품 등록일</th>
                         <th>상품 수정일</th>
-                        <th>상세보기</th>
+                        <th>상세</th>
+                        <th>수정</th>
                     </tr>
                     </thead>
                     <tbody className="approval-list-content">
                     {products.map((product, index) => (
                         <tr key={product.productCd}
-                            className={selectedProducts.includes(product.productCd) ? 'selected' : ''}>
-                            <td><input type="checkbox"
-                                       onChange={() => handleSelectProduct(product.productCd)}
-                                       checked={selectedProducts.includes(product.productCd)}/></td>
+                            className={`${selectedProducts.includes(product.productCd) ? 'selected' : ''} ${editMode === product.productCd ? 'edit-mode-active' : ''}`}>
+                            <td><input type="checkbox" onChange={() => handleSelectProduct(product.productCd)} checked={selectedProducts.includes(product.productCd)} /></td>
                             <td>{product.productCd}</td>
-                            <td>{product.productNm}</td>
-                            <td>{product.topCategory}</td>
-                            <td>{product.middleCategory}</td>
-                            <td>{product.lowCategory}</td>
+                            <td>
+                                {editMode === product.productCd ? (
+                                    <input type="text" name="productNm" value={editableProduct.productNm} onChange={handleInputChange} />
+                                ) : (
+                                    product.productNm
+                                )}
+                            </td>
+                            <td>
+                                {editMode === product.productCd ? (
+                                    <select name="topCategory" value={editableProduct.topCategory} onChange={handleInputChange}>
+                                        {topCategories.map((category, index) => (
+                                            <option key={index} value={category}>{category}</option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    product.topCategory
+                                )}
+                            </td>
+                            <td>
+                                {editMode === product.productCd ? (
+                                    <select name="middleCategory" value={editableProduct.middleCategory} onChange={handleInputChange}>
+                                        {middleCategories.map((category, index) => (
+                                            <option key={index} value={category}>{category}</option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    product.middleCategory
+                                )}
+                            </td>
+                            <td>
+                                {editMode === product.productCd ? (
+                                    <select name="lowCategory" value={editableProduct.lowCategory} onChange={handleInputChange}>
+                                        {lowCategories.map((category, index) => (
+                                            <option key={index} value={category}>{category}</option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    product.lowCategory
+                                )}
+                            </td>
                             <td>{formatDate(product.productInsertDate)}</td>
                             <td>{formatDate(product.productInsertDate)}</td>
-                            <td><a href={`/productDetail?no=${product.productCd}`}>상세보기</a></td>
+                            <td><a href={`/productDetail?no=${product.productCd}`}>상세</a></td>
+                            <td>
+                                {editMode === product.productCd ? (
+                                    <button className="product-confirm-button" onClick={handleConfirmClick}>확인</button>
+                                ) : (
+                                    <button className="product-edit-button" onClick={() => handleEditClick(product)}>수정</button>
+                                )}
+                            </td>
                         </tr>
                     ))}
                     </tbody>
@@ -184,22 +254,14 @@ function ProductList() {
                     <button className="approval-page4">4</button>
                     <button className="approval-page5">5</button>
                 </div>
-
                 <div className="button-container">
-                    <button className="filter-button">수정</button>
                     <button className="filter-button" onClick={handleDeleteSelected}>삭제</button>
                     <button className="filter-button" onClick={() => window.location.href = '/product'}>등록</button>
                 </div>
-
             </div>
-
         </Layout>
-
-    )
+    );
 }
 
-//페이지 root가 되는 JS는 root에 삽입되도록 처리
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<BrowserRouter>
-    <ProductList/>
-</BrowserRouter>);
+root.render(<BrowserRouter><ProductList /></BrowserRouter>);
