@@ -27,6 +27,8 @@ function ProductPrice() {
         handleInputChange,
         handleAddNewPrice,
         handleCancelAdd,
+        editingId,
+        editedPriceData,
     } = useHooksList();          // 커스텀 훅 사용
 
     return (
@@ -60,7 +62,7 @@ function ProductPrice() {
                                 <th>적용기간</th>
                                 <th>등록일시</th>
                                 <th>수정일시</th>
-                                <th></th> {/* 등록/취소 버튼 열 */}
+                                <th></th> {/* 수정/삭제 버튼 열 추가 */}
                             </tr>
                             </thead>
                             <tbody>
@@ -117,11 +119,24 @@ function ProductPrice() {
                                         {/* 고객별 가격 */}
                                         <td>{m_price.priceCustomer.toLocaleString()}원</td>
                                         {/* 적용 기간 */}
-                                        <td>{format(m_price.priceStartDate,'yyyy-MM-dd')} ~ {format(m_price.priceEndDate,'yyyy-MM-dd')}</td>
+                                        <td>{format(m_price.priceStartDate, 'yyyy-MM-dd')} ~ {format(m_price.priceEndDate, 'yyyy-MM-dd')}</td>
                                         {/* 등록일시 */}
-                                        <td>{format(m_price.priceInsertDate,'yyyy-MM-dd HH:mm')}</td>
+                                        <td>{format(m_price.priceInsertDate, 'yyyy-MM-dd HH:mm')}</td>
                                         {/* 수정일시: 수정일시가 없으면 '-' 표시 */}
-                                        <td>{m_price.priceUpdateDate ? format(m_price.priceUpdateDate,'yyyy-MM-dd HH:mm') : '-'}</td>
+                                        <td>{m_price.priceUpdateDate ? format(m_price.priceUpdateDate, 'yyyy-MM-dd HH:mm') : '-'}</td>
+                                        <td>
+                                            {editingId === m_price.priceNo ? (
+                                                <>
+                                                    <button onClick={handleSaveEdit}>저장</button>
+                                                    <button onClick={handleCancelEdit}>취소</button>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <button onClick={() => handleEdit(m_price.priceNo)}>수정</button>
+                                                    <button onClick={() => handleDelete(m_price.priceNo)}>삭제</button>
+                                                </>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))
                             )}
