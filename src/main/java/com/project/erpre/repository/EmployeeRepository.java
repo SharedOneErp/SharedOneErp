@@ -25,5 +25,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, String> {
     ---------------------------------------
      */
 
-//    Page<Employee> findAll(Pageable pageable); // 2. employee의 모든 데이터를 findall해서 페이징처리하여 반환함,, 반환타입은 페이징된 employee객체라고 생각하면 될듯?
+    //    Page<Employee> findAll(Pageable pageable); // 2. employee의 모든 데이터를 findall해서 페이징처리하여 반환함,, 반환타입은 페이징된 employee객체라고 생각하면 될듯?
 }
