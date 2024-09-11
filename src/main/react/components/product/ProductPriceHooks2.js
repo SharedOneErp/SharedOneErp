@@ -6,35 +6,47 @@ import {formatDate} from '../../util/dateUtils';
 export const useHooksList = () => {
 
     const [priceList, setPriceList] = useState([]); // 가격 리스트 상태
-    const [selectedCustomer, setSelectedCustomer] = useState(''); // 선택된 고객사
-    const [selectedProduct, setSelectedProduct] = useState(''); // 선택된 상품
     const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태
     const [editIndex, setEditIndex] = useState(null); // 수정 중인 항목 인덱스
     const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지당 항목 수
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
-    const [sortField, setSortField] = useState(null); // 정렬 필드
-    const [sortOrder, setSortOrder] = useState('asc'); // 정렬 순서
-    const [startDate, setStartDate] = useState(null); // 시작 날짜
-    const [endDate, setEndDate] = useState(null); // 종료 날짜
 
 // 가격 리스트를 서버에서 받아오는 함수
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // 요청 파라미터 콘솔 출력
+                console.log('Request Params:', {
+                    customerNo: selectedCustomerNo || null,
+                    productCd: selectedProductCd || null,
+                    startDate: startDate ? formatDate(startDate) : null,
+                    endDate: endDate ? formatDate(endDate) : null,
+                    page: currentPage,
+                    size: itemsPerPage,
+                    sort: sortField ? sortField : 'priceNo',
+                    order: sortOrder || 'asc',
+                });
+
                 // 서버로부터 데이터를 받아오는 요청
                 const response = await axios.get('/api/price/all', {
                     params: {
-                        customer: selectedCustomer || null,
-                        product: selectedProduct || null,
-                        startDate: startDate ? formatDate(startDate) : null,
-                        endDate: endDate ? formatDate(endDate) : null,
-                        page: currentPage,
-                        size: itemsPerPage,
-                        sort: sortField ? `${sortField},${sortOrder}` : null,
+                        customerNo: selectedCustomerNo || null,  // 필터로 사용될 고객 번호
+                        productCd: selectedProductCd || null,    // 필터로 사용될 제품 코드
+                        startDate: startDate ? formatDate(startDate) : null,  // 필터로 사용될 시작 날짜
+                        endDate: endDate ? formatDate(endDate) : null,        // 필터로 사용될 종료 날짜
+                        page: currentPage,                                   // 페이지 번호
+                        size: itemsPerPage,                                  // 페이지당 항목 수
+                        sort: sortField ? sortField : 'priceNo',             // 정렬 필드
+                        order: sortOrder || 'asc',                           // 정렬 순서 (기본값: 오름차순)
                     },
                 });
 
-                setPriceList(response.data); // 받아온 데이터로 상태 업데이트
+                // 서버로부터 받아온 데이터를 처리하여 상태 업데이트
+                const {content, totalElements, totalPages} = response.data;
+
+                setPriceList(content);         // 가격 리스트 상태 업데이트
+                setTotalItems(totalElements);  // 전체 항목 수 상태 업데이트
+                setTotalPages(totalPages);     // 전체 페이지 수 상태 업데이트
             } catch (error) {
                 console.error('데이터를 불러오는 중 오류 발생:', error);
             }
@@ -98,7 +110,7 @@ export const useHooksList = () => {
         setSelectedProduct(product.name); // 선택된 상품 설정
     };
 
-// 페이지당 항목 수 변경 함수
+    // 페이지당 항목 수 변경 함수
     const handleItemsPerPageChange = (e) => {
         setItemsPerPage(parseInt(e.target.value)); // 페이지당 항목 수 변경
         setCurrentPage(1); // 페이지 번호 초기화
@@ -141,13 +153,7 @@ export const useHooksList = () => {
 // 총 페이지 수 계산
     const totalPages = Math.ceil(filteredList.length / itemsPerPage);
 
-// 페이지 변경 처리 함수
-    const handlePageChange = (newPage) => {
-        setCurrentPage(newPage);
-    };
-
     return {
-        priceList,               // [1] 가격 리스트 상태
         selectedCustomer,        // [2] 선택된 고객사
         setSelectedCustomer,     // [3] 고객사 설정 함수
         selectedProduct,         // [4] 선택된 상품
@@ -155,7 +161,6 @@ export const useHooksList = () => {
         isModalOpen,             // [6] 모달 열림 상태
         editIndex,               // [7] 수정 중인 항목 인덱스
         setEditIndex,            // [8] 수정 중인 항목 인덱스 설정 함수
-        itemsPerPage,            // [9] 페이지당 항목 수
         setItemsPerPage,         // [10] 페이지당 항목 수 설정 함수
         currentPage,             // [11] 현재 페이지
         setCurrentPage,          // [12] 현재 페이지 설정 함수
@@ -175,7 +180,6 @@ export const useHooksList = () => {
         openModal,               // [26] 모달 열기 함수
         closeModal,              // [27] 모달 닫기 함수
         handleProductSelect,     // [28] 상품 선택 시 호출되는 함수
-        handleItemsPerPageChange,// [29] 페이지당 항목 수 변경 함수
         handleSort,              // [30] 정렬을 위한 함수
         handlePageChange,        // [31] 페이지 변경 함수
     };

@@ -5,6 +5,7 @@ import com.project.erpre.model.PriceDTO;
 import com.project.erpre.repository.CustomerRepository;
 import com.project.erpre.repository.PriceRepository;
 import com.project.erpre.repository.ProductRepository;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Log4j2
 public class PriceService {
 
     private static final Logger logger = LoggerFactory.getLogger(PriceService.class); // Logger 선언
