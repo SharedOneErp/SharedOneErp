@@ -15,6 +15,12 @@ function ProductPrice() {
 
     const {
         priceList,               // [1] 가격 리스트 상태
+        itemsPerPage,            // [9] 페이지당 항목 수
+        handleItemsPerPageChange,// [29] 페이지당 항목 수 변경 함수
+        loading,
+        handlePageChange,
+        totalPages,
+        currentPage,
     } = useHooksList();          // 커스텀 훅 사용
 
     return (
@@ -25,14 +31,17 @@ function ProductPrice() {
                     <div className="search_wrap">
                     </div>
                     <div className="list_count_wrap">
-                        <span>전체 100건</span>
-                        <span>페이지당 : </span>
-                        <select>
-                            <option value={10}>10</option>
-                            <option value={20}>20</option>
-                            <option value={50}>50</option>
-                            <option value={100}>100</option>
-                        </select>
+                        <div className="left_content"><span>총 100건</span></div>
+                        <div className="right_content">
+                            <span>페이지당 </span>
+                            <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                                <option value={2}>2</option>
+                                <option value={10}>10</option>
+                                <option value={20}>20</option>
+                                <option value={50}>50</option>
+                                <option value={100}>100</option>
+                            </select>
+                        </div>
                     </div>
                     <div className="table_wrap">
                         <table>
@@ -48,38 +57,56 @@ function ProductPrice() {
                             </tr>
                             </thead>
                             <tbody>
-                            {priceList.map((m_price) => (
-                                <tr key={m_price.priceNo}>
-                                    {/* 가격 번호 */}
-                                    <td>{m_price.priceNo}</td>
-                                    {/* 고객 이름 */}
-                                    <td>{m_price.customerName}</td>
-                                    {/* 제품 이름 + 카테고리 */}
-                                    <td>
-                                        <p>{m_price.productNm}</p>
-                                        <p>({m_price.categoryNm})</p>
+                            {/* 로딩 중일 때 로딩 이미지 표시 */}
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="7"> {/* 7개의 열을 합쳐 로딩 애니메이션 중앙 배치 */}
+                                        <div className="loading">
+                                            <span></span> {/* 첫 번째 원 */}
+                                            <span></span> {/* 두 번째 원 */}
+                                            <span></span> {/* 세 번째 원 */}
+                                        </div>
                                     </td>
-                                    {/* 고객별 가격 */}
-                                    <td>{m_price.priceCustomer.toLocaleString()}</td>
-                                    {/* 적용 기간 */}
-                                    <td>{formatDate(m_price.priceStartDate)} ~ {formatDate(m_price.priceEndDate)}</td>
-                                    {/* 등록일시 */}
-                                    <td>{formatDate(m_price.priceInsertDate)}</td>
-                                    {/* 수정일시 */}
-                                    <td>{formatDate(m_price.priceUpdateDate)}</td>
                                 </tr>
-                            ))}
+                            ) : (
+                                priceList.map((m_price, index) => (
+                                    <tr key={m_price.priceNo}>
+                                        {/* 번호 (index는 0부터 시작하므로 1을 더해줌) */}
+                                        <td>{index + 1}</td>
+                                        {/* 고객 이름 */}
+                                        <td>{m_price.customerName}</td>
+                                        {/* 제품 이름 + 카테고리 */}
+                                        <td>
+                                            <p>{m_price.productNm}</p>
+                                            <p>({m_price.categoryNm})</p>
+                                        </td>
+                                        {/* 고객별 가격 */}
+                                        <td>{m_price.priceCustomer.toLocaleString()}</td>
+                                        {/* 적용 기간 */}
+                                        <td>{formatDate(m_price.priceStartDate)} ~ {formatDate(m_price.priceEndDate)}</td>
+                                        {/* 등록일시 */}
+                                        <td>{formatDate(m_price.priceInsertDate)}</td>
+                                        {/* 수정일시 */}
+                                        <td>{formatDate(m_price.priceUpdateDate)}</td>
+                                    </tr>
+                                ))
+                            )}
                             </tbody>
                         </table>
                     </div>
 
-                    {/*<div className="approval-page">*/}
-                    {/*    <button className="approval-page1">1</button>*/}
-                    {/*    <button className="approval-page2">2</button>*/}
-                    {/*    <button className="approval-page3">3</button>*/}
-                    {/*    <button className="approval-page4">4</button>*/}
-                    {/*    <button className="approval-page5">5</button>*/}
-                    {/*</div>*/}
+                    {/* 페이지네이션 버튼들 */}
+                    <div className="pagination">
+                        {[...Array(totalPages)].map((_, pageIndex) => (
+                            <button
+                                key={pageIndex + 1}
+                                onClick={() => handlePageChange(pageIndex + 1)}
+                                className={currentPage === pageIndex + 1 ? 'active' : ''}
+                            >
+                                {pageIndex + 1}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
         </Layout>

@@ -24,7 +24,7 @@ function EmployeeList() {
 
 
     return (
-        <Layout>
+        <Layout currentMenu="employeeList"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
             <h1>직원 목록</h1>
             <button className="filter-button" onClick={handleSearchEmployees}>조회</button>
             <button className="filter-button">수정</button>

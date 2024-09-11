@@ -1,3 +1,4 @@
+/* 🟥 product/ProductPrice.css */
 .main-content {
     overflow-y: hidden;
 }
@@ -20,14 +21,31 @@
 }
 
 .menu_product_price .menu_content .list_count_wrap {
+    display: flex;
+    justify-content: space-between; /* 두 요소를 좌우로 정렬 */
+    align-items: center; /* 세로 축 중앙 정렬 */
+    margin-bottom: 20px; /* 아래에 여유 공간 추가 */
 }
 
-/* table_wrap */
+.menu_product_price .menu_content .list_count_wrap.left_content {
+    text-align: left; /* 왼쪽 정렬 */
+}
+
+.menu_product_price .menu_content .list_count_wrap.right_content {
+    text-align: right; /* 오른쪽 정렬 */
+}
+
+/* 🟥 table_wrap */
 .menu_product_price .menu_content .table_wrap {
     position: relative;
     margin-top: 20px;
     width: 100%;
-    overflow-x: auto;
+    /*overflow-x: auto;*/
+    border: 1px solid #ddd;
+    /*height: calc(100vh - 200px); !* 페이지의 100vh에서 여백을 제외한 높이로 설정 *!*/
+    border: 1px solid #ddd;
+    display: flex;
+    flex-direction: column; /* 테이블 헤더와 바디를 위아래로 정렬 */
 }
 
 .menu_product_price .menu_content .table_wrap table {
@@ -37,6 +55,7 @@
     /*border: 1px solid #ddd;*/
     table-layout: fixed; /* 열 너비 고정 */
     border-collapse: collapse;
+    flex: 1 0 auto; /* 테이블이 flex 아이템으로 크기 조절 */
 }
 
 .menu_product_price .menu_content .table_wrap table thead {
@@ -53,9 +72,18 @@
 
 .menu_product_price .menu_content .table_wrap table tbody {
     display: block;
-    max-height: 400px; /* 스크롤 가능한 높이 */
+    max-height: 550px; /* 스크롤 가능한 높이 */
     overflow-y: scroll;
     width: 100%;
+    font-size: 15px;
+    position: relative; /* 자식 요소의 절대 위치 지정을 위해 부모 요소에 상대 위치 설정 */
+    height: 100vh;
+}
+
+.menu_product_price .menu_content .table_wrap table tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
 }
 
 .menu_product_price .menu_content .table_wrap table th,
@@ -67,6 +95,8 @@
 
 .menu_product_price .menu_content .table_wrap table td {
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* 열 너비 지정 */
@@ -105,9 +135,89 @@
     width: 12.5%; /* 수정일시 */
 }
 
+/* 🟥 로딩 중 스타일 */
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 정 중앙에 위치시키기 위해 변환 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
 
-/* 작업중 **************************************************************/
-/* product/ProductPrice.css */
+.loading span {
+    display: inline-block; /* span 내부요소들을 한줄로 세우기 */
+    width: 13px;
+    height: 13px;
+    background-color: gray;
+    border-radius: 50%; /* span을 동그랗게 */
+    animation: loading 1s 0s linear infinite;
+    /* 이벤트명  반복시간  딜레이시간  이벤트처리부드럽게  이벤트무한반복*/
+}
+
+.loading span:nth-child(1) { /* 첫 번째 원 */
+    animation-delay: 0s;
+    background-color: #0058A3;
+}
+
+.loading span:nth-child(2) { /* 두 번째 원 */
+    animation-delay: 0.2s;
+    background-color: rgba(29, 104, 168, 0.78);
+}
+
+.loading span:nth-child(3) { /* 세 번째 원 */
+    animation-delay: 0.4s;
+    background-color: rgba(70, 124, 168, 0.6);
+}
+
+@keyframes loading { /*loading이라는 keyframe 애니메이션*/
+    0%, /* 0, 50, 100은 구간*/
+    100% {
+        opacity: 0; /* 안보였다가 */
+        transform: scale(0.5); /*transform의 scale로 요소를 확대 또는 축소할 수 있음*/
+    }
+    50% {
+        opacity: 1; /* 보였다가 */
+        transform: scale(1.2); /* 1.2배 */
+    }
+}
+
+/* 🟥 페이지네이션 */
+.menu_product_price .pagination {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.menu_product_price .pagination button {
+    padding: 3px 10px;
+    margin: 0 2px;
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.menu_product_price .pagination button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+}
+
+.menu_product_price .pagination button.active, .menu_product_price .pagination button:hover {
+    background-color: rgba(0, 86, 179, 0.24);
+}
+
+.menu_product_price .pagination button:hover {
+    background-color: rgba(0, 86, 179, 0.11);
+}
+
+/* 🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥 */
+/* 🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥 */
+/* 🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥 */
+/* 🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥 */
+/* 🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥 */
 
 /* 전체 페이지 레이아웃 */
 /*body {*/
@@ -205,31 +315,6 @@
 
 .menu_product_price .price-row button[type="button"]:nth-child(2) {
     background-color: #dc3545;
-}
-
-/* 페이지네이션 */
-.menu_product_price .pagination {
-    text-align: center;
-    margin: 20px 0;
-}
-
-.menu_product_price .pagination button {
-    padding: 8px 16px;
-    margin: 0 2px;
-    background-color: #3e4c5b;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.menu_product_price .pagination button:disabled {
-    background-color: #ddd;
-    cursor: not-allowed;
-}
-
-.menu_product_price .pagination button:hover {
-    background-color: #0056b3;
 }
 
 /* 모달 스타일 */

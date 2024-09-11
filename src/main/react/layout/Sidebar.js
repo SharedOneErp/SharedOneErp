@@ -178,7 +178,7 @@ function Sidebar({currentMenu}) {
                             <a href="#"
                                onClick={() => handleSubMenuClick('employeeList', '/employeeList')}>직원 목록</a>
                         </li>
-                        <li className={activeSubMenu === 'EmployeeRegister' ? 'active' : ''}>
+                        <li className={currentMenu === 'employeeRegister' ? 'active' : ''}>
                             <a href="#" onClick={() => handleSubMenuClick('EmployeeRegister', '/employeeRegister')}>직원 등록</a>
                         </li>
                     </ul>

@@ -14,7 +14,6 @@ import { useHooksList } from './ProductPriceHooks'; // 가격 관리에 필요�
 function ProductPrice() {
 
     const {
-        priceList,               // [1] 가격 리스트 상태
         selectedCustomer,        // [2] 선택된 고객사
         setSelectedCustomer,     // [3] 고객사 설정 함수
         selectedProduct,         // [4] 선택된 상품
@@ -22,7 +21,6 @@ function ProductPrice() {
         isModalOpen,             // [6] 모달 열림 상태
         editIndex,               // [7] 수정 중인 항목 인덱스
         setEditIndex,            // [8] 수정 중인 항목 인덱스 설정 함수
-        itemsPerPage,            // [9] 페이지당 항목 수
         setItemsPerPage,         // [10] 페이지당 항목 수 설정 함수
         currentPage,             // [11] 현재 페이지
         setCurrentPage,          // [12] 현재 페이지 설정 함수
@@ -42,7 +40,6 @@ function ProductPrice() {
         openModal,               // [26] 모달 열기 함수
         closeModal,              // [27] 모달 닫기 함수
         handleProductSelect,     // [28] 상품 선택 시 호출되는 함수
-        handleItemsPerPageChange,// [29] 페이지당 항목 수 변경 함수
         handleSort,              // [30] 정렬을 위한 함수
         handlePageChange,        // [31] 페이지 변경 함수
     } = useHooksList();          // 커스텀 훅 사용
