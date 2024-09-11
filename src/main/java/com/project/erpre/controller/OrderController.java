@@ -4,12 +4,15 @@ import com.project.erpre.model.*;
 import com.project.erpre.repository.CustomerRepository;
 import com.project.erpre.repository.EmployeeRepository;
 import com.project.erpre.service.OrderService;
+import com.project.erpre.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -25,6 +28,9 @@ public class OrderController {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private ProductService productService;
 
 
     @PostMapping(value = "/api/orders" )
@@ -58,4 +64,15 @@ public class OrderController {
         }
 
     }
+
+    // 검색 API
+    @GetMapping("/api/orders/search")
+    public List<Product> searchProducts(
+            @RequestParam(required = false) String productCd,
+            @RequestParam(required = false) Category category,
+            @RequestParam(required = false) String productNm
+    ) {
+        return productService.searchProducts(productCd, category, productNm);
+    }
+
 }

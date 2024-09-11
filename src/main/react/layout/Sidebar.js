@@ -91,7 +91,7 @@ function Sidebar({currentMenu}) {
                     <div className="user-name">
                         {employee ? (
                             <>
-                                {employee.employeeId} ({employee.employeeRole}
+                                {employee.employeeName} ({employee.employeeRole.toUpperCase()})
                             </>
                         ) : (
                             'LOADING'

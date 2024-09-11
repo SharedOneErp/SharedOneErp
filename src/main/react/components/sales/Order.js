@@ -26,6 +26,10 @@ function Order() {
     //직원
     const [employee, setEmployee] = useState(null); // 사용자 정보 넘기는 변수
 
+    //페이지 네이션
+    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
+    const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지당 항목 수
+
 
     // 사용자 정보를 서버에서 가져오는 useEffect
     useEffect(() => {
@@ -116,7 +120,7 @@ function Order() {
     const handleSearch = async () => {
         console.log("-------------------------------------handleSearch");
         try {
-            const response = await fetch(`http://localhost:8787/api/products/search?productCd=${searchCode}&productNm=${searchQuery}`);
+            const response = await fetch(`http://localhost:8787/api/orders/search?productCd=${searchCode}&productNm=${searchQuery}`);
             if (!response.ok) throw new Error('검색 결과가 없습니다.');
             const data = await response.json();
             setSearchResults(data);
