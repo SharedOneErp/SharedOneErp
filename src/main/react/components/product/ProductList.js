@@ -49,7 +49,7 @@ function ProductList() {
         if (!confirm('상품을 정말 삭제하시겠습니까?')) {
             return;
         }
-        fetch('http://localhost:8787/api/products/productDelete', {
+        fetch('/api/products/productDelete', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

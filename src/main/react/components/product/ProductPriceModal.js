@@ -12,7 +12,7 @@ const ProductPriceModal = ({ isOpen, onClose, onSelect }) => {
         e.preventDefault(); // 기본 동작 방지
         try {
             // 예시 API 호출로 검색어에 따라 상품 목록을 가져옴
-            const response = await axios.get(`http://localhost:8787/api/products/search?productCd=${searchCode}&productNm=${searchQuery}`);
+            const response = await axios.get(`/api/products/search?productCd=${searchCode}&productNm=${searchQuery}`);
             setResults(response.data); // 검색 결과 업데이트
         } catch (error) {
             console.error('상품 검색 중 오류 발생:', error);

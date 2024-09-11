@@ -232,7 +232,7 @@ function Order() {
 
         console.log("-------------------------------------handleSubmit");
         try {
-            const response = await fetch('http://localhost:8787/api/order', {
+            const response = await fetch('/api/order', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -266,7 +266,7 @@ function Order() {
 
                     console.log("product.code : " + product.code);
 
-                    const detailResponse = await fetch('http://localhost:8787/api/orderDetails', {
+                    const detailResponse = await fetch('/api/orderDetails', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
