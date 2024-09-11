@@ -31,7 +31,7 @@ function Order() {
     //상품
     const [selectedProductIndex, setSelectedProductIndex] = useState(null);
     //상품 인덱스 확인 후 등록 로직
-    
+
 
     // 페이지네이션 상태
     const [currentPageProduct, setCurrentPageProduct] = useState(1);
