@@ -12,9 +12,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1800px;
     margin: 0 auto;
-    /*margin-left: 38px;*/
     margin-right: 30px;
 }
 
