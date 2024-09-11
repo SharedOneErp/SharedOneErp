@@ -1,7 +1,7 @@
 
 header {
     background-color: #0058A3;
-    padding: 10px 8px;
+    padding: 14px 8px;
     color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
@@ -37,12 +37,14 @@ header {
 
 .notifications {
     position: relative;
+    display: none;
 }
 
 .profile {
     display: flex;
     align-items: flex-start;
     flex-direction: column;
+    display: none;
 }
 
 .profile-pic {

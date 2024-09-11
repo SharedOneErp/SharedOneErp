@@ -117,6 +117,10 @@ button {
     table-layout: fixed;
 }
 
+.menu_product_price .menu_content .table_wrap table th {
+    font-weight: 500;
+}
+
 .menu_product_price .menu_content .table_wrap table th,
 .menu_product_price .menu_content .table_wrap table td {
     padding: 8px;
