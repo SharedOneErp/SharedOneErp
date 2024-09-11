@@ -17,6 +17,7 @@ function Order() {
 
     // 상태들
     const [products, setProducts] = useState([{name: '', price: '', quantity: ''}]);
+    const [customer, setCustomer] = useState({});
     const [orderDetails, setOrderDetails] = useState([]); // 추가된 상태
     const [showModal, setShowModal] = useState(false); // 모달 상태
     const [customerModalOpen, setCustomerModalOpen] = useState(false);
@@ -24,6 +25,9 @@ function Order() {
     const [searchCode, setSearchCode] = useState(''); // 상품코드 상태
     const [searchResults, setSearchResults] = useState([]); // 검색 결과 상태
     const [customerSearchResults, setCustomerSearchResults] = useState([]); // 고객 검색 결과
+    const [orderHTotalPrice, setOrderHTotalPrice] = useState(0);
+    const [orderHInsertDate, setOrderHInsertDate] = useState(0);
+
 
     //직원
     const [employee, setEmployee] = useState(null); // 사용자 정보 넘기는 변수
@@ -102,6 +106,17 @@ function Order() {
             setOrderDetails(data.orderDetails || []);
             setProducts(data.products || []);
             setEmployee(data.employee || null);
+            setCustomer(data.customer || {});
+            setOrderHTotalPrice(data.orderHTotalPrice || 0); // 상태 업데이트
+            setOrderHInsertDate(data.orderHInsertDate || 0);
+
+            // 상태 업데이트 후 콘솔에 출력
+            console.log(data.customer);
+            console.log(data.employee);
+            console.log("Order Details:", data.orderDetails);
+            console.log("Products:", data.products);
+
+
         } catch (error) {
             console.error('주문 정보를 가져오는 중 오류가 발생했습니다.', error);
         }
@@ -302,6 +317,12 @@ function Order() {
         closeCustomerModal();
     };
 
+    //날짜 형식 처리
+    const formatDateForInput = (dateString) => {
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 변환
+    };
+
 
     return (
         <Layout currentMenu="order">
@@ -319,8 +340,9 @@ function Order() {
 
                     <div className="form-group">
                         <label>고객사</label>
-                        <input type="hidden" name="customerNo" readOnly={!isEditMode && !isCreateMode}/>
-                        <input type="text" name="customerName"/>
+                        <input type="hidden" name="customerNo" readOnly/>
+                        <input type="text" name="customerName" value={customer?.customerName || ''}
+                               readOnly={!isEditMode && !isCreateMode}/>
                         <button
                             className="search-button"
                             onClick={openCustomerModal}
@@ -334,11 +356,12 @@ function Order() {
                         <>
                             <div className="form-group">
                                 <label>물품 총액</label>
-                                <input type="text" value="" readOnly/>
+                                <span className="orderHtotal-price"> {orderHTotalPrice}원</span>
                             </div>
                             <div className="form-group">
                                 <label>주문 등록일</label>
-                                <input type="date" defaultValue="" readOnly className="readonly"/>
+                                <input type="date" value={formatDateForInput(orderHInsertDate) || ''} readOnly className="readonly"/>
+
                             </div>
                         </>
                     )}
@@ -364,21 +387,26 @@ function Order() {
                             </>
                         ) : (
                             'LOADING'
-                        )}</span>
+                        )}
+
+
+                        </span>
                     </div>
                     <div className="form-group">
                         <label>주소</label>
-                        <input type="text" name="customerAddr" readOnly/>
+                        <input type="text" name="customerAddr" value={isCreateMode ? '' : customer.customerAddr } readOnly/>
                     </div>
 
                     <div className="form-group">
                         <label>연락처</label>
-                        <input type="text" name="customerTel" readOnly/>
+                        <input type="text" name="customerAddr" value={isCreateMode ? '' : customer.customerTel} readOnly/>
+
                     </div>
 
                     <div className="form-group">
                         <label>대표명</label>
-                        <input type="text" name="customerRepresentativeName" readOnly/>
+                        <input type="text" name="customerAddr" value={isCreateMode ? '' : customer.customerRepresentativeName}
+                               readOnly/>
                     </div>
 
 
@@ -387,7 +415,7 @@ function Order() {
                         style={{display: isCreateMode ? 'none' : 'block'}}
                     >
                         <label>주문 상태</label>
-                        <span className="order-status"></span>
+                        <span style={{display: 'none'}}className="order-status"></span>
                     </div>
                 </div>
 
@@ -571,6 +599,8 @@ function Order() {
                                 <button className="search-modal" onClick={handleSearch}>검색</button>
                             </div>
 
+
+                            {/* 검색 결과 */}
                             <div className="search-results">
                                 {searchResults.length > 0 ? (
                                     <table className="search-results-table">
@@ -615,8 +645,14 @@ function Order() {
 
 
                 <div className="total-amount">
-                    <label>총 금액: </label>
-                    <span>{products.reduce((sum, product) => sum + product.price * product.quantity, 0)}원</span>
+                    {isCreateMode ? (
+                        <>
+                            <label>총 금액: </label>
+                            <span>{products.reduce((sum, product) => sum + product.price * product.quantity, 0)}원</span>
+                        </>
+                    ) : (
+                     <span></span>
+                    )}
                 </div>
 
                 <div className="order-buttons">
