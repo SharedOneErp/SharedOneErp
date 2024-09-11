@@ -3,7 +3,9 @@ import '../../resources/static/css/Sidebar.css';
 import {useLocation} from "react-router-dom";
 
 function Sidebar({currentMenu}) {
-    const [activeMenu, setActiveMenu] = useState(() => localStorage.getItem('activeMenu') || null);
+
+    // 기본 activeMenu를 'sales'로 설정
+    const [activeMenu, setActiveMenu] = useState(() => localStorage.getItem('activeMenu') || 'sales');
     //     로컬 스토리지에서 getItem으로 activeMenu 값을 가져와요 (sidemenu 값 저장)
     const [activeSubMenu, setActiveSubMenu] = useState(() => {  // 서브 메뉴에 대한 useState
         const path = window.location.pathname;
@@ -35,11 +37,12 @@ function Sidebar({currentMenu}) {
 
     const handleMenuClick = (menu) => {
         // 메뉴 클릭 시 상태
-        const newActiveMenu = activeMenu === menu ? null : menu;
-        // activeMenu === menu 라면 null 값 아니면 새로운 menu.
-        setActiveMenu(newActiveMenu); // 위 메뉴값 가져와서 저장
-        setActiveSubMenu(null); //서브메뉴 값은 null
-        localStorage.setItem('activeMenu', newActiveMenu);
+        // 같은 메뉴를 클릭해도 닫히지 않게 수정
+        if (activeMenu !== menu) {
+            setActiveMenu(menu);
+            localStorage.setItem('activeMenu', menu); // 클릭한 메뉴를 로컬스토리지에 저장
+        }
+        setActiveSubMenu(null); // 서브메뉴 값은 null로 설정
     };
 
     const handleSubMenuClick = (subMenu, path) => {
@@ -58,12 +61,11 @@ function Sidebar({currentMenu}) {
     // 경로가 변경될 때 사이드바 상태를 초기화
     useEffect(() => {
         if (location.pathname === '/main') { // 메인 페이지로 이동할 때
-            setActiveMenu(null);
-            setActiveSubMenu(null); //전부 null
-            localStorage.removeItem('activeMenu'); //activemenu값 삭제
+            setActiveMenu('sales'); // 기본 메뉴는 'sales'
+            setActiveSubMenu(null); // 전부 null
+            localStorage.removeItem('activeMenu'); // activemenu값 삭제
         }
     }, [location.pathname]);
-
 
 
 
@@ -112,12 +114,8 @@ function Sidebar({currentMenu}) {
                         <li className={currentMenu === 'order' ? 'active' : ''}>
                             <a href="#" onClick={() => handleSubMenuClick('order', '/order')}>주문 등록</a>
                         </li>
-                        <li className={currentMenu === 'orderList_admin' ? 'active' : ''}>
-                            <a href="#" onClick={() => handleSubMenuClick('orderList', '/orderList?role=admin')}>전체 주문 목록</a>
-                        </li>
-                        <li className={currentMenu === 'orderList_staff' || currentMenu === 'orderList_manager' ? 'active' : ''}>
-                            <a href="#"
-                               onClick={() => handleSubMenuClick('orderList', '/orderList?role=staff')}>담당 주문 목록</a>
+                        <li className={currentMenu === 'orderList' ? 'active' : ''}>
+                            <a href="#" onClick={() => handleSubMenuClick('orderList', '/orderList')}>주문 목록</a>
                         </li>
                         <li className={currentMenu === 'orderRegisterApproval' ? 'active' : ''}>
                             <a href="#"

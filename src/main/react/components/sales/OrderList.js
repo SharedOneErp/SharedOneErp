@@ -41,7 +41,7 @@ function OrderList() {
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
     return (
-        <Layout currentMenu={`orderList_${role}`}>
+        <Layout currentMenu={`orderList`}>
             {/* 권한에 따라 다른 텍스트를 표시 */}
             <h1>{role === 'admin' ? '전체 주문 목록' : '담당 주문 목록'}</h1>
 
