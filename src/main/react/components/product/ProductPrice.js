@@ -14,13 +14,19 @@ import {add,format} from 'date-fns';
 function ProductPrice() {
 
     const {
-        priceList,               // [1] 가격 리스트 상태
-        itemsPerPage,            // [9] 페이지당 항목 수
-        handleItemsPerPageChange,// [29] 페이지당 항목 수 변경 함수
-        loading,
-        handlePageChange,
-        totalPages,
-        currentPage,
+        priceList,               // 가격 리스트 상태 (고객사별 상품 가격 데이터를 담고 있는 배열)
+        itemsPerPage,            // 페이지당 항목 수 (사용자가 선택한 한 페이지에 표시할 데이터 개수)
+        handleItemsPerPageChange,// 페이지당 항목 수 변경 함수 (사용자가 페이지당 몇 개의 항목을 볼지 선택하는 함수)
+        loading,                 // 로딩 상태 (데이터를 불러오는 중일 때 true로 설정)
+        handlePageChange,        // 페이지 변경 함수 (사용자가 페이지를 이동할 때 호출하는 함수)
+        totalPages,              // 총 페이지 수 (전체 데이터에서 페이지당 항목 수로 나눈 페이지 개수)
+        currentPage,             // 현재 페이지 (사용자가 현재 보고 있는 페이지 번호)
+        isAdding,                // 추가 상태 (추가 버튼을 눌러 새로운 입력 행을 보여줄지 여부를 나타내는 상태)
+        setIsAdding,
+        newPriceData,
+        handleInputChange,
+        handleAddNewPrice,
+        handleCancelAdd,
     } = useHooksList();          // 커스텀 훅 사용
 
     return (
@@ -33,8 +39,7 @@ function ProductPrice() {
                     <div className="list_count_wrap">
                         <div className="left_content"><span className="title_cnt">총 100건</span></div>
                         <div className="right_content">
-                            {/* 추가 버튼 추가 */}
-                            <button/>
+                            <button className="btn_add" onClick={() => setIsAdding(true)}><i className="bi bi-plus-circle"></i> 추가하기</button>
                             <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
                                 <option value={2}>2건씩 보기</option>
                                 <option value={10}>10건씩 보기</option>
@@ -55,10 +60,38 @@ function ProductPrice() {
                                 <th>적용기간</th>
                                 <th>등록일시</th>
                                 <th>수정일시</th>
+                                <th></th> {/* 등록/취소 버튼 열 */}
                             </tr>
                             </thead>
                             <tbody>
-                            {/* 로딩 중일 때 로딩 이미지 표시 */}
+                            {/* 추가 상태일 때 새로운 입력 행 추가 */}
+                            {isAdding && (
+                                <tr>
+                                    <td></td>
+                                    <td><input type="text" name="customerName" value={newPriceData.customerName} onChange={handleInputChange} /></td>
+                                    <td><input type="text" name="productNm" value={newPriceData.productNm} onChange={handleInputChange} /></td>
+                                    <td><input type="number" name="priceCustomer" value={newPriceData.priceCustomer} onChange={handleInputChange} /></td>
+                                    <td>
+                                        <DatePicker
+                                            selected={newPriceData.priceStartDate}
+                                            onChange={(date) => handleDateChange('priceStartDate', date)}
+                                            dateFormat="yyyy-MM-dd"
+                                        /> ~
+                                        <DatePicker
+                                            selected={newPriceData.priceEndDate}
+                                            onChange={(date) => handleDateChange('priceEndDate', date)}
+                                            dateFormat="yyyy-MM-dd"
+                                        />
+                                    </td>
+                                    <td>-</td> {/* 등록일시 */}
+                                    <td>-</td> {/* 수정일시 */}
+                                    <td>
+                                        <button onClick={handleAddNewPrice}>등록</button>
+                                        <button onClick={handleCancelAdd}>취소</button>
+                                    </td>
+                                </tr>
+                            )}
+                            {/* 기존 가격 리스트 -> 로딩 중일 때 로딩 이미지 표시 */}
                             {loading ? (
                                 <tr>
                                     <td colSpan="7"> {/* 7개의 열을 합쳐 로딩 애니메이션 중앙 배치 */}

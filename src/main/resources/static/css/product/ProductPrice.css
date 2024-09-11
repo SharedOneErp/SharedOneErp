@@ -1,9 +1,17 @@
 /* 🟥 product/ProductPrice.css */
-select {
+select, button {
     padding: 8px 5px;
     border: 1px solid #cacaca;
     border-radius: 4px;
     cursor: pointer;
+    color: #333;
+    font-size: 14px;
+}
+
+button {
+    padding: 7px 10px;
+    margin-right: 5px;
+    transition: all .2s ease;
 }
 
 .main-content {
@@ -43,8 +51,19 @@ select {
     font-size: 15px;
 }
 
-.menu_product_price .menu_content .list_count_wrap.right_content {
-    text-align: right;
+.menu_product_price .menu_content .list_count_wrap .right_content {
+    display: flex;
+}
+
+.menu_product_price .menu_content .list_count_wrap .right_content .btn_add {
+    margin-right: 5px;
+    background-color: #007CC1;
+    color: white;
+    border-color: #007CC1;
+}
+
+.menu_product_price .menu_content .list_count_wrap .right_content .btn_add:hover {
+    background-color: #024e7a;
 }
 
 /* 🟥 table_wrap */
@@ -210,7 +229,6 @@ select {
     border: 1px solid #ddd;
     border-radius: 25px;
     cursor: pointer;
-    transition: all .2s ease;
     font-size: 15px;
 }
 
