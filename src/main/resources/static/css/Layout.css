@@ -17,6 +17,17 @@ p { margin: 0; }
 .input-field { transition: all 0.3s ease; }
 .btn:focus,.btn:active:focus,.btn.active:focus,.btn.focus,.btn:active.focus,.btn.active.focus { outline: none; }
 
+/* select 스타일 추가 */
+select {
+    font-family: "Noto Sans KR", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    padding: 7px 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
 html, body {
     height: 100%;
     margin: 0;

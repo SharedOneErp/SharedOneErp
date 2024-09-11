@@ -4,11 +4,11 @@ import ReactDOM from 'react-dom/client';
 import {BrowserRouter, Routes, Route, useSearchParams} from "react-router-dom";
 import Layout from "../../layout/Layout";
 import '../../../resources/static/css/product/ProductPrice.css'; // 개별 CSS 파일 임포트
-import {formatDate} from '../../util/dateUtils'; // 날짜 포맷 함수
 import DatePicker from 'react-datepicker'; // 날짜 선택 컴포넌트
 import 'react-datepicker/dist/react-datepicker.css'; // 날짜 선택 스타일 임포트
 // import ProductPriceModal from './ProductPriceModal'; // 상품 검색 모달 컴포넌트
 import {useHooksList} from './ProductPriceHooks'; // 가격 관리에 필요한 상태 및 로직을 처리하는 훅
+import {add,format} from 'date-fns';
 
 // 컴포넌트(고객사별 상품 가격 관리)
 function ProductPrice() {
@@ -31,15 +31,16 @@ function ProductPrice() {
                     <div className="search_wrap">
                     </div>
                     <div className="list_count_wrap">
-                        <div className="left_content"><span>총 100건</span></div>
+                        <div className="left_content"><span className="title_cnt">총 100건</span></div>
                         <div className="right_content">
-                            <span>페이지당 </span>
+                            {/* 추가 버튼 추가 */}
+                            <button/>
                             <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
-                                <option value={2}>2</option>
-                                <option value={10}>10</option>
-                                <option value={20}>20</option>
-                                <option value={50}>50</option>
-                                <option value={100}>100</option>
+                                <option value={2}>2건씩 보기</option>
+                                <option value={10}>10건씩 보기</option>
+                                <option value={20}>20건씩 보기</option>
+                                <option value={50}>50건씩 보기</option>
+                                <option value={100}>100건씩 보기</option>
                             </select>
                         </div>
                     </div>
@@ -71,8 +72,8 @@ function ProductPrice() {
                             ) : (
                                 priceList.map((m_price, index) => (
                                     <tr key={m_price.priceNo}>
-                                        {/* 번호 (index는 0부터 시작하므로 1을 더해줌) */}
-                                        <td>{index + 1}</td>
+                                        {/* 번호: (현재 페이지 - 1) * 페이지 당 항목 수 + index + 1 */}
+                                        <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                         {/* 고객 이름 */}
                                         <td>{m_price.customerName}</td>
                                         {/* 제품 이름 + 카테고리 */}
@@ -81,13 +82,13 @@ function ProductPrice() {
                                             <p>({m_price.categoryNm})</p>
                                         </td>
                                         {/* 고객별 가격 */}
-                                        <td>{m_price.priceCustomer.toLocaleString()}</td>
+                                        <td>{m_price.priceCustomer.toLocaleString()}원</td>
                                         {/* 적용 기간 */}
-                                        <td>{formatDate(m_price.priceStartDate)} ~ {formatDate(m_price.priceEndDate)}</td>
+                                        <td>{format(m_price.priceStartDate,'yyyy-MM-dd')} ~ {format(m_price.priceEndDate,'yyyy-MM-dd')}</td>
                                         {/* 등록일시 */}
-                                        <td>{formatDate(m_price.priceInsertDate)}</td>
-                                        {/* 수정일시 */}
-                                        <td>{formatDate(m_price.priceUpdateDate)}</td>
+                                        <td>{format(m_price.priceInsertDate,'yyyy-MM-dd HH:mm')}</td>
+                                        {/* 수정일시: 수정일시가 없으면 '-' 표시 */}
+                                        <td>{m_price.priceUpdateDate ? format(m_price.priceUpdateDate,'yyyy-MM-dd HH:mm') : '-'}</td>
                                     </tr>
                                 ))
                             )}
@@ -97,15 +98,49 @@ function ProductPrice() {
 
                     {/* 페이지네이션 버튼들 */}
                     <div className="pagination">
-                        {[...Array(totalPages)].map((_, pageIndex) => (
-                            <button
-                                key={pageIndex + 1}
-                                onClick={() => handlePageChange(pageIndex + 1)}
-                                className={currentPage === pageIndex + 1 ? 'active' : ''}
-                            >
-                                {pageIndex + 1}
+
+                        {/* '처음' 버튼 */}
+                        {currentPage > 1 && (
+                            <button className="first" onClick={() => handlePageChange(1)}>
+                                <i className="bi bi-chevron-double-left"></i>
                             </button>
-                        ))}
+                        )}
+
+                        {/* '이전' 버튼 */}
+                        {currentPage > 1 && (
+                            <button className="left" onClick={() => handlePageChange(currentPage - 1)}>
+                                <i className="bi bi-chevron-left"></i>
+                            </button>
+                        )}
+
+                        {/* 페이지 번호 블록 계산 (1~5, 6~10 방식) */}
+                        {Array.from({length: Math.min(5, totalPages)}, (_, index) => {
+                            const startPage = Math.floor((currentPage - 1) / 5) * 5 + 1;
+                            const page = startPage + index;
+                            return (
+                                page <= totalPages && (
+                                    <button
+                                        key={page}
+                                        onClick={() => handlePageChange(page)}
+                                        className={currentPage === page ? 'active' : ''}
+                                    >
+                                        {page}
+                                    </button>
+                                )
+                            );
+                        })}
+
+                        {/* '다음' 버튼 */}
+                        {currentPage < totalPages && (
+                            <button className="right" onClick={() => handlePageChange(currentPage + 1)}><i className="bi bi-chevron-right"></i></button>
+                        )}
+
+                        {/* '끝' 버튼 */}
+                        {currentPage < totalPages && (
+                            <button className="last" onClick={() => handlePageChange(totalPages)}>
+                                <i className="bi bi-chevron-double-right"></i>
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
