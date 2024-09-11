@@ -71,6 +71,12 @@ public class Customer {
     @Column(name = "customer_update_date")
     private Timestamp customerUpdateDate;
 
+    @Column(name = "customer_delete_yn", length = 20, nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'N'")
+    private String customerDeleteYn; // 삭제 여부 기본값 'N'
+
+    @Column(name = "customer_delete_date")
+    private Timestamp customerDeleteDate; // 삭제 일시
+
     @ToString.Exclude
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
 

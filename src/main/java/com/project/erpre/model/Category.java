@@ -39,6 +39,12 @@ public class Category {
     @Column(name = "category_update_date", insertable = false)
     private Timestamp categoryUpdateDate;
 
+    @Column(name = "category_delete_yn", length = 20, nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'N'")
+    private String categoryDeleteYn; // 삭제 여부 기본값 'N'
+
+    @Column(name = "category_delete_date")
+    private Timestamp categoryDeleteDate; // 삭제 일시
+
     @ToString.Exclude
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @JsonIgnore

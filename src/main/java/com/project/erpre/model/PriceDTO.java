@@ -2,6 +2,7 @@ package com.project.erpre.model;
 
 import lombok.*;
 
+import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -24,4 +25,6 @@ public class PriceDTO {
     private Timestamp priceEndDate; // 가격 적용 종료 일자
     private Timestamp priceInsertDate; // 가격 등록 일시
     private Timestamp priceUpdateDate; // 가격 수정 일시
+    private String priceDeleteYn; // 삭제 여부 기본값 'N'
+    private Timestamp priceDeleteDate; // 삭제 일시
 }

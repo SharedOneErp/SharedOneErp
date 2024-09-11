@@ -21,6 +21,24 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    // DTO -> Entity 변환 메서드
+    private Category convertToEntity(CategoryDTO categoryDTO) {
+        Category category = new Category();
+        category.setCategoryLevel(categoryDTO.getCategoryLevel());
+        category.setCategoryNm(categoryDTO.getCategoryNm());
+        category.setParentCategoryNo(categoryDTO.getParentCategoryNo());
+        return category;
+    }
+
+    // Entity -> DTO 변환 메서드
+    private CategoryDTO convertToDTO(Category category) {
+        return CategoryDTO.builder()
+                .categoryLevel(category.getCategoryLevel())
+                .categoryNm(category.getCategoryNm())
+                .parentCategoryNo(category.getParentCategoryNo())
+                .build();
+    }
+
     //전체 카테고리
     public List<Category> getAllCategory() {
         //정렬

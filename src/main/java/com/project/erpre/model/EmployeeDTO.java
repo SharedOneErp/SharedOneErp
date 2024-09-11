@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import java.sql.Timestamp;
 
 @Data
@@ -21,4 +22,6 @@ public class EmployeeDTO {
     private String employeeRole;
     private Timestamp employeeInsertDate;
     private Timestamp employeeUpdateDate;
+    private String employeeDeleteYn; // 삭제 여부 기본값 'N'
+    private Timestamp employeeDeleteDate; // 삭제 일시
 }

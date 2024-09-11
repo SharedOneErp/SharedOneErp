@@ -123,9 +123,9 @@ function Product() {
             customer: {customerNo: customerNo},  // 서버에서 Expecting Customer 객체
             employee: {employeeId: employeeId},  // 서버에서 Expecting Employee 객체
             orderHTotalPrice: totalAmount,
-            orderDStatus: "ing",
-            orderDInsertDate: new Date().toISOString(),
-            orderDUpdateDate: null
+            orderHStatus: "ing",
+            orderHInsertDate: new Date().toISOString(),
+            orderHUpdateDate: null
         };
 
         try {

@@ -44,4 +44,10 @@ public class Price {
     @Column(name = "price_update_date")
     private Timestamp priceUpdateDate; // 가격 수정 일시
 
+    @Column(name = "price_delete_yn", length = 20, nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'N'")
+    private String priceDeleteYn; // 삭제 여부 기본값 'N'
+
+    @Column(name = "price_delete_date")
+    private Timestamp priceDeleteDate; // 삭제 일시
+
 }
