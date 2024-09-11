@@ -34,6 +34,9 @@ export const useHooksList = () => {
         priceEndDate: null
     });
 
+    const [editingId, setEditingId] = useState(null); // 수정 중인 항목 ID를 저장
+    const [editedPriceData, setEditedPriceData] = useState({}); // 수정 중인 항목 데이터를 저장
+
     // 입력값 변경 핸들러
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -151,6 +154,8 @@ export const useHooksList = () => {
         handleInputChange,
         handleAddNewPrice,
         handleCancelAdd,
+        editingId,
+        editedPriceData,
     };
 
 };
