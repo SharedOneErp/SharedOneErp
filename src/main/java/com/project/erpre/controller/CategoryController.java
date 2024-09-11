@@ -38,7 +38,7 @@ public class CategoryController {
     }
 
     //카테고리 수정
-    @PutMapping("/{categoryNo}")
+    @PutMapping("/upd/{categoryNo}")
     public Category updateCategory(@PathVariable Integer categoryNo, @RequestBody CategoryDTO categoryDTO ) {
         categoryDTO.setCategoryNo(categoryNo);
         return categoryService.updateCategory(categoryNo, categoryDTO);
@@ -46,7 +46,7 @@ public class CategoryController {
     }
 
     //카테고리 삭제
-    @DeleteMapping("/{categoryNo}")
+    @DeleteMapping("/del/{categoryNo}")
     public void deleteCategory(@PathVariable Integer categoryNo) {
         categoryService.deleteById(categoryNo);
     }
