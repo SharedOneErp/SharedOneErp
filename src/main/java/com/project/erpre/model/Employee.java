@@ -20,7 +20,7 @@ import java.util.List;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Employee {
 
-//    @GeneratedValue(strategy = GenerationType.IDENTITY) 직원id는 자동증가하는 값이 아님
+    //    @GeneratedValue(strategy = GenerationType.IDENTITY) 직원id는 자동증가하는 값이 아님
     @Id
     @Column(name = "employee_id", length = 50, nullable = false)
     private String employeeId;
@@ -71,5 +71,3 @@ public class Employee {
     }
 
 }
-
-
