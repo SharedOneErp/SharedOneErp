@@ -24,11 +24,21 @@ export const useHooksList = () => {
 
     const [loading, setLoading] = useState(false); // 로딩 상태 관리
 
+    const [isAdding, setIsAdding] = useState(false); // 추가 버튼 클릭 상태
+    const [newPriceData, setNewPriceData] = useState({
+        customerName: '',
+        productNm: '',
+        categoryNm: '',
+        priceCustomer: '',
+        priceStartDate: null,
+        priceEndDate: null
+    });
+
     // 가격 리스트를 서버에서 받아오는 함수
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true); // 데이터를 가져오기 전에 로딩 상태를 true로 설정
-            const MIN_LOADING_TIME = 500; // 최소 로딩 시간
+            const MIN_LOADING_TIME = 600; // 최소 로딩 시간
             const startTime = Date.now(); // 요청 시작 시간 기록
             try {
                 // 요청 파라미터 콘솔 출력
