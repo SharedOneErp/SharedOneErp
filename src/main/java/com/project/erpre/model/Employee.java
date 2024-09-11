@@ -45,6 +45,12 @@ public class Employee {
     @Column(name = "employee_update_date")
     private Timestamp employeeUpdateDate;
 
+    @Column(name = "employee_delete_yn", length = 20, nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'N'")
+    private String employeeDeleteYn; // 삭제 여부 기본값 'N'
+
+    @Column(name = "employee_delete_date")
+    private Timestamp employeeDeleteDate; // 삭제 일시
+
 
     // 하나의 직원이 여러 개의 주문을 가질 수 있따
     @ToString.Exclude

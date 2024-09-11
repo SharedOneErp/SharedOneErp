@@ -40,4 +40,43 @@ FOREIGN KEY (product_cd) REFERENCES m_product(product_cd);
 --ALTER TABLE m_employee
 --ADD COLUMN department VARCHAR(20) NOT NULL;
 
+--2024.09.11. 19:20 추가
+
+-- 1. 고객사 테이블 수정
+ALTER TABLE m_customer
+ADD COLUMN customer_delete_yn VARCHAR(20) NOT NULL DEFAULT 'N', -- 삭제 여부 기본값 'N'
+ADD COLUMN customer_delete_date timestamp NULL; -- 삭제 일시
+
+-- 2. 상품 테이블 수정
+ALTER TABLE m_product
+ADD COLUMN product_delete_yn VARCHAR(20) NOT NULL DEFAULT 'N', -- 삭제 여부 기본값 'N'
+ADD COLUMN product_delete_date timestamp NULL; -- 삭제 일시
+
+-- 3. 고객사별 상품 가격 테이블 수정
+ALTER TABLE m_price
+ADD COLUMN price_delete_yn VARCHAR(20) NOT NULL DEFAULT 'N', -- 삭제 여부 기본값 'N'
+ADD COLUMN price_delete_date timestamp NULL; -- 삭제 일시
+
+-- 4. 상품 카테고리 테이블 수정
+ALTER TABLE m_category
+ADD COLUMN category_delete_yn VARCHAR(20) NOT NULL DEFAULT 'N', -- 삭제 여부 기본값 'N'
+ADD COLUMN category_delete_date timestamp NULL; -- 삭제 일시
+
+-- 5. 주문 헤더 테이블 수정
+ALTER TABLE m_order_h
+ADD COLUMN order_h_delete_yn VARCHAR(20) NOT NULL DEFAULT 'N', -- 삭제 여부 기본값 'N'
+ADD COLUMN order_h_delete_date timestamp NULL; -- 삭제 일시
+
+-- 6. 주문 상세 테이블 수정
+ALTER TABLE m_order_d
+ADD COLUMN order_d_insert_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 주문 상세 등록 일시
+ADD COLUMN order_d_update_date timestamp NULL, -- 주문 상세 수정 일시
+ADD COLUMN order_d_delete_yn VARCHAR(20) NOT NULL DEFAULT 'N', -- 삭제 여부 기본값 'N'
+ADD COLUMN order_d_delete_date timestamp NULL; -- 삭제 일시
+
+-- 7. 직원 테이블 수정
+ALTER TABLE m_employee
+ADD COLUMN employee_delete_yn VARCHAR(20) NOT NULL DEFAULT 'N', -- 삭제 여부 기본값 'N'
+ADD COLUMN employee_delete_date timestamp NULL; -- 삭제 일시
+
 

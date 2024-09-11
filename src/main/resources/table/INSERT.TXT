@@ -94,7 +94,7 @@ VALUES
 (2, 19, '카테고리20'),
 (3, NULL, '카테고리21');
 
-INSERT INTO m_order_h (customer_no, employee_id, order_h_total_price, order_d_status)
+INSERT INTO m_order_h (customer_no, employee_id, order_h_total_price, order_h_status)
 VALUES
 (1, 'emp01', 100000.00, 'ing'),
 (2, 'emp02', 200000.00, 'approved'),

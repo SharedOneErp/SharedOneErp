@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,6 +37,12 @@ public class Product {
 
     @Column(name = "product_update_date", columnDefinition = "timestamp")
     private LocalDateTime productUpdateDate;
+
+    @Column(name = "product_delete_yn", length = 20, nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'N'")
+    private String productDeleteYn; // 삭제 여부 기본값 'N'
+
+    @Column(name = "product_delete_date")
+    private Timestamp productDeleteDate; // 삭제 일시
 
     @ToString.Exclude
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)

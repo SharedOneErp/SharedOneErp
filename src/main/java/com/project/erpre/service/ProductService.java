@@ -23,6 +23,37 @@ public class ProductService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    // DTO -> 엔티티 변환 메서드
+    private Product convertToEntity(ProductDTO productDTO) {
+        Product product = new Product();
+        product.setProductCd(productDTO.getProductCd());
+        product.setProductNm(productDTO.getProductNm());
+        product.setProductInsertDate(productDTO.getProductInsertDate());
+        product.setProductUpdateDate(productDTO.getProductUpdateDate());
+        product.setProductDeleteYn(productDTO.getProductDeleteYn());
+        product.setProductDeleteDate(productDTO.getProductDeleteDate());
+
+        // 카테고리 설정은 별도로 처리
+        Category category = (Category) categoryRepository.findByCategoryNm(productDTO.getCategoryNm());
+        if (category != null) {
+            product.setCategory(category);
+        }
+        return product;
+    }
+
+    // 엔티티 -> DTO 변환 메서드
+    private ProductDTO convertToDTO(Product product) {
+        return ProductDTO.builder()
+                .productCd(product.getProductCd())
+                .productNm(product.getProductNm())
+                .categoryNm(product.getCategory().getCategoryNm()) // 카테고리 이름
+                .productInsertDate(product.getProductInsertDate())
+                .productUpdateDate(product.getProductUpdateDate())
+                .productDeleteYn(product.getProductDeleteYn())
+                .productDeleteDate(product.getProductDeleteDate())
+                .build();
+    }
+
     // 전체 상품 목록 조회
     public List<ProductDTO> getAllProducts() {
         return productRepository.getAllProducts();

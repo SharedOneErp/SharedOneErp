@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -29,4 +32,6 @@ public class CustomerDTO {
     private Timestamp customerTransactionEndDate;
     private Timestamp customerInsertDate;
     private Timestamp customerUpdateDate;
+    private String customerDeleteYn; // 삭제 여부 기본값 'N'
+    private Timestamp customerDeleteDate; // 삭제 일시
 }
