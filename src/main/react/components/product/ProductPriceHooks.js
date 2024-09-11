@@ -34,6 +34,35 @@ export const useHooksList = () => {
         priceEndDate: null
     });
 
+    // 입력값 변경 핸들러
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setNewPriceData({
+            ...newPriceData,
+            [name]: value
+        });
+    };
+
+    // 날짜 선택 핸들러
+    const handleDateChange = (name, date) => {
+        setNewPriceData({
+            ...newPriceData,
+            [name]: date
+        });
+    };
+
+    // 등록 버튼 클릭 시 처리할 함수
+    const handleAddNewPrice = () => {
+        // 추가된 데이터를 서버에 전송하거나 상태에 반영하는 로직 구현🟥
+        console.log('새 가격 정보 등록:', newPriceData);
+        setIsAdding(false); // 추가 행 숨기기
+    };
+
+    // 취소 버튼 클릭 시 처리할 함수
+    const handleCancelAdd = () => {
+        setIsAdding(false); // 추가 행 숨기기
+    };
+
     // 가격 리스트를 서버에서 받아오는 함수
     useEffect(() => {
         const fetchData = async () => {
@@ -109,13 +138,19 @@ export const useHooksList = () => {
     };
 
     return {
-        priceList,               // [1] 가격 리스트 상태
-        itemsPerPage,            // [9] 페이지당 항목 수
-        handleItemsPerPageChange,// [29] 페이지당 항목 수 변경 함수
-        loading,
-        handlePageChange,
-        totalPages,
-        currentPage,
+        priceList,               // 가격 리스트 상태 (고객사별 상품 가격 데이터를 담고 있는 배열)
+        itemsPerPage,            // 페이지당 항목 수 (사용자가 선택한 한 페이지에 표시할 데이터 개수)
+        handleItemsPerPageChange,// 페이지당 항목 수 변경 함수 (사용자가 페이지당 몇 개의 항목을 볼지 선택하는 함수)
+        loading,                 // 로딩 상태 (데이터를 불러오는 중일 때 true로 설정)
+        handlePageChange,        // 페이지 변경 함수 (사용자가 페이지를 이동할 때 호출하는 함수)
+        totalPages,              // 총 페이지 수 (전체 데이터에서 페이지당 항목 수로 나눈 페이지 개수)
+        currentPage,             // 현재 페이지 (사용자가 현재 보고 있는 페이지 번호)
+        isAdding,                // 추가 상태 (추가 버튼을 눌러 새로운 입력 행을 보여줄지 여부를 나타내는 상태)
+        setIsAdding,
+        newPriceData,
+        handleInputChange,
+        handleAddNewPrice,
+        handleCancelAdd,
     };
 
 };
