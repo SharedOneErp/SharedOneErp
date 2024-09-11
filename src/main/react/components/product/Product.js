@@ -32,7 +32,7 @@ function Product() {
 
     const fetchOrderDetail = async (orderNo) => {
         try {
-            const response = await fetch(`http://localhost:8787/api/orders/${orderNo}`);
+            const response = await fetch(`http://localhost:8787/api/order/${orderNo}`);
             if (!response.ok) throw new Error('주문 데이터를 가져올 수 없습니다.');
             const data = await response.json();
             setProducts(data ? data.products : []);
@@ -129,7 +129,7 @@ function Product() {
         };
 
         try {
-            const response = await fetch('http://localhost:8787/api/orders', {
+            const response = await fetch('http://localhost:8787/api/order', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

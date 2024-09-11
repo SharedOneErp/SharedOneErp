@@ -254,3 +254,68 @@
 .search-button{
     margin-left: 5px;
 }
+
+/* 페이지네이션 컨테이너 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+/* 페이지네이션 버튼 */
+.pagination button {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 50%;
+    color: #333333;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    height: 36px;
+    width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* 페이지네이션 버튼 활성화 상태 */
+.pagination button.active {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #ffffff;
+}
+
+/* 페이지네이션 버튼 비활성화 상태 */
+.pagination button:disabled {
+    background-color: #f0f0f0;
+    border-color: #f0f0f0;
+    color: #b0b0b0;
+    cursor: not-allowed;
+}
+
+/* 페이지네이션 버튼 호버 상태 */
+.pagination button:hover {
+    background-color: #e0e0e0;
+}
+
+/* 페이지네이션 버튼 화살표 */
+.pagination .prev, .pagination .next {
+    font-size: 18px;
+}
+
+/* 페이지네이션 버튼 첫 페이지와 마지막 페이지 */
+.pagination .first, .pagination .last {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #ffffff;
+    font-size: 16px;
+}
+
+/* 페이지네이션 버튼 첫 페이지와 마지막 페이지 호버 상태 */
+.pagination .first:hover, .pagination .last:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}

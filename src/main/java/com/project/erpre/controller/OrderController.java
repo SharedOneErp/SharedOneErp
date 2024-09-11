@@ -33,7 +33,7 @@ public class OrderController {
     private ProductService productService;
 
 
-    @PostMapping(value = "/api/orders" )
+    @PostMapping(value = "/api/order" )
     public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO) {
         try {
 
@@ -66,7 +66,7 @@ public class OrderController {
     }
 
     // 검색 API
-    @GetMapping("/api/orders/search")
+    @GetMapping("/api/order/search")
     public List<Product> searchProducts(
             @RequestParam(required = false) String productCd,
             @RequestParam(required = false) Category category,
