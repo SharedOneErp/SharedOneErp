@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -79,6 +80,6 @@ public class Customer {
     @ToString.Exclude
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<Price> prices;
+    private List<Price> prices = new ArrayList<>();  // 빈 리스트로 초기화
 
 }
