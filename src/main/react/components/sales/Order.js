@@ -9,6 +9,7 @@ function Order() {
     const orderNo = searchParams.get('no'); // 주문번호
     const mode = searchParams.get('mode') || 'view'; // 'edit' 또는 'view'
 
+
     // 등록/수정/상세 구분
     const isCreateMode = !orderNo; // 주문번호 없으면 등록 모드
     const isEditMode = mode === 'edit'; // 수정 모드
@@ -26,9 +27,40 @@ function Order() {
     //직원
     const [employee, setEmployee] = useState(null); // 사용자 정보 넘기는 변수
 
-    //페이지 네이션
-    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
-    const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지당 항목 수
+    //상품
+    const [selectedProductIndex, setSelectedProductIndex] = useState(null);
+    //상품 인덱스 확인 후 등록 로직
+    
+
+    // 페이지네이션 상태
+    const [currentPageProduct, setCurrentPageProduct] = useState(1);
+    const [itemsPerPageProduct, setItemsPerPageProduct] = useState(10);
+
+    const [currentPageCustomer, setCurrentPageCustomer] = useState(1);
+    const [itemsPerPageCustomer, setItemsPerPageCustomer] = useState(10);
+
+    // 상품 모달 페이지네이션 로직
+    const indexOfLastProductResult = currentPageProduct * itemsPerPageProduct;
+    const indexOfFirstProductResult = indexOfLastProductResult - itemsPerPageProduct;
+    const paginatedSearchResults = searchResults.slice(indexOfFirstProductResult, indexOfLastProductResult);
+    const totalProductPages = Math.ceil(searchResults.length / itemsPerPageProduct);
+
+
+// 고객사 모달 페이지네이션 로직
+    const indexOfLastCustomerResult = currentPageCustomer * itemsPerPageCustomer;
+    const indexOfFirstCustomerResult = indexOfLastCustomerResult - itemsPerPageCustomer;
+    const paginatedCustomerSearchResults = customerSearchResults.slice(indexOfFirstCustomerResult, indexOfLastCustomerResult);
+    const totalCustomerPages = Math.ceil(customerSearchResults.length / itemsPerPageCustomer);
+
+// 페이지 변경 핸들러
+    const handlePageChangeProduct = (pageNumber) => {
+        setCurrentPageProduct(pageNumber);
+    };
+
+    const handlePageChangeCustomer = (pageNumber) => {
+        setCurrentPageCustomer(pageNumber);
+    };
+
 
 
     // 사용자 정보를 서버에서 가져오는 useEffect
@@ -62,7 +94,7 @@ function Order() {
     const fetchOrderDetail = async (orderNo) => {
         console.log("-------------------------------------fetchOrderDetail");
         try {
-            const response = await fetch(`http://localhost:8787/api/orders/${orderNo}`);
+            const response = await fetch(`http://localhost:8787/api/order/${orderNo}`);
             if (!response.ok) throw new Error('주문 데이터를 가져올 수 없습니다.');
             const data = await response.json();
             setProducts(data ? data.products : []);
@@ -120,10 +152,11 @@ function Order() {
     const handleSearch = async () => {
         console.log("-------------------------------------handleSearch");
         try {
-            const response = await fetch(`http://localhost:8787/api/orders/search?productCd=${searchCode}&productNm=${searchQuery}`);
+            const response = await fetch(`http://localhost:8787/api/order/search?productCd=${searchCode}&productNm=${searchQuery}`);
             if (!response.ok) throw new Error('검색 결과가 없습니다.');
             const data = await response.json();
             setSearchResults(data);
+            setCurrentPageProduct(1); // 검색 시 페이지를 첫 페이지로 초기화
         } catch (error) {
             console.error('검색 중 오류 발생:', error);
             setSearchResults([]);
@@ -138,13 +171,14 @@ function Order() {
             if (!response.ok) throw new Error('검색 결과가 없습니다.');
             const data = await response.json();
             setCustomerSearchResults(data);
+            setCurrentPageCustomer(1); // 검색 시 페이지를 첫 페이지로 초기화
         } catch (error) {
             console.error('검색 중 오류 발생:', error);
             setCustomerSearchResults([]);
         }
     };
 
-    const [selectedProductIndex, setSelectedProductIndex] = useState(null);
+
 
 
     // 상품 선택 처리
@@ -194,7 +228,7 @@ function Order() {
 
         console.log("-------------------------------------handleSubmit");
         try {
-            const response = await fetch('http://localhost:8787/api/orders', {
+            const response = await fetch('http://localhost:8787/api/order', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -261,8 +295,6 @@ function Order() {
         document.querySelector('input[name="customerAddr"]').value = selectedCustomer.customerAddr;
         document.querySelector('input[name="customerTel"]').value = selectedCustomer.customerTel;
         document.querySelector('input[name="customerRepresentativeName"]').value = selectedCustomer.customerRepresentativeName;
-
-
         closeCustomerModal();
     };
 
@@ -420,6 +452,7 @@ function Order() {
                 </div>
 
 
+                {/* 고객사 검색 모달 */}
                 {customerModalOpen && (
                     <div className="modal">
                         <div className="modal-content">
@@ -428,7 +461,6 @@ function Order() {
                                 <button className="close-modal" onClick={closeCustomerModal}>&times;</button>
                             </div>
 
-                            {/* 고객사 검색 */}
                             <div className="search-fields">
                                 <input
                                     type="text"
@@ -439,25 +471,24 @@ function Order() {
                                 <button className="search-modal" onClick={customerSearch}>검색</button>
                             </div>
 
-                            {/* 고객사 검색 결과 */}
                             <div className="search-results">
                                 {customerSearchResults.length > 0 ? (
                                     <table className="search-results-table">
                                         <thead>
                                         <tr>
-                                            <th>고객사 코드</th>
-                                            <th>고객사 이름</th>
+                                            <th>고객사</th>
                                             <th>주소</th>
                                             <th>연락처</th>
+                                            <th>대표명</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {customerSearchResults.map((result) => (
+                                        {paginatedCustomerSearchResults.map((result) => (
                                             <tr key={result.customerNo} onClick={() => handleCustomerSelect(result)}>
-                                                <td>{result.customerNo}</td>
                                                 <td>{result.customerName}</td>
                                                 <td>{result.customerAddr}</td>
                                                 <td>{result.customerTel}</td>
+                                                <td>{result.customerRepresentativeName}</td>
                                             </tr>
                                         ))}
                                         </tbody>
@@ -465,60 +496,25 @@ function Order() {
                                 ) : (
                                     <div>검색 결과가 없습니다.</div>
                                 )}
+                                {/* 페이지네이션 */}
+                                <div className="pagination">
+                                    {Array.from({ length: totalCustomerPages }, (_, i) => i + 1).map(number => (
+                                        <button
+                                            key={number}
+                                            onClick={() => handlePageChangeCustomer(number)}
+                                            className={number === currentPageCustomer ? 'active' : ''}
+                                        >
+                                            {number}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
                 )}
+
 
                 {/* 상품 검색 모달 */}
-                {customerModalOpen && (
-                    <div className="modal">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h4>고객사 검색</h4>
-                                <button className="close-modal" onClick={closeCustomerModal}>&times;</button>
-                            </div>
-
-                            <div className="search-fields">
-                                <input
-                                    type="text"
-                                    placeholder="검색하실 고객사를 입력하세요"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                                <button className="search-modal" onClick={customerSearch}>검색</button>
-                            </div>
-
-                            <div className="search-results">
-                                {customerSearchResults.length > 0 ? (
-                                    <table className="search-results-table">
-                                        <thead>
-                                        <tr>
-                                            <th>고객사 코드</th>
-                                            <th>고객사 이름</th>
-                                            <th>주소</th>
-                                            <th>연락처</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {customerSearchResults.map((result) => (
-                                            <tr key={result.customerNo} onClick={() => handleCustomerSelect(result)}>
-                                                <td>{result.customerNo}</td>
-                                                <td>{result.customerName}</td>
-                                                <td>{result.customerAddr}</td>
-                                                <td>{result.customerTel}</td>
-                                            </tr>
-                                        ))}
-                                        </tbody>
-                                    </table>
-                                ) : (
-                                    <div>검색 결과가 없습니다.</div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                )}
-
                 {showModal && (
                     <div className="modal">
                         <div className="modal-content">
@@ -574,12 +570,12 @@ function Order() {
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {searchResults.map((result, index) => (
+                                        {paginatedSearchResults.map((result, index) => (
                                             <tr key={index} onClick={() => handleProductSelect(result)}>
                                                 <td>{result.productCd}</td>
                                                 <td>{result.category.categoryNo}</td>
                                                 <td>{result.productNm}</td>
-                                                {/* 가격은 join 후 연결 */}
+                                                <td>{result.price}</td>
                                             </tr>
                                         ))}
                                         </tbody>
@@ -587,11 +583,22 @@ function Order() {
                                 ) : (
                                     <div>검색 결과가 없습니다.</div>
                                 )}
+                                {/* 페이지네이션 */}
+                                <div className="pagination">
+                                    {Array.from({ length: totalProductPages }, (_, i) => i + 1).map(number => (
+                                        <button
+                                            key={number}
+                                            onClick={() => handlePageChangeProduct(number)}
+                                            className={number === currentPageProduct ? 'active' : ''}
+                                        >
+                                            {number}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
                 )}
-
 
 
                 <div className="total-amount">
