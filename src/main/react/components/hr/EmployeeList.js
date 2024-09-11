@@ -5,6 +5,7 @@ import Layout from "../../layout/Layout";
 import { BrowserRouter } from "react-router-dom";
 import '../../../resources/static/css/hr/EmployeeList.css';
 import axios from 'axios';
+import {formatDate} from '../../util/dateUtils'
 
 function EmployeeList() {
     const [employees, setEmployees] = useState([]);
@@ -21,6 +22,7 @@ function EmployeeList() {
             })
 
     };
+    
 
 
     return (
@@ -54,8 +56,8 @@ function EmployeeList() {
                                 <td>{employee.employeeTel}</td>
                                 <td>{employee.employeeEmail}</td>
                                 <td>{employee.employeeRole}</td>
-                                <td>{employee.employeeInsertDate}</td>
-                                <td>{employee.employeeUpdateDate}</td>
+                                <td>{formatDate(employee.employeeInsertDate)}</td>
+                                <td>{formatDate(employee.employeeUpdateDate)}</td>
                             </tr>
                         ))
                     ) : (
