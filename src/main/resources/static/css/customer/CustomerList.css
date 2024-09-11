@@ -67,57 +67,141 @@
     margin: 0 10px;
 }
 /*모달창*/
+/* 모달창 오버레이 */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.6); /* 배경 어둡게 설정 */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* 모달이 다른 콘텐츠 위에 보이도록 설정 */
+    z-index: 1000;
 }
 
+/* 모달창 콘텐츠 */
 .modal-content {
     background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 600px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1001; /* 모달 내용이 오버레이 위에 보이도록 설정 */
+    padding: 40px; /* 여백을 넉넉하게 */
+    border-radius: 12px;
+    width: 800px; /* 가로 길이 확장 */
+    max-height: 90vh; /* 세로 길이 제한 */
+    overflow-y: auto; /* 모달이 너무 클 경우 스크롤 */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    position: relative; /* X 버튼 위치 조정을 위한 relative */
+    z-index: 1001;
+    animation: modalFadeIn 0.3s ease-out;
 }
 
+/* 모달창 등장 애니메이션 */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 닫기 버튼 (X) */
 .close-button {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 20px;
+    right: 20px;
     background-color: transparent;
     border: none;
-    font-size: 20px;
+    font-size: 24px;
     cursor: pointer;
+    color: #555; /* 기본 색상 */
+    transition: color 0.3s ease;
 }
 
+.close-button:hover {
+    color: #007CC1; /* 호버 시 포인트 컬러 */
+}
+
+/* 모달창 폼 스타일 */
+.customer-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 두 열로 나눔 */
+    gap: 20px; /* 항목 간 간격 확대 */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-group input {
+    padding: 12px; /* 필드 간격 조정 */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #007CC1;
+}
+
+/* 모달 하단 버튼 영역 */
 .modal-footer {
     display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+    justify-content: flex-end; /* 버튼들을 오른쪽으로 정렬 */
+    gap: 15px;
+    margin-top: 30px;
 }
 
-.edit-button, .delete-button {
-    padding: 10px 20px;
+/* 수정, 삭제, 저장 버튼 스타일 */
+.edit-button, .delete-button, .save-button {
+    padding: 12px 24px;
     border: none;
     border-radius: 5px;
+    font-size: 16px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.edit-button {
+/* 수정, 저장 버튼 색상 */
+.edit-button, .save-button {
     background-color: #007CC1;
     color: white;
 }
 
+.edit-button:hover, .save-button:hover {
+    background-color: #005fa3;
+}
+
+/* 삭제 버튼 스타일 */
 .delete-button {
     background-color: #ff4d4d;
     color: white;
 }
+
+.delete-button:hover {
+    background-color: #d43d3d;
+}
+
+/* 반응형 모달 조정 */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 90%;
+    }
+
+    .customer-form {
+        grid-template-columns: 1fr;
+    }
+}
+

@@ -10,7 +10,7 @@ import axios from 'axios';  // Axios 임포트
 function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
 
     const [isEditMode, setIsEditMode] = useState(false); // 수정 모드 상태
-    const [editableCustomer, setEditableCustomer] = useState(customer);
+    const [editableCustomer, setEditableCustomer] = useState(customer || {}); // null을 방지하기 위해 초기값을 빈 객체로 설정
 
     // 고객 정보가 변경될 때마다 editableCustomer 업데이트
     useEffect(() => {
@@ -88,7 +88,7 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                     </div>
 
                     <div className="form-group">
-                        <label>사업장주소</label>
+                        <label>사업장 주소</label>
                         <input
                             type="text"
                             name="customerAddr"
@@ -99,7 +99,7 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                     </div>
 
                     <div className="form-group">
-                        <label>팩스번호</label>
+                        <label>팩스 번호</label>
                         <input
                             type="text"
                             name="customerFaxNo"
@@ -143,7 +143,7 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                     </div>
 
                     <div className="form-group">
-                        <label>국가코드</label>
+                        <label>국가 코드</label>
                         <input
                             type="text"
                             name="customerCountryCode"
@@ -155,7 +155,6 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
 
                     <div className="form-group">
                         <label>전자세금계산서 여부</label>
-                        {/*<input type="text" value={customer.electronicTaxInvoice ? 'Y' : 'N'} readOnly/>*/}
                         <input
                             type="text"
                             name="customerETaxInvoiceYn"
@@ -166,7 +165,7 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                     </div>
 
                     <div className="form-group">
-                        <label>거래시작일</label>
+                        <label>거래 시작일</label>
                         <input
                             type="text"
                             name="customerTransactionStartDate"
@@ -177,7 +176,7 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                     </div>
 
                     <div className="form-group">
-                        <label>거래종료일</label>
+                        <label>거래 종료일</label>
                         <input
                             type="text"
                             name="customerTransactionEndDate"
@@ -207,7 +206,7 @@ function CustomerList() {
     const [filterType, setFilterType] = useState('customerName'); // 필터 기본값
     const [itemsPerPage, setItemsPerPage] = useState(20); // 페이지 기본값
     const [currentPage, setCurrentPage] = useState(1);
-    const [customers, setCustomers] = useState([]); //데이터값 불러오기
+    const [customers, setCustomers] = useState([]); // 데이터값 불러오기
     const [selectedCustomer, setSelectedCustomer] = useState(null); // 선택된 고객
     const [showModal, setShowModal] = useState(false); // 모달창 표시 여부
 
@@ -228,7 +227,7 @@ function CustomerList() {
             .then(() => {
                 setCustomers((prevCustomers) =>
                     prevCustomers.map((customer) =>
-                        customer.customerId === updatedCustomer.customerId ? updatedCustomer : customer
+                        customer.customerNo === updatedCustomer.customerNo ? updatedCustomer : customer
                     )
                 );
                 setShowModal(false);
@@ -239,10 +238,10 @@ function CustomerList() {
     // 고객 정보 삭제
     const handleDeleteCustomer = () => {
         if (window.confirm('정말 삭제하시겠습니까?')) {
-            axios.delete(`/api/customer/delete/${selectedCustomer.customerId}`)
+            axios.delete(`/api/customer/delete/${selectedCustomer.customerNo}`)
                 .then(() => {
                     setCustomers((prevCustomers) =>
-                        prevCustomers.filter((customer) => customer.customerId !== selectedCustomer.customerId)
+                        prevCustomers.filter((customer) => customer.customerNo !== selectedCustomer.customerNo)
                     );
                     setShowModal(false);
                 })
@@ -283,7 +282,7 @@ function CustomerList() {
                     <option value="customerCountryCode">국가코드</option>
                     <option value="customerManagerName">담당자명</option>
                 </select>
-                <input type="text" placeholder="검색어 입력" value={filter} onChange={(e) => setFilter(e.target.value)}/>
+                <input type="text" placeholder="검색어 입력" value={filter} onChange={(e) => setFilter(e.target.value)} />
                 <button className="search-button" onClick={() => setCurrentPage(1)}>검색</button>
 
                 <div className="pagination-section">
@@ -310,7 +309,7 @@ function CustomerList() {
                     {filteredCustomers
                         .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                         .map((customer, index) => (
-                            <tr key={customer.customerId}>
+                            <tr key={customer.customerNo} onClick={() => openModal(customer)}>
                                 <td>{index + 1}</td>
                                 <td>{customer.customerName}</td>
                                 <td>{customer.customerBusinessRegNo}</td>
@@ -326,11 +325,10 @@ function CustomerList() {
 
                 <div className="pagination-buttons">
                     <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>이전</button>
-                    {Array.from({length: totalPages}, (_, i) => (
+                    {Array.from({ length: totalPages }, (_, i) => (
                         <button key={i + 1} onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
                     ))}
-                    <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>다음
-                    </button>
+                    <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>다음</button>
                 </div>
             </div>
 
@@ -345,6 +343,7 @@ function CustomerList() {
         </Layout>
     );
 }
+
 
 const root = ReactDOM.createRoot(document.getElementById('root')); // 루트 DOM 요소에 리액트 컴포넌트를 렌더링
 root.render(
