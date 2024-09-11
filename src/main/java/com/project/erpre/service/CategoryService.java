@@ -7,6 +7,7 @@ import com.project.erpre.repository.CategoryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +23,11 @@ public class CategoryService {
 
     //전체 카테고리
     public List<Category> getAllCategory() {
-        return categoryRepository.findAll();
+        //정렬
+        Sort sort = Sort.by(Sort.Order.asc("categoryLevel"),
+                            Sort.Order.asc("parentCategoryNo"),
+                            Sort.Order.asc("categoryNo"));
+        return categoryRepository.findAll(sort);
     }
 
     //특정 카테고리

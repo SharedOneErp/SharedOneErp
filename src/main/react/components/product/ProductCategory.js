@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴�
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
 import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
 import '../../../resources/static/css/product/ProductCategory.css'; // 개별 CSS 스타일 적용
+import { formatDate } from "../../util/dateUtils";
 
 // 컴포넌트
 function ProductCategory() {
@@ -13,6 +14,10 @@ function ProductCategory() {
     const [selectedTopCategory, setSelectedTopCategory] = useState('');
     const [selectedMidCategory, setSelectedMidCategory] = useState('');
     const [categoryLevel, setCategoryLevel] = useState('대분류'); // 카테고리 레벨 (대분류/중분류/소분류)
+    const [insertTop, setInsertTop] = useState('');//대분류 추가
+    const [insertMid, setInsertMid] = useState('');//중분류 추가
+    const [insertLow, setInsertLow] = useState('');//소분류 추가
+    const [insertedList, setInsertedList] = useState([]);
 
     useEffect(() => {
         fetch('/api/category/all')
@@ -20,33 +25,6 @@ function ProductCategory() {
             .then(data => setCategory(data))
             .catch(error => console.error('카테고리 목록을 불러오는 데 실패했습니다.', error))
     }, []);
-
-    const handleCategorySubmit = (e) => {
-        e.preventDefault();
-        if (!categoryName) {
-            alert('카테고리명을 입력하세요');
-            return;
-        }
-
-        const newCategory = {
-            categoryNm: categoryName,
-            categoryLevel: categoryLevel
-        };
-
-        fetch('/api/category/save', {
-            method: 'POST',
-            headers: {
-                'Contents-Type': 'application/json',
-            },
-            body: JSON.stringify(newCategory),
-        })
-            .then(response => response.json())
-            .then(data => {
-                setCategory([...category, data]);
-                setCategoryName('');
-            })
-            .catch(error => console.error('카테고리 등록 실패', error));
-    };
 
     // 상품 목록 저장 state
     const [products, setProducts] = useState([]); // 전체 상품 목록
@@ -77,6 +55,39 @@ function ProductCategory() {
         });
     };
 
+    //대분류 추가 함수
+    const handleInsertTop = (e) => {
+        setInsertTop(e.target.value);
+    }
+
+    //대분류 추가 버튼
+    const handleAddButton = () => {
+        if (!insertTop) {
+            alert('대분류 값을 입력하세요');
+            return;
+        }
+
+        fetch('/api/category/save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                categoryNm: insertTop,
+                categoryLevel: 1
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                setInsertedList([...insertedList, data]);
+                setInsertTop('');
+            })
+            .catch(error => console.error('카테고리 추가 실패:', error));
+
+            alert('대분류 카테고리가 추가되었습니다.')
+    };
+
+
 
     return (
         <Layout currentMenu="productCategory"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
@@ -92,42 +103,28 @@ function ProductCategory() {
                     </div>
 
                     <div>
-                        {/* 대분류 선택 */}
-                        <select className="approval-select">
-                            <option value="">대분류 선택</option>
 
-                            <option>{category.categoryNm}</option>
-
-                        </select>
-
-                        {/* 중분류 선택 */}
-                        <select className="approval-select">
-                            <option value="">중분류 선택</option>
-
-                            <option>{category.categoryNm}</option>
-
-                        </select>
-
-                        {/* 카테고리명 입력 */}
-                        <input
-                            type="text"
-                            className="search-box"
-                            placeholder="새로운 카테고리명을 입력하세요"
-                            value={categoryName}
-                            onChange={(e) => setCategoryName(e.target.value)}
+                        <input type="text" className="search-box" placeholder="대분류 카테고리명을 입력하세요"
+                            onChange={handleInsertTop}
                         />
+                        <button type='submit' className="search-button" onClick={handleAddButton}>등록</button>
+                        <br />
+                        <select>
+                            <option>대분류1</option>
+                            <option>대분류2</option>
+                        </select>
+                        <input type="text" className="search-box" placeholder="중분류 카테고리명을 입력하세요" />
                         <button type="submit" className="search-button">등록</button>
-                    </div>
-
-                    <div>
-                        {/* <select className="approval-select">
-                            <option>대분류</option>
-                            <option>중분류</option>
-                            <option>소분류</option>
-                        </select> */}
-                        <input type="text" className="search-box" placeholder="대분류 카테고리명을 입력하세요"></input>
-                        <input type="text" className="search-box" placeholder="중분류 카테고리명을 입력하세요"></input>
-                        <input type="text" className="search-box" placeholder="소분류 카테고리명을 입력하세요"></input>
+                        <br />
+                        <select>
+                            <option>대분류1</option>
+                            <option>대분류2</option>
+                        </select>
+                        <select>
+                            <option>중분류1</option>
+                            <option>중분류2</option>
+                        </select>
+                        <input type="text" className="search-box" placeholder="소분류 카테고리명을 입력하세요" />
                         <button type="submit" className="search-button">등록</button>
                     </div>
                 </form>
@@ -164,10 +161,10 @@ function ProductCategory() {
                                     checked={selectedCategory.includes(category.categoryNo)} /></td>
                                 <td>{category.categoryNo}</td>
                                 <td>{category.categoryLevel}</td>
-                                <td>{category.parentCategoryNo}</td>
+                                <td>{category.parentCategoryNo ? category.parentCategoryNo : 'ㆍ'}</td>
                                 <td>{category.categoryNm}</td>
-                                <td>{category.categoryInsertDate}</td>
-                                <td>{category.categoryUpdateDate}</td>
+                                <td>{formatDate(category.categoryInsertDate)}</td>
+                                <td>{category.categoryUpdateDate ? formatDate(category.categoryUpdateDate) : 'ㆍ'}</td>
                             </tr>
                         ))}
                     </tbody>

@@ -36,7 +36,7 @@ public class Category {
     // insertable = false: JPA가 엔터티를 삽입할 때 이 필드를 무시하고, 데이터베이스가 자동으로 값을 설정하도록 합니다. 예: CURRENT_TIMESTAMP로 현재 시간을 자동 입력.
     private Timestamp categoryInsertDate;
 
-    @Column(name = "category_update_date")
+    @Column(name = "category_update_date", insertable = false)
     private Timestamp categoryUpdateDate;
 
     @ToString.Exclude
