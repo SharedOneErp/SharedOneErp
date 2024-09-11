@@ -129,7 +129,7 @@ function Product() {
         };
 
         try {
-            const response = await fetch('http://localhost:8787/api/order', {
+            const response = await fetch('/api/order', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

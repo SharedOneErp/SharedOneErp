@@ -13,7 +13,7 @@ function Login() {
         try {
             console.log('Attempting login with:', { employeeId: id, employeePw: pw }); // 디버깅용 로그
 
-            const response = await fetch('http://localhost:8787/api/login', {
+            const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
