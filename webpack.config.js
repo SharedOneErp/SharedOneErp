@@ -31,6 +31,7 @@ module.exports = {
         productPrice: `${productPath}ProductPrice.js`, // 고객사별 상품 가격 관리(목록/등록/수정)
         productCategory: `${productPath}ProductCategory.js`, // 상품 카테고리 관리(목록/등록/수정)
 
+
         // Customer 관련 엔트리 포인트
         customerList: `${customerPath}CustomerList.js`, // 고객사 목록
         customer: `${customerPath}Customer.js`, // 고객사 등록or상세or수정
