@@ -45,6 +45,8 @@ function EmployeeList() {
                         <th>권한</th>
                         <th>등록일자</th>
                         <th>수정일자</th>
+                        <th>삭제여부</th>
+                        <th>삭제일자</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,11 +61,13 @@ function EmployeeList() {
                                 <td>{employee.employeeRole}</td>
                                 <td>{formatDate(employee.employeeInsertDate)}</td>
                                 <td>{employee.employeeUpdateDate ? format(employee.employeeUpdateDate,'yyyy-MM-dd HH:mm') : '-'}</td>
+                                <td>{employee.employeeDeleteYn}</td>
+                                <td>{employee.employeeDeleteDate ? format(employee.employeeDeleteDate,'yyyy-MM-dd HH:mm') : '-'}</td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="8">직원 데이터를 조회해보세요</td>
+                            <td colSpan="10">직원 데이터를 조회해보세요</td>
                         </tr>
                     )}
                 </tbody>
