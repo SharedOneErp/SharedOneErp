@@ -9,13 +9,7 @@ spring.devtools.restart.enabled=true
 
 # PostgreSQL 데이터베이스 연결 설정 - AWS RDS, Log4jdbc
 spring.datasource.driver-class-name=net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-<<<<<<< HEAD:src/main/resources/application.properties
-spring.datasource.url=jdbc:log4jdbc:postgresql://172.30.1.23:5432/erpre
-#spring.datasource.url=jdbc:log4jdbc:postgresql://localhost:5432/erpre
-#spring.datasource.username=erpre
-=======
 spring.datasource.url=jdbc:log4jdbc:postgresql://erpre.c700qg6m2yfs.ap-northeast-2.rds.amazonaws.com:5432/erpre
->>>>>>> 9892b159065775a67b75041770350db352a62004:src/main/resources/application.properties.backup
 spring.datasource.username=postgres
 spring.datasource.password=
 
