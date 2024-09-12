@@ -4,6 +4,7 @@ import com.project.erpre.model.Employee;
 import com.project.erpre.repository.EmployeeRepository;
 import com.project.erpre.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -63,9 +64,17 @@ public class EmployeeController {
     }
 
     // 전체 직원 목록 조회
+//    @GetMapping("/employeeList")
+//    public ResponseEntity<List<Employee>> getAllEmployees() {
+//        List<Employee> employeeList = employeeService.getAllEmployees();
+//        return ResponseEntity.ok(employeeList);
+//    }
+
     @GetMapping("/employeeList")
-    public ResponseEntity<List<Employee>> getAllEmployees() {
-        List<Employee> employeeList = employeeService.getAllEmployees();
-        return ResponseEntity.ok(employeeList);
+    public ResponseEntity<Page<Employee>> getAllEmployees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Page<Employee> employeePage = employeeService.getPageEmployees(page, size);
+        return ResponseEntity.ok(employeePage);
     }
 }

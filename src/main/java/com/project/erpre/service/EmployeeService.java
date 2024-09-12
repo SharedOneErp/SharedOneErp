@@ -50,10 +50,14 @@ public class EmployeeService {
     }
 
     // 전체 직원 목록을 조회하는 메소드
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
-    }
+//    public List<Employee> getAllEmployees() {
+//        return employeeRepository.findAll();
+//    }
 
+    public Page<Employee> getPageEmployees(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return employeeRepository.findAll(pageable);
+    }
 //    public Page<Employee> getPageEmployees(int page, int size) {
 //        Pageable pageable = PageRequest.of(page, size);
 //        return employeeRepository.findAll(pageable);

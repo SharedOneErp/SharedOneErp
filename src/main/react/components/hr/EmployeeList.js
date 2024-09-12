@@ -10,18 +10,34 @@ import {add,format} from 'date-fns';
 
 function EmployeeList() {
     const [employees, setEmployees] = useState([]);
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
     const handleRegiClick = () => {
         window.location.href = "/employeeRegister";
     };
 
-    const handleSearchEmployees = () => {
-        axios.get('/api/employeeList')
+    const showTwentyEmployees = () => {
+        pageEmployees(page);
+
+    };
+
+    //서희씨 처럼 화면에 몇개 보여줄지 유저가 선택하게 할까 하다가 자료가 너무 많으면 가독성이 떨어지지않나해서 일단 20개만 보이게 해놨습니다
+    const pageEmployees = (page) => {
+        axios.get(`/api/employeeList?page=${page}&size=20`)
             .then(response => {
                 console.log('응답 데이터:', response.data);
-                setEmployees(response.data);
+                setEmployees(response.data.content);
+                setTotalPages(response.data.totalPages);
             })
 
+    };
+
+    const PageChange = (newPage) => {
+        if (newPage >= 0 && newPage < totalPages) {
+                setPage(newPage);
+                pageEmployees(newPage);
+            }
     };
 
 
@@ -29,7 +45,7 @@ function EmployeeList() {
     return (
         <Layout currentMenu="employeeList"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
             <h1>직원 목록</h1>
-            <button className="filter-button" onClick={handleSearchEmployees}>조회</button>
+            <button className="filter-button" onClick={showTwentyEmployees}>조회</button>
             <button className="filter-button">수정</button>
             <button className="filter-button" onClick={handleRegiClick}>등록</button>
             <button className="filter-button">삭제</button>
@@ -72,6 +88,20 @@ function EmployeeList() {
                     )}
                 </tbody>
             </table>
+
+            <div className="pagination">
+                <button onClick={() => PageChange(page - 1)} disabled={page === 0}>이전</button>
+                {[...Array(totalPages).keys()].map(pageNum => (
+                    <button
+                        key={pageNum}
+                        onClick={() => PageChange(pageNum)}
+                        disabled={pageNum === page}
+                    >
+                        {pageNum + 1}
+                    </button>
+                ))}
+                <button onClick={() => PageChange(page + 1)} disabled={page === totalPages - 1}>다음</button>
+            </div>
         </Layout>
     );
 }
