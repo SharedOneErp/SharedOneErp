@@ -45,8 +45,8 @@ public class Order {
     @Column(name = "order_h_update_date")
     private LocalDateTime orderHUpdateDate;
 
-    @Column(name = "order_h_delete_yn", length = 20, nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'N'")
-    private String orderHDeleteYn; // 삭제 여부 기본값 'N'
+    @Column(name = "order_h_delete_yn", length = 1, nullable = false, columnDefinition = "VARCHAR(1) DEFAULT 'N'")
+    private String orderHDeleteYn; // 기본값 'N'
 
     @Column(name = "order_h_delete_date")
     private Timestamp orderHDeleteDate; // 삭제 일시

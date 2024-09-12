@@ -25,7 +25,7 @@ public class OrderDetailDTO {
 
     private LocalDateTime orderDInsertDate;
     private LocalDateTime orderDUpdateDate;
-    private String orderDDeleteYn; // 삭제 여부 기본값 'N'
+    private String orderDDeleteYn = "N"; // 기본값 설정
     private Timestamp orderDDeleteDate; // 삭제 일시
 
     //Entity : 데이터베이스 테이블과 1:1로 매핑되며, JPA 어노테이션을 사용해 연관 관계(@ManyToOne, @OneToMany 등)를 설정하고 데이터베이스에서 가져온 데이터를 관리합니다.

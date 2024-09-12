@@ -70,7 +70,7 @@ export const useHooksList = () => {
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true); // 데이터를 가져오기 전에 로딩 상태를 true로 설정
-            const MIN_LOADING_TIME = 600; // 최소 로딩 시간
+            const MIN_LOADING_TIME = 1; //600; // 최소 로딩 시간
             const startTime = Date.now(); // 요청 시작 시간 기록
             try {
                 // 요청 파라미터 콘솔 출력

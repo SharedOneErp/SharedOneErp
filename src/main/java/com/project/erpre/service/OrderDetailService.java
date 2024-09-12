@@ -2,7 +2,10 @@ package com.project.erpre.service;
 
 import com.project.erpre.model.OrderDetail;
 import com.project.erpre.model.OrderDetailDTO;
+import com.project.erpre.model.Product;
 import com.project.erpre.repository.OrderDetailRepository;
+import com.project.erpre.repository.OrderRepository;
+import com.project.erpre.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +16,14 @@ import java.util.Optional;
 public class OrderDetailService {
 
     @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
     private OrderDetailRepository orderDetailRepository;
 
     // OrderDetailDTO -> OrderDetail 엔티티로 변환하는 메서드
-    private OrderDetail convertToEntity(OrderDetailDTO orderDetailDTO) {
+    public OrderDetail convertToEntity(OrderDetailDTO orderDetailDTO) {
         OrderDetail orderDetail = OrderDetail.builder()
                 .orderNo(orderDetailDTO.getOrderNo())
                 .orderDPrice(orderDetailDTO.getOrderDPrice())
@@ -25,20 +32,21 @@ public class OrderDetailService {
                 .orderDDeliveryRequestDate(orderDetailDTO.getOrderDDeliveryRequestDate())
                 .orderDInsertDate(orderDetailDTO.getOrderDInsertDate())
                 .orderDUpdateDate(orderDetailDTO.getOrderDUpdateDate())
-                .orderDDeleteYn(orderDetailDTO.getOrderDDeleteYn())
+                .orderDDeleteYn(Optional.ofNullable(orderDetailDTO.getOrderDDeleteYn()).orElse("N")) // 기본값 'N' 설정
                 .orderDDeleteDate(orderDetailDTO.getOrderDDeleteDate())
                 .build();
 
-        // Order 엔티티와 Product 엔티티는 별도로 조회해야 합니다.
-        // 예시:
-        // orderDetail.setOrder(orderRepository.findById(orderDetailDTO.getOrderHNo()).orElseThrow());
-        // orderDetail.setProduct(productRepository.findById(orderDetailDTO.getProductCd()).orElseThrow());
+        // Order 엔티티와 Product 엔티티를 조회하여 설정
+        orderDetail.setOrder(orderRepository.findById(orderDetailDTO.getOrderNo()).orElse(null));
+        orderDetail.setProduct(productRepository.findById(orderDetailDTO.getProductCd()).orElse(null));
 
         return orderDetail;
     }
 
+
+
     // OrderDetail 엔티티 -> OrderDetailDTO로 변환하는 메서드
-    private OrderDetailDTO convertToDTO(OrderDetail orderDetail) {
+    public OrderDetailDTO convertToDTO(OrderDetail orderDetail) {
         return OrderDetailDTO.builder()
                 .orderNo(orderDetail.getOrderNo())
                 .orderHNo(orderDetail.getOrder().getOrderNo())

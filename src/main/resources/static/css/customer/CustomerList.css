@@ -1,101 +1,30 @@
-/* 테이블*/
-.customer-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-.customer-table th, .customer-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-.customer-table th {
-    background-color: #f2f2f2;
-}
-.customer-table tr:hover {
-    background-color: #f1f1f1;
-    background-color: #ffdb0036; /* 이케아 노란색 */
-}
-.customer-table a {
-    color: blue;
-    text-decoration: underline;
-}
-
-/* 검색 필터*/
-.filter-section {
-    margin-bottom: 20px;
-}
-
-.filter-section select,
-.filter-section input,
-.filter-section .search-button {
-    background-color: #f2f2f2;
-    margin-right: 10px;
-    padding: 5px;
-}
-.filter-button {
-    background-color: #007CC1;
-    color: white;
-    padding: 6px 15px;
-    margin: 5px;
-    margin-right: 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-.filter-button:hover {
-    background-color: #005a91; /* 호버 시 조금 더 어두운 색으로 변경 */
-}
-
-/* 페이지네이션*/
-.pagination-buttons {
-    margin-top: 20px;
-    text-align: center;
-}
-.pagination-buttons button {
-    display: inline-block; /* 버튼들을 한 줄로 표시 */
-    padding: 5px 10px;
-    margin: 0 5px;
-    cursor: pointer;
-    background-color: #f2f2f2;
-    border: none;
-}
-.pagination-buttons button:hover {
-    background-color: #e0e0e0;
-}
-.pagination-buttons span {
-    margin: 0 10px;
-}
-/*모달창*/
-/* 모달창 오버레이 */
+/* 공통 모달 스타일 */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* 배경 어둡게 설정 */
+    background: rgba(0, 0, 0, 0.6); /* 어두운 배경 */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
 
-/* 모달창 콘텐츠 */
 .modal-content {
     background-color: white;
-    padding: 40px; /* 여백을 넉넉하게 */
+    padding: 30px;
     border-radius: 12px;
-    width: 800px; /* 가로 길이 확장 */
-    max-height: 90vh; /* 세로 길이 제한 */
-    overflow-y: auto; /* 모달이 너무 클 경우 스크롤 */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    position: relative; /* X 버튼 위치 조정을 위한 relative */
-    z-index: 1001;
-    animation: modalFadeIn 0.3s ease-out;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* 그림자 */
+    max-width: 600px; /* 적절한 크기로 조정 */
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto; /* 스크롤 */
+    position: relative;
+    animation: modalFadeIn 0.3s ease-out; /* 모달 애니메이션 */
 }
 
-/* 모달창 등장 애니메이션 */
 @keyframes modalFadeIn {
     from {
         opacity: 0;
@@ -107,66 +36,64 @@
     }
 }
 
-/* 닫기 버튼 (X) */
 .close-button {
     position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: transparent;
+    top: 15px;
+    right: 15px;
+    background: none;
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: #555; /* 기본 색상 */
+    color: #555;
     transition: color 0.3s ease;
 }
 
 .close-button:hover {
-    color: #007CC1; /* 호버 시 포인트 컬러 */
+    color: #007CC1; /* 포인트 컬러 */
 }
 
-/* 모달창 폼 스타일 */
-.customer-form {
+/* 고객 등록 및 상세 모달 폼 */
+.register-form, .detail-form {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 두 열로 나눔 */
-    gap: 20px; /* 항목 간 간격 확대 */
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
+    margin-bottom: 15px;
 }
 
 .form-group label {
-    margin-bottom: 8px;
-    font-size: 14px;
+    margin-bottom: 5px;
     font-weight: bold;
+    font-size: 14px;
     color: #333;
 }
 
-.form-group input {
-    padding: 12px; /* 필드 간격 조정 */
+.form-group input, .form-group select {
+    padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    font-size: 16px;
-    outline: none;
+    font-size: 14px;
     transition: border-color 0.3s ease;
 }
 
-.form-group input:focus {
-    border-color: #007CC1;
+.form-group input:focus, .form-group select:focus {
+    border-color: #007CC1; /* 포인트 컬러 */
 }
 
-/* 모달 하단 버튼 영역 */
+/* 버튼 스타일 */
 .modal-footer {
     display: flex;
-    justify-content: flex-end; /* 버튼들을 오른쪽으로 정렬 */
+    justify-content: flex-end;
     gap: 15px;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
-/* 수정, 삭제, 저장 버튼 스타일 */
 .edit-button, .delete-button, .save-button {
-    padding: 12px 24px;
+    padding: 10px 20px;
     border: none;
     border-radius: 5px;
     font-size: 16px;
@@ -174,17 +101,15 @@
     transition: background-color 0.3s ease;
 }
 
-/* 수정, 저장 버튼 색상 */
 .edit-button, .save-button {
     background-color: #007CC1;
     color: white;
 }
 
 .edit-button:hover, .save-button:hover {
-    background-color: #005fa3;
+    background-color: #005fa3; /* 약간 어두운 포인트 컬러 */
 }
 
-/* 삭제 버튼 스타일 */
 .delete-button {
     background-color: #ff4d4d;
     color: white;
@@ -194,14 +119,98 @@
     background-color: #d43d3d;
 }
 
-/* 반응형 모달 조정 */
+/* 등록 버튼 */
+.register-button {
+    padding: 12px 20px;
+    background-color: #007CC1;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.register-button:hover {
+    background-color: #005fa3;
+}
+
+/* 테이블 */
+.customer-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.customer-table th, .customer-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.customer-table th {
+    background-color: #f2f2f2;
+}
+
+.customer-table tr:hover {
+    background-color: #f1f1f1;
+    background-color: #ffdb0036; /* 이케아 노란색 */
+}
+
+/* 검색 필터 */
+.filter-section {
+    margin-bottom: 20px;
+}
+
+.filter-section select,
+.filter-section input,
+.filter-section .search-button {
+    background-color: #f2f2f2;
+    margin-right: 10px;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.filter-button {
+    background-color: #007CC1;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.filter-button:hover {
+    background-color: #005fa3;
+}
+
+/* 페이지네이션 */
+.pagination-buttons {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination-buttons button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    background-color: #f2f2f2;
+    border: none;
+    border-radius: 4px;
+}
+
+.pagination-buttons button:hover {
+    background-color: #e0e0e0;
+}
+
+/* 반응형 처리 */
 @media (max-width: 768px) {
     .modal-content {
         width: 90%;
     }
 
-    .customer-form {
+    .register-form, .detail-form {
         grid-template-columns: 1fr;
     }
 }
-

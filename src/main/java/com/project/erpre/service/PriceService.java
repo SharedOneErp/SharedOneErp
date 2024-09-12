@@ -6,6 +6,7 @@ import com.project.erpre.repository.CustomerRepository;
 import com.project.erpre.repository.PriceRepository;
 import com.project.erpre.repository.ProductRepository;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,36 +33,30 @@ public class PriceService {
     @Autowired
     private ProductRepository productRepository;
 
-    // Price 엔티티를 PriceDTO로 변환하는 메서드
-    private PriceDTO convertToDTO(Price price) {
-        PriceDTO dto = new PriceDTO();
-        dto.setPriceNo(price.getPriceNo());
+    @Autowired
+    private ModelMapper modelMapper;  // ModelMapper 객체 주입
+
+    // 엔티티 -> DTO 변환(ModelMapper 라이브러리 사용)
+    public PriceDTO convertToDTO(Price price) {
+        // 기본 필드 자동 매핑
+        PriceDTO dto = modelMapper.map(price, PriceDTO.class);
+
+        // 수동으로 처리해야 하는 필드
         dto.setCustomerNo(price.getCustomer().getCustomerNo());
-        dto.setCustomerName(price.getCustomer().getCustomerName()); // 고객 이름 설정
         dto.setProductCd(price.getProduct().getProductCd());
+        dto.setCustomerName(price.getCustomer().getCustomerName()); // 고객 이름 설정
         dto.setProductNm(price.getProduct().getProductNm()); // 제품 이름 설정
         dto.setCategoryNm(price.getProduct().getCategory().getCategoryNm()); // 카테고리 이름 설정
-        dto.setPriceCustomer(price.getPriceCustomer());
-        dto.setPriceStartDate(price.getPriceStartDate());
-        dto.setPriceEndDate(price.getPriceEndDate());
-        dto.setPriceInsertDate(price.getPriceInsertDate());
-        dto.setPriceUpdateDate(price.getPriceUpdateDate());
+
         return dto;
     }
 
-    // PriceDTO를 Price 엔티티로 변환하는 메서드
+    // DTO -> 엔티티 변환(ModelMapper 라이브러리 사용)
     public Price convertToEntity(PriceDTO priceDTO) {
-        Price price = new Price();
+        // ModelMapper를 사용하여 기본 필드 자동 매핑
+        Price price = modelMapper.map(priceDTO, Price.class);
 
-        // PriceDTO의 값을 Price 엔티티에 설정
-        price.setPriceNo(priceDTO.getPriceNo()); // 가격 번호 설정
-        price.setPriceCustomer(priceDTO.getPriceCustomer()); // 고객별 가격 설정
-        price.setPriceStartDate(priceDTO.getPriceStartDate()); // 가격 적용 시작 일자 설정
-        price.setPriceEndDate(priceDTO.getPriceEndDate()); // 가격 적용 종료 일자 설정
-        price.setPriceInsertDate(priceDTO.getPriceInsertDate()); // 가격 등록 일시 설정
-        price.setPriceUpdateDate(priceDTO.getPriceUpdateDate()); // 가격 수정 일시 설정
-
-        // 고객과 제품 정보는 외래 키로 설정된 엔티티에서 가져옴
+        // 수동으로 처리해야 하는 필드 (연관 관계 매핑)
         price.setCustomer(customerRepository.findById(priceDTO.getCustomerNo())
                 .orElseThrow(() -> new RuntimeException("고객을 찾을 수 없습니다: " + priceDTO.getCustomerNo())));
         price.setProduct(productRepository.findById(priceDTO.getProductCd())
@@ -71,10 +66,11 @@ public class PriceService {
     }
 
     // [1] 가격 정보를 저장하거나 수정하는 메서드 (PriceDTO로 변환하여 반환)
-    public PriceDTO saveOrUpdate(Price price) {
-        logger.info("[1],[2] Saving or updating price: " + price.toString());
-        Price savedPrice = priceRepository.save(price);
-        return convertToDTO(savedPrice);
+    public PriceDTO saveOrUpdate(PriceDTO priceDTO) {
+        logger.info("[1],[2] Saving or updating price: {}", priceDTO);
+        Price price = convertToEntity(priceDTO); // DTO -> 엔티티 변환
+        Price savedPrice = priceRepository.save(price); // 엔티티 저장
+        return convertToDTO(savedPrice); // 저장 후 DTO로 반환
     }
 
     // [2] 가격 정보 삭제

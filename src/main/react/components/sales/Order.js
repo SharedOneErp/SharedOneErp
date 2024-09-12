@@ -245,7 +245,8 @@ function Order() {
             orderHTotalPrice: totalAmount,
             orderHStatus: "ing",
             orderHInsertDate: new Date().toISOString(),
-            orderHUpdateDate: null
+            orderHUpdateDate: null,
+            orderHDeleteYn : "N"
         };
 
         console.log(orderData);
@@ -303,7 +304,9 @@ function Order() {
                 // 주문 처리 후 페이지 이동
                 window.location.href = '/orderListAll';
             } else {
-                console.error('Order creation failed.');
+                // 응답 상태가 OK가 아닌 경우, 응답 본문을 텍스트로 변환하여 오류를 확인합니다.
+                const errorText = await response.text();
+                console.error('주문 처리 오류:', errorText);
             }
         } catch (error) {
             console.error('주문 처리 중 오류 발생:', error.message);
