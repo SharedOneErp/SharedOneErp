@@ -1,9 +1,4 @@
-
 -- 참조무결성을 위한 외래키 제약
--- 필요한 테이블만 명시
--- 보다가 수정할 게 있으면 수정하는게 좋을 듯 싶네요
--- 일단 작성한 table.txt보고 추가했습니다
-
 ALTER TABLE m_product
 ADD CONSTRAINT fk_category_no
 FOREIGN KEY (category_no) REFERENCES m_category(category_no);
@@ -35,48 +30,4 @@ FOREIGN KEY (order_h_no) REFERENCES m_order_h(order_h_no);
 ALTER TABLE m_order_d
 ADD CONSTRAINT fk_product_cd
 FOREIGN KEY (product_cd) REFERENCES m_product(product_cd);
-
---employee에 부서 추가 어떻게? 하게되면 들어가있는 데이터도 다 수정해야되나? 얘기좀 해봐야할듯
---ALTER TABLE m_employee
---ADD COLUMN department VARCHAR(20) NOT NULL;
-
---2024.09.11. 19:20 추가
-
--- 1. 고객사 테이블 수정
-ALTER TABLE m_customer
-ADD COLUMN customer_delete_yn VARCHAR(20) NOT NULL DEFAULT 'N', -- 삭제 여부 기본값 'N'
-ADD COLUMN customer_delete_date timestamp NULL; -- 삭제 일시
-
--- 2. 상품 테이블 수정
-ALTER TABLE m_product
-ADD COLUMN product_delete_yn VARCHAR(20) NOT NULL DEFAULT 'N', -- 삭제 여부 기본값 'N'
-ADD COLUMN product_delete_date timestamp NULL; -- 삭제 일시
-
--- 3. 고객사별 상품 가격 테이블 수정
-ALTER TABLE m_price
-ADD COLUMN price_delete_yn VARCHAR(20) NOT NULL DEFAULT 'N', -- 삭제 여부 기본값 'N'
-ADD COLUMN price_delete_date timestamp NULL; -- 삭제 일시
-
--- 4. 상품 카테고리 테이블 수정
-ALTER TABLE m_category
-ADD COLUMN category_delete_yn VARCHAR(20) NOT NULL DEFAULT 'N', -- 삭제 여부 기본값 'N'
-ADD COLUMN category_delete_date timestamp NULL; -- 삭제 일시
-
--- 5. 주문 헤더 테이블 수정
-ALTER TABLE m_order_h
-ADD COLUMN order_h_delete_yn VARCHAR(20) NOT NULL DEFAULT 'N', -- 삭제 여부 기본값 'N'
-ADD COLUMN order_h_delete_date timestamp NULL; -- 삭제 일시
-
--- 6. 주문 상세 테이블 수정
-ALTER TABLE m_order_d
-ADD COLUMN order_d_insert_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 주문 상세 등록 일시
-ADD COLUMN order_d_update_date timestamp NULL, -- 주문 상세 수정 일시
-ADD COLUMN order_d_delete_yn VARCHAR(20) NOT NULL DEFAULT 'N', -- 삭제 여부 기본값 'N'
-ADD COLUMN order_d_delete_date timestamp NULL; -- 삭제 일시
-
--- 7. 직원 테이블 수정
-ALTER TABLE m_employee
-ADD COLUMN employee_delete_yn VARCHAR(20) NOT NULL DEFAULT 'N', -- 삭제 여부 기본값 'N'
-ADD COLUMN employee_delete_date timestamp NULL; -- 삭제 일시
-
 
