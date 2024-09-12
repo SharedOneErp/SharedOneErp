@@ -9,6 +9,7 @@ import com.project.erpre.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,4 +87,18 @@ public class OrderDetailService {
     public void deleteOrderDetail(Integer id) {
         orderDetailRepository.deleteById(id);
     }
+
+    public OrderDetail updateOrderDetail(Integer id, OrderDetailDTO orderDetailDTO) {
+        OrderDetail existingOrderDetail = orderDetailRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("주문 상세 정보를 찾을 수 없습니다."));
+
+        // 필요한 필드만 업데이트
+        existingOrderDetail.setOrderDPrice(orderDetailDTO.getOrderDPrice());
+        existingOrderDetail.setOrderDQty(orderDetailDTO.getOrderDQty());
+        existingOrderDetail.setOrderDTotalPrice(orderDetailDTO.getOrderDTotalPrice());
+        existingOrderDetail.setOrderDUpdateDate(LocalDateTime.now());
+
+        return orderDetailRepository.save(existingOrderDetail);
+    }
+
 }

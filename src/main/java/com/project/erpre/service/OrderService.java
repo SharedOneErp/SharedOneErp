@@ -98,4 +98,18 @@ public class OrderService {
 
         return orderDTO;
     }
+    public Order updateOrder(Integer orderNo, OrderDTO orderDTO) {
+        Order order = orderRepository.findById(orderNo)
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
+
+        // 주문 정보 업데이트
+        order.setOrderHTotalPrice(orderDTO.getOrderHTotalPrice());
+        order.setOrderHStatus(orderDTO.getOrderHStatus());
+        order.setOrderHUpdateDate(LocalDateTime.now());
+
+        return orderRepository.save(order);
+    }
+
+
+
 }
