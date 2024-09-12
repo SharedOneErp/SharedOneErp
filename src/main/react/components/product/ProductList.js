@@ -1,106 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useSearchParams } from "react-router-dom";
 import Layout from "../../layout/Layout";
-import '../../../resources/static/css/product/ProductList.css';
+import '../../../resources/static/css/product/ProductList.css'; // 개별 CSS 파일 임포트
+import {useHooksList} from "./ProductHooks"; // 상품 관리에 필요한 상태 및 로직을 처리하는 훅
+
 
 function ProductList() {
-    // 상품 목록 저장 state
-    const [products, setProducts] = useState([]);
-    const [selectedProducts, setSelectedProducts] = useState([]);
 
-    // 상품 수정 state
-    const [editMode, setEditMode] = useState(null); // 수정 중인 상품 코드 저장
-    const [editableProduct, setEditableProduct] = useState({}); // 수정 중인 상품의 임시 데이터 저장
+    const {
+        products,
+        selectedProducts,
+        handleAllSelectProducts,
+        handleSelectProduct,
+        editMode,
+        editableProduct,
+        handleEditClick,
+        handleConfirmClick,
+        handleDeleteSelected
+    } = useHooksList(); // 커스텀 훅 사용
 
-    useEffect(() => {
-        fetch('/api/products/productList')
-            .then(response => response.json())
-            .then(data => setProducts(data))
-            .catch(error => console.error('전체 상품 목록 조회 실패', error));
-    }, []);
+    const [isAdding, setIsAdding] = useState(false); // 상품 등록시 한 줄 추가하기
 
-    const handleEditClick = (product) => {
-        setEditMode(product.productCd); // 수정할 상품의 코드 저장
-        setEditableProduct(product); // 수정할 상품의 데이터 저장
+
+    // 등록 버튼 클릭 시 처리할 함수
+    const handleAddNewPrice = () => {
+        console.log('새 가격 정보 등록:', newPriceData);
+        setIsAdding(false); // 추가 행 숨기기
     };
 
-    const handleConfirmClick = () => {
-        console.log('업데이트 데이터:', JSON.stringify(editableProduct));
-        fetch(`http://localhost:8787/api/products/update`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(editableProduct)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    return response.text().then(text => { throw new Error(text) });
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('업데이트 성공:', data);
-                confirm('상품을 수정하시겠습니까?');
-                setEditMode(null); // 수정 모드 종료
-                setProducts(products.map(p => p.productCd === data.productCd ? data : p));
-            })
-            .catch(error => console.error('업데이트 실패:', error));
-    };
-
-    const handleAllSelectProducts = (checked) => {
-        if (checked) {
-            const allProductCds = products.map(product => product.productCd);
-            setSelectedProducts(allProductCds);
-        } else {
-            setSelectedProducts([]);
-        }
+    // 취소 버튼 클릭 시 처리할 함수
+    const handleCancelAdd = () => {
+        setIsAdding(false); // 추가 행 숨기기
     };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setEditableProduct({ ...editableProduct, [name]: value });
-    };
-
-    const handleSelectProduct = (productCd) => {
-        setSelectedProducts(prevSelected => {
-            if (prevSelected.includes(productCd)) {
-                return prevSelected.filter(cd => cd !== productCd);
-            } else {
-                return [...prevSelected, productCd];
-            }
-        });
-    };
-
-    const handleDeleteSelected = () => {
-        if (selectedProducts.length === 0) {
-            alert('삭제할 상품을 선택해주세요.');
-            return;
-        }
-        if (!confirm('상품을 정말 삭제하시겠습니까?')) {
-            return;
-        }
-        fetch('/api/products/productDelete', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(selectedProducts)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('상품 삭제 실패');
-                }
-                alert('상품이 삭제되었습니다.');
-                return response.json();
-            })
-            .then(data => {
-                setProducts(data);
-                setSelectedProducts([]);
-            })
-            .catch(error => console.error(error));
     };
 
     const formatDate = (dateString) => {
@@ -163,6 +99,8 @@ function ProductList() {
                 </form>
             </div>
             <div className="bottom-container">
+                <button className="btn_add" onClick={() => setIsAdding(true)}><i className="bi bi-plus-circle"></i> 추가하기
+                </button>
                 <label>
                     <p>전체 {products.length}건 페이지 당:</p>
                     <select>
@@ -175,7 +113,7 @@ function ProductList() {
                 <table className="approval-list">
                     <thead>
                     <tr>
-                        <th><input type="checkbox" onChange={(e) => handleAllSelectProducts(e.target.checked)} /></th>
+                        <th><input type="checkbox" onChange={(e) => handleAllSelectProducts(e.target.checked)}/></th>
                         <th>상품번호</th>
                         <th>상품명</th>
                         <th>대분류</th>
@@ -191,18 +129,21 @@ function ProductList() {
                     {products.map((product, index) => (
                         <tr key={product.productCd}
                             className={`${selectedProducts.includes(product.productCd) ? 'selected' : ''} ${editMode === product.productCd ? 'edit-mode-active' : ''}`}>
-                            <td><input type="checkbox" onChange={() => handleSelectProduct(product.productCd)} checked={selectedProducts.includes(product.productCd)} /></td>
+                            <td><input type="checkbox" onChange={() => handleSelectProduct(product.productCd)}
+                                       checked={selectedProducts.includes(product.productCd)}/></td>
                             <td>{product.productCd}</td>
                             <td>
                                 {editMode === product.productCd ? (
-                                    <input type="text" name="productNm" value={editableProduct.productNm} onChange={handleInputChange} />
+                                    <input type="text" name="productNm" value={editableProduct.productNm}
+                                           onChange={handleInputChange}/>
                                 ) : (
                                     product.productNm
                                 )}
                             </td>
                             <td>
                                 {editMode === product.productCd ? (
-                                    <select name="topCategory" value={editableProduct.topCategory} onChange={handleInputChange}>
+                                    <select name="topCategory" value={editableProduct.topCategory}
+                                            onChange={handleInputChange}>
                                         {topCategories.map((category, index) => (
                                             <option key={index} value={category}>{category}</option>
                                         ))}
@@ -213,7 +154,8 @@ function ProductList() {
                             </td>
                             <td>
                                 {editMode === product.productCd ? (
-                                    <select name="middleCategory" value={editableProduct.middleCategory} onChange={handleInputChange}>
+                                    <select name="middleCategory" value={editableProduct.middleCategory}
+                                            onChange={handleInputChange}>
                                         {middleCategories.map((category, index) => (
                                             <option key={index} value={category}>{category}</option>
                                         ))}
@@ -224,7 +166,8 @@ function ProductList() {
                             </td>
                             <td>
                                 {editMode === product.productCd ? (
-                                    <select name="lowCategory" value={editableProduct.lowCategory} onChange={handleInputChange}>
+                                    <select name="lowCategory" value={editableProduct.lowCategory}
+                                            onChange={handleInputChange}>
                                         {lowCategories.map((category, index) => (
                                             <option key={index} value={category}>{category}</option>
                                         ))}
@@ -240,7 +183,8 @@ function ProductList() {
                                 {editMode === product.productCd ? (
                                     <button className="product-confirm-button" onClick={handleConfirmClick}>확인</button>
                                 ) : (
-                                    <button className="product-edit-button" onClick={() => handleEditClick(product)}>수정</button>
+                                    <button className="product-edit-button"
+                                            onClick={() => handleEditClick(product)}>수정</button>
                                 )}
                             </td>
                         </tr>
@@ -256,7 +200,6 @@ function ProductList() {
                 </div>
                 <div className="button-container">
                     <button className="filter-button" onClick={handleDeleteSelected}>삭제</button>
-                    <button className="filter-button" onClick={() => window.location.href = '/product'}>등록</button>
                 </div>
             </div>
         </Layout>
