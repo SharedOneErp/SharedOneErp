@@ -70,11 +70,19 @@ public class EmployeeController {
 //        return ResponseEntity.ok(employeeList);
 //    }
 
+    //페이징해서 직원 목록 보여주기
     @GetMapping("/employeeList")
     public ResponseEntity<Page<Employee>> getAllEmployees(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         Page<Employee> employeePage = employeeService.getPageEmployees(page, size);
         return ResponseEntity.ok(employeePage);
+    }
+
+    //직원목록화면에서 체크된 직원 data지우기
+    @PostMapping("/deleteEmployees")
+    public ResponseEntity<?> deleteEmployees(@RequestBody List<String> id) {
+        employeeService.deleteEmployees(id);
+        return ResponseEntity.ok("Employees deleted successfully");
     }
 }
