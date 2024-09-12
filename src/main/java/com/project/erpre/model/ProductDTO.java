@@ -1,12 +1,13 @@
 package com.project.erpre.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -18,9 +19,14 @@ import java.time.LocalDateTime;
 public class ProductDTO {
     private String productCd;
     private String productNm;
-    private String categoryNm;   // 카테고리 이름
+    private String categoryNm;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime productInsertDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime productUpdateDate;
+
     private String employeeName;
     private Date orderDDeliveryRequestDate;
     private Integer orderDQty;
