@@ -32,47 +32,6 @@ public class OrderService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    // OrderDTO -> Order 엔티티로 변환하는 메서드
-    private Order convertToEntity(OrderDTO orderDTO) {
-        // 고객 번호로 고객 엔티티를 조회
-        Customer customer = customerRepository.findById(orderDTO.getCustomer().getCustomerNo())
-                .orElseThrow(() -> new RuntimeException("고객 정보를 찾을 수 없습니다."));
-
-        // 직원 정보 조회 (직원 ID로 조회)
-        Employee employee = employeeRepository.findById(orderDTO.getEmployee().getEmployeeId())
-                .orElseThrow(() -> new RuntimeException("직원 정보를 찾을 수 없습니다."));
-
-        // OrderDTO를 Order 엔티티로 변환
-        Order order = Order.builder()
-                .orderNo(orderDTO.getOrderNo()) // 주문 번호
-                .employee(employee) // 직원 정보
-                .customer(customer) // 고객 정보
-                .orderHTotalPrice(orderDTO.getOrderHTotalPrice()) // 총 가격
-                .orderHStatus(orderDTO.getOrderHStatus()) // 주문 상태
-                .orderHInsertDate(orderDTO.getOrderHInsertDate()) // 주문 등록 일시
-                .orderHUpdateDate(orderDTO.getOrderHUpdateDate()) // 주문 수정 일시
-                .orderHDeleteYn(orderDTO.getOrderHDeleteYn()) // 삭제 여부
-                .orderHDeleteDate(orderDTO.getOrderHDeleteDate()) // 삭제 일시
-                .build();
-
-        return order;
-    }
-
-    // Order 엔티티 -> OrderDTO로 변환하는 메서드
-    private OrderDTO convertToDTO(Order order) {
-        return OrderDTO.builder()
-                .orderNo(order.getOrderNo())
-                .employee(order.getEmployee()) // 직원 정보
-                .customer(order.getCustomer()) // 고객 정보
-                .orderHTotalPrice(order.getOrderHTotalPrice()) // 총 가격
-                .orderHStatus(order.getOrderHStatus()) // 주문 상태
-                .orderHInsertDate(order.getOrderHInsertDate()) // 주문 등록 일시
-                .orderHUpdateDate(order.getOrderHUpdateDate()) // 주문 수정 일시
-                .orderHDeleteYn(order.getOrderHDeleteYn()) // 삭제 여부
-                .orderHDeleteDate(order.getOrderHDeleteDate()) // 삭제 일시
-                .build();
-    }
-
     public Order createOrder(OrderDTO orderDTO) {
 
         // 고객 번호로 고객 엔티티를 조회
