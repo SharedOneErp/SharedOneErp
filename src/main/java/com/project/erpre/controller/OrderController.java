@@ -32,8 +32,7 @@ public class OrderController {
 
     @Autowired
     private ProductService productService;
-    @Autowired
-    private OrderService orderService;
+
 
 
     @PostMapping
@@ -79,12 +78,10 @@ public class OrderController {
         return productService.searchProducts(productCd, category, productNm);
     }
 
-    //주문상세조회
     @GetMapping
     public ResponseEntity<?> searchOrder(@RequestParam Integer no) {
         try {
-            // orderNo로 주문을 조회
-            OrderDTO orderDTO = orderService.getOrderHeaderById(no);
+            OrderDTO orderDTO = orderDTOService.getOrderHeaderById(no);
             if (orderDTO == null) {
                 return new ResponseEntity<>("주문을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
             }
@@ -94,5 +91,4 @@ public class OrderController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }
