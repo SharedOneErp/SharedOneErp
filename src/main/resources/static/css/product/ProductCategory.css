@@ -1,3 +1,202 @@
+td, th {
+  border: 1px solid #e3e3e3;
+}
+/*탑 박스*/
+
+.top-container {}
+
+/*미들 박스 (검색, 필터)*/
+
+.middle-container {
+  /*border: 1px solid black;*/
+  padding: 10px;
+}
+
+.middle-container .search-box-container {
+  /*border: 1px solid black;*/
+  /*height: 50px;*/
+  padding: 10px;
+  margin-top: 15px;
+}
+
+
+
+.middle-container .search-box {
+  height: 32px;
+  font-size: 13px;
+  margin-left: 7px;
+  width: 70%;
+}
+
+.middle-container .search-button {
+  background-color: #0058A3;
+  /*이케아 네이비*/
+  color: white;
+  margin-left: 5px;
+  width: 10%;
+  /*height: 90%;*/
+}
+
+.middle-container .approval-filter {
+  height: 50px;
+  padding: 13px 1px;
+  /*border: 1px solid black;*/
+}
+
+.approval-filter .btn1,
+.btn2,
+.btn3,
+.btn4 {
+  background-color: #0058A3;
+  color: white;
+  padding: 7px;
+  border-radius: 1px;
+  /* border: none; */
+  /* border: 1px solid black; */
+  font-size: 15px;
+}
+
+.approval-filter .btn2,
+.btn3,
+.btn4 {
+  margin-left: 10px;
+}
+
+/*바텀 박스 (테이블, 페이지, 바텀 버튼)*/
+
+.bottom-container {
+  /*border: 1px solid black;*/
+  margin-top: 20px;
+}
+
+.bottom-container label {
+  display: flex;
+}
+
+.bottom-container p {
+  display: inline;
+  margin-right: 10px;
+}
+
+.bottom-container .approval-list {
+  border: 1px solid;
+  width: 100%;
+  background-color: white;
+  margin-top: 10px;
+  height: 100%;
+}
+
+.bottom-container .approval-list tr {
+  height: 50px;
+  padding: 4px;
+}
+
+.table-tr {
+  background-color: #f2f2f2;
+}
+
+.bottom-container .approval-list tbody tr:hover {
+  background-color: rgba(255, 237, 112, 0.75);
+  background-color: #ffdb0036;
+  /* 이케아 노란색 */
+}
+
+.selected {
+  background-color: #ffdb0036;
+  /* 이케아 노란색 */
+}
+
+.selected:hover {
+  background-color: #ffdb0036;
+  /* 이케아 노란색 */
+}
+
+.bottom-container .approval-list .approval-list-content {
+  text-align: center;
+}
+
+.bottom-container .approval-page {
+  display: flex;
+  justify-content: center;
+  margin-top: 13px;
+  font-size: 10px;
+}
+
+.bottom-container .approval-page button {
+  padding: 5px;
+  font-size: 16px;
+  margin-left: 7px;
+}
+
+.bottom-container .bottom-button {}
+
+.bottom-container .bottom-button .approval-button,
+.bottom-container .bottom-button .delete-button,
+.bottom-container .bottom-button .print-button {
+  background-color: #0058A3;
+  color: white;
+  margin-left: 3px;
+  height: 35px;
+  padding: 8px 2px;
+  width: 50px;
+  line-height: 100%;
+}
+
+.bottom-container .bottom-button .delete-button,
+.bottom-container .bottom-button .print-button {
+  margin-left: 10px;
+}
+
+.filter-button {
+  background-color: #007CC1;
+  color: white;
+  padding: 6px 15px;
+  margin: 5px;
+  margin-right: 10px;
+  /* border: none; */
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.filter-button:hover {
+  background-color: #005a91;
+  /* 호버 시 조금 더 어두운 색으로 변경 */
+}
+
+
+/* 모달 css */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* 배경 어둡게 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #555; /* 기본 색상 */
+  transition: color 0.3s ease;
+}
+
+.category-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  /* gap: 20px; */
+}
+
 /* 전체 컨테이너 설정 */
 .container1 {
   display: flex;
@@ -12,17 +211,20 @@
 .category-column {
   
   padding: 10px;
-  width: 30%;
+  width: 100%;
   background-color: #e3e3e3;
   /* border-radius: 8px; */
   border: 1px solid #999;
 
 }
 
-.category-column h3 {
+.category-column h4 {
   text-align: center;
-  font-size: 1.2em;
   margin-bottom: 10px;
+}
+
+.input-button{
+  display: flex;
 }
 
 .input-field {
@@ -30,6 +232,7 @@
   padding: 5px;
   margin-bottom: 10px;
   margin-right: 10px;
+  flex: 1;
 }
 
 .search-button, .register-button {
@@ -56,8 +259,6 @@
  
   margin-bottom: 5px;
   padding: 8px;
- 
-  border-radius: 4px;
   text-align: center;
 }
 
@@ -76,8 +277,9 @@
   color: white;
   border: none;
   cursor: pointer;
-  border-radius: 4px;
   transition: bac;
+  height: 31px;
+  width: 50px;
 }
 
 .category-column button:hover {
