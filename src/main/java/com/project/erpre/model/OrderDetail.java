@@ -52,9 +52,10 @@ public class OrderDetail {
     @Column(name = "order_d_update_date")
     private LocalDateTime orderDUpdateDate;
 
-    @Column(name = "order_d_delete_yn", length = 20, nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'N'")
-    private String orderDDeleteYn; // 삭제 여부 기본값 'N'
+    @Column(name = "order_d_delete_yn", nullable = false)
+    private String orderDDeleteYn;
 
     @Column(name = "order_d_delete_date")
     private Timestamp orderDDeleteDate; // 삭제 일시
+
 }
