@@ -10,21 +10,18 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
 @Builder
-@AllArgsConstructor
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductDTO {
     private String productCd;
     private String productNm;
     private String categoryNm;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime productInsertDate;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime productUpdateDate;
 
     private String employeeName;
@@ -38,6 +35,7 @@ public class ProductDTO {
     private String lowCategory; // 소분류 이름
     private String productDeleteYn; // 삭제 여부 기본값 'N'
     private Timestamp productDeleteDate; // 삭제 일시
+
 
     public ProductDTO(String productCd, String productNm, LocalDateTime productInsertDate, LocalDateTime productUpdateDate, Integer categoryNo, String topCategory, String middleCategory, String lowCategory) {
         this.productCd = productCd;
@@ -66,4 +64,28 @@ public class ProductDTO {
         this.middleCategory = middleCategory;
         this.lowCategory = lowCategory;
     }
+
+    public ProductDTO(String productCd, String productNm, Integer CategoryNo) {
+         this.productCd = productCd;
+         this.productNm = productNm;
+         this.categoryNo = CategoryNo;
+    }
+
+    public ProductDTO(String productCd, String productNm, Integer CategoryNo, LocalDateTime productInsertDate, String productDeleteYn ) {
+        this.productCd = productCd;
+        this.productNm = productNm;
+        this.categoryNo = CategoryNo;
+        this.productInsertDate = productInsertDate;
+        this.productDeleteYn = productDeleteYn;
+    }
+
+    public ProductDTO(String productCd, String productNm, Integer CategoryNo, String productDeleteYn ) {
+        this.productCd = productCd;
+        this.productNm = productNm;
+        this.categoryNo = CategoryNo;
+        this.productDeleteYn = productDeleteYn;
+    }
+
+
+
 }

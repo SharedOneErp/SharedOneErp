@@ -19,20 +19,10 @@ public class ProductController {
     private ProductService productService;
 
 
-    // 상품 등록 API
     @PostMapping("/add")
-    public ResponseEntity<Product> addProduct(@RequestBody ProductDTO productDTO) {
-        if (productDTO == null || productDTO.getProductCd() == null || productDTO.getProductNm() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-        try {
-            Product savedProduct = productService.saveProduct(productDTO);
-            return ResponseEntity.ok(savedProduct);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO) {
+        ProductDTO savedProduct = productService.saveOrUpdate(productDTO);
+        return ResponseEntity.ok(savedProduct);
     }
 
     // 전체 상품 목록 조회 API
