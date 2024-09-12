@@ -24,28 +24,41 @@ public class ProductService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-
-//    // 상품 등록
-//    @Transactional
-//    public Product saveProduct(ProductDTO productDTO) {
-//        Product product = new Product();
-//        product.setProductCd(productDTO.getProductCd());
-//        product.setProductNm(productDTO.getProductNm());
-//        product.setProductDeleteYn("N");
-//
-//        // categoryNo로 Category 객체를 조회
-//        Integer categoryNo = productDTO.getCategoryNo();
-//        Category category = categoryRepository.findById(categoryNo)
-//                .orElseThrow(() -> new RuntimeException("해당 카테고리를 찾을 수 없습니다."));
-//
-//        // 조회한 Category 객체를 Product 엔티티에 설정
-//        product.setCategory(category);
-//
-//        return productRepository.save(product);
-//    }
-
     public ProductDTO saveOrUpdate(ProductDTO productDTO) {
-        Product product = convertToEntity(productDTO);
+//        Product product = convertToEntity(productDTO);
+//
+//        if (product.getProductInsertDate() == null) {
+//            product.setProductInsertDate(LocalDateTime.now());
+//        }
+//
+//        product.setProductUpdateDate(LocalDateTime.now());
+//
+//        Product savedProduct = productRepository.save(product);
+//        return convertToDTO(savedProduct);
+        // 상품 코드로 기존 제품 조회
+        Product product = productRepository.findById(productDTO.getProductCd())
+                .orElse(new Product()); // 기존 제품이 없으면 새 제품 생성
+
+        // DTO 데이터를 엔티티에 설정
+        product.setProductCd(productDTO.getProductCd());
+        product.setProductNm(productDTO.getProductNm());
+
+        // InsertDate 설정: 신규 등록일 경우에만 설정
+        if (product.getProductInsertDate() == null) {
+            product.setProductInsertDate(LocalDateTime.now());
+        }
+
+        // UpdateDate 설정: 항상 현재 시간으로 업데이트
+        product.setProductUpdateDate(LocalDateTime.now());
+
+        // Category 설정
+        if (productDTO.getCategoryNo() != null) {
+            Category category = categoryRepository.findById(productDTO.getCategoryNo())
+                    .orElseThrow(() -> new RuntimeException("해당 카테고리를 찾을 수 없습니다."));
+            product.setCategory(category);
+        }
+
+        // 상품 저장
         Product savedProduct = productRepository.save(product);
         return convertToDTO(savedProduct);
     }
@@ -98,23 +111,23 @@ public class ProductService {
         return pageResult.getContent();
     }
 
-    // 상품 업데이트
-    @Transactional
-    public void updateProductWithCategories(String productCd, String productNm, String topCategory, String middleCategory, String lowCategory) {
-        // 카테고리를 조회합니다.
-        Category category = categoryRepository.findCategoryByNames(topCategory, middleCategory, lowCategory);
-
-        if (category == null) {
-            throw new RuntimeException("해당 카테고리를 찾을 수 없습니다.");
-        }
-
-        // 제품을 업데이트합니다.
-        Product product = productRepository.findById(productCd)
-                .orElseThrow(() -> new RuntimeException("해당 상품을 찾을 수 없습니다."));
-        product.setProductNm(productNm);
-        product.setCategory(category);
-        productRepository.save(product);
-    }
+//    // 상품 업데이트
+//    @Transactional
+//    public void updateProductWithCategories(String productCd, String productNm, String topCategory, String middleCategory, String lowCategory) {
+//        // 카테고리를 조회합니다.
+//        Category category = categoryRepository.findCategoryByNames(topCategory, middleCategory, lowCategory);
+//
+//        if (category == null) {
+//            throw new RuntimeException("해당 카테고리를 찾을 수 없습니다.");
+//        }
+//
+//        // 제품을 업데이트합니다.
+//        Product product = productRepository.findById(productCd)
+//                .orElseThrow(() -> new RuntimeException("해당 상품을 찾을 수 없습니다."));
+//        product.setProductNm(productNm);
+//        product.setCategory(category);
+//        productRepository.save(product);
+//    }
 
     // 선택한 상품 삭제
     @Transactional

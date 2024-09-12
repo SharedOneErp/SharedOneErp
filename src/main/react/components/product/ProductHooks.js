@@ -112,7 +112,14 @@ export const useHooksList = () => {
 
     // 상품 수정 확인
     const handleConfirmClick = () => {
-        axios.put('/api/products/update', {
+
+        const updatedProduct = {
+            productCd: editableProduct.productCd,
+            productNm: editableProduct.productNm,
+            categoryNo: editableProduct.categoryNo
+        };
+
+        axios.put('/api/products/update', updatedProduct,{
             headers: {
                 'Content-Type': 'application/json'
             },

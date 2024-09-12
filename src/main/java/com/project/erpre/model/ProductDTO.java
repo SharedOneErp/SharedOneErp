@@ -71,21 +71,4 @@ public class ProductDTO {
          this.categoryNo = CategoryNo;
     }
 
-    public ProductDTO(String productCd, String productNm, Integer CategoryNo, LocalDateTime productInsertDate, String productDeleteYn ) {
-        this.productCd = productCd;
-        this.productNm = productNm;
-        this.categoryNo = CategoryNo;
-        this.productInsertDate = productInsertDate;
-        this.productDeleteYn = productDeleteYn;
-    }
-
-    public ProductDTO(String productCd, String productNm, Integer CategoryNo, String productDeleteYn ) {
-        this.productCd = productCd;
-        this.productNm = productNm;
-        this.categoryNo = CategoryNo;
-        this.productDeleteYn = productDeleteYn;
-    }
-
-
-
 }
