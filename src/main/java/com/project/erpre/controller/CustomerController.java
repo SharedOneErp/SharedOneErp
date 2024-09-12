@@ -19,34 +19,36 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    // 전체 목록 조회
+
+    // 전체 고객 목록 조회
     @GetMapping("/getList")
-    public List<Customer> getList(){
-        logger.info("getList 호출");
+    public List<Customer> getList() {
+        logger.info("전체 고객 목록 조회");
         return customerService.getList();
     }
 
-    // 고객 정보 삽입
-    @PostMapping("/insert")
+    // 고객 정보 등록
+    @PostMapping("/register")
     public Customer insertCustomer(@RequestBody Customer customer) {
-        logger.info("insertCustomer 호출");
-        return customerService.saveOrUpdate(customer);
+        logger.info("고객 등록");
+        return customerService.insertCustomer(customer);
     }
 
     // 고객 정보 수정
-    @PutMapping("/update")
-    public Customer updateCustomer(@RequestBody Customer customer) {
-        logger.info("updateCustomer 호출");
-        return customerService.saveOrUpdate(customer);
+    @PutMapping("/update/{customerNo}")
+    public Customer updateCustomer(@PathVariable Integer customerNo, @RequestBody Customer updatedCustomer) {
+        logger.info("고객 정보 수정");
+        return customerService.updateCustomer(customerNo, updatedCustomer);
     }
 
     // 고객 정보 삭제
     @DeleteMapping("/delete/{customerNo}")
     public void deleteCustomer(@PathVariable Integer customerNo) {
-        logger.info("deleteCustomer 호출");
+        logger.info("고객 정보 삭제");
         customerService.deleteCustomer(customerNo);
     }
 
+    //고객 이름 검색
     @GetMapping("/search")
     public List<Customer> searchCustomers(@RequestParam("name") String name) {
         return customerService.searchCustomers(name);

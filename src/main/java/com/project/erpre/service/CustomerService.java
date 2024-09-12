@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerService {
@@ -60,47 +61,42 @@ public class CustomerService {
         return customerRepository.findAll();
     }
 
-    // 고객 정보 삽입 또는 수정
-    public Customer saveOrUpdate(Customer customer) {
-        // 기존 고객이 있는 경우 기존의 prices를 유지하고 새로운 데이터를 추가
-        Customer existingCustomer = customerRepository.findById(customer.getCustomerNo()).orElse(null);
+    // 고객 등록 또는 수정
+    public Customer insertCustomer(Customer customer) {
+        return customerRepository.save(customer); // 새로운 고객 등록 또는 기존 고객 수정
+    }
 
-        if (existingCustomer != null) {
-            //기존 컬렉션이 null인지 확인
-            if (existingCustomer.getPrices() == null) {
-                existingCustomer.setPrices(new ArrayList<>()); // null일 경우 초기화
-            }
-            if (customer.getPrices() != null) { // 새로운 가격 목록이 null이 아닌지 확인
-                existingCustomer.getPrices().clear(); // 기존 내용 비우기
-                existingCustomer.getPrices().addAll(customer.getPrices()); //새로운 데이터를 추가
-            }
+    // 고객 정보 수정
+    public Customer updateCustomer(Integer customerNo, Customer updatedCustomer) {
+        Optional<Customer> existingCustomerOptional = customerRepository.findById(customerNo);
+        if (existingCustomerOptional.isPresent()) {
+            Customer existingCustomer = existingCustomerOptional.get();
 
-            //나머지 필드 업데이트
-            existingCustomer.setCustomerName(customer.getCustomerName());
-            existingCustomer.setCustomerTel(customer.getCustomerTel());
-            existingCustomer.setCustomerRepresentativeName(customer.getCustomerRepresentativeName());
-            existingCustomer.setCustomerRepresentativeName(customer.getCustomerBusinessRegNo());
-            existingCustomer.setCustomerRepresentativeName(customer.getCustomerAddr());
-            existingCustomer.setCustomerRepresentativeName(customer.getCustomerFaxNo());
-            existingCustomer.setCustomerRepresentativeName(customer.getCustomerManagerName());
-            existingCustomer.setCustomerRepresentativeName(customer.getCustomerManagerEmail());
-            existingCustomer.setCustomerRepresentativeName(customer.getCustomerManagerTel());
-            existingCustomer.setCustomerRepresentativeName(customer.getCustomerCountryCode());
-            existingCustomer.setCustomerRepresentativeName(customer.getCustomerType());
-            existingCustomer.setCustomerRepresentativeName(customer.getCustomerEtaxInvoiceYn());
+            // 수정할 필드 적용
+            existingCustomer.setCustomerName(updatedCustomer.getCustomerName());
+            existingCustomer.setCustomerTel(updatedCustomer.getCustomerTel());
+            existingCustomer.setCustomerRepresentativeName(updatedCustomer.getCustomerRepresentativeName());
+            existingCustomer.setCustomerBusinessRegNo(updatedCustomer.getCustomerBusinessRegNo());
+            existingCustomer.setCustomerAddr(updatedCustomer.getCustomerAddr());
+            existingCustomer.setCustomerFaxNo(updatedCustomer.getCustomerFaxNo());
+            existingCustomer.setCustomerManagerName(updatedCustomer.getCustomerManagerName());
+            existingCustomer.setCustomerManagerEmail(updatedCustomer.getCustomerManagerEmail());
+            existingCustomer.setCustomerManagerTel(updatedCustomer.getCustomerManagerTel());
+            existingCustomer.setCustomerCountryCode(updatedCustomer.getCustomerCountryCode());
+            existingCustomer.setCustomerType(updatedCustomer.getCustomerType());
+            existingCustomer.setCustomerEtaxInvoiceYn(updatedCustomer.getCustomerEtaxInvoiceYn());
+            existingCustomer.setCustomerTransactionStartDate(updatedCustomer.getCustomerTransactionStartDate());
+            existingCustomer.setCustomerTransactionEndDate(updatedCustomer.getCustomerTransactionEndDate());
+            existingCustomer.setCustomerInsertDate(updatedCustomer.getCustomerInsertDate());
+            existingCustomer.setCustomerUpdateDate(updatedCustomer.getCustomerUpdateDate());
 
-            return customerRepository.save(existingCustomer);
-
+            return customerRepository.save(existingCustomer); // 수정 후 저장
         } else {
-            // 새로운 고객 추가
-            if (customer.getPrices() == null) {
-                customer.setPrices(new ArrayList<>()); // 새로운 고객에 대해 prices가 null일 경우 초기화
-            }
-            return customerRepository.save(customer);
+            throw new RuntimeException("Customer not found with customerNo: " + customerNo);
         }
     }
 
-    // 고객 정보 삭제
+    // 고객 삭제
     public void deleteCustomer(Integer customerNo) {
         customerRepository.deleteById(customerNo);
     }
