@@ -16,7 +16,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
     Category findByCategoryNo(Integer categoryNo);
 
     //대분류
-    @Query("select c from Category c where c.categoryLevel = 1")
+    @Query("select c from Category c where c.categoryLevel = 1 and c.categoryDeleteYn = 'n' ")
     List<Category> findTopCategory ();
 
     //중분류
@@ -24,7 +24,8 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
             " join Category c1 on c2.parentCategoryNo = c1.categoryNo" +
             " where c1.categoryLevel = 1" +
             " and c2.categoryLevel = 2" +
-            " and c1.categoryNo = :topCategoryNo")
+            " and c1.categoryNo = :topCategoryNo" +
+            " and c2.categoryDeleteYn = 'n'")
     List<Category> findMiddleCategory(@Param("topCategoryNo") Integer topCategoryNo);
 
     //소분류
@@ -35,7 +36,8 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
             " and c2.categoryLevel = 2" +
             " and c3.categoryLevel = 3" +
             " and c1.categoryNo = :topCategoryNo" +
-            " and c2.categoryNo = :middleCategoryNo")
+            " and c2.categoryNo = :middleCategoryNo" +
+            " and c3.categoryDeleteYn = 'n' ")
     List<Category> findLowCategoryByTopAndMiddleCategory(@Param("topCategoryNo") Integer topCategoryNo,
                                                          @Param("middleCategoryNo") Integer middleCategoryNo);
 
@@ -46,7 +48,8 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
             "JOIN Category c1 ON c2.parentCategoryNo = c1.categoryNo " +
             "WHERE c1.categoryNm = :topCategory " +
             "AND c2.categoryNm = :middleCategory " +
-            "AND c3.categoryNm = :lowCategory")
+            "AND c3.categoryNm = :lowCategory " +
+            "AND c3.categoryDeleteYn = 'n' ")
     Category findCategoryByNames(@Param("topCategory") String topCategory,
                                  @Param("middleCategory") String middleCategory,
                                  @Param("lowCategory") String lowCategory);
