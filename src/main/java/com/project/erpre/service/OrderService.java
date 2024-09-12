@@ -49,7 +49,13 @@ public class OrderService {
                 .customer(orderDTO.getCustomer()) // 고객 정보
                 .orderHTotalPrice(orderDTO.getOrderHTotalPrice()) // 총 가격
                 .orderHStatus(orderDTO.getOrderHStatus()) // 주문 상태
+                .orderHDeleteYn("N") // 기본값 설정
                 .build();
+
+        if (order.getOrderHDeleteYn() == null) {
+            order.setOrderHDeleteYn("N"); // 기본값 설정
+        }
+
 
         // 엔터티 저장
         return orderRepository.save(order);
