@@ -89,8 +89,8 @@ public class ProductService {
     }
 
     // 전체 상품 목록 조회
-    public List<ProductDTO> getAllProducts() {
-        return productRepository.getAllProducts();
+    public Page<ProductDTO> getAllProducts(Pageable pageable) {
+        return productRepository.getAllProducts(pageable);
     }
 
     // 상품 상세 조회

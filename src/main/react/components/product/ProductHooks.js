@@ -28,17 +28,29 @@ export const useHooksList = () => {
     const [selectedLowCategory, setSelectedLowCategory] = useState('');
     const [selectedMiddleCategory, setSelectedMiddleCategory] = useState('');
     const [selectedTopCategory, setSelectedTopCategory] = useState('');
-    const [categories, setCategories] = useState([]); // 카테고리 목록 저장
 
+    // 페이지
+    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
+    const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지당 아이템 수
+    const [totalItems, setTotalItems] = useState(0); // 총 아이템 수
 
     // 상품 목록을 서버에서 받아오는 함수
     useEffect(() => {
-        axios.get('/api/products/productList')
-            .then(response => setProducts(response.data))
-            .catch(error => console.error('전체 상품 목록 조회 실패', error));
-    }, [])
+        axios
+            .get('/api/products/productList', {
+                params: {
+                    page: currentPage,
+                    size: itemsPerPage,
+                },
+            })
+            .then((response) => {
+                setProducts(response.data.products); // 받은 상품 목록
+                setTotalItems(response.data.totalItems); // 총 상품 개수
+            })
+            .catch((error) => console.error('전체 상품 목록 조회 실패', error));
+    }, [currentPage, itemsPerPage]);
 
-    // 상품 전체선택
+    // 상품 전체 선택
     const handleAllSelectProducts = (checked) => {
         if (checked) {
             const allProductCds = products.map(product => product.productCd);
@@ -112,6 +124,13 @@ export const useHooksList = () => {
 
     // 상품 수정 확인
     const handleConfirmClick = () => {
+        // 사용자에게 확인 메시지를 보여줍니다.
+        const isConfirmed = window.confirm('상품을 수정하시겠습니까?');
+
+        // 사용자가 취소를 누르면 아무 작업도 하지 않습니다.
+        if (!isConfirmed) {
+            return;
+        }
 
         const updatedProduct = {
             productCd: editableProduct.productCd,
@@ -119,14 +138,15 @@ export const useHooksList = () => {
             categoryNo: editableProduct.categoryNo
         };
 
-        axios.put('/api/products/update', updatedProduct,{
+        axios.put('/api/products/update', updatedProduct, {
             headers: {
                 'Content-Type': 'application/json'
-            },
+            }
         })
             .then(response => {
                 console.log('업데이트 성공:', response.data);
-                confirm('상품을 수정하시겠습니까?');
+                // 수정 성공 메시지 표시
+                alert('상품이 수정되었습니다.');
                 setEditMode(null); // 수정 모드 종료
                 setProducts(products.map(p => p.productCd === response.data.productCd ? response.data : p));
             })
@@ -250,13 +270,21 @@ export const useHooksList = () => {
         }
     };
 
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const handleItemsPerPageChange = (e) => {
+        setItemsPerPage(parseInt(e.target.value));
+        setCurrentPage(1); // 페이지당 항목 수를 변경하면 첫 페이지로 이동
+    };
+
     return {
         products,
         selectedProducts,
         handleAllSelectProducts,
         handleSelectProduct,
         isAdding,
-        setIsAdding,
         newProductData,
         handleAddNewProduct,
         handleInputChange,
@@ -270,9 +298,6 @@ export const useHooksList = () => {
         filterLowCategory,
         filterMiddleCategory,
         filterTopCategory,
-        setFilterLowCategory,
-        setFilterMiddleCategory,
-        setFilterTopCategory,
         handleFilterLowCategoryChange,
         handleFilterMiddleCategoryChange,
         selectedLowCategory,
@@ -281,8 +306,12 @@ export const useHooksList = () => {
         lowCategories,
         middleCategories,
         topCategories,
-        categories,
         handleLowCategoryChange,
-        handleMiddleCategoryChange
+        handleMiddleCategoryChange,
+        currentPage,
+        itemsPerPage,
+        totalItems,
+        handlePageChange,
+        handleItemsPerPageChange
     };
 };

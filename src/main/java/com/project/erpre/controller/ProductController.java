@@ -3,12 +3,17 @@ package com.project.erpre.controller;
 import com.project.erpre.model.Product;
 import com.project.erpre.model.ProductDTO;
 import com.project.erpre.service.ProductService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/products")
@@ -35,14 +40,25 @@ public class ProductController {
 
     // 전체 상품 목록 조회 API
     @GetMapping("/productList")
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+    public ResponseEntity<Map<String, Object>> getAllProducts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
         try {
-            List<ProductDTO> products = productService.getAllProducts();
-            return ResponseEntity.ok(products); // JSON 형식으로 반환
+            Pageable pageable = PageRequest.of(page - 1, size);
+            Page<ProductDTO> productPage = productService.getAllProducts(pageable);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("products", productPage.getContent());
+            response.put("totalItems", productPage.getTotalElements());
+            response.put("totalPages", productPage.getTotalPages());
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
 
     // 상품 상세 조회 API
     @GetMapping("/productDetail/{productCd}")
