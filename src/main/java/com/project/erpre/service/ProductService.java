@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -23,13 +24,33 @@ public class ProductService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    // 상품 등록
+    @Transactional
+    public Product saveProduct(ProductDTO productDTO) {
+        Product product = new Product();
+        product.setProductCd(productDTO.getProductCd());
+        product.setProductNm(productDTO.getProductNm());
+        //product.setProductUpdateDate(LocalDateTime.now());
+        product.setProductDeleteYn("N");
+
+        // 카테고리 번호로 카테고리를 조회하고 설정
+        Category category = categoryRepository.findById(productDTO.getCategoryNo())
+                .orElseThrow(() -> new RuntimeException("해당 카테고리를 찾을 수 없습니다."));
+        product.setCategory(category);
+
+        return productRepository.save(product);
+    }
+
+
     // DTO -> 엔티티 변환 메서드
     private Product convertToEntity(ProductDTO productDTO) {
         Product product = new Product();
         product.setProductCd(productDTO.getProductCd());
         product.setProductNm(productDTO.getProductNm());
+
         product.setProductInsertDate(productDTO.getProductInsertDate());
         product.setProductUpdateDate(productDTO.getProductUpdateDate());
+
         product.setProductDeleteYn(productDTO.getProductDeleteYn());
         product.setProductDeleteDate(productDTO.getProductDeleteDate());
 

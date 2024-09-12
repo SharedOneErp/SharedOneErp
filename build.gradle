@@ -35,6 +35,8 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'  // JUnit 플랫폼 실행기 (테스트 런타임)
 	implementation 'org.postgresql:postgresql:42.5.4'  // PostgreSQL JDBC 드라이버 특정 버전
 	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16' // Log4jdbc 의존성 추가
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.5' 	// Jackson Databind 라이브러리 추가 (Spring Boot 2.7.18에 호환되는 최신 버전)
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.5' // Java 8 Date and Time API (JSR310)를 위한 Jackson 모듈 추가
 	implementation 'org.modelmapper:modelmapper:3.1.0' // ModelMapper : DTO와 엔티티 간의 변환을 자동으로 처리해주는 라이브러리
 }
 

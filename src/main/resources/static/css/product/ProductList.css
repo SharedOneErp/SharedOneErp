@@ -64,7 +64,14 @@
     margin-top: 20px;
 }
 
-.bottom-container .add-button {
+.bottom-container .btn-add {
+    margin-right: 5px;
+    background-color: #007CC1;
+    color: white;
+    border-color: #007CC1;
+}
+
+.bottom-container .btn-add:hover {
     background-color: #024e7a;
 }
 

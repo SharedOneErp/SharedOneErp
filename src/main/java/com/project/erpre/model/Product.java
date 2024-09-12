@@ -32,10 +32,10 @@ public class Product {
     @Column(name = "product_nm", length = 100, nullable = false)
     private String productNm;
 
-    @Column(name = "product_insert_date", nullable = false, columnDefinition = "timestamp default current_timestamp")
+    @Column(name = "product_insert_date", nullable = false) // insertable = false
     private LocalDateTime productInsertDate;
 
-    @Column(name = "product_update_date", columnDefinition = "timestamp")
+    @Column(name = "product_update_date") // columnDefinition = "timestamp")
     private LocalDateTime productUpdateDate;
 
     @Column(name = "product_delete_yn", length = 20, nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'N'")

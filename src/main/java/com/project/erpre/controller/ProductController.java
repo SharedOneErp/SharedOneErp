@@ -1,12 +1,10 @@
 package com.project.erpre.controller;
 
-import com.project.erpre.model.Category;
 import com.project.erpre.model.Product;
 import com.project.erpre.model.ProductDTO;
 import com.project.erpre.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,23 +18,52 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+
+    // 상품 등록 API
+    @PostMapping("/add")
+    public ResponseEntity<Product> addProduct(@RequestBody ProductDTO productDTO) {
+        if (productDTO == null || productDTO.getProductCd() == null || productDTO.getProductNm() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        try {
+            Product savedProduct = productService.saveProduct(productDTO);
+            return ResponseEntity.ok(savedProduct);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
     // 전체 상품 목록 조회 API
     @GetMapping("/productList")
-    public List<ProductDTO> getAllProducts() {
-        return productService.getAllProducts();
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        try {
+            List<ProductDTO> products = productService.getAllProducts();
+            return ResponseEntity.ok(products); // JSON 형식으로 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     // 상품 상세 조회 API
     @GetMapping("/productDetail/{productCd}")
-    public List<ProductDTO> getProductDetailsByProductCd(@PathVariable String productCd) {
-        return productService.getProductDetailsByProductCd(productCd);
+    public ResponseEntity<List<ProductDTO>> getProductDetailsByProductCd(@PathVariable String productCd) {
+        try {
+            List<ProductDTO> productDetails = productService.getProductDetailsByProductCd(productCd);
+            if (productDetails.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(productDetails); // JSON 형식으로 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     // 선택한 상품 수정 API
     @PutMapping("/update")
     public ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductDTO productDTO) {
         try {
-            // 상품 업데이트 로직 처리
             productService.updateProductWithCategories(
                     productDTO.getProductCd(),
                     productDTO.getProductNm(),
@@ -46,18 +73,26 @@ public class ProductController {
             );
 
             // 업데이트된 상품 정보를 다시 가져와서 반환
-            ProductDTO updatedProduct = productService.getProductDetailsByProductCd(productDTO.getProductCd()).get(0); // 단일 상품 반환으로 가정
-            return ResponseEntity.ok(updatedProduct); // JSON 형식으로 반환
+            ProductDTO updatedProduct = productService.getProductDetailsByProductCd(productDTO.getProductCd()).get(0);
+            return ResponseEntity.ok(updatedProduct);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     // 선택한 상품 삭제 API
     @DeleteMapping("/productDelete")
-    public List<Product> deleteProducts(@RequestBody List<String> productCds) {
-        return productService.deleteProducts(productCds);
+    public ResponseEntity<List<Product>> deleteProducts(@RequestBody List<String> productCds) {
+        try {
+            List<Product> deletedProducts = productService.deleteProducts(productCds);
+            if (deletedProducts.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(deletedProducts); // 삭제된 상품 목록 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
-
-
 }

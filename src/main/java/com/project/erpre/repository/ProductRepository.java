@@ -16,6 +16,8 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
 
+    // 상품 등록
+
     // 전체 상품 목록 조회
     @Query("SELECT new com.project.erpre.model.ProductDTO(" +
             "p.productCd, p.productNm, p.productInsertDate, p.productUpdateDate, " +
