@@ -2,10 +2,7 @@ package com.project.erpre.service;
 
 import com.project.erpre.controller.PriceController;
 import com.project.erpre.model.*;
-import com.project.erpre.repository.CustomerRepository;
-import com.project.erpre.repository.EmployeeRepository;
-import com.project.erpre.repository.OrderDetailRepository;
-import com.project.erpre.repository.OrderRepository;
+import com.project.erpre.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +29,9 @@ public class OrderService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+    @Autowired
+    private ProductRepository productRepository;
+
 
     public Order createOrder(OrderDTO orderDTO) {
 
@@ -65,23 +66,23 @@ public class OrderService {
         Order order = orderRepository.findById(orderNo)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
 
-        // Order 정보를 OrderDTO로 변환
-        return OrderDTO.builder()
+        List<OrderDetail> orderDetails = orderDetailRepository.findByOrderOrderNo(orderNo);
+        List<Product> products = orderDetails.stream()
+                .map(detail -> productRepository.findById(detail.getProduct().getProductCd()).orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        OrderDTO orderDTO = OrderDTO.builder()
                 .orderNo(order.getOrderNo())
                 .employee(order.getEmployee())
                 .customer(order.getCustomer())
                 .orderHTotalPrice(order.getOrderHTotalPrice())
                 .orderHInsertDate(order.getOrderHInsertDate())
-                .orderHInsertDate(order.getOrderHInsertDate())
                 .orderHUpdateDate(order.getOrderHUpdateDate())
+                .orderHDeleteYn(order.getOrderHDeleteYn())
                 .build();
-    }
-    // 주문 상세 정보 조회
-    public List<OrderDetailDTO> getOrderDetailsByOrderNo(Integer orderNo) {
-        List<OrderDetail> orderDetails = orderDetailRepository.findByOrderOrderNo(orderNo);
 
-        // OrderDetail 엔티티 리스트를 OrderDetailDTO 리스트로 변환
-        return orderDetails.stream()
+        orderDTO.setOrderDetails(orderDetails.stream()
                 .map(orderDetail -> OrderDetailDTO.builder()
                         .orderNo(orderDetail.getOrderNo())
                         .orderHNo(orderDetail.getOrder().getOrderNo())
@@ -91,7 +92,10 @@ public class OrderService {
                         .orderDTotalPrice(orderDetail.getOrderDTotalPrice())
                         .orderDDeliveryRequestDate(orderDetail.getOrderDDeliveryRequestDate())
                         .build())
-                .collect(Collectors.toList());
-    }
+                .collect(Collectors.toList()));
 
+        orderDTO.setProducts(products);
+
+        return orderDTO;
+    }
 }
