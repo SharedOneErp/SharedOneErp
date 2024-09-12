@@ -25,17 +25,6 @@ public class ProductService {
     private CategoryRepository categoryRepository;
 
     public ProductDTO saveOrUpdate(ProductDTO productDTO) {
-//        Product product = convertToEntity(productDTO);
-//
-//        if (product.getProductInsertDate() == null) {
-//            product.setProductInsertDate(LocalDateTime.now());
-//        }
-//
-//        product.setProductUpdateDate(LocalDateTime.now());
-//
-//        Product savedProduct = productRepository.save(product);
-//        return convertToDTO(savedProduct);
-        // 상품 코드로 기존 제품 조회
         Product product = productRepository.findById(productDTO.getProductCd())
                 .orElse(new Product()); // 기존 제품이 없으면 새 제품 생성
 
@@ -110,24 +99,6 @@ public class ProductService {
         Page<ProductDTO> pageResult = productRepository.getProductDetailsByProductCd(productCd, pageable);
         return pageResult.getContent();
     }
-
-//    // 상품 업데이트
-//    @Transactional
-//    public void updateProductWithCategories(String productCd, String productNm, String topCategory, String middleCategory, String lowCategory) {
-//        // 카테고리를 조회합니다.
-//        Category category = categoryRepository.findCategoryByNames(topCategory, middleCategory, lowCategory);
-//
-//        if (category == null) {
-//            throw new RuntimeException("해당 카테고리를 찾을 수 없습니다.");
-//        }
-//
-//        // 제품을 업데이트합니다.
-//        Product product = productRepository.findById(productCd)
-//                .orElseThrow(() -> new RuntimeException("해당 상품을 찾을 수 없습니다."));
-//        product.setProductNm(productNm);
-//        product.setCategory(category);
-//        productRepository.save(product);
-//    }
 
     // 선택한 상품 삭제
     @Transactional

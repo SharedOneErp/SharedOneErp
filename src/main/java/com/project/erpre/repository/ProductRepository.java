@@ -46,25 +46,6 @@ public interface ProductRepository extends JpaRepository<Product, String> {
             "ORDER BY od.orderDDeliveryRequestDate DESC ")
     Page<ProductDTO> getProductDetailsByProductCd(@Param("productCd") String productCd, Pageable pageable);
 
-//    // 선택 상품 수정
-//    @Transactional
-//    @Modifying
-//    @Query("UPDATE Product p " +
-//            "SET p.productNm = :productNm, " +
-//            "p.category = (" +
-//            "SELECT c3 FROM Category c3 " +
-//            "JOIN c3.parentCategory c2 " +
-//            "JOIN c2.parentCategory c1 " +
-//            "WHERE c1.categoryNm = :topCategory " +
-//            "AND c2.categoryNm = :middleCategory " +
-//            "AND c3.categoryNm = :lowCategory) " +
-//            "WHERE p.productCd = :productCd")
-//    void updateProductWithCategories(@Param("productCd") String productCd,
-//                                     @Param("productNm") String productNm,
-//                                     @Param("topCategory") String topCategory,
-//                                     @Param("middleCategory") String middleCategory,
-//                                     @Param("lowCategory") String lowCategory);
-
     // 선택 상품 수정 (서비스 레이어에서 처리)
     @Transactional
     @Modifying

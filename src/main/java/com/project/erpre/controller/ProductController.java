@@ -58,28 +58,6 @@ public class ProductController {
         }
     }
 
-    // 선택한 상품 수정 API
-//    @PutMapping("/update")
-//    public ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductDTO productDTO) {
-//        try {
-//            productService.updateProductWithCategories(
-//                    productDTO.getProductCd(),
-//                    productDTO.getProductNm(),
-//                    productDTO.getTopCategory(),
-//                    productDTO.getMiddleCategory(),
-//                    productDTO.getLowCategory()
-//            );
-//
-//            // 업데이트된 상품 정보를 다시 가져와서 반환
-//            ProductDTO updatedProduct = productService.getProductDetailsByProductCd(productDTO.getProductCd()).get(0);
-//            return ResponseEntity.ok(updatedProduct);
-//        } catch (RuntimeException e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//    }
-
     // 선택한 상품 삭제 API
     @DeleteMapping("/productDelete")
     public ResponseEntity<List<Product>> deleteProducts(@RequestBody List<String> productCds) {
