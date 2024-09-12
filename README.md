@@ -1,11 +1,11 @@
-## 𝘋𝘦𝘷𝘦𝘭𝘰𝘱𝘮𝘦𝘯𝘵 𝘌𝘯𝘷𝘪𝘳𝘰𝘯𝘮𝘦𝘯𝘵
+## 개발 환경 및 기술 스택
 
-| 항목 | 버전 |
+| 항목 | 내용 |
 |---|---|
 | **프로그래밍 언어** | Java 11 |
 | **프레임워크** | Spring Boot 2.7.18 |
 | **빌드 도구** | Gradle |
-| **데이터베이스** | PostgreSQL 14.13 |
+| **데이터베이스(DB)** | PostgreSQL 16.3 (AWS RDS) |
 | **ORM** | JPA |
-| **View** | React |
-| **IDE** | IntelliJ IDEA |
+| **프론트엔드(View)** | React |
+| **개발 도구(IDE)** | IntelliJ IDEA |
