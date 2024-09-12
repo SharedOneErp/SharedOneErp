@@ -27,14 +27,14 @@ public class PriceController {
     @PostMapping("/insert")
     public PriceDTO insertPrice(@RequestBody PriceDTO priceDTO) {
         logger.info("Inserting price: {}", priceDTO);
-        return priceService.saveOrUpdate(priceService.convertToEntity(priceDTO));  // DTO -> 엔티티 변환 후 저장
+        return priceService.saveOrUpdate(priceDTO);  // DTO 전달 후 서비스에서 변환 및 저장
     }
 
     // [2] 가격 정보 수정
     @PutMapping("/update")
     public PriceDTO updatePrice(@RequestBody PriceDTO priceDTO) {
         logger.info("Updating price: {}", priceDTO);
-        return priceService.saveOrUpdate(priceService.convertToEntity(priceDTO));  // DTO -> 엔티티 변환 후 저장
+        return priceService.saveOrUpdate(priceDTO);  // DTO 전달 후 서비스에서 변환 및 저장
     }
 
     // [3] 특정 가격 정보 삭제
