@@ -16,6 +16,7 @@ function ProductList() {
         handleSelectProduct,
         isAdding,
         newProductData,
+        setIsAdding,
         handleAddNewProduct,
         handleInputChange,
         handleCancelAdd,
@@ -31,17 +32,25 @@ function ProductList() {
         filterLowCategory,
         filterMiddleCategory,
         filterTopCategory,
+        lowCategoriesRegister,
+        middleCategoriesRegister,
+        topCategoriesRegister,
         handleFilterLowCategoryChange,
         handleFilterMiddleCategoryChange,
+        setFilterLowCategory,
+        setFilterMiddleCategory,
+        setFilterTopCategory,
         lowCategories,
         middleCategories,
         topCategories,
         handleLowCategoryChange,
         handleMiddleCategoryChange,
         totalItems,
+        totalPages,
         handlePageChange,
         handleItemsPerPageChange,
-        itemsPerPage
+        itemsPerPage,
+        currentPage
     } = useHooksList(); // 커스텀 훅 사용
 
     return (
@@ -54,27 +63,25 @@ function ProductList() {
                     <div style={{marginBottom: "10px"}}>
                         <span style={{marginRight: "5px"}}>카테고리 </span>
                         <select className="approval-select" value={filterTopCategory}
-                                onChange={handleFilterMiddleCategoryChange}>
+                                onChange={(e) => setFilterTopCategory(e.target.value)}>
                             <option>대분류 선택</option>
                             {topCategories.map((category, index) => (
-                                <option key={index} value={category}>{category}</option>
+                                <option key={index} value={category.categoryNo}>{category.categoryNm}</option>
                             ))}
                         </select>
                         <select className="approval-select" value={filterMiddleCategory}
-                                onChange={handleFilterMiddleCategoryChange}>
+                                onChange={(e) => setFilterMiddleCategory(e.target.value)}>
                             <option>중분류 선택</option>
-                            {middleCategories.map((category, index) => (
-                                <option key={index} value={category}>{category}</option>
+                            {middleCategories.filter(cat => cat.parentCategoryNo === filterTopCategory).map((category, index) => (
+                                <option key={index} value={category.categoryNo}>{category.categoryNm}</option>
                             ))}
                         </select>
                         <select className="approval-select" value={filterLowCategory}
-                                onChange={handleFilterLowCategoryChange}>
+                                onChange={(e) => setFilterLowCategory(e.target.value)}>
                             <option>소분류 선택</option>
-                            {lowCategories.map((category, index) => (
-                                <option key={index} value={category}>{category}</option>
+                            {lowCategories.filter(cat => cat.parentCategoryNo === filterMiddleCategory).map((category, index) => (
+                                <option key={index} value={category.categoryNo}>{category.categoryNm}</option>
                             ))}
-
-
                         </select>
                     </div>
                     <div>
@@ -101,17 +108,7 @@ function ProductList() {
                         </select>
                     </label>
                 </div>
-                <div className="pagination">
-                    {[...Array(totalPages)].map((_, i) => (
-                        <button
-                            key={i}
-                            onClick={() => handlePageChange(i + 1)}
-                            className={currentPage === i + 1 ? 'active' : ''}
-                        >
-                            {i + 1}
-                        </button>
-                    ))}
-                </div>
+
                 <table className="approval-list">
                     <thead>
                     <tr>
@@ -144,8 +141,8 @@ function ProductList() {
                                         handleMiddleCategoryChange(e); // 대분류 선택 시 중분류 고정
                                     }}
                                 >
-                                    <option value="">대분류 선택</option>
-                                    {topCategories.map((category, index) => (
+                                    <option value="">대분류</option>
+                                    {topCategoriesRegister.map((category, index) => (
                                         <option key={index} value={category}>{category}</option>
                                     ))}
                                 </select>
@@ -159,8 +156,8 @@ function ProductList() {
                                         handleMiddleCategoryChange(e); // 중분류 선택 시 대분류 고정
                                     }}
                                 >
-                                    <option value="">중분류 선택</option>
-                                    {middleCategories.map((category, index) => (
+                                    <option value="">중분류</option>
+                                    {middleCategoriesRegister.map((category, index) => (
                                         <option key={index} value={category}>{category}</option>
                                     ))}
                                 </select>
@@ -174,8 +171,8 @@ function ProductList() {
                                         handleLowCategoryChange(e); // 소분류 선택 시 중분류 및 대분류 고정
                                     }}
                                 >
-                                    <option value="">소분류 선택</option>
-                                    {lowCategories.map((category, index) => (
+                                    <option value="">소분류</option>
+                                    {lowCategoriesRegister.map((category, index) => (
                                         <option key={index} value={category}>{category}</option>
                                     ))}
                                 </select>
@@ -208,7 +205,7 @@ function ProductList() {
                                 {editMode === product.productCd ? (
                                     <select name="topCategory" value={editableProduct.topCategory}
                                             onChange={(e) => handleMiddleCategoryChange(e, true)}>
-                                        {topCategories.map((category, index) => (
+                                        {topCategoriesRegister.map((category, index) => (
                                             <option key={index} value={category}>{category}</option>
                                         ))}
                                     </select>
@@ -220,7 +217,7 @@ function ProductList() {
                                 {editMode === product.productCd ? (
                                     <select name="middleCategory" value={editableProduct.middleCategory}
                                             onChange={(e) => handleMiddleCategoryChange(e, true)}>
-                                        {middleCategories.map((category, index) => (
+                                        {middleCategoriesRegister.map((category, index) => (
                                             <option key={index} value={category}>{category}</option>
                                         ))}
                                     </select>
@@ -232,7 +229,7 @@ function ProductList() {
                                 {editMode === product.productCd ? (
                                     <select name="lowCategory" value={editableProduct.lowCategory}
                                             onChange={(e) => handleLowCategoryChange(e, true)}>
-                                        {lowCategories.map((category, index) => (
+                                        {lowCategoriesRegister.map((category, index) => (
                                             <option key={index} value={category}>{category}</option>
                                         ))}
                                     </select>
@@ -263,12 +260,16 @@ function ProductList() {
                     ))}
                     </tbody>
                 </table>
-                <div className="approval-page">
-                    <button className="approval-page1">1</button>
-                    <button className="approval-page2">2</button>
-                    <button className="approval-page3">3</button>
-                    <button className="approval-page4">4</button>
-                    <button className="approval-page5">5</button>
+                <div className="pagination">
+                    {[...Array(totalPages)].map((_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => handlePageChange(i + 1)}
+                            className={currentPage === i + 1 ? 'active' : ''}
+                        >
+                            {i + 1}
+                        </button>
+                    ))}
                 </div>
                 <div className="button-container">
                     <button className="filter-button" onClick={handleDeleteSelected}>삭제</button>

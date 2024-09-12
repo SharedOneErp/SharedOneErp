@@ -110,6 +110,28 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    // 대분류 조회
+    public List<Category> getTopCategory() {
+        return categoryRepository.findTopCategory();
+    }
+
+    // 중분류 조회
+    public List<Category> getMiddleCategory(Integer topCategoryId) {
+        if (topCategoryId == null) {
+            return categoryRepository.findMiddleCategory(0); // 전체 중분류 조회
+        }
+        return categoryRepository.findMiddleCategory(topCategoryId);
+    }
+
+    // 소분류 조회
+    public List<Category> getLowCategory(Integer topCategoryId, Integer middleCategoryId) {
+        if (topCategoryId == null || middleCategoryId == null) {
+            return categoryRepository.findAll(); // 전체 소분류 조회
+        }
+        return categoryRepository.findLowCategoryByTopAndMiddleCategory(topCategoryId, middleCategoryId);
+    }
+
+
     public List<Product> searchProducts(String productCd, Category category, String productNm) {
         if (category == null) {
             return productRepository.findByProductCdContainingIgnoreCaseAndProductNmContainingIgnoreCase(productCd, productNm);
