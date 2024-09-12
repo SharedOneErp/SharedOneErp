@@ -162,3 +162,146 @@ td, th {
   background-color: #005a91;
   /* 호버 시 조금 더 어두운 색으로 변경 */
 }
+
+
+/* 모달 css */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* 배경 어둡게 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #555; /* 기본 색상 */
+  transition: color 0.3s ease;
+}
+
+.category-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  /* gap: 20px; */
+}
+
+/* 전체 컨테이너 설정 */
+.container1 {
+  display: flex;
+  padding: 20px;
+  gap: 0;
+  /* width: 100%; */
+  background-color: #f0f0f0;
+  justify-content: center;  
+}
+
+/* 각 카테고리 컬럼 */
+.category-column {
+  
+  padding: 10px;
+  width: 100%;
+  background-color: #e3e3e3;
+  /* border-radius: 8px; */
+  border: 1px solid #999;
+
+}
+
+.category-column h4 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.input-button{
+  display: flex;
+}
+
+.input-field {
+  width: calc(100% - 40px);
+  padding: 5px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  flex: 1;
+}
+
+.search-button, .register-button {
+  padding: 5px 10px;
+  background-color: #005cbf;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.search-button:hover, .register-button:hover {
+  background-color: #004bb5;
+}
+
+.category-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 10px 0;
+}
+
+
+.category-list li {
+ 
+  margin-bottom: 5px;
+  padding: 8px;
+  text-align: center;
+}
+
+/* 입력 필드 스타일 */
+.category-column input[type="text"] {
+  width: 80%;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+/* 버튼 스타일 */
+.category-column button {
+  padding: 5px 10px;
+  margin-left: 5px;
+  background-color: #0058A3;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: bac;
+  height: 31px;
+  width: 50px;
+}
+
+.category-column button:hover {
+  background-color: #007CC1;
+}
+
+/* 리스트 스타일 */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  /* padding: 8px; */
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+ul li:hover {
+  background-color: #A3A3A3;
+}
+
+.selected {
+  background-color: #add8e6;
+}

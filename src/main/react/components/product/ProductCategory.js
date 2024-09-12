@@ -5,6 +5,16 @@ import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를
 import '../../../resources/static/css/product/ProductCategory.css'; // 개별 CSS 스타일 적용
 import { formatDate } from "../../util/dateUtils";
 
+// // 모달창
+// function ProductCategoryModal() {
+
+//     return (
+
+
+//     )
+// }
+
+
 // 컴포넌트
 function ProductCategory() {
 
@@ -84,7 +94,7 @@ function ProductCategory() {
             })
             .catch(error => console.error('카테고리 추가 실패:', error));
 
-            alert('대분류 카테고리가 추가되었습니다.')
+        alert('대분류 카테고리가 추가되었습니다.')
     };
 
 
@@ -96,7 +106,7 @@ function ProductCategory() {
             </div>
 
             <div className="middle-container">
-                <form className="search-box-container">
+                {/* <form className="search-box-container">
                     <div style={{ marginBottom: "10px" }}>
                         <span style={{ marginRight: "5px" }}>카테고리 </span>
 
@@ -127,7 +137,7 @@ function ProductCategory() {
                         <input type="text" className="search-box" placeholder="소분류 카테고리명을 입력하세요" />
                         <button type="submit" className="search-button">등록</button>
                     </div>
-                </form>
+                </form> */}
             </div>
             <div className="bottom-container">
                 {/* <label>
@@ -178,11 +188,84 @@ function ProductCategory() {
                 </div>
 
                 <div className="button-container">
+                    <button className="filter-button">등록</button>
                     <button className="filter-button">수정</button>
                     <button className="filter-button" >삭제</button>
                 </div>
 
             </div>
+
+            <div className='modal-overlay'>
+                <div className='modal-content'>
+                    <h2>카테고리 등록</h2>
+                    <button className='close-button'>X</button>
+
+                    <div className='category-form'>
+                        {/* 대분류 */}
+                        <div className='category-column'>
+                            <h4>대분류</h4>
+                            <div className='input-button'>
+                                <input type='text' placeholder='대분류 검색' className='input-field' />
+                                <button className='search-button'>검색</button>
+                            </div>
+                            <br />
+                            <ul className='category-list'>
+                                <li>대1</li>
+                                <li>대2</li>
+                                <li>대3</li>
+                                <li>대4</li>
+                            </ul>
+                            <div className='input-button'>
+                                <input type='text' placeholder='새 대분류 추가' className='input-field' />
+                                <button className='register-button'>등록</button>
+                            </div>
+                        </div>
+
+                        {/* 중분류 */}
+                        <div className='category-column'>
+                            <h4>중분류</h4>
+                            <div className='input-button'>
+                                <input type='text' placeholder='중분류 검색' className='input-field' />
+                                <button className='search-button'>검색</button>
+                            </div>
+                            <br />
+                            <ul className='category-list'>
+                                <li>중1</li>
+                                <li>중2</li>
+                                <li>중3</li>
+                                <li>중4</li>
+                            </ul>
+                            <div className='input-button'>
+                                <input type='text' placeholder='새 중분류 추가' className='input-field' />
+                                <button className='register-button'>등록</button>
+                            </div>
+                        </div>
+
+                        {/* 소분류 */}
+                        <div className='category-column'>
+                            <h4>소분류</h4>
+                            <div className='input-button'>
+                                <input type='text' placeholder='소분류 검색' className='input-field' />
+                                <button className='search-button'>검색</button>
+                            </div>
+                            <br />
+                            <ul className='category-list'>
+                                <li>소1</li>
+                                <li>소2</li>
+                                <li>소3</li>
+                                <li>소4</li>
+                            </ul>
+                            <div className='input-button'>
+                                <input type='text' placeholder='새 소분류 추가' className='input-field' />
+                                <button className='register-button'>등록</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
         </Layout>
     );
 }

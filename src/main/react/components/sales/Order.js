@@ -17,7 +17,9 @@ function Order() {
 
     // 상태들
     const [products, setProducts] = useState([{name: '', price: '', quantity: ''}]);
-    const [customer, setCustomer] = useState({});
+    const [customer, setCustomer] = useState([]);
+
+
     const [orderDetails, setOrderDetails] = useState([]); // 추가된 상태
     const [showModal, setShowModal] = useState(false); // 모달 상태
     const [customerModalOpen, setCustomerModalOpen] = useState(false);
@@ -235,6 +237,7 @@ function Order() {
         console.log(employeeId);
         console.log(totalAmount);
 
+
         // 고객번호와 직원 ID를 숫자로 변환합니다.
         const orderData = {
             customer: {customerNo: customerNo},  // 서버에서 Expecting Customer 객체
@@ -242,8 +245,11 @@ function Order() {
             orderHTotalPrice: totalAmount,
             orderHStatus: "ing",
             orderHInsertDate: new Date().toISOString(),
-            orderHUpdateDate: null
+            orderHUpdateDate: null,
+            orderHDeleteYn : "N"
         };
+
+        console.log(orderData);
 
         console.log("-------------------------------------handleSubmit");
         try {
@@ -298,12 +304,16 @@ function Order() {
                 // 주문 처리 후 페이지 이동
                 window.location.href = '/orderListAll';
             } else {
-                console.error('Order creation failed.');
+                // 응답 상태가 OK가 아닌 경우, 응답 본문을 텍스트로 변환하여 오류를 확인합니다.
+                const errorText = await response.text();
+                console.error('주문 처리 오류:', errorText);
             }
         } catch (error) {
             console.error('주문 처리 중 오류 발생:', error.message);
         }
     };
+
+
 
     const handleCustomerSelect = (selectedCustomer) => {
         // 선택된 고객 정보 처리
@@ -317,11 +327,32 @@ function Order() {
         closeCustomerModal();
     };
 
+    // const handleCustomerSelect = (selectedCustomer) => {
+    //     // 선택된 고객 정보 처리
+    //     console.log('Selected customer:', selectedCustomer);
+    //     setCustomer({
+    //         customerNo: selectedCustomer.customerNo || '',
+    //         customerName: selectedCustomer.customerName || '',
+    //         customerAddr: selectedCustomer.customerAddr || '',
+    //         customerTel: selectedCustomer.customerTel || '',
+    //         customerRepresentativeName: selectedCustomer.customerRepresentativeName || '',
+    //         customerInsertDate : selectedCustomer.customerInsertDate || ''
+    //     });
+    //     closeCustomerModal();
+    // };
+
     //날짜 형식 처리
     const formatDateForInput = (dateString) => {
         const date = new Date(dateString);
+        if (isNaN(date.getTime())) {  // 날짜가 유효하지 않으면
+            console.error('유효하지 않은 날짜:', dateString);
+            return '';  // 또는 기본값으로 빈 문자열 반환
+        }
         return date.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 변환
     };
+
+    const formattedDate = isCreateMode ? '' : formatDateForInput(customer.customerInsertDate);
+
 
 
     return (
@@ -341,8 +372,11 @@ function Order() {
                     <div className="form-group">
                         <label>고객사</label>
                         <input type="hidden" name="customerNo" readOnly/>
-                        <input type="text" name="customerName" value={customer?.customerName || ''}
-                               readOnly={!isEditMode && !isCreateMode}/>
+                        {/*위는 주문 생성 , 아래는 수정과 변경*/}
+                        <input type="text" name="customerName"  style={{display: isCreateMode ? 'block' : 'none'}}/>
+                        <input type="text" name="customerNamex" value={isCreateMode ? '' : customer.customerName}
+                               style={{display: isCreateMode ? 'none' : 'block'}} readOnly/>
+
                         <button
                             className="search-button"
                             onClick={openCustomerModal}
@@ -355,7 +389,7 @@ function Order() {
                     {!isCreateMode && (
                         <>
                             <div className="form-group">
-                                <label>물품 총액</label>
+                            <label>물품 총액</label>
                                 <span className="orderHtotal-price"> {orderHTotalPrice}원</span>
                             </div>
                             <div className="form-group">
@@ -366,17 +400,26 @@ function Order() {
                         </>
                     )}
 
+
                     <div className="form-group">
+                        {/*위는 주문 생성 , 아래는 수정과 변경*/}
                         <label>납품요청일</label>
                         <input type="date" className="delivery-date" defaultValue="2024-10-07"
-                               readOnly={!isEditMode && !isCreateMode}/>
+                               readOnly={!isEditMode && !isCreateMode} style={{display: isCreateMode ? 'block' : 'none'}}/>
+                        <input
+                            type="date"
+                            value={formattedDate}
+                            readOnly
+                            style={{display: isCreateMode ? 'none' : 'block'}}
+                            name="delivery-datex"
+                        />
                     </div>
 
                     <div className="form-group">
                         <label>담당자</label>
                         <span className="employee-id" style={{display: 'none'}}>{employee ? (
                             <>
-                                {employee.employeeId}
+                            {employee.employeeId}
                             </>
                         ) : (
                             'LOADING'
@@ -394,18 +437,28 @@ function Order() {
                     </div>
                     <div className="form-group">
                         <label>주소</label>
-                        <input type="text" name="customerAddr" value={isCreateMode ? '' : customer.customerAddr } readOnly/>
+
+                        <input type="text" name="customerAddr" style={{display: isCreateMode ? 'block' : 'none'}} readOnly/>
+
+                        <input type="text" name="customerAddrx" value={isCreateMode ? '' : customer.customerAddr}
+                               style={{display: isCreateMode ? 'none' : 'block'}}
+                               readOnly/>
                     </div>
 
                     <div className="form-group">
                         <label>연락처</label>
-                        <input type="text" name="customerAddr" value={isCreateMode ? '' : customer.customerTel} readOnly/>
+                        <input type="text" name="customerTel" style={{display: isCreateMode ? 'block' : 'none'}} readOnly/>
+                        <input type="text" name="customerTelx" value={isCreateMode ? '' : customer.customerTel}
+                               style={{display: isCreateMode ? 'none' : 'block'}} readOnly/>
 
                     </div>
 
                     <div className="form-group">
                         <label>대표명</label>
-                        <input type="text" name="customerAddr" value={isCreateMode ? '' : customer.customerRepresentativeName}
+                        <input type="text" name="customerRepresentativeName" style={{display: isCreateMode ? 'block' : 'none'}} readOnly/>
+                        <input type="text" name="customerRepresentativeNamex"
+                               value={isCreateMode ? '' : customer.customerRepresentativeName}
+                               style={{display: isCreateMode ? 'none' : 'block'}}
                                readOnly/>
                     </div>
 
@@ -415,7 +468,7 @@ function Order() {
                         style={{display: isCreateMode ? 'none' : 'block'}}
                     >
                         <label>주문 상태</label>
-                        <span style={{display: 'none'}}className="order-status"></span>
+                        <span style={{display: 'none'}} className="order-status"></span>
                     </div>
                 </div>
 
