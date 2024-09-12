@@ -26,6 +26,9 @@ function ProductList() {
         handleConfirmClick,
         handleCancelEdit,
         handleDeleteSelected,
+        selectedTopCategory,
+        selectedMiddleCategory,
+        selectedLowCategory,
         filterLowCategory,
         filterMiddleCategory,
         filterTopCategory,
@@ -119,8 +122,11 @@ function ProductList() {
                             <td>
                                 <select
                                     name="topCategory"
-                                    value={newProductData.topCategory}
-                                    onChange={(e) => handleInputChange(e)}
+                                    value={selectedTopCategory}
+                                    onChange={(e) => {
+                                        handleInputChange(e);
+                                        handleMiddleCategoryChange(e); // 대분류 선택 시 중분류 고정
+                                    }}
                                 >
                                     <option value="">대분류 선택</option>
                                     {topCategories.map((category, index) => (
@@ -131,10 +137,10 @@ function ProductList() {
                             <td>
                                 <select
                                     name="middleCategory"
-                                    value={newProductData.middleCategory}
+                                    value={selectedMiddleCategory}
                                     onChange={(e) => {
                                         handleInputChange(e);
-                                        handleMiddleCategoryChange(e); // 중분류 선택 시 대분류 자동 설정
+                                        handleMiddleCategoryChange(e); // 중분류 선택 시 대분류 고정
                                     }}
                                 >
                                     <option value="">중분류 선택</option>
@@ -146,10 +152,10 @@ function ProductList() {
                             <td>
                                 <select
                                     name="lowCategory"
-                                    value={newProductData.lowCategory}
+                                    value={selectedLowCategory}
                                     onChange={(e) => {
                                         handleInputChange(e);
-                                        handleLowCategoryChange(e); // 소분류 선택 시 중분류, 대분류 자동 설정
+                                        handleLowCategoryChange(e); // 소분류 선택 시 중분류 및 대분류 고정
                                     }}
                                 >
                                     <option value="">소분류 선택</option>

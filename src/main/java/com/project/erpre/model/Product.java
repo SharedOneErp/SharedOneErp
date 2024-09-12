@@ -32,10 +32,10 @@ public class Product {
     @Column(name = "product_nm", length = 100, nullable = false)
     private String productNm;
 
-    @Column(name = "product_insert_date", nullable = false) // insertable = false
+    @Column(name = "product_insert_date", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime productInsertDate;
 
-    @Column(name = "product_update_date") // columnDefinition = "timestamp")
+    @Column(name = "product_update_date")
     private LocalDateTime productUpdateDate;
 
     @Column(name = "product_delete_yn", length = 20, nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'N'")
@@ -44,18 +44,27 @@ public class Product {
     @Column(name = "product_delete_date")
     private Timestamp productDeleteDate; // 삭제 일시
 
+    @PrePersist
+    @PreUpdate
+    public void updateFields() {
+        if (this.productDeleteYn == null) {
+            this.productDeleteYn = "N"; // 기본값 설정
+        }
+        if (this.productUpdateDate != null) {
+            this.productUpdateDate = LocalDateTime.now();
+        }
+        if (this.productInsertDate == null) {
+            this.productInsertDate = LocalDateTime.now(); // 기본값 설정
+        }
+    }
+
     @ToString.Exclude
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore // 양방향 관계에서 부모-자식 관계를 직렬화할 때 순환 참조를 방지합니다. 부모는 직렬화하고 자식은 무시하는 방식으로 설정합니다.
+    @JsonIgnore
     private List<Price> prices;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<OrderDetail> orderDetails;
-
-    @PreUpdate
-    public void preUpdate() {
-        this.productUpdateDate = LocalDateTime.now();
-    }
 }

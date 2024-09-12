@@ -24,23 +24,31 @@ public class ProductService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    // 상품 등록
-    @Transactional
-    public Product saveProduct(ProductDTO productDTO) {
-        Product product = new Product();
-        product.setProductCd(productDTO.getProductCd());
-        product.setProductNm(productDTO.getProductNm());
-        //product.setProductUpdateDate(LocalDateTime.now());
-        product.setProductDeleteYn("N");
 
-        // 카테고리 번호로 카테고리를 조회하고 설정
-        Category category = categoryRepository.findById(productDTO.getCategoryNo())
-                .orElseThrow(() -> new RuntimeException("해당 카테고리를 찾을 수 없습니다."));
-        product.setCategory(category);
+//    // 상품 등록
+//    @Transactional
+//    public Product saveProduct(ProductDTO productDTO) {
+//        Product product = new Product();
+//        product.setProductCd(productDTO.getProductCd());
+//        product.setProductNm(productDTO.getProductNm());
+//        product.setProductDeleteYn("N");
+//
+//        // categoryNo로 Category 객체를 조회
+//        Integer categoryNo = productDTO.getCategoryNo();
+//        Category category = categoryRepository.findById(categoryNo)
+//                .orElseThrow(() -> new RuntimeException("해당 카테고리를 찾을 수 없습니다."));
+//
+//        // 조회한 Category 객체를 Product 엔티티에 설정
+//        product.setCategory(category);
+//
+//        return productRepository.save(product);
+//    }
 
-        return productRepository.save(product);
+    public ProductDTO saveOrUpdate(ProductDTO productDTO) {
+        Product product = convertToEntity(productDTO);
+        Product savedProduct = productRepository.save(product);
+        return convertToDTO(savedProduct);
     }
-
 
     // DTO -> 엔티티 변환 메서드
     private Product convertToEntity(ProductDTO productDTO) {
@@ -54,11 +62,14 @@ public class ProductService {
         product.setProductDeleteYn(productDTO.getProductDeleteYn());
         product.setProductDeleteDate(productDTO.getProductDeleteDate());
 
-        // 카테고리 설정은 별도로 처리
-        Category category = (Category) categoryRepository.findByCategoryNm(productDTO.getCategoryNm());
-        if (category != null) {
+        // Category 조회 및 설정
+        Integer categoryNo = productDTO.getCategoryNo();
+        if (categoryNo != null) {
+            Category category = categoryRepository.findById(categoryNo)
+                    .orElseThrow(() -> new RuntimeException("해당 카테고리를 찾을 수 없습니다."));
             product.setCategory(category);
         }
+
         return product;
     }
 
@@ -98,7 +109,11 @@ public class ProductService {
         }
 
         // 제품을 업데이트합니다.
-        productRepository.updateProductWithCategories(productCd, productNm, category);
+        Product product = productRepository.findById(productCd)
+                .orElseThrow(() -> new RuntimeException("해당 상품을 찾을 수 없습니다."));
+        product.setProductNm(productNm);
+        product.setCategory(category);
+        productRepository.save(product);
     }
 
     // 선택한 상품 삭제
