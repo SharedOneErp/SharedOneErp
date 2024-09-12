@@ -29,12 +29,17 @@ export const useHooksList = () => {
     const [selectedMiddleCategory, setSelectedMiddleCategory] = useState('');
     const [selectedTopCategory, setSelectedTopCategory] = useState('');
 
+    // 카테고리 목록 상태
+    const [topCategories, setTopCategories] = useState([]);
+    const [middleCategories, setMiddleCategories] = useState([]);
+    const [lowCategories, setLowCategories] = useState([]);
+
     // 페이지
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
     const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지당 아이템 수
     const [totalItems, setTotalItems] = useState(0); // 총 아이템 수
 
-    // 상품 목록을 서버에서 받아오는 함수
+    // 상품 목록과 카테고리 목록을 서버에서 받아오는 함수
     useEffect(() => {
         axios
             .get('/api/products/productList', {
@@ -46,8 +51,12 @@ export const useHooksList = () => {
             .then((response) => {
                 setProducts(response.data.products); // 받은 상품 목록
                 setTotalItems(response.data.totalItems); // 총 상품 개수
+                setTopCategories(response.data.topCategories); // 대분류 목록
+                setMiddleCategories(response.data.middleCategories); // 중분류 목록
+                setLowCategories(response.data.lowCategories); // 소분류 목록
             })
             .catch((error) => console.error('전체 상품 목록 조회 실패', error));
+
     }, [currentPage, itemsPerPage]);
 
     // 상품 전체 선택
@@ -204,16 +213,16 @@ export const useHooksList = () => {
     };
 
     // 카테고리 필터링(등록)
-    const topCategories = [...new Set(products.map(product => product.topCategory))];
-    const middleCategories = [...new Set(products
+    const topCategoriesRegister = [...new Set(products.map(product => product.topCategory))];
+    const middleCategoriesRegister = [...new Set(products
         .filter(product => product.topCategory === selectedTopCategory || !selectedTopCategory)
         .map(product => product.middleCategory))];
-    const lowCategories = [...new Set(products
+    const lowCategoriesRegister = [...new Set(products
         .filter(product => product.middleCategory === selectedMiddleCategory || !selectedMiddleCategory)
         .map(product => product.lowCategory))];
 
 
-// 소분류 선택 시 중분류 및 대분류를 고정하는 함수
+    // 소분류 선택 시 중분류 및 대분류를 고정하는 함수
     const handleLowCategoryChange = (e, isEditing = false) => {
         const selectedLow = e.target.value;
         setSelectedLowCategory(selectedLow);
@@ -270,14 +279,18 @@ export const useHooksList = () => {
         }
     };
 
+    // 페이지 변경
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
+    // 페이지당 항목 수 변경
     const handleItemsPerPageChange = (e) => {
         setItemsPerPage(parseInt(e.target.value));
-        setCurrentPage(1); // 페이지당 항목 수를 변경하면 첫 페이지로 이동
+        //setCurrentPage(1); // 페이지당 항목 수를 변경하면 첫 페이지로 이동
     };
+
+    const totalPages = Math.ceil(totalItems / itemsPerPage); // 총 페이지 수 계산
 
     return {
         products,
@@ -285,6 +298,7 @@ export const useHooksList = () => {
         handleAllSelectProducts,
         handleSelectProduct,
         isAdding,
+        setIsAdding,
         newProductData,
         handleAddNewProduct,
         handleInputChange,
@@ -298,6 +312,9 @@ export const useHooksList = () => {
         filterLowCategory,
         filterMiddleCategory,
         filterTopCategory,
+        lowCategoriesRegister,
+        middleCategoriesRegister,
+        topCategoriesRegister,
         handleFilterLowCategoryChange,
         handleFilterMiddleCategoryChange,
         selectedLowCategory,
@@ -311,6 +328,7 @@ export const useHooksList = () => {
         currentPage,
         itemsPerPage,
         totalItems,
+        totalPages,
         handlePageChange,
         handleItemsPerPageChange
     };

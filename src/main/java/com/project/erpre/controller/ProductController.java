@@ -1,7 +1,10 @@
 package com.project.erpre.controller;
 
+import com.project.erpre.model.Category;
 import com.project.erpre.model.Product;
 import com.project.erpre.model.ProductDTO;
+import com.project.erpre.repository.ProductRepository;
+import com.project.erpre.service.CategoryService;
 import com.project.erpre.service.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +25,9 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     // 상품 등록 API
     @PostMapping("/add")
@@ -48,10 +54,20 @@ public class ProductController {
             Pageable pageable = PageRequest.of(page - 1, size);
             Page<ProductDTO> productPage = productService.getAllProducts(pageable);
 
+            // 전체 카테고리 목록 조회
+            List<Category> topCategories = categoryService.getTopCategory();
+            List<Category> middleCategories = categoryService.getMiddleCategory(null);
+            List<Category> lowCategories = categoryService.getLowCategory(null, null);
+
             Map<String, Object> response = new HashMap<>();
             response.put("products", productPage.getContent());
             response.put("totalItems", productPage.getTotalElements());
             response.put("totalPages", productPage.getTotalPages());
+
+            // 카테고리 목록 추가
+            response.put("topCategories", topCategories);
+            response.put("middleCategories", middleCategories);
+            response.put("lowCategories", lowCategories);
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
