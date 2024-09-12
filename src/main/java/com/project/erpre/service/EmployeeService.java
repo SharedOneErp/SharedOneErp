@@ -62,4 +62,8 @@ public class EmployeeService {
 //        Pageable pageable = PageRequest.of(page, size);
 //        return employeeRepository.findAll(pageable);
 //    }
+
+    public void deleteEmployees(List<String> id) {
+        employeeRepository.deleteAllById(id);  // JPA에서 제공하는 delete 메서드
+    }
 }
