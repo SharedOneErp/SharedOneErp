@@ -5,15 +5,6 @@ import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를
 import '../../../resources/static/css/product/ProductCategory.css'; // 개별 CSS 스타일 적용
 import { formatDate } from "../../util/dateUtils";
 
-// // 모달창
-// function ProductCategoryModal() {
-
-//     return (
-
-
-//     )
-// }
-
 
 // 컴포넌트
 function ProductCategory() {
@@ -21,14 +12,25 @@ function ProductCategory() {
     const [category, setCategory] = useState([]);
     const [categoryName, setCategoryName] = useState('');
     const [selectedCategory, setSelectedCategory] = useState([]); // 선택된 카테고리
-    const [selectedTopCategory, setSelectedTopCategory] = useState('');
-    const [selectedMidCategory, setSelectedMidCategory] = useState('');
+    const [selectedTopCategory, setSelectedTopCategory] = useState(null);
+    const [selectedMidCategory, setSelectedMidCategory] = useState(null);
     const [categoryLevel, setCategoryLevel] = useState('대분류'); // 카테고리 레벨 (대분류/중분류/소분류)
     const [insertTop, setInsertTop] = useState('');//대분류 추가
     const [insertMid, setInsertMid] = useState('');//중분류 추가
     const [insertLow, setInsertLow] = useState('');//소분류 추가
     const [insertedList, setInsertedList] = useState([]);
 
+    // 모달 관련
+    const [selectedSave, setSelectedSave] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+
+    //대분류조회  //중분류조회  //소분류조회
+    const [getTopcategory, setGetTopcategory] = useState([]);
+    const [getMidcategory, setGetMidcategory] = useState([]);
+    const [getLowcategory, setGetLowcategory] = useState([]);
+
+
+    // 전체목록 조회
     useEffect(() => {
         fetch('/api/category/all')
             .then(response => response.json())
@@ -36,13 +38,25 @@ function ProductCategory() {
             .catch(error => console.error('카테고리 목록을 불러오는 데 실패했습니다.', error))
     }, []);
 
+     // 대분류 조회
+     useEffect(() => {
+        fetch('/api/category/top')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);     
+                const topCategory = Array.isArray(data) ? data : [data];           
+                setGetTopcategory(topCategory);
+            })
+            .catch(error => console.error('대분류 목록을 불러오는데 실패했습니다.', error));
+    }, []);
+
+
     // 상품 목록 저장 state
     const [products, setProducts] = useState([]); // 전체 상품 목록
     const [selectedProducts, setSelectedProducts] = useState([]); // 체크된 상품 목록
 
 
-
-    // 전체 선택
+    // 전체 선택 체크표시
     const handleAllSelectCategory = (checked) => {
         if (checked) {
             const allProductCds = products.map(product => product.productCd);
@@ -64,6 +78,8 @@ function ProductCategory() {
             }
         });
     };
+
+   
 
     //대분류 추가 함수
     const handleInsertTop = (e) => {
@@ -89,6 +105,7 @@ function ProductCategory() {
         })
             .then(response => response.json())
             .then(data => {
+                setGetTopcategory(prevCategory => [...prevCategory, data]);
                 setInsertedList([...insertedList, data]);
                 setInsertTop('');
             })
@@ -99,6 +116,23 @@ function ProductCategory() {
 
 
 
+
+    // 모달 열기
+    const openModal = () => {
+        setShowModal(true);
+    };
+
+    // 모달 닫기
+    const closeModal = () => {
+        setShowModal(false);
+    };
+
+    function handleClick(categoryNo) {
+        setSelectedTopCategory(categoryNo);
+    }
+
+
+
     return (
         <Layout currentMenu="productCategory"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
             <div className="top-container">
@@ -106,39 +140,8 @@ function ProductCategory() {
             </div>
 
             <div className="middle-container">
-                {/* <form className="search-box-container">
-                    <div style={{ marginBottom: "10px" }}>
-                        <span style={{ marginRight: "5px" }}>카테고리 </span>
-
-                    </div>
-
-                    <div>
-
-                        <input type="text" className="search-box" placeholder="대분류 카테고리명을 입력하세요"
-                            onChange={handleInsertTop}
-                        />
-                        <button type='submit' className="search-button" onClick={handleAddButton}>등록</button>
-                        <br />
-                        <select>
-                            <option>대분류1</option>
-                            <option>대분류2</option>
-                        </select>
-                        <input type="text" className="search-box" placeholder="중분류 카테고리명을 입력하세요" />
-                        <button type="submit" className="search-button">등록</button>
-                        <br />
-                        <select>
-                            <option>대분류1</option>
-                            <option>대분류2</option>
-                        </select>
-                        <select>
-                            <option>중분류1</option>
-                            <option>중분류2</option>
-                        </select>
-                        <input type="text" className="search-box" placeholder="소분류 카테고리명을 입력하세요" />
-                        <button type="submit" className="search-button">등록</button>
-                    </div>
-                </form> */}
             </div>
+
             <div className="bottom-container">
                 {/* <label>
                     <p>전체 {products.length}건 페이지 당:</p>
@@ -170,101 +173,110 @@ function ProductCategory() {
                                     onChange={() => handleSelectCategory(category.categoryNo)}
                                     checked={selectedCategory.includes(category.categoryNo)} /></td>
                                 <td>{category.categoryNo}</td>
-                                <td>{category.categoryLevel}</td>
+                                <td>{category.categoryLevel === 1 ? "대분류" :
+                                     category.categoryLevel === 2 ? "중분류" :
+                                     category.categoryLevel === 3 ? "소분류" : "ㆍ"
+                                    }</td>
                                 <td>{category.parentCategoryNo ? category.parentCategoryNo : 'ㆍ'}</td>
                                 <td>{category.categoryNm}</td>
                                 <td>{formatDate(category.categoryInsertDate)}</td>
                                 <td>{category.categoryUpdateDate ? formatDate(category.categoryUpdateDate) : 'ㆍ'}</td>
                             </tr>
+
+
                         ))}
+
+
                     </tbody>
                 </table>
-                <div className="approval-page">
+                {/* <div className="approval-page">
                     <button className="approval-page1">1</button>
                     <button className="approval-page2">2</button>
                     <button className="approval-page3">3</button>
                     <button className="approval-page4">4</button>
                     <button className="approval-page5">5</button>
-                </div>
+                </div> */}
 
                 <div className="button-container">
-                    <button className="filter-button">등록</button>
+                    <button className="filter-button" onClick={openModal}>등록</button>
                     <button className="filter-button">수정</button>
                     <button className="filter-button" >삭제</button>
                 </div>
 
             </div>
+            {showModal && (
+                <div className='modal-overlay'>
+                    <div className='modal-content'>
+                        <h2>카테고리 등록</h2>
+                        <button className='close-button' onClick={closeModal}>X</button>
 
-            <div className='modal-overlay'>
-                <div className='modal-content'>
-                    <h2>카테고리 등록</h2>
-                    <button className='close-button'>X</button>
+                        <div className='category-form'>
+                            {/* 대분류 */}
+                            <div className='category-column'>
+                                <h4>대분류</h4>
+                                <div className='input-button'>
+                                    <input type='text' placeholder='대분류 검색' className='input-field' />
+                                    <button className='search-button'>검색</button>
+                                </div>
+                                <br />
+                                <ul className='category-list' style={{height: '50%' , overflow : 'auto' }}>
+                                    {getTopcategory.map((category) => (
+                                        <li key={category.categoryNo} >
+                                            {category.categoryNm}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div className='input-button'>
+                                    <input type='text' placeholder='새 대분류 추가' className='input-field'  onChange={handleInsertTop} value={insertTop}/>
+                                    <button type='submit' className='search-button' onClick={handleAddButton} >등록</button>
+                                </div>
+                            </div>
 
-                    <div className='category-form'>
-                        {/* 대분류 */}
-                        <div className='category-column'>
-                            <h4>대분류</h4>
-                            <div className='input-button'>
-                                <input type='text' placeholder='대분류 검색' className='input-field' />
-                                <button className='search-button'>검색</button>
+                            {/* 중분류 */}
+                            <div className='category-column'>
+                                <h4>중분류</h4>
+                                <div className='input-button'>
+                                    <input type='text' placeholder='중분류 검색' className='input-field' />
+                                    <button className='search-button'>검색</button>
+                                </div>
+                                <br />
+                                <ul className='category-list'>
+                                    <li>중1</li>
+                                    <li>중2</li>
+                                    <li>중3</li>
+                                    <li>중4</li>
+                                </ul>
+                                <div className='input-button'>
+                                    <input type='text' placeholder='새 중분류 추가' className='input-field' />
+                                    <button className='register-button'>등록</button>
+                                </div>
                             </div>
-                            <br />
-                            <ul className='category-list'>
-                                <li>대1</li>
-                                <li>대2</li>
-                                <li>대3</li>
-                                <li>대4</li>
-                            </ul>
-                            <div className='input-button'>
-                                <input type='text' placeholder='새 대분류 추가' className='input-field' />
-                                <button className='register-button'>등록</button>
+
+                            {/* 소분류 */}
+                            <div className='category-column'>
+                                <h4>소분류</h4>
+                                <div className='input-button'>
+                                    <input type='text' placeholder='소분류 검색' className='input-field' />
+                                    <button className='search-button'>검색</button>
+                                </div>
+                                <br />
+                                <ul className='category-list'>
+                                    <li>소1</li>
+                                    <li>소2</li>
+                                    <li>소3</li>
+                                    <li>소4</li>
+                                </ul>
+                                <div className='input-button'>
+                                    <input type='text' placeholder='새 소분류 추가' className='input-field' />
+                                    <button className='register-button'>등록</button>
+                                </div>
                             </div>
+
                         </div>
-
-                        {/* 중분류 */}
-                        <div className='category-column'>
-                            <h4>중분류</h4>
-                            <div className='input-button'>
-                                <input type='text' placeholder='중분류 검색' className='input-field' />
-                                <button className='search-button'>검색</button>
-                            </div>
-                            <br />
-                            <ul className='category-list'>
-                                <li>중1</li>
-                                <li>중2</li>
-                                <li>중3</li>
-                                <li>중4</li>
-                            </ul>
-                            <div className='input-button'>
-                                <input type='text' placeholder='새 중분류 추가' className='input-field' />
-                                <button className='register-button'>등록</button>
-                            </div>
-                        </div>
-
-                        {/* 소분류 */}
-                        <div className='category-column'>
-                            <h4>소분류</h4>
-                            <div className='input-button'>
-                                <input type='text' placeholder='소분류 검색' className='input-field' />
-                                <button className='search-button'>검색</button>
-                            </div>
-                            <br />
-                            <ul className='category-list'>
-                                <li>소1</li>
-                                <li>소2</li>
-                                <li>소3</li>
-                                <li>소4</li>
-                            </ul>
-                            <div className='input-button'>
-                                <input type='text' placeholder='새 소분류 추가' className='input-field' />
-                                <button className='register-button'>등록</button>
-                            </div>
-                        </div>
-
                     </div>
-                </div>
 
-            </div>
+                </div>
+            )}
 
         </Layout>
     );

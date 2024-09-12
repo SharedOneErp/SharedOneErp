@@ -36,11 +36,18 @@ public class Category {
     // insertable = false: JPA가 엔터티를 삽입할 때 이 필드를 무시하고, 데이터베이스가 자동으로 값을 설정하도록 합니다. 예: CURRENT_TIMESTAMP로 현재 시간을 자동 입력.
     private Timestamp categoryInsertDate;
 
-    @Column(name = "category_update_date", insertable = false)
+    @Column(name = "category_update_date")
     private Timestamp categoryUpdateDate;
 
     @Column(name = "category_delete_yn", length = 20, nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'N'")
-    private String categoryDeleteYn; // 삭제 여부 기본값 'N'
+    private String categoryDeleteYn = "N"; // 삭제 여부 기본값 'N'
+
+//    @PrePersist
+//    public void prePersist() {
+//        if(this.categoryDeleteYn == null) {
+//            this.categoryDeleteYn = "N";
+//        }
+//    }
 
     @Column(name = "category_delete_date")
     private Timestamp categoryDeleteDate; // 삭제 일시

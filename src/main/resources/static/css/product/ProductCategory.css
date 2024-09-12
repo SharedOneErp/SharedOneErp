@@ -215,6 +215,7 @@ td, th {
   background-color: #e3e3e3;
   /* border-radius: 8px; */
   border: 1px solid #999;
+  height: 50%;
 
 }
 
@@ -241,7 +242,7 @@ td, th {
   color: white;
   border: none;
   cursor: pointer;
-  border-radius: 4px;
+  /* border-radius: 4px; */
 }
 
 .search-button:hover, .register-button:hover {
@@ -280,6 +281,8 @@ td, th {
   transition: bac;
   height: 31px;
   width: 50px;
+  line-height: 50%;
+  text-align: center;
 }
 
 .category-column button:hover {

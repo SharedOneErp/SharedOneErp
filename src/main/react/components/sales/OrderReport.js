@@ -21,7 +21,7 @@ const Category = ({ label, option }) => {
 }
 
 function OrderReport() {
-
+    // chartjs 사용
     // const [topCategory, setTopCategory] = useState([]);
     // const [middleCategory, setMiddleCategory] = useState([]);
     // const [lowCategory, setLowCategory] = useState([]);

@@ -27,6 +27,7 @@ public class CategoryService {
         category.setCategoryLevel(categoryDTO.getCategoryLevel());
         category.setCategoryNm(categoryDTO.getCategoryNm());
         category.setParentCategoryNo(categoryDTO.getParentCategoryNo());
+
         return category;
     }
 
@@ -61,6 +62,7 @@ public class CategoryService {
         category.setCategoryLevel(categoryDTO.getCategoryLevel() );
         category.setCategoryNm(categoryDTO.getCategoryNm() );
         category.setParentCategoryNo(categoryDTO.getParentCategoryNo() );
+
         logger.info("[CUSTOM_LOG] categoryDTO.getCategoryLevel() : " + categoryDTO.getCategoryLevel() );
         logger.info("[CUSTOM_LOG] categoryDTO.getCategoryNm() : " + categoryDTO.getCategoryNm() );
         logger.info("[CUSTOM_LOG] categoryDTO.getParentCategoryNo() : " + categoryDTO.getParentCategoryNo() );
