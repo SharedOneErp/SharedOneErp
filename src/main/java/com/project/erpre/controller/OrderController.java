@@ -47,6 +47,7 @@ public class OrderController {
                 orderDTO.setCustomer(customer);
             }
 
+
             if (orderDTO.getEmployee() != null && orderDTO.getEmployee().getEmployeeId() != null) {
                 Employee employee = employeeRepository.findById(orderDTO.getEmployee().getEmployeeId())
                         .orElseThrow(() -> new RuntimeException("직원이 존재하지 않습니다."));
