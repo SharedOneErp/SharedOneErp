@@ -9,20 +9,20 @@ import axios from 'axios';
 // 고객 등록 모달창
 function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
     const [form, setForm] = useState({
-        customerName: '',
-        contactNumber: '',
-        representativeName: '',
-        businessNumber: '',
-        address: '',
-        faxNumber: '',
-        managerName: '',
-        managerEmail: '',
-        managerContact: '',
-        countryCode: '',
-        transactionStart: '',
-        transactionEnd: '',
-        transactionType: '',
-        electronicTaxInvoice: false,
+        customerName: '',                    // 고객사 이름
+        customerTel: '',                     // 고객사 연락처
+        customerRepresentativeName: '',      // 대표자명
+        customerBusinessRegNo: '',           // 사업자 등록번호
+        customerAddr: '',                    // 사업장 주소
+        customerFaxNo: '',                   // 팩스번호
+        customerManagerName: '',             // 담당자명
+        customerManagerEmail: '',            // 담당자 이메일
+        customerManagerTel: '',              // 담당자 연락처
+        customerCountryCode: '',             // 국가코드
+        customerType: '',                    // 거래처분류
+        customerEtaxInvoiceYn: '',           // 전자세금계산서 여부
+        customerTransactionStartDate: '',    // 거래 시작일
+        customerTransactionEndDate: ''       // 거래 종료일
     });
 
     useEffect(() => {
@@ -38,6 +38,17 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        //필수 필드 값 검증
+        if (!form.customerName) {
+            alert('고객사 이름은 필수 입력 항목입니다.');
+            return;
+        }
+        if (!form.customerBusinessRegNo) {
+            alert('사업자 등록번호는 필수 입력 항목입니다.');
+            return;
+        }
+
         onSave(form);
         onClose();
     };
@@ -59,47 +70,48 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                             </div>
                             <div className="form-group">
                                 <label>고객사 연락처</label>
-                                <input type="text" name="contactNumber" value={form.contactNumber || ''}
+                                <input type="text" name="customerTel" value={form.customerTel || ''}
                                        onChange={handleInputChange}/>
                             </div>
                             <div className="form-group">
                                 <label>대표자명</label>
-                                <input type="text" name="representativeName" value={form.representativeName || ''}
+                                <input type="text" name="customerRepresentativeName"
+                                       value={form.customerRepresentativeName || ''}
                                        onChange={handleInputChange}/>
                             </div>
                             <div className="form-group">
                                 <label>사업자 등록번호</label>
-                                <input type="text" name="businessNumber" value={form.businessNumber || ''}
+                                <input type="text" name="customerBusinessRegNo" value={form.customerBusinessRegNo || ''}
                                        onChange={handleInputChange}/>
                             </div>
                             <div className="form-group">
                                 <label>사업장 주소</label>
-                                <input type="text" name="address" value={form.address || ''}
+                                <input type="text" name="customerAddr" value={form.customerAddr || ''}
                                        onChange={handleInputChange}/>
                             </div>
                             <div className="form-group">
                                 <label>팩스번호</label>
-                                <input type="text" name="faxNumber" value={form.faxNumber || ''}
+                                <input type="text" name="customerFaxNo" value={form.customerFaxNo || ''}
                                        onChange={handleInputChange}/>
                             </div>
                             <div className="form-group">
-                                <label>고객사 담당자명</label>
-                                <input type="text" name="managerName" value={form.managerName || ''}
+                                <label>담당자명</label>
+                                <input type="text" name="customerManagerName" value={form.customerManagerName || ''}
                                        onChange={handleInputChange}/>
                             </div>
                             <div className="form-group">
-                                <label>고객사 담당자 이메일</label>
-                                <input type="email" name="managerEmail" value={form.managerEmail || ''}
+                                <label>담당자 이메일</label>
+                                <input type="email" name="customerManagerEmail" value={form.customerManagerEmail || ''}
                                        onChange={handleInputChange}/>
                             </div>
                             <div className="form-group">
-                                <label>고객사 담당자 연락처</label>
-                                <input type="text" name="managerContact" value={form.managerContact || ''}
+                                <label>담당자 연락처</label>
+                                <input type="text" name="customerManagerTel" value={form.customerManagerTel || ''}
                                        onChange={handleInputChange}/>
                             </div>
                             <div className="form-group">
                                 <label>국가코드</label>
-                                <select name="countryCode" value={form.countryCode || ''}
+                                <select name="customerCountryCode" value={form.customerCountryCode || ''}
                                         onChange={handleInputChange}>
                                     <option value="KR">한국 (+82)</option>
                                     <option value="US">미국 (+1)</option>
@@ -111,35 +123,33 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                         <div className="right-column">
                             <div className="form-group">
                                 <label>거래처분류</label>
-                                <select name="transactionType" value={form.transactionType || ''}
+                                <select name="customerType" value={form.customerType || ''}
                                         onChange={handleInputChange}>
-                                    <option value="01">01.고객기업</option>
-                                    <option value="02">02.협력기업</option>
-                                    <option value="03">03.본사기업</option>
-                                    <option value="04">04.기타기업</option>
+                                    <option value="01">01. 고객기업</option>
+                                    <option value="02">02. 협력기업</option>
+                                    <option value="03">03. 본사기업</option>
+                                    <option value="04">04. 기타기업</option>
                                 </select>
                             </div>
                             <div className="form-group">
                                 <label>전자세금계산서 여부</label>
-                                <select name="electronicTaxInvoice" value={form.electronicTaxInvoice ? 'y' : 'n'}
+                                <select name="customerEtaxInvoiceYn" value={form.customerEtaxInvoiceYn || ''}
                                         onChange={handleInputChange}>
-                                    <option value="y">Y</option>
-                                    <option value="n">N</option>
+                                    <option value="Y">Y</option>
+                                    <option value="N">N</option>
                                 </select>
                             </div>
                             <div className="form-group">
-                                <label>거래시작일</label>
-                                <div className="date-picker">
-                                    <input type="date" name="transactionStart" value={form.transactionStart || ''}
-                                           onChange={handleInputChange}/>
-                                </div>
+                                <label>거래 시작일</label>
+                                <input type="date" name="customerTransactionStartDate"
+                                       value={form.customerTransactionStartDate || ''}
+                                       onChange={handleInputChange}/>
                             </div>
                             <div className="form-group">
-                                <label>거래종료일</label>
-                                <div className="date-picker">
-                                    <input type="date" name="transactionEnd" value={form.transactionEnd || ''}
-                                           onChange={handleInputChange}/>
-                                </div>
+                                <label>거래 종료일</label>
+                                <input type="date" name="customerTransactionEndDate"
+                                       value={form.customerTransactionEndDate || ''}
+                                       onChange={handleInputChange}/>
                             </div>
                         </div>
                     </div>
@@ -151,7 +161,7 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
 }
 
 // 고객 상세 정보 모달창
-function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
+function CustomerDetailModal({show, onClose, customer, onSave, onDelete}) {
     const [isEditMode, setIsEditMode] = useState(false);
     const [editableCustomer, setEditableCustomer] = useState(customer || {});
 
@@ -164,8 +174,8 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
     const toggleEditMode = () => setIsEditMode(!isEditMode);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setEditableCustomer((prev) => ({ ...prev, [name]: value }));
+        const {name, value} = e.target;
+        setEditableCustomer((prev) => ({...prev, [name]: value}));
     };
 
     if (!show || !customer) return null;
@@ -270,8 +280,8 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                         <label>전자세금계산서 여부</label>
                         <input
                             type="text"
-                            name="customerETaxInvoiceYn"
-                            value={editableCustomer.customerETaxInvoiceYn ? 'Y' : 'N'}
+                            name="customerEtaxInvoiceYn"
+                            value={editableCustomer.customerEtaxInvoiceYn ? 'Y' : 'N'}
                             onChange={handleChange}
                             readOnly={!isEditMode}
                         />
@@ -330,19 +340,21 @@ function CustomerList() {
     // 고객 등록/수정 처리
     const handleSaveCustomer = (customerData) => {
         if (selectedCustomer) {
+            //수정 로직
             axios.put(`/api/customer/update/${selectedCustomer.customerNo}`, customerData)
                 .then(response => {
                     setCustomers(customers.map(c => c.customerNo === selectedCustomer.customerNo ? response.data : c));
                     closeRegisterModal();
                 })
-                .catch(error => console.error('Error updating customer:', error));
+                .catch(error => console.error('고객 수정 중 오류:', error));
         } else {
+            //등록 로직
             axios.post('/api/customer/register', customerData)
                 .then(response => {
                     setCustomers([...customers, response.data]);
                     closeRegisterModal();
                 })
-                .catch(error => console.error('Error registering customer:', error));
+                .catch(error => console.error('고객 등록 중 오류:', error));
         }
     };
 
@@ -353,7 +365,7 @@ function CustomerList() {
                     setCustomers(customers.filter(c => c.customerNo !== selectedCustomer.customerNo));
                     closeDetailModal();
                 })
-                .catch(error => console.error('Error deleting customer:', error));
+                .catch(error => console.error('고객 삭제 중 오류:', error));
         }
     };
 
@@ -372,10 +384,10 @@ function CustomerList() {
     const closeDetailModal = () => setShowDetailModal(false);
 
     const filteredCustomers = customers.filter(customer => {
-        if (filterType === 'customerName') return customer.customerName.includes(filter);
-        if (filterType === 'customerBusinessRegNo') return customer.customerBusinessRegNo.includes(filter);
-        if (filterType === 'customerCountryCode') return customer.customerCountryCode.includes(filter);
-        if (filterType === 'customerManagerName') return customer.customerManagerName.includes(filter);
+        if (filterType === 'businessRegNo') return customer.customerBusinessRegNo.includes(filter);
+        if (filterType === 'countryCode') return customer.customerCountryCode.includes(filter);
+        if (filterType === 'managerName') return customer.customerManagerName.includes(filter);
+
         return true;
     });
 
@@ -390,9 +402,9 @@ function CustomerList() {
             <div className="filter-section">
                 <select onChange={(e) => setFilterType(e.target.value)}>
                     <option value="customerName">고객명</option>
-                    <option value="customerBusinessRegNo">사업자 등록번호</option>
-                    <option value="customerCountryCode">국가코드</option>
-                    <option value="customerManagerName">담당자명</option>
+                    <option value="businessRegNo">사업자 등록번호</option>
+                    <option value="countryCode">국가코드</option>
+                    <option value="managerName">담당자명</option>
                 </select>
                 <input type="text" placeholder="검색어 입력" value={filter} onChange={(e) => setFilter(e.target.value)}/>
                 <button className="search-button" onClick={() => setCurrentPage(1)}>검색</button>
@@ -416,9 +428,9 @@ function CustomerList() {
                         <tr key={customer.customerNo}>
                             <td>{index + 1}</td>
                             <td>{customer.customerName}</td>
-                            <td>{customer.customerBusinessRegNo}</td>
-                            <td>{customer.customerCountryCode}</td>
-                            <td>{customer.customerManagerName}</td>
+                            <td>{customer.businessRegNo}</td>
+                            <td>{customer.countryCode}</td>
+                            <td>{customer.managerName}</td>
                             <td>
                                 <button onClick={() => openDetailModal(customer)}>내역보기</button>
                             </td>

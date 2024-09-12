@@ -34,7 +34,7 @@ public class Customer {
     @Column(name = "customer_representative_name", length = 50)
     private String customerRepresentativeName;
 
-    @Column(name = "customer_business_reg_no", length = 20)
+    @Column(name = "customer_business_reg_no", length = 20, nullable = false)
     private String customerBusinessRegNo;
 
     @Column(name = "customer_addr", length = 200)
@@ -67,7 +67,7 @@ public class Customer {
     @Column(name = "customer_transaction_end_date")
     private Timestamp customerTransactionEndDate;
 
-    @Column(name = "customer_insert_date", insertable = false)
+    @Column(name = "customer_insert_date", insertable = false, nullable = false)
     private Timestamp customerInsertDate;
 
     @Column(name = "customer_update_date")
