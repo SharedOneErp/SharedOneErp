@@ -36,7 +36,6 @@ module.exports = {
 
         // Customer 관련 엔트리 포인트
         customerList: `${customerPath}CustomerList.js`, // 고객사 목록
-        customer: `${customerPath}Customer.js`, // 고객사 등록or상세or수정
 
         // HR 관련 엔트리 포인트
         employeeList: `${hrPath}EmployeeList.js`, // 직원 목록
