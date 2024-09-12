@@ -59,8 +59,6 @@ function Order() {
     const paginatedCustomerSearchResults = customerSearchResults.slice(indexOfFirstCustomerResult, indexOfLastCustomerResult);
     const totalCustomerPages = Math.ceil(customerSearchResults.length / itemsPerPageCustomer);
 
-    const displayItems = isCreateMode ? [] : [...products, ...orderDetails];
-
 // 페이지 변경 핸들러
     const handlePageChangeProduct = (pageNumber) => {
         setCurrentPageProduct(pageNumber);
@@ -69,6 +67,18 @@ function Order() {
     const handlePageChangeCustomer = (pageNumber) => {
         setCurrentPageCustomer(pageNumber);
     };
+
+    const displayItems = orderDetails.map(orderDetail => {
+        // productCd를 기준으로 products에서 해당 제품을 찾음
+        const matchingProduct = products.find(product => product.productCd === orderDetail.productCd);
+
+        return {
+            productCd: orderDetail.productCd,
+            productNm: matchingProduct ? matchingProduct.productNm : '',
+            orderDPrice: orderDetail.orderDPrice,
+            orderDQty: orderDetail.orderDQty,
+        };
+    });
 
 
 
@@ -315,6 +325,8 @@ function Order() {
         }
     };
 
+
+
     const handleCustomerSelect = (selectedCustomer) => {
         // 선택된 고객 정보 처리
         console.log('Selected customer:', selectedCustomer);
@@ -351,7 +363,7 @@ function Order() {
         return date.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 변환
     };
 
-    const formattedDate =  formatDateForInput(customer.customerInsertDate);
+    const formattedDate = isCreateMode ? '' : formatDateForInput(customer.customerInsertDate);
 
 
 
@@ -389,7 +401,7 @@ function Order() {
                     {!isCreateMode && (
                         <>
                             <div className="form-group">
-                            <label>물품 총액</label>
+                                <label>물품 총액</label>
                                 <span className="orderHtotal-price"> {orderHTotalPrice}원</span>
                             </div>
                             <div className="form-group">
@@ -419,7 +431,7 @@ function Order() {
                         <label>담당자</label>
                         <span className="employee-id" style={{display: 'none'}}>{employee ? (
                             <>
-                            {employee.employeeId}
+                                {employee.employeeId}
                             </>
                         ) : (
                             'LOADING'
@@ -472,7 +484,8 @@ function Order() {
                     </div>
                 </div>
 
-                {/* 상품 목록 */}
+                {/* 주문 생성시 보이는 제품 목록 (선택 및 등록 구현 완료) */}
+                {isCreateMode && (
                 <div className="product-table">
                     <table className="styled-table">
                         <thead>
@@ -486,27 +499,95 @@ function Order() {
                         </tr>
                         </thead>
                         <tbody>
-                        {displayItems.map((item, index) => {
-                            // Determine values based on `isCreateMode`
-                            const productName = isCreateMode ? '' : (item.productNm || item.name || '');
-                            const productPrice = isCreateMode ? 0 : (item.orderDPrice || item.price || 0);
-                            const productQuantity = isCreateMode ? 0 : (item.orderDQty || item.quantity || 0);
-                            const productCode = isCreateMode ? '' : (item.productCd || item.code || '');
+                        {(isCreateMode ? products : orderDetails).map((item, index) => (
+                            <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>
+                                    <input
+                                        type="text"
+                                        value={isCreateMode ? item.name : item.product.name}
+                                        readOnly={!isEditMode && !isCreateMode}
+                                        onChange={(e) => isCreateMode
+                                            ? handleProductChange(index, 'name', e.target.value)
+                                            : null
+                                        }
+                                    />
+                                    {(isCreateMode || isEditMode) && (
+                                        <button className="search-button" onClick={() => openModal(index)}>
+                                            <i className="bi bi-search"></i>
+                                        </button>
+                                    )}
+                                </td>
+                                <td>
+                                    <input
+                                        type="number"
+                                        value={isCreateMode ? (item.price || 0) : (item.orderDPrice || 0)} // 기본값을 0으로 설정
+                                        readOnly={!isEditMode && !isCreateMode}
+                                        onChange={(e) => isCreateMode
+                                            ? handleProductChange(index, 'price', Number(e.target.value))
+                                            : null
+                                        }
+                                    />
+                                </td>
+                                <td>
+                                    <input
+                                        type="number"
+                                        value={isCreateMode ? (item.quantity || 0) : (item.orderDQty || 0)} // 기본값을 0으로 설정
+                                        readOnly={!isEditMode && !isCreateMode}
+                                        onChange={(e) => isCreateMode
+                                            ? handleProductChange(index, 'quantity', Number(e.target.value))
+                                            : null
+                                        }
+                                    />
+                                </td>
+                                <td>{(isCreateMode ? item.price * item.quantity : item.orderDPrice * item.orderDQty) || 0}</td>
+                                {(isCreateMode || isEditMode) && (
+                                    <td>
+                                        <button onClick={() => removeProductRow(index)}>&times;</button>
+                                    </td>
+                                )}
+                                {/* 숨겨진 상품 코드 */}
+                                <td style={{display: 'none'}}>
+                                    <input type="text" value={isCreateMode ? item.code : item.product.code || ''} readOnly/>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                    {(isCreateMode || isEditMode) &&
+                        <button className="add-button" onClick={addProductRow}>+</button>}
+                </div>
+                )}
 
-                            return (
+                {/* 상세 기능 구현완료.... 죽여줘 */}
+                {!(isCreateMode || isEditMode) && (
+                    <div className="product-table">
+                        <table className="styled-table">
+                            <thead>
+                            <tr>
+                                <th>상품번호</th>
+                                <th>상품명</th>
+                                <th>단가</th>
+                                <th>수량</th>
+                                <th>총 금액</th>
+                                {isEditMode && <th>삭제</th>}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {displayItems.map((item, index) => (
                                 <tr key={index}>
                                     <td>{index + 1}</td>
                                     <td>
                                         <input
                                             type="text"
-                                            value={productName}
-                                            readOnly={!isEditMode && !isCreateMode}
-                                            onChange={(e) => isCreateMode
-                                                ? handleProductChange(index, 'name', e.target.value)
+                                            value={item.productNm}
+                                            readOnly={!isEditMode}
+                                            onChange={(e) => isEditMode
+                                                ? handleProductChange(index, 'productNm', e.target.value)
                                                 : null
                                             }
                                         />
-                                        {(isCreateMode || isEditMode) && (
+                                        {isEditMode && (
                                             <button className="search-button" onClick={() => openModal(index)}>
                                                 <i className="bi bi-search"></i>
                                             </button>
@@ -515,7 +596,82 @@ function Order() {
                                     <td>
                                         <input
                                             type="number"
-                                            value={productPrice}
+                                            value={item.orderDPrice}
+                                            readOnly={!isEditMode}
+                                            onChange={(e) => isEditMode
+                                                ? handleProductChange(index, 'orderDPrice', Number(e.target.value))
+                                                : null
+                                            }
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="number"
+                                            value={item.orderDQty}
+                                            readOnly={!isEditMode}
+                                            onChange={(e) => isEditMode
+                                                ? handleProductChange(index, 'orderDQty', Number(e.target.value))
+                                                : null
+                                            }
+                                        />
+                                    </td>
+                                    <td>{item.orderDPrice * item.orderDQty}</td>
+                                    {isEditMode && (
+                                        <td>
+                                            <button onClick={() => removeProductRow(index)}>&times;</button>
+                                        </td>
+                                    )}
+                                    {/* 숨겨진 상품 코드 */}
+                                    <td style={{ display: 'none' }}>
+                                        <input type="text" value={item.productCd} readOnly />
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                        {isEditMode && (
+                            <button className="add-button" onClick={addProductRow}>+</button>
+                        )}
+                    </div>
+                )}
+
+                {isEditMode && (
+                    <div className="product-table">
+                        <table className="styled-table">
+                            <thead>
+                            <tr>
+                                <th>상품번호</th>
+                                <th>상품명</th>
+                                <th>단가</th>
+                                <th>수량</th>
+                                <th>총 금액</th>
+                                {(isEditMode) && <th>삭제</th>}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {(isCreateMode ? products : orderDetails).map((item, index) => (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            value={isCreateMode ? item.name : item.product.name}
+                                            readOnly={!isEditMode && !isCreateMode}
+                                            onChange={(e) => isCreateMode
+                                                ? handleProductChange(index, 'name', e.target.value)
+                                                : null
+                                            }
+                                        />
+                                        {(isEditMode) && (
+                                            <button className="search-button" onClick={() => openModal(index)}>
+                                                <i className="bi bi-search"></i>
+                                            </button>
+                                        )}
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="number"
+                                            value={isCreateMode ? (item.price || 0) : (item.orderDPrice || 0)} // 기본값을 0으로 설정
                                             readOnly={!isEditMode && !isCreateMode}
                                             onChange={(e) => isCreateMode
                                                 ? handleProductChange(index, 'price', Number(e.target.value))
@@ -526,7 +682,7 @@ function Order() {
                                     <td>
                                         <input
                                             type="number"
-                                            value={productQuantity}
+                                            value={isCreateMode ? (item.quantity || 0) : (item.orderDQty || 0)} // 기본값을 0으로 설정
                                             readOnly={!isEditMode && !isCreateMode}
                                             onChange={(e) => isCreateMode
                                                 ? handleProductChange(index, 'quantity', Number(e.target.value))
@@ -534,24 +690,31 @@ function Order() {
                                             }
                                         />
                                     </td>
-                                    <td>{productPrice * productQuantity || 0}</td>
-                                    {(isCreateMode || isEditMode) && (
+                                    <td>{(isCreateMode ? item.price * item.quantity : item.orderDPrice * item.orderDQty) || 0}</td>
+                                    {(isEditMode) && (
                                         <td>
                                             <button onClick={() => removeProductRow(index)}>&times;</button>
                                         </td>
                                     )}
                                     {/* 숨겨진 상품 코드 */}
-                                    <td style={{ display: 'none' }}>
-                                        <input type="text" value={productCode} readOnly />
+                                    <td style={{display: 'none'}}>
+                                        <input type="text" value={isCreateMode ? item.code : item.product.code || ''} readOnly/>
                                     </td>
                                 </tr>
-                            );
-                        })}
-                        </tbody>
-                    </table>
-                    {(isCreateMode || isEditMode) &&
-                        <button className="add-button" onClick={addProductRow}>+</button>}
-                </div>
+                            ))}
+                            </tbody>
+                        </table>
+                        {(isEditMode) &&
+                            <button className="add-button" onClick={addProductRow}>+</button>}
+                    </div>
+                )}
+
+
+
+
+
+
+
 
 
                 {/* 고객사 검색 모달 */}
@@ -712,7 +875,7 @@ function Order() {
                             <span>{products.reduce((sum, product) => sum + product.price * product.quantity, 0)}원</span>
                         </>
                     ) : (
-                     <span></span>
+                        <span></span>
                     )}
                 </div>
 
