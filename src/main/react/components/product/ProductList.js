@@ -15,7 +15,6 @@ function ProductList() {
         handleAllSelectProducts,
         handleSelectProduct,
         isAdding,
-        setIsAdding,
         newProductData,
         handleAddNewProduct,
         handleInputChange,
@@ -38,7 +37,11 @@ function ProductList() {
         middleCategories,
         topCategories,
         handleLowCategoryChange,
-        handleMiddleCategoryChange
+        handleMiddleCategoryChange,
+        totalItems,
+        handlePageChange,
+        handleItemsPerPageChange,
+        itemsPerPage
     } = useHooksList(); // 커스텀 훅 사용
 
     return (
@@ -87,15 +90,28 @@ function ProductList() {
             <div className="bottom-container">
                 <button className="btn-add" onClick={() => setIsAdding(true)}><i className="bi bi-plus-circle"></i> 추가하기
                 </button>
-                <label>
-                    <p>전체 {products.length}건 페이지 당:</p>
-                    <select>
-                        <option value={10}>10</option>
-                        <option value={20}>20</option>
-                        <option value={50}>50</option>
-                        <option value={100}>100</option>
-                    </select>
-                </label>
+                <div>
+                    <label>
+                        <p>전체 {totalItems}건 페이지 당:</p>
+                        <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                            <option value={100}>100</option>
+                        </select>
+                    </label>
+                </div>
+                <div className="pagination">
+                    {[...Array(totalPages)].map((_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => handlePageChange(i + 1)}
+                            className={currentPage === i + 1 ? 'active' : ''}
+                        >
+                            {i + 1}
+                        </button>
+                    ))}
+                </div>
                 <table className="approval-list">
                     <thead>
                     <tr>
@@ -213,17 +229,17 @@ function ProductList() {
                                 )}
                             </td>
                             <td>
-                                    {editMode === product.productCd ? (
-                                        <select name="lowCategory" value={editableProduct.lowCategory}
-                                                onChange={(e) => handleLowCategoryChange(e, true)}>
-                                            {lowCategories.map((category, index) => (
-                                                <option key={index} value={category}>{category}</option>
-                                            ))}
-                                        </select>
-                                    ) : (
-                                        product.lowCategory
-                                    )}
-                                </td>
+                                {editMode === product.productCd ? (
+                                    <select name="lowCategory" value={editableProduct.lowCategory}
+                                            onChange={(e) => handleLowCategoryChange(e, true)}>
+                                        {lowCategories.map((category, index) => (
+                                            <option key={index} value={category}>{category}</option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    product.lowCategory
+                                )}
+                            </td>
                             <td>{formatDate(product.productInsertDate)}</td>
                             <td>{formatDate(product.productUpdateDate)}</td>
                             <td><a href={`/productDetail?no=${product.productCd}`}>상세</a></td>

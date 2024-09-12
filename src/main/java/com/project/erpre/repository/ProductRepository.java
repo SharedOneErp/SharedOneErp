@@ -16,9 +16,7 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
 
-    // 상품 등록
-
-    // 전체 상품 목록 조회
+    // 전체 상품 목록 조회 + 페이지네이션
     @Query("SELECT new com.project.erpre.model.ProductDTO(" +
             "p.productCd, p.productNm, p.productInsertDate, p.productUpdateDate, " +
             "c3.categoryNo, c1.categoryNm, c2.categoryNm, c3.categoryNm) " +
@@ -27,7 +25,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
             "JOIN c3.parentCategory c2 " +
             "JOIN c2.parentCategory c1 " +
             "ORDER BY p.productCd ASC")
-    List<ProductDTO> getAllProducts();
+    Page<ProductDTO> getAllProducts(Pageable pageable);
 
     // 상품 상세 조회 (최근 납품일 최대 5건 조회)
     @Query("SELECT new com.project.erpre.model.ProductDTO( " +
@@ -46,19 +44,8 @@ public interface ProductRepository extends JpaRepository<Product, String> {
             "ORDER BY od.orderDDeliveryRequestDate DESC ")
     Page<ProductDTO> getProductDetailsByProductCd(@Param("productCd") String productCd, Pageable pageable);
 
-    // 선택 상품 수정 (서비스 레이어에서 처리)
-    @Transactional
-    @Modifying
-    @Query("UPDATE Product p SET p.productNm = :productNm, p.category = :category WHERE p.productCd = :productCd")
-    void updateProductWithCategories(@Param("productCd") String productCd,
-                                     @Param("productNm") String productNm,
-                                     @Param("category") Category category);
-
-
     // 선택한상품 삭제
     void deleteByProductCdIn(List<String> productCds);
-
-
 
     // category_no가 null인 경우를 처리하는 메서드
     List<Product> findByProductCdContainingIgnoreCaseAndProductNmContainingIgnoreCase(
