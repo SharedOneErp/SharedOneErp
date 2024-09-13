@@ -187,14 +187,16 @@ td, th {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #555; /* 기본 색상 */
+  color: #e3e3e3; /* 기본 색상 */
   transition: color 0.3s ease;
 }
 
 .category-form {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  /* gap: 20px; */
+  grid-template-columns: 1fr 1fr 1fr; /*비율*/
+  justify-content: center;
+  align-items: center;
+  
 }
 
 /* 전체 컨테이너 설정 */
@@ -226,6 +228,7 @@ td, th {
 
 .input-button{
   display: flex;
+  margin-top: 15px;
 }
 
 .input-field {
@@ -249,10 +252,16 @@ td, th {
   background-color: #004bb5;
 }
 
+.list-form{
+  height: 60%;
+  overflow: auto;
+}
+
+
 .category-list {
   list-style-type: none;
   padding-left: 0;
-  margin: 10px 0;
+  margin: 10px 0; 
 }
 
 
@@ -290,18 +299,19 @@ td, th {
 }
 
 /* 리스트 스타일 */
-ul {
+.category-list {
   list-style-type: none;
   padding: 0;
 }
 
-ul li {
-  /* padding: 8px; */
+.category-list li {
   margin-bottom: 5px;
   cursor: pointer;
 }
 
-ul li:hover {
+.category-list li:hover {
+  background-color: #A3A3A3;
+}.category-list li:active {
   background-color: #A3A3A3;
 }
 

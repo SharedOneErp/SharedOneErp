@@ -6,18 +6,14 @@ import '../../../resources/static/css/product/ProductCategory.css'; // 개별 CS
 import { formatDate } from "../../util/dateUtils";
 
 
+
 // 컴포넌트
 function ProductCategory() {
 
     const [category, setCategory] = useState([]);
     const [categoryName, setCategoryName] = useState('');
     const [selectedCategory, setSelectedCategory] = useState([]); // 선택된 카테고리
-    const [selectedTopCategory, setSelectedTopCategory] = useState(null);
-    const [selectedMidCategory, setSelectedMidCategory] = useState(null);
     const [categoryLevel, setCategoryLevel] = useState('대분류'); // 카테고리 레벨 (대분류/중분류/소분류)
-    const [insertTop, setInsertTop] = useState('');//대분류 추가
-    const [insertMid, setInsertMid] = useState('');//중분류 추가
-    const [insertLow, setInsertLow] = useState('');//소분류 추가
     const [insertedList, setInsertedList] = useState([]);
 
     // 모달 관련
@@ -25,9 +21,23 @@ function ProductCategory() {
     const [showModal, setShowModal] = useState(false);
 
     //대분류조회  //중분류조회  //소분류조회
-    const [getTopcategory, setGetTopcategory] = useState([]);
-    const [getMidcategory, setGetMidcategory] = useState([]);
-    const [getLowcategory, setGetLowcategory] = useState([]);
+    const [getTopCategory, setGetTopCategory] = useState([]);
+    const [getMidCategory, setGetMidCategory] = useState([]);
+    const [getLowCategory, setGetLowCategory] = useState([]);
+
+    //새로운 카테고리 등록
+    const [insertTop, setInsertTop] = useState('');//대분류 추가
+    const [insertMid, setInsertMid] = useState('');//중분류 추가
+    const [insertLow, setInsertLow] = useState('');//소분류 추가
+
+    //선택된 카테고리 저장
+    const [selectedTopCategory, setSelectedTopCategory] = useState(null);
+    const [selectedMidCategory, setSelectedMidCategory] = useState(null);
+
+    // 선택 카테고리 호버 저장
+    const [hoverTop, setHoverTop] = useState(null);
+    const [hoverMid, setHoverMid] = useState(null);
+    const [hoverLow, setHoverLow] = useState(null);
 
 
     // 전체목록 조회
@@ -38,18 +48,43 @@ function ProductCategory() {
             .catch(error => console.error('카테고리 목록을 불러오는 데 실패했습니다.', error))
     }, []);
 
-     // 대분류 조회
-     useEffect(() => {
+    // 대분류 조회
+    useEffect(() => {
         fetch('/api/category/top')
             .then(response => response.json())
             .then(data => {
-                console.log(data);     
-                const topCategory = Array.isArray(data) ? data : [data];           
-                setGetTopcategory(topCategory);
+                // console.log(data);
+                const topCategory = Array.isArray(data) ? data : [data];
+                setGetTopCategory(topCategory);
             })
             .catch(error => console.error('대분류 목록을 불러오는데 실패했습니다.', error));
     }, []);
 
+    // 중분류 조회
+    useEffect(() => {
+        if (selectedTopCategory) {
+            setGetLowCategory([]);
+            fetch(`/api/category/middle/${selectedTopCategory}`)
+                .then(response => response.json())
+                .then(data => setGetMidCategory(data))
+                .catch(error => console.error('중분류 목록을 불러오는데 실패했습니다.', error));
+        } else {
+            setGetLowCategory([]);
+        }
+    }, [selectedTopCategory]); //selectedTopCategory가 변경될 때마다 실행
+
+    //소분류 조회
+    useEffect(() => {
+        if (selectedTopCategory && selectedMidCategory) {
+            fetch(`api/category/low/${selectedMidCategory}/${selectedTopCategory}`)
+                .then(response => response.json())
+                .then(data => setGetLowCategory(data))
+                .catch(error => console.error('소분류 목록을 불러오는데 실패했습니다.', error));
+        }
+    }, [selectedTopCategory && selectedMidCategory])
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     // 상품 목록 저장 state
     const [products, setProducts] = useState([]); // 전체 상품 목록
@@ -66,6 +101,8 @@ function ProductCategory() {
         }
     };
 
+    // 
+
     // 상품 선택
     const handleSelectCategory = (categoryNo) => {
         setSelectedProducts(prevSelected => {
@@ -79,7 +116,7 @@ function ProductCategory() {
         });
     };
 
-   
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     //대분류 추가 함수
     const handleInsertTop = (e) => {
@@ -92,7 +129,6 @@ function ProductCategory() {
             alert('대분류 값을 입력하세요');
             return;
         }
-
         fetch('/api/category/save', {
             method: 'POST',
             headers: {
@@ -105,7 +141,7 @@ function ProductCategory() {
         })
             .then(response => response.json())
             .then(data => {
-                setGetTopcategory(prevCategory => [...prevCategory, data]);
+                setGetTopCategory(prevCategory => [...prevCategory, data]);
                 setInsertedList([...insertedList, data]);
                 setInsertTop('');
             })
@@ -114,7 +150,7 @@ function ProductCategory() {
         alert('대분류 카테고리가 추가되었습니다.')
     };
 
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     // 모달 열기
@@ -127,8 +163,30 @@ function ProductCategory() {
         setShowModal(false);
     };
 
-    function handleClick(categoryNo) {
+    // 대분류 li 선택했을 떄
+    function handleTopClick(categoryNo) {
         setSelectedTopCategory(categoryNo);
+    }
+    useEffect(() => {
+        if (selectedTopCategory) {
+            console.log("선택된 대분류 번호: " + selectedTopCategory);
+        }
+    }, [selectedTopCategory]);
+
+    // 중분류 li 선택했을 때
+    function handleMidClick(categoryNo) {
+        setSelectedMidCategory(categoryNo);
+    }
+    useEffect(() => {
+        if (selectedMidCategory) {
+            console.log("선택된 중분류 번호:" + selectedMidCategory);
+        }
+    }, [selectedMidCategory]);
+
+
+    // 대분류 클릭 hover저장
+    function handleHover(categoryNo) {
+        setHoverTop(categoryNo);
     }
 
 
@@ -174,9 +232,9 @@ function ProductCategory() {
                                     checked={selectedCategory.includes(category.categoryNo)} /></td>
                                 <td>{category.categoryNo}</td>
                                 <td>{category.categoryLevel === 1 ? "대분류" :
-                                     category.categoryLevel === 2 ? "중분류" :
-                                     category.categoryLevel === 3 ? "소분류" : "ㆍ"
-                                    }</td>
+                                    category.categoryLevel === 2 ? "중분류" :
+                                        category.categoryLevel === 3 ? "소분류" : "ㆍ"
+                                }</td>
                                 <td>{category.parentCategoryNo ? category.parentCategoryNo : 'ㆍ'}</td>
                                 <td>{category.categoryNm}</td>
                                 <td>{formatDate(category.categoryInsertDate)}</td>
@@ -219,15 +277,22 @@ function ProductCategory() {
                                     <button className='search-button'>검색</button>
                                 </div>
                                 <br />
-                                <ul className='category-list' style={{height: '50%' , overflow : 'auto' }}>
-                                    {getTopcategory.map((category) => (
-                                        <li key={category.categoryNo} >
-                                            {category.categoryNm}
-                                        </li>
-                                    ))}
-                                </ul>
+
+                                <div className='list-form'>
+                                    <ul className='category-list' >
+                                        {getTopCategory.map((category) => (
+                                            <li key={category.categoryNo}
+                                                onClick={() => { handleTopClick(category.categoryNo) }}
+                                                onMouseOver={() => { handleHover(category.categoryNo) }}
+                                            >
+                                                {category.categoryNm}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
                                 <div className='input-button'>
-                                    <input type='text' placeholder='새 대분류 추가' className='input-field'  onChange={handleInsertTop} value={insertTop}/>
+                                    <input type='text' placeholder='새 대분류 추가' className='input-field' onChange={handleInsertTop} value={insertTop} />
                                     <button type='submit' className='search-button' onClick={handleAddButton} >등록</button>
                                 </div>
                             </div>
@@ -240,12 +305,23 @@ function ProductCategory() {
                                     <button className='search-button'>검색</button>
                                 </div>
                                 <br />
-                                <ul className='category-list'>
-                                    <li>중1</li>
-                                    <li>중2</li>
-                                    <li>중3</li>
-                                    <li>중4</li>
-                                </ul>
+
+                                <div className='list-form' style={{ position: 'relative' }}>
+                                    {getMidCategory.length === 0 ? (
+                                        <p style={{ position: 'absolute', top: '6%', left: '25%' }}>중분류가없습니다</p>
+                                    ) : (
+                                        <ul className='category-list'>
+                                            {getMidCategory.map((category) => (
+                                                <li key={category.categoryNo}
+                                                    onClick={() => handleMidClick(category.categoryNo)}
+                                                >
+                                                    {category.categoryNm}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
+
                                 <div className='input-button'>
                                     <input type='text' placeholder='새 중분류 추가' className='input-field' />
                                     <button className='register-button'>등록</button>
@@ -260,12 +336,21 @@ function ProductCategory() {
                                     <button className='search-button'>검색</button>
                                 </div>
                                 <br />
-                                <ul className='category-list'>
-                                    <li>소1</li>
-                                    <li>소2</li>
-                                    <li>소3</li>
-                                    <li>소4</li>
-                                </ul>
+
+                                <div className='list-form' style={{ position: 'relative' }}>
+                                    {getLowCategory.length === 0 ? (
+                                        <p style={{ position: 'absolute', top: '6%', left: '25%' }}>소분류가없습니다</p>
+                                    ) : (
+                                        <ul className='category-list'>
+                                            {getLowCategory.map((category) => (
+                                                <li key={category.categoryNo}>
+                                                    {category.categoryNm}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
+
                                 <div className='input-button'>
                                     <input type='text' placeholder='새 소분류 추가' className='input-field' />
                                     <button className='register-button'>등록</button>
