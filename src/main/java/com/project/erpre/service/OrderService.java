@@ -32,6 +32,31 @@ public class OrderService {
     @Autowired
     private ProductRepository productRepository;
 
+    // 전체 주문 목록 가져오기
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
+    // 주문 상태별 주문 목록 가져오기
+    public List<Order> getOrdersByStatus(String status) {
+        return orderRepository.findByOrderHStatus(status);
+    }
+
+    // 고객사 이름으로 검색
+    public List<Order> getOrdersByCustomerName(String customerName) {
+        return orderRepository.findByCustomerCustomerNameContaining(customerName);
+    }
+
+    // 날짜로 주문 목록 검색
+    public List<Order> getOrdersByOrderDate(String orderDate) {
+        return orderRepository.findByOrderHInsertDateContaining(orderDate);
+    }
+
+    // 특정 주문번호로 주문 조회
+    public Order getOrderById(Integer orderNo) {
+        return orderRepository.findById(orderNo).orElse(null);
+    }
+
 
     public Order createOrder(OrderDTO orderDTO) {
 
@@ -108,6 +133,11 @@ public class OrderService {
         order.setOrderHUpdateDate(LocalDateTime.now());
 
         return orderRepository.save(order);
+    }
+
+    // 주문 삭제
+    public void deleteOrder(Integer orderNo) {
+        orderRepository.deleteById(orderNo);
     }
 
 
