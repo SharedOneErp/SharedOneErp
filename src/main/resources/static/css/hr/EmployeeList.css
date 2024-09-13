@@ -62,3 +62,17 @@
     background-color: #808080;
 
 }
+
+/* 모달 css*/
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* 배경 어둡게 설정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;    
+}

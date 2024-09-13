@@ -1,5 +1,8 @@
 package com.project.erpre.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.erpre.model.Customer;
 import com.project.erpre.model.Employee;
 import lombok.*;
@@ -8,6 +11,10 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Entity
 @Table(name = "m_order_h")
@@ -50,4 +57,23 @@ public class Order {
 
     @Column(name = "order_h_delete_date")
     private Timestamp orderHDeleteDate; // 삭제 일시
+
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderDetail> orderDetails;
+    // 주문과 상품 간의 관계
+
+
+    @Transient
+    public List<String> getProductNames() {
+        if (orderDetails == null) {
+            return new ArrayList<>();
+        }
+        return orderDetails.stream()
+                .filter(od -> od.getProduct() != null) // getProduct()가 null인지 확인
+                .map(od -> od.getProduct().getProductNm())
+                .collect(Collectors.toList());
+    }
+
 }
+

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom/client';
 import '../../../resources/static/css/Main.css'; // 공통 CSS 파일
 import Layout from "../../layout/Layout";
-import { BrowserRouter } from "react-router-dom";
+import {BrowserRouter} from "react-router-dom";
 import '../../../resources/static/css/customer/CustomerList.css';
 import axios from 'axios';
 
 // 고객 등록 모달창
-function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
+function CustomerRegisterModal({show, onClose, onSave, customerData}) {
     const [form, setForm] = useState({
         customerName: '',                    // 고객사 이름
         customerTel: '',                     // 고객사 연락처
@@ -51,8 +51,8 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
 
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setForm({ ...form, [name]: value });
+        const {name, value} = e.target;
+        setForm({...form, [name]: value});
     };
 
     const handleSubmit = (e) => {
@@ -85,7 +85,7 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                     <div className="register-form">
                         <div className="left-column">
                             <div className="form-group">
-                                <label>고객사 이름</label>
+                                <label>고객사 이름(*)</label>
                                 <input type="text" name="customerName" value={form.customerName || ''}
                                        onChange={handleInputChange}/>
                             </div>
@@ -101,7 +101,7 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                                        onChange={handleInputChange}/>
                             </div>
                             <div className="form-group">
-                                <label>사업자 등록번호</label>
+                                <label>사업자 등록번호(*)</label>
                                 <input type="text" name="customerBusinessRegNo" value={form.customerBusinessRegNo || ''}
                                        onChange={handleInputChange}/>
                             </div>
@@ -170,11 +170,11 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                                 <label>거래 종료일</label>
                                 <input type="date" name="customerTransactionEndDate"
                                        value={form.customerTransactionEndDate || ''}
-                                       onChange={handleInputChange} />
+                                       onChange={handleInputChange}/>
                             </div>
                         </div>
                     </div>
-                    <button type="submit" className="submit-button">{customerData ? '수정' : '등록'}</button>
+                    <button type="submit" className="submit-button">등록</button>
                 </form>
             </div>
         </div>
@@ -209,8 +209,8 @@ function CustomerDetailModal({show, onClose, customer, onSave, onDelete}) {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setEditableCustomer((prev) => ({ ...prev, [name]: value }));
+        const {name, value} = e.target;
+        setEditableCustomer((prev) => ({...prev, [name]: value}));
     };
 
     if (!show || !customer) return null;
@@ -360,7 +360,6 @@ function CustomerDetailModal({show, onClose, customer, onSave, onDelete}) {
 // 고객 리스트
 function CustomerList() {
     const [filter, setFilter] = useState('');
-    const [filterType, setFilterType] = useState('customerName');
     const [itemsPerPage, setItemsPerPage] = useState(20);
     const [currentPage, setCurrentPage] = useState(1);
     const [customers, setCustomers] = useState([]);
@@ -368,12 +367,22 @@ function CustomerList() {
     const [showRegisterModal, setShowRegisterModal] = useState(false);
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [selectedCustomers, setSelectedCustomers] = useState([]);
+    const [sortColumn, setSortColumn] = useState(null);
+    const [sortOrder, setSortOrder] = useState('asc');
 
     useEffect(() => {
         axios.get('/api/customer/getList')
             .then(response => setCustomers(response.data.filter(customer => customer.customerDeleteYn === 'N')))
             .catch(error => console.error('Error fetching customer data:', error));
     }, []);
+
+    const showAllCustomers = () => {
+        setCustomers(customers.filter(c => c.customerDeleteYn === 'N'));
+    };
+
+    const showDeletedCustomers = () => {
+        setCustomers(customers.filter(c => c.customerDeleteYn === 'Y'));
+    };
 
     // 고객 등록&수정 처리
     const handleSaveCustomer = (customerData) => {
@@ -403,7 +412,6 @@ function CustomerList() {
     // 고객 삭제 처리
     const handleDeleteCustomer = () => {
         if (window.confirm('정말 삭제하시겠습니까?')) {
-            const updatedCustomer = { ...selectedCustomer, customerDeleteYn: 'Y' };
             axios.delete(`/api/customer/delete/${selectedCustomer.customerNo}`)
                 .then(() => {
                     setCustomers(customers.filter(c => c.customerNo !== selectedCustomer.customerNo));
@@ -456,91 +464,113 @@ function CustomerList() {
 
     const closeDetailModal = () => setShowDetailModal(false);
 
-    const filteredCustomers = customers.filter(customer => {
-        if (filterType === 'businessRegNo') return customer.customerBusinessRegNo.includes(filter);
-        if (filterType === 'countryCode') return customer.customerCountryCode.includes(filter);
-        if (filterType === 'managerName') return customer.customerManagerName.includes(filter);
+    const sortCustomers = (column) => {
+        const order = sortOrder === 'asc' ? 'desc' : 'asc';
+        const sortedCustomers = [...customers].sort((a, b) => {
+            const aValue = a[column] ? a[column].toString() : '';
+            const bValue = b[column] ? b[column].toString() : '';
+            return order === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+        });
+        setCustomers(sortedCustomers);
+        setSortColumn(column);
+        setSortOrder(order);
+    };
 
-        return true;
+    const filteredCustomers = customers.filter(customer => {
+        return (
+            customer.customerName.includes(filter) ||
+            customer.customerBusinessRegNo.includes(filter) ||
+            customer.customerCountryCode.includes(filter) ||
+            customer.customerManagerName.includes(filter)
+        );
     });
 
     const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
 
     return (
-        <Layout currentMenu="customer"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
+        <Layout currentMenu="customer">
             <main className="main-content menu_customer">
-            <h1>고객사 목록</h1>
-            <div className="table-header">
-                <button className="register-button" onClick={() => openRegisterModal(null)}>등록</button>
-                <button className="deleteall-button" onClick={handleDeleteAll}>전체 삭제</button>
-            </div>
-            <div className="filter-section">
-                <select onChange={(e) => setFilterType(e.target.value)}>
-                    <option value="customerName">고객명</option>
-                    <option value="businessRegNo">사업자 등록번호</option>
-                    <option value="countryCode">국가코드</option>
-                    <option value="managerName">담당자명</option>
-                </select>
-                <input type="text" placeholder="검색어 입력" value={filter} onChange={(e) => setFilter(e.target.value)}/>
-                <button className="search-button" onClick={() => setCurrentPage(1)}>검색</button>
-            </div>
+                <h1>고객사 목록</h1>
+                <div className="table-header">
+                    <button className="register-button" onClick={openRegisterModal}>등록</button>
+                    <button className="deleteall-button" onClick={handleDeleteAll}>전체 삭제</button>
+                    <button className="allcustomer-button"
+                            onClick={() => setCustomers(customers.filter(c => c.customerDeleteYn === 'N'))}>전체 고객사
+                    </button>
+                    <button className="deletedcustomer-button"
+                            onClick={() => setCustomers(customers.filter(c => c.customerDeleteYn === 'Y'))}>삭제된 고객사
+                    </button>
+                </div>
+                <div className="filter-section">
+                    <input
+                        type="text"
+                        placeholder="고객명, 사업자 등록번호, 국가코드, 담당자명을 입력하세요"
+                        value={filter}
+                        onChange={(e) => setFilter(e.target.value)}
+                        style={{
+                            width: 'calc(100% - 330px)',
+                            marginRight: '10px'
+                        }} // Adjusting width to fit between buttons
+                    />
+                </div>
 
-            <table className="customer-table">
-                <thead>
-                <tr>
-                    <th><input type="checkbox"
-                               onChange={(e) => setSelectedCustomers(e.target.checked ? customers.map(c => c.customerNo) : [])}/>
-                    </th>
-                    <th>No</th>
-                    <th>고객명</th>
-                    <th>사업자 등록번호</th>
-                    <th>국가코드</th>
-                    <th>담당자명</th>
-                    <th>상세내역</th>
-                </tr>
-                </thead>
-                <tbody>
-                {filteredCustomers
-                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                    .map((customer, index) => (
-                        <tr key={customer.customerNo}>
-                            <td><input type="checkbox" checked={selectedCustomers.includes(customer.customerNo)}
-                                       onChange={() => handleSelectCustomer(customer.customerNo)}/></td>
-                            <td>{index + 1}</td>
-                            <td>{customer.customerName}</td>
-                            <td>{customer.customerBusinessRegNo}</td>
-                            <td>{customer.customerCountryCode}</td>
-                            <td>{customer.customerManagerName}</td>
-                            <td>
-                                <button onClick={() => openDetailModal(customer)}>내역보기</button>
-                            </td>
-                        </tr>
+
+                <table className="customer-table">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox"
+                                   onChange={(e) => setSelectedCustomers(e.target.checked ? customers.map(c => c.customerNo) : [])}/>
+                        </th>
+                        <th onClick={() => sortCustomers('customerNo')}>No</th>
+                        <th onClick={() => sortCustomers('customerName')}>고객명</th>
+                        <th onClick={() => sortCustomers('customerBusinessRegNo')}>사업자 등록번호</th>
+                        <th onClick={() => sortCustomers('customerCountryCode')}>국가코드</th>
+                        <th onClick={() => sortCustomers('customerManagerName')}>담당자명</th>
+                        <th>상세내역</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {filteredCustomers
+                        .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                        .map((customer, index) => (
+                            <tr key={customer.customerNo}>
+                                <td><input type="checkbox" checked={selectedCustomers.includes(customer.customerNo)}
+                                           onChange={() => handleSelectCustomer(customer.customerNo)}/></td>
+                                <td>{index + 1}</td>
+                                <td>{customer.customerName}</td>
+                                <td>{customer.customerBusinessRegNo}</td>
+                                <td>{customer.customerCountryCode}</td>
+                                <td>{customer.customerManagerName}</td>
+                                <td>
+                                    <button onClick={() => openDetailModal(customer)}>내역보기</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+
+                <div className="pagination-buttons">
+                    <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>이전</button>
+                    {Array.from({length: totalPages}, (_, i) => (
+                        <button key={i + 1} onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
                     ))}
-                </tbody>
-            </table>
-
-            <div className="pagination-buttons">
-                <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>이전</button>
-                {Array.from({ length: totalPages }, (_, i) => (
-                    <button key={i + 1} onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
-                ))}
-                <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>다음</button>
-            </div>
-
-        {/* 모달창 */}
-        <CustomerDetailModal
-            show={showDetailModal}
-            onClose={closeDetailModal}
-            customer={selectedCustomer}
-            onSave={handleSaveCustomer}
-            onDelete={handleDeleteCustomer}
-        />
-        <CustomerRegisterModal
-            show={showRegisterModal}
-            onClose={closeRegisterModal}
-            onSave={handleSaveCustomer}
-            customerData={selectedCustomer}
-        />
+                    <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>다음
+                    </button>
+                </div>
+                {/* 모달창 */}
+                <CustomerDetailModal
+                    show={showDetailModal}
+                    onClose={closeDetailModal}
+                    customer={selectedCustomer}
+                    onSave={handleSaveCustomer}
+                    onDelete={handleDeleteCustomer}
+                />
+                <CustomerRegisterModal
+                    show={showRegisterModal}
+                    onClose={closeRegisterModal}
+                    onSave={handleSaveCustomer}
+                    customerData={selectedCustomer}
+                />
             </main>
         </Layout>
     );
@@ -550,6 +580,6 @@ function CustomerList() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <CustomerList />
+        <CustomerList/>
     </BrowserRouter>
 );

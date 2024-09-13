@@ -78,7 +78,7 @@ src
 │  │  │  │  ├─ product
 │  │  │  │  │  ├─ Product.js
 │  │  │  │  │  ├─ ProductCategory.js
-│  │  │  │  │  ├─ ProductDetail.js
+│  │  │  │  │  ├─ ProductDetail2.js
 │  │  │  │  │  ├─ ProductHooks.js
 │  │  │  │  │  ├─ ProductList.js
 │  │  │  │  │  ├─ ProductPrice.js
@@ -132,7 +132,7 @@ src
 │  │     │  │  ├─ product
 │  │     │  │  │  ├─ Product.css
 │  │     │  │  │  ├─ ProductCategory.css
-│  │     │  │  │  ├─ ProductDetail.css
+│  │     │  │  │  ├─ ProductDetail2.css
 │  │     │  │  │  ├─ ProductList.css
 │  │     │  │  │  └─ ProductPrice.css
 │  │     │  │  └─ sales
