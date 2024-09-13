@@ -167,6 +167,37 @@
     background-color: #005fa3;
 }
 
+.allcustomer-button {
+    background-color: #007CC1;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.allcustomer-button:hover {
+    background-color: #005fa3;
+}
+
+.deletedcustomer-button {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.deletedcustomer-button:hover {
+    background-color: #d43d3d;
+}
+
+
 /* 테이블 */
 .customer-table {
     width: 100%;
