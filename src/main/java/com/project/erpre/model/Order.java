@@ -8,6 +8,8 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "m_order_h")
@@ -50,4 +52,19 @@ public class Order {
 
     @Column(name = "order_h_delete_date")
     private Timestamp orderHDeleteDate; // 삭제 일시
+
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderDetail> orderDetails;
+    // 주문과 상품 간의 관계
+
+
+    @Transient
+    public List<String> getProductNames() {
+        return orderDetails.stream()
+                .map(od -> od.getProduct().getProductNm())
+                .collect(Collectors.toList());
+//        상품명을 리스트로 반환
+    }
 }
+
