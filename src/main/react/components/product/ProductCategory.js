@@ -17,7 +17,6 @@ function ProductCategory() {
     const [insertedList, setInsertedList] = useState([]);
 
     // 모달 관련
-    const [selectedSave, setSelectedSave] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
     //대분류조회  //중분류조회  //소분류조회
@@ -118,25 +117,43 @@ function ProductCategory() {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //대분류 추가 함수
-    const handleInsertTop = (e) => {
+    //대중소분류 추가 함수
+    const handleInsert = (e) => {
         setInsertTop(e.target.value);
     }
 
     //대분류 추가 버튼
-    const handleAddButton = () => {
-        if (!insertTop) {
-            alert('대분류 값을 입력하세요');
-            return;
+    const handleAddButton = (categoryLevel) => {
+        
+        const categoryName = '';
+        const parentCategoryNo = null;
+        if(categoryLevel==1) {
+            if (!insertTop) {
+                alert('대분류 값을 입력하세요');
+                return;
+            }
+            categoryName = insertTop;
+        } else if(categoryLevel==2) {
+            if (!insertMid) {
+                alert('중분류 값을 입력하세요');
+                return;
+            }
+            categoryName = insertMid;
+            parentCategoryNo = selectedMidCategory;
+            console.log(parentCategoryNo);
+            
+        } else if(categoryLevel==3) {
         }
+        
         fetch('/api/category/save', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                categoryNm: insertTop,
-                categoryLevel: 1
+                categoryNm: categoryName,
+                categoryLevel: categoryLevel,
+                parentCategoryNo : parentCategoryNo
             }),
         })
             .then(response => response.json())
@@ -149,6 +166,15 @@ function ProductCategory() {
 
         alert('대분류 카테고리가 추가되었습니다.')
     };
+
+
+    //중분류 추가 버튼
+    const handleMidAddButton = () => {
+        if (!insertMid) {
+            alert('중분류 값을 입력하세요')
+        }
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -293,8 +319,8 @@ function ProductCategory() {
                                 </div>
 
                                 <div className='input-button'>
-                                    <input type='text' placeholder='새 대분류 추가' className='input-field' onChange={handleInsertTop} value={insertTop} />
-                                    <button type='submit' className='search-button' onClick={handleAddButton} >등록</button>
+                                    <input type='text' placeholder='새 대분류 추가' className='input-field' onChange={handleInsert} value={insertTop} />
+                                    <button type='submit' className='search-button' onClick={() => { handleAddButton(1) }} >등록</button>
                                 </div>
                             </div>
 
