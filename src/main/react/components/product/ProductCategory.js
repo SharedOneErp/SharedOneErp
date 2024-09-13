@@ -101,7 +101,7 @@ function ProductCategory() {
         }
     };
 
-    // 
+    //
 
     // 상품 선택
     const handleSelectCategory = (categoryNo) => {
@@ -194,15 +194,15 @@ function ProductCategory() {
     return (
         <Layout currentMenu="productCategory"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
             <main className="main-content menu_category">
-            <div className="top-container">
-                <h2>상품 카테고리 관리</h2>
-            </div>
+                <div className="top-container">
+                    <h2>상품 카테고리 관리</h2>
+                </div>
 
-            <div className="middle-container">
-            </div>
+                <div className="middle-container">
+                </div>
 
-            <div className="bottom-container">
-                {/* <label>
+                <div className="bottom-container">
+                    {/* <label>
                     <p>전체 {products.length}건 페이지 당:</p>
                     <select>
                         <option value={10}>10</option>
@@ -211,11 +211,11 @@ function ProductCategory() {
                         <option value={100}>100</option>
                     </select>
                 </label> */}
-                <table className="approval-list">
-                    <thead>
+                    <table className="approval-list">
+                        <thead>
                         <tr className='table-tr'>
                             <th><input type="checkbox"
-                                onChange={(e) => handleAllSelectCategory(e.target.checked)} /></th>
+                                       onChange={(e) => handleAllSelectCategory(e.target.checked)} /></th>
                             <th>카테고리 번호</th>
                             <th>카테고리 레벨</th>
                             <th>상위 카테고리</th>
@@ -223,14 +223,14 @@ function ProductCategory() {
                             <th>카테고리 등록일시</th>
                             <th>카테고리 수정일시</th>
                         </tr>
-                    </thead>
-                    <tbody className="approval-list-content">
+                        </thead>
+                        <tbody className="approval-list-content">
                         {category.map((category, index) => (
                             <tr key={category.categoryNo}
                                 className={selectedCategory.includes(category.categoryNo) ? 'selected' : ''}>
                                 <td><input type="checkbox"
-                                    onChange={() => handleSelectCategory(category.categoryNo)}
-                                    checked={selectedCategory.includes(category.categoryNo)} /></td>
+                                           onChange={() => handleSelectCategory(category.categoryNo)}
+                                           checked={selectedCategory.includes(category.categoryNo)} /></td>
                                 <td>{category.categoryNo}</td>
                                 <td>{category.categoryLevel === 1 ? "대분류" :
                                     category.categoryLevel === 2 ? "중분류" :
@@ -246,9 +246,9 @@ function ProductCategory() {
                         ))}
 
 
-                    </tbody>
-                </table>
-                {/* <div className="approval-page">
+                        </tbody>
+                    </table>
+                    {/* <div className="approval-page">
                     <button className="approval-page1">1</button>
                     <button className="approval-page2">2</button>
                     <button className="approval-page3">3</button>
@@ -256,113 +256,113 @@ function ProductCategory() {
                     <button className="approval-page5">5</button>
                 </div> */}
 
-                <div className="button-container">
-                    <button className="filter-button" onClick={openModal}>등록</button>
-                    <button className="filter-button">수정</button>
-                    <button className="filter-button" >삭제</button>
+                    <div className="button-container">
+                        <button className="filter-button" onClick={openModal}>등록</button>
+                        <button className="filter-button">수정</button>
+                        <button className="filter-button" >삭제</button>
+                    </div>
+
                 </div>
+                {showModal && (
+                    <div className='modal-overlay'>
+                        <div className='modal-content'>
+                            <h2>카테고리 등록</h2>
+                            <button className='close-button' onClick={closeModal}>X</button>
 
-            </div>
-            {showModal && (
-                <div className='modal-overlay'>
-                    <div className='modal-content'>
-                        <h2>카테고리 등록</h2>
-                        <button className='close-button' onClick={closeModal}>X</button>
+                            <div className='category-form'>
+                                {/* 대분류 */}
+                                <div className='category-column'>
+                                    <h4>대분류</h4>
+                                    <div className='input-button'>
+                                        <input type='text' placeholder='대분류 검색' className='input-field' />
+                                        <button className='search-button'>검색</button>
+                                    </div>
+                                    <br />
 
-                        <div className='category-form'>
-                            {/* 대분류 */}
-                            <div className='category-column'>
-                                <h4>대분류</h4>
-                                <div className='input-button'>
-                                    <input type='text' placeholder='대분류 검색' className='input-field' />
-                                    <button className='search-button'>검색</button>
-                                </div>
-                                <br />
-
-                                <div className='list-form'>
-                                    <ul className='category-list' >
-                                        {getTopCategory.map((category) => (
-                                            <li key={category.categoryNo}
-                                                onClick={() => { handleTopClick(category.categoryNo) }}
-                                                onMouseOver={() => { handleHover(category.categoryNo) }}
-                                            >
-                                                {category.categoryNm}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                <div className='input-button'>
-                                    <input type='text' placeholder='새 대분류 추가' className='input-field' onChange={handleInsertTop} value={insertTop} />
-                                    <button type='submit' className='search-button' onClick={handleAddButton} >등록</button>
-                                </div>
-                            </div>
-
-                            {/* 중분류 */}
-                            <div className='category-column'>
-                                <h4>중분류</h4>
-                                <div className='input-button'>
-                                    <input type='text' placeholder='중분류 검색' className='input-field' />
-                                    <button className='search-button'>검색</button>
-                                </div>
-                                <br />
-
-                                <div className='list-form' style={{ position: 'relative' }}>
-                                    {getMidCategory.length === 0 ? (
-                                        <p style={{ position: 'absolute', top: '6%', left: '25%' }}>중분류가없습니다</p>
-                                    ) : (
-                                        <ul className='category-list'>
-                                            {getMidCategory.map((category) => (
+                                    <div className='list-form'>
+                                        <ul className='category-list' >
+                                            {getTopCategory.map((category) => (
                                                 <li key={category.categoryNo}
-                                                    onClick={() => handleMidClick(category.categoryNo)}
+                                                    onClick={() => { handleTopClick(category.categoryNo) }}
+                                                    onMouseOver={() => { handleHover(category.categoryNo) }}
                                                 >
                                                     {category.categoryNm}
                                                 </li>
                                             ))}
                                         </ul>
-                                    )}
+                                    </div>
+
+                                    <div className='input-button'>
+                                        <input type='text' placeholder='새 대분류 추가' className='input-field' onChange={handleInsertTop} value={insertTop} />
+                                        <button type='submit' className='search-button' onClick={handleAddButton} >등록</button>
+                                    </div>
                                 </div>
 
-                                <div className='input-button'>
-                                    <input type='text' placeholder='새 중분류 추가' className='input-field' />
-                                    <button className='register-button'>등록</button>
+                                {/* 중분류 */}
+                                <div className='category-column'>
+                                    <h4>중분류</h4>
+                                    <div className='input-button'>
+                                        <input type='text' placeholder='중분류 검색' className='input-field' />
+                                        <button className='search-button'>검색</button>
+                                    </div>
+                                    <br />
+
+                                    <div className='list-form' style={{ position: 'relative' }}>
+                                        {getMidCategory.length === 0 ? (
+                                            <p style={{ position: 'absolute', top: '6%', left: '25%' }}>중분류가없습니다</p>
+                                        ) : (
+                                            <ul className='category-list'>
+                                                {getMidCategory.map((category) => (
+                                                    <li key={category.categoryNo}
+                                                        onClick={() => handleMidClick(category.categoryNo)}
+                                                    >
+                                                        {category.categoryNm}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+
+                                    <div className='input-button'>
+                                        <input type='text' placeholder='새 중분류 추가' className='input-field' />
+                                        <button className='register-button'>등록</button>
+                                    </div>
                                 </div>
+
+                                {/* 소분류 */}
+                                <div className='category-column'>
+                                    <h4>소분류</h4>
+                                    <div className='input-button'>
+                                        <input type='text' placeholder='소분류 검색' className='input-field' />
+                                        <button className='search-button'>검색</button>
+                                    </div>
+                                    <br />
+
+                                    <div className='list-form' style={{ position: 'relative' }}>
+                                        {getLowCategory.length === 0 ? (
+                                            <p style={{ position: 'absolute', top: '6%', left: '25%' }}>소분류가없습니다</p>
+                                        ) : (
+                                            <ul className='category-list'>
+                                                {getLowCategory.map((category) => (
+                                                    <li key={category.categoryNo}>
+                                                        {category.categoryNm}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+
+                                    <div className='input-button'>
+                                        <input type='text' placeholder='새 소분류 추가' className='input-field' />
+                                        <button className='register-button'>등록</button>
+                                    </div>
+                                </div>
+
                             </div>
-
-                            {/* 소분류 */}
-                            <div className='category-column'>
-                                <h4>소분류</h4>
-                                <div className='input-button'>
-                                    <input type='text' placeholder='소분류 검색' className='input-field' />
-                                    <button className='search-button'>검색</button>
-                                </div>
-                                <br />
-
-                                <div className='list-form' style={{ position: 'relative' }}>
-                                    {getLowCategory.length === 0 ? (
-                                        <p style={{ position: 'absolute', top: '6%', left: '25%' }}>소분류가없습니다</p>
-                                    ) : (
-                                        <ul className='category-list'>
-                                            {getLowCategory.map((category) => (
-                                                <li key={category.categoryNo}>
-                                                    {category.categoryNm}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
-                                </div>
-
-                                <div className='input-button'>
-                                    <input type='text' placeholder='새 소분류 추가' className='input-field' />
-                                    <button className='register-button'>등록</button>
-                                </div>
-                            </div>
-
                         </div>
-                    </div>
 
-                </div>
-            )}
+                    </div>
+                )}
             </main>
         </Layout>
     );
