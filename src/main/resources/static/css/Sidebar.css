@@ -31,9 +31,9 @@
 
 .user-name {
     font-size: 14px;
-    font-weight: bold;
+    font-weight: 600;
     color: #333;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
 .login-time {

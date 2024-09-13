@@ -2,7 +2,6 @@
 import React from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import Footer from './Footer';
 import '../../resources/static/css/Layout.css';
 
 function Layout({currentMenu, children}) {
@@ -12,13 +11,8 @@ function Layout({currentMenu, children}) {
             <Header/>
             <div className="main-container">
                 <Sidebar currentMenu={currentMenu}/>
-                <main className={`main-content ${currentMenu === 'main' ? 'main-active' : ''}`}>
-                    <div className="content-wrapper">
-                        {children}
-                    </div>
-                </main>
+                {children}
             </div>
-            <Footer/>
         </div>
     );
 }

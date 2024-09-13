@@ -55,6 +55,7 @@ function ProductList() {
 
     return (
         <Layout currentMenu="productList">
+            <main className="main-content menu_order_product">
             <div className="top-container">
                 <h2>전체 상품 목록</h2>
             </div>
@@ -275,6 +276,7 @@ function ProductList() {
                     <button className="filter-button" onClick={handleDeleteSelected}>삭제</button>
                 </div>
             </div>
+            </main>
         </Layout>
     );
 }

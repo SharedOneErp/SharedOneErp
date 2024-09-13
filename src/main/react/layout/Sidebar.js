@@ -115,11 +115,11 @@ function Sidebar({currentMenu}) {
                             <a href="#" onClick={() => handleSubMenuClick('order', '/order')}>주문 등록</a>
                         </li>
                         <li className={currentMenu === 'orderList' ? 'active' : ''}>
-                            <a href="#" onClick={() => handleSubMenuClick('orderList', '/orderList')}>주문 목록</a>
+                            <a href="#" onClick={() => handleSubMenuClick('orderList', '/orderList')}>주문 목록 (-)</a>
                         </li>
                         <li className={currentMenu === 'orderRegisterApproval' ? 'active' : ''}>
                             <a href="#"
-                               onClick={() => handleSubMenuClick('orderRegisterApproval', '/orderRegisterApproval')}>주문 등록 승인</a>
+                               onClick={() => handleSubMenuClick('orderRegisterApproval', '/orderRegisterApproval')}>주문 등록 승인 (-)</a>
                         </li>
                         <li className={currentMenu === 'orderReport' ? 'active' : ''}>
                             <a href="#" onClick={() => handleSubMenuClick('orderReport', '/orderReport')}>영업 실적 보고서</a>
@@ -136,9 +136,9 @@ function Sidebar({currentMenu}) {
                         <li className={currentMenu === 'productList' ? 'active' : ''}>
                             <a href="#" onClick={() => handleSubMenuClick('productList', '/productList')}>전체 상품 목록</a>
                         </li>
-                        <li className={currentMenu === 'product' ? 'active' : ''}>
-                            <a href="#" onClick={() => handleSubMenuClick('product', '/product')}>상품 등록</a>
-                        </li>
+                        {/*<li className={currentMenu === 'product' ? 'active' : ''}>*/}
+                        {/*    <a href="#" onClick={() => handleSubMenuClick('product', '/product')}>상품 등록</a>*/}
+                        {/*</li>*/}
                         <li className={currentMenu === 'productPrice' ? 'active' : ''}>
                             <a href="#"
                                onClick={() => handleSubMenuClick('productPrice', '/productPrice')}>상품 가격 관리</a>
@@ -155,14 +155,14 @@ function Sidebar({currentMenu}) {
                     }}
                        className={activeMenu === 'customer' ? 'active' : ''}>고객관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
                     <ul className="submenu">
-                        <li className={currentMenu === 'customerList' ? 'active' : ''}>
+                        <li className={currentMenu === 'customer' ? 'active' : ''}>
                             <a href="#"
                                onClick={() => handleSubMenuClick('customerList', '/customerList')}>고객사 목록</a>
                         </li>
-                        <li className={currentMenu === 'customer' ? 'active' : ''}>
-                            <a href="#"
-                               onClick={() => handleSubMenuClick('customer', '/customer')}>고객사 등록</a>
-                        </li>
+                        {/*<li className={currentMenu === 'customer' ? 'active' : ''}>*/}
+                        {/*    <a href="#"*/}
+                        {/*       onClick={() => handleSubMenuClick('customer', '/customer')}>고객사 등록</a>*/}
+                        {/*</li>*/}
                     </ul>
                 </li>
                 <li className={activeMenu === 'hr' ? 'active' : ''}>
@@ -172,11 +172,13 @@ function Sidebar({currentMenu}) {
                     }}
                        className={activeMenu === 'hr' ? 'active' : ''}>인사관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
                     <ul className="submenu">
-                        <li className={currentMenu === 'employeeList' ? 'active' : ''}>
+                        <li className={currentMenu === 'employee' ? 'active' : ''}>
                             <a href="#"
                                onClick={() => handleSubMenuClick('employeeList', '/employeeList')}>직원 목록</a>
                         </li>
-
+                        {/*<li className={currentMenu === 'employeeRegister' ? 'active' : ''}>*/}
+                        {/*    <a href="#" onClick={() => handleSubMenuClick('EmployeeRegister', '/employeeRegister')}>직원 등록</a>*/}
+                        {/*</li>*/}
                     </ul>
                 </li>
             </ul>

@@ -33,6 +33,8 @@ public class OrderController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private OrderService orderService;
 
 
     @PostMapping
@@ -103,6 +105,29 @@ public class OrderController {
         }
     }
 
+    // 전체 주문 목록 조회
+    @GetMapping("/all")
+    public List<Order> getAllOrders() {
+        return orderService.getAllOrders();
+    }
+
+    // 특정 주문 상태로 필터링된 주문 목록 조회
+    @GetMapping("/status")
+    public List<Order> getOrdersByStatus(@RequestParam String status) {
+        return orderService.getOrdersByStatus(status);
+    }
+
+    // 고객사 이름으로 주문 검색
+    @GetMapping("/customer")
+    public List<Order> getOrdersByCustomerName(@RequestParam String customerName) {
+        return orderService.getOrdersByCustomerName(customerName);
+    }
+
+    // 주문 날짜로 검색
+    @GetMapping("/date")
+    public List<Order> getOrdersByOrderDate(@RequestParam String orderDate) {
+        return orderService.getOrdersByOrderDate(orderDate);
+    }
 
 
 

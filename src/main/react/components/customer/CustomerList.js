@@ -28,8 +28,27 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
     useEffect(() => {
         if (customerData) {
             setForm(customerData); // 기존 고객 데이터를 폼에 반영
+        } else {
+            // 새 고객 등록 시 폼 초기화
+            setForm({
+                customerName: '',
+                customerTel: '',
+                customerRepresentativeName: '',
+                customerBusinessRegNo: '',
+                customerAddr: '',
+                customerFaxNo: '',
+                customerManagerName: '',
+                customerManagerEmail: '',
+                customerManagerTel: '',
+                customerCountryCode: '',
+                customerType: '',
+                customerEtaxInvoiceYn: '',
+                customerTransactionStartDate: '',
+                customerTransactionEndDate: ''
+            });
         }
     }, [customerData]);
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -49,8 +68,10 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
             return;
         }
 
-        onSave(form);
-        onClose();
+        if (window.confirm('등록하시겠습니까?')) {
+            onSave(form);
+            onClose();
+        }
     };
 
     if (!show) return null;
@@ -149,7 +170,7 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                                 <label>거래 종료일</label>
                                 <input type="date" name="customerTransactionEndDate"
                                        value={form.customerTransactionEndDate || ''}
-                                       onChange={handleInputChange}/>
+                                       onChange={handleInputChange} />
                             </div>
                         </div>
                     </div>
@@ -162,20 +183,34 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
 
 // 고객 상세 정보 모달창
 function CustomerDetailModal({show, onClose, customer, onSave, onDelete}) {
+
     const [isEditMode, setIsEditMode] = useState(false);
     const [editableCustomer, setEditableCustomer] = useState(customer || {});
 
     useEffect(() => {
         if (customer) {
-            setEditableCustomer(customer);
+            setEditableCustomer(customer); // 선택된 고객 데이터를 설정
         }
     }, [customer]);
 
-    const toggleEditMode = () => setIsEditMode(!isEditMode);
+    const toggleEditMode = () => {
+        if (!isEditMode) {
+            if (window.confirm('수정하시겠습니까?')) {
+                setIsEditMode(true);
+            }
+        }
+    };
+
+    const handleSave = () => {
+        if (window.confirm('저장하시겠습니까?')) {
+            onSave(editableCustomer);
+            onClose(); // 모달창 닫기
+        }
+    };
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setEditableCustomer((prev) => ({...prev, [name]: value}));
+        const { name, value } = e.target;
+        setEditableCustomer((prev) => ({ ...prev, [name]: value }));
     };
 
     if (!show || !customer) return null;
@@ -268,13 +303,23 @@ function CustomerDetailModal({show, onClose, customer, onSave, onDelete}) {
                     </div>
                     <div className="form-group">
                         <label>국가 코드</label>
-                        <input
-                            type="text"
-                            name="customerCountryCode"
-                            value={editableCustomer.customerCountryCode || ''}
-                            onChange={handleChange}
-                            readOnly={!isEditMode}
-                        />
+                        <select name="customerCountryCode" value={editableCustomer.customerCountryCode || ''}
+                                onChange={handleChange} disabled={!isEditMode}>
+                            <option value="KR">한국 (+82)</option>
+                            <option value="US">미국 (+1)</option>
+                            <option value="JP">일본 (+81)</option>
+                            <option value="CN">중국 (+86)</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label>거래처분류</label>
+                        <select name="customerType" value={editableCustomer.customerType || ''} onChange={handleChange}
+                                disabled={!isEditMode}>
+                            <option value="01">01. 고객기업</option>
+                            <option value="02">02. 협력기업</option>
+                            <option value="03">03. 본사기업</option>
+                            <option value="04">04. 기타기업</option>
+                        </select>
                     </div>
                     <div className="form-group">
                         <label>전자세금계산서 여부</label>
@@ -288,28 +333,20 @@ function CustomerDetailModal({show, onClose, customer, onSave, onDelete}) {
                     </div>
                     <div className="form-group">
                         <label>거래 시작일</label>
-                        <input
-                            type="text"
-                            name="customerTransactionStartDate"
-                            value={editableCustomer.customerTransactionStartDate || ''}
-                            onChange={handleChange}
-                            readOnly={!isEditMode}
-                        />
+                        <input type="date" name="customerTransactionStartDate"
+                               value={editableCustomer.customerTransactionStartDate || ''} onChange={handleChange}
+                               readOnly={!isEditMode}/>
                     </div>
                     <div className="form-group">
                         <label>거래 종료일</label>
-                        <input
-                            type="text"
-                            name="customerTransactionEndDate"
-                            value={editableCustomer.customerTransactionEndDate || ''}
-                            onChange={handleChange}
-                            readOnly={!isEditMode}
-                        />
+                        <input type="date" name="customerTransactionEndDate"
+                               value={editableCustomer.customerTransactionEndDate || ''} onChange={handleChange}
+                               readOnly={!isEditMode}/>
                     </div>
                 </div>
                 <div className="modal-footer">
                     {isEditMode ? (
-                        <button className="save-button" onClick={() => onSave(editableCustomer)}>저장</button>
+                        <button className="save-button" onClick={handleSave}>저장</button>
                     ) : (
                         <button className="edit-button" onClick={toggleEditMode}>수정</button>
                     )}
@@ -320,7 +357,7 @@ function CustomerDetailModal({show, onClose, customer, onSave, onDelete}) {
     );
 }
 
-// 고객 리스트 컴포넌트
+// 고객 리스트
 function CustomerList() {
     const [filter, setFilter] = useState('');
     const [filterType, setFilterType] = useState('customerName');
@@ -330,55 +367,91 @@ function CustomerList() {
     const [selectedCustomer, setSelectedCustomer] = useState(null);
     const [showRegisterModal, setShowRegisterModal] = useState(false);
     const [showDetailModal, setShowDetailModal] = useState(false);
+    const [selectedCustomers, setSelectedCustomers] = useState([]);
 
     useEffect(() => {
         axios.get('/api/customer/getList')
-            .then(response => setCustomers(response.data))
+            .then(response => setCustomers(response.data.filter(customer => customer.customerDeleteYn === 'N')))
             .catch(error => console.error('Error fetching customer data:', error));
     }, []);
 
-    // 고객 등록/수정 처리
+    // 고객 등록&수정 처리
     const handleSaveCustomer = (customerData) => {
         if (selectedCustomer) {
             //수정 로직
-            axios.put(`/api/customer/update/${selectedCustomer.customerNo}`, customerData)
-                .then(response => {
-                    setCustomers(customers.map(c => c.customerNo === selectedCustomer.customerNo ? response.data : c));
-                    closeRegisterModal();
-                })
-                .catch(error => console.error('고객 수정 중 오류:', error));
+            if (window.confirm('수정하시겠습니까?')) {
+                axios.put(`/api/customer/update/${selectedCustomer.customerNo}`, customerData)
+                    .then(response => {
+                        setCustomers(customers.map(c => c.customerNo === selectedCustomer.customerNo ? response.data : c));
+                        setShowRegisterModal(false);
+                    })
+                    .catch(error => console.error('고객 수정 중 오류:', error));
+            }
         } else {
             //등록 로직
-            axios.post('/api/customer/register', customerData)
-                .then(response => {
-                    setCustomers([...customers, response.data]);
-                    closeRegisterModal();
-                })
-                .catch(error => console.error('고객 등록 중 오류:', error));
+            if (window.confirm('등록하시겠습니까?')) {
+                axios.post('/api/customer/register', customerData)
+                    .then(response => {
+                        setCustomers([...customers, response.data]);
+                        setShowRegisterModal(false);
+                    })
+                    .catch(error => console.error('고객 등록 중 오류:', error));
+            }
         }
     };
 
+    // 고객 삭제 처리
     const handleDeleteCustomer = () => {
         if (window.confirm('정말 삭제하시겠습니까?')) {
+            const updatedCustomer = { ...selectedCustomer, customerDeleteYn: 'Y' };
             axios.delete(`/api/customer/delete/${selectedCustomer.customerNo}`)
                 .then(() => {
                     setCustomers(customers.filter(c => c.customerNo !== selectedCustomer.customerNo));
-                    closeDetailModal();
+                    setShowDetailModal(false);
                 })
                 .catch(error => console.error('고객 삭제 중 오류:', error));
         }
     };
 
-    const openRegisterModal = (customer = null) => {
-        setSelectedCustomer(customer);
+    //고객 체크박스 선택
+    const handleSelectCustomer = (customerNo) => {
+        setSelectedCustomers(prevSelected =>
+            prevSelected.includes(customerNo)
+                ? prevSelected.filter(id => id !== customerNo)
+                : [...prevSelected, customerNo]
+        );
+    };
+
+    //고객 전체삭제 처리
+    const handleDeleteAll = () => {
+        if (selectedCustomers.length === 0) {
+            alert('삭제할 고객을 선택하세요.');
+            return;
+        }
+
+        if (window.confirm('선택한 고객을 모두 삭제하시겠습니까?')) {
+            selectedCustomers.forEach(customerNo => {
+                axios.delete(`/api/customer/delete/${customerNo}`)
+                    .then(() => {
+                        setCustomers(customers.filter(c => c.customerNo !== customerNo));
+                    })
+                    .catch(error => console.error('고객 삭제 중 오류:', error));
+            });
+            setSelectedCustomers([]); // 선택한 고객 초기화
+        }
+    };
+
+
+    const openRegisterModal = () => {
+        setSelectedCustomer(null); // 새 고객 등록 시 기존 선택된 고객 정보 초기화
         setShowRegisterModal(true);
     };
 
     const closeRegisterModal = () => setShowRegisterModal(false);
 
     const openDetailModal = (customer) => {
-        setSelectedCustomer(customer);
-        setShowDetailModal(true);
+        setSelectedCustomer(customer); // 선택된 고객 정보 설정
+        setShowDetailModal(true); // 상세 모달창 띄우기
     };
 
     const closeDetailModal = () => setShowDetailModal(false);
@@ -394,10 +467,12 @@ function CustomerList() {
     const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
 
     return (
-        <Layout>
+        <Layout currentMenu="customer"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
+            <main className="main-content menu_customer">
             <h1>고객사 목록</h1>
             <div className="table-header">
                 <button className="register-button" onClick={() => openRegisterModal(null)}>등록</button>
+                <button className="deleteall-button" onClick={handleDeleteAll}>전체 삭제</button>
             </div>
             <div className="filter-section">
                 <select onChange={(e) => setFilterType(e.target.value)}>
@@ -413,6 +488,9 @@ function CustomerList() {
             <table className="customer-table">
                 <thead>
                 <tr>
+                    <th><input type="checkbox"
+                               onChange={(e) => setSelectedCustomers(e.target.checked ? customers.map(c => c.customerNo) : [])}/>
+                    </th>
                     <th>No</th>
                     <th>고객명</th>
                     <th>사업자 등록번호</th>
@@ -426,11 +504,13 @@ function CustomerList() {
                     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                     .map((customer, index) => (
                         <tr key={customer.customerNo}>
+                            <td><input type="checkbox" checked={selectedCustomers.includes(customer.customerNo)}
+                                       onChange={() => handleSelectCustomer(customer.customerNo)}/></td>
                             <td>{index + 1}</td>
                             <td>{customer.customerName}</td>
-                            <td>{customer.businessRegNo}</td>
-                            <td>{customer.countryCode}</td>
-                            <td>{customer.managerName}</td>
+                            <td>{customer.customerBusinessRegNo}</td>
+                            <td>{customer.customerCountryCode}</td>
+                            <td>{customer.customerManagerName}</td>
                             <td>
                                 <button onClick={() => openDetailModal(customer)}>내역보기</button>
                             </td>
@@ -447,20 +527,20 @@ function CustomerList() {
                 <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>다음</button>
             </div>
 
-            {/* 모달창 */}
-            <CustomerDetailModal
-                show={showDetailModal}
-                onClose={closeDetailModal}
-                customer={selectedCustomer}
-                onSave={handleSaveCustomer}
-                onDelete={handleDeleteCustomer}
-            />
-            <CustomerRegisterModal
-                show={showRegisterModal}
-                onClose={closeRegisterModal}
-                onSave={handleSaveCustomer}
-                customerData={selectedCustomer}
-            />
+        {/* 모달창 */}
+        <CustomerDetailModal
+            show={showDetailModal}
+            onClose={closeDetailModal}
+            customer={selectedCustomer}
+            onSave={handleSaveCustomer}
+            onDelete={handleDeleteCustomer}
+        />
+        <CustomerRegisterModal
+            show={showRegisterModal}
+            onClose={closeRegisterModal}
+            onSave={handleSaveCustomer}
+            customerData={selectedCustomer}
+        />
         </Layout>
     );
 }
