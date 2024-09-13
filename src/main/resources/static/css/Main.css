@@ -3,7 +3,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 3개의 열로 구성 */
     grid-gap: 20px; /* 카드 간격 */
-    padding: 20px;
+    padding: 30px;
 }
 
 .card {
@@ -11,17 +11,14 @@
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    height: 250px;
 }
 
 .card-large {
     grid-column: span 1; /* 1열만 차지 */
-    height: 250px;
 }
 
 .card-full {
     grid-column: span 3; /* 전체 너비를 차지 */
-    height: 250px;
 }
 
 .card h3 {

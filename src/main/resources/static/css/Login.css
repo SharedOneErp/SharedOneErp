@@ -1,8 +1,4 @@
-/* Reset 기본 스타일 초기화 */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap'); body, html { font-family: "Noto Sans KR", sans-serif; font-weight: 400; font-style: normal; }
-
-* { margin : 0; padding : 0; box-sizing: border-box; }
-
+/* src/components/Layout.css */
 body {
     margin: 0;
     height: 100vh;
@@ -59,6 +55,7 @@ h1 {
     font-size: 0.9rem;
     margin-bottom: 5px;
     color: #555;
+    font-weight: 500;
 }
 
 .input-group input {
@@ -100,7 +97,8 @@ h1 {
 }
 
 .login-footer p {
-    margin-top: 10px;
-    color: #666;
+    margin-top: 13px;
+    color: #777;
     font-size: 0.75rem;
+    font-weight: 500;
 }
