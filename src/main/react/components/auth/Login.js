@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴포넌트를 DOM에 렌더링
+import '../../../resources/static/css/Layout.css';
 import '../../../resources/static/css/Login.css'; // 개별 CSS 스타일 적용
 
 function Login() {

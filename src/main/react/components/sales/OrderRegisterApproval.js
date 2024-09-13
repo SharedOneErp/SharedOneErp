@@ -8,6 +8,7 @@ function OrderRegisterApproval() {
 
     return (
         <Layout currentMenu="orderRegisterApproval">
+            <main className="main-content menu_order_approval">
             <div className="top-container">
                 <h2>주문 등록 승인</h2>
                 <p>영업 관리</p>
@@ -106,7 +107,7 @@ function OrderRegisterApproval() {
                     <button className="print-button">인쇄</button>
                 </div>
             </div>
-
+            </main>
         </Layout>
 
     )

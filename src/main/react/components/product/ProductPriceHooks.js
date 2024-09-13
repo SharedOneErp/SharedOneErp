@@ -10,7 +10,7 @@ export const useHooksList = () => {
     const [totalItems, setTotalItems] = useState(0); // 전체 항목 수
     const [totalPages, setTotalPages] = useState(0); // 전체 페이지 수
 
-    const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지당 항목 수
+    const [itemsPerPage, setItemsPerPage] = useState(20); // 페이지당 항목 수
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
 
     const [selectedCustomerNo, setSelectedCustomerNo] = useState(''); // 선택된 고객사
@@ -131,8 +131,18 @@ export const useHooksList = () => {
     // 페이지당 항목 수 변경 함수
     const handleItemsPerPageChange = (e) => {
         console.log("---------------------------handleItemsPerPageChange()");
-        setItemsPerPage(parseInt(e.target.value)); // 페이지당 항목 수 변경
-        setCurrentPage(1); // 페이지 번호 초기화
+        let value = parseInt(e.target.value, 10); // 입력값을 정수로 변환
+        if (!isNaN(value)) {
+            if (value > 100) {
+                value = 100; // 100을 초과하면 100으로 설정
+            }
+            if (value > 0 && value <= 100) { // 유효성 검사: 1 ~ 100 사이
+                setItemsPerPage(value); // 페이지당 항목 수 변경
+                setCurrentPage(1); // 페이지 번호 초기화
+            }
+        } else {
+            console.error("1에서 100 사이의 값을 입력하세요."); // 유효하지 않은 경우
+        }
     };
 
     // 페이지 번호 클릭 시 현재 페이지 변경 함수

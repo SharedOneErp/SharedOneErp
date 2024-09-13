@@ -56,14 +56,20 @@ public class EmployeeService {
 
     public Page<Employee> getPageEmployees(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return employeeRepository.findAll(pageable);
+        return employeeRepository.findByEmployeeDeleteYn("N", pageable);
     }
 //    public Page<Employee> getPageEmployees(int page, int size) {
 //        Pageable pageable = PageRequest.of(page, size);
 //        return employeeRepository.findAll(pageable);
 //    }
 
-    public void deleteEmployees(List<String> id) {
-        employeeRepository.deleteAllById(id);  // JPA에서 제공하는 delete 메서드
+    public void deleteLogicalEmployees(List<String> ids) {
+        for (String id : ids) {
+            Employee employee = employeeRepository.findById(id).orElse(null);
+            if (employee != null) {
+                employee.setEmployeeDeleteYn("Y");
+                employeeRepository.save(employee);  // update로 N -> Y로 바꿈
+            }
+        }
     }
 }

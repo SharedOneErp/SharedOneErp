@@ -19,8 +19,7 @@ function Order() {
     const [products, setProducts] = useState([{name: '', price: '', quantity: ''}]);
     const [customer, setCustomer] = useState([]);
 
-
-    const [orderDetails, setOrderDetails] = useState([]); // 추가된 상태
+    const [orderDetails, setOrderDetails] = useState([{productNm:'',orderDPrice:'',orderDQty:'',productCd:''}]);
     const [showModal, setShowModal] = useState(false); // 모달 상태
     const [customerModalOpen, setCustomerModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태
@@ -79,6 +78,23 @@ function Order() {
             orderDQty: orderDetail.orderDQty,
         };
     });
+
+
+    const displayItemEdit = orderDetails.map(orderDetail => {
+        // productCd를 기준으로 products에서 해당 제품을 찾음
+        const matchingProduct = products.find(product => product.productCd === orderDetail.productCd);
+
+        return {
+            productCd: orderDetail.productCd,
+            productNm: matchingProduct ? matchingProduct.productNm : '', // products에서 찾은 상품명
+            orderDPrice: orderDetail.orderDPrice,
+            orderDQty: orderDetail.orderDQty,
+        };
+    });
+
+
+
+
 
 
 
@@ -143,10 +159,26 @@ function Order() {
     };
 
 
+    const editProductRow = () => {
+        setOrderDetails([
+            ...orderDetails,
+            { productCd: '', productNm: '', orderDPrice: 0, orderDQty: 0 }
+        ]);
+    };
+
     // 상품 행 제거
     const removeProductRow = (index) => {
         setProducts(products.filter((_, i) => i !== index));
     };
+
+    // 제품 수정 행 제거
+    const removeProducteditRow = (index) => {
+        setOrderDetails(orderDetails.filter((_, i) => i !== index));
+    };
+
+
+
+
 
     // 상품 변경 처리
     const handleProductChange = (index, field, value) => {
@@ -154,6 +186,15 @@ function Order() {
         updatedProducts[index][field] = value || 0;
         setProducts(updatedProducts);
     };
+
+    // 상품 수정 처리
+    const handleProductEdit = (index, field, value) => {
+        const updatedOrderDetails = [...orderDetails];
+        updatedOrderDetails[index][field] = value || 0;
+        setOrderDetails(updatedOrderDetails);
+    };
+
+
 
     // 모달 열기
     const openModal = (index) => {
@@ -239,30 +280,56 @@ function Order() {
     };
 
 
+    //수정시 상품 선택
+    const handleProductSelectEdit = (selectedProduct) => {
+        console.log('Selected product:', selectedProduct);
+
+        if (selectedProductIndex !== null) {
+            const updatedOrderDetails = [...orderDetails];
+            updatedOrderDetails[selectedProductIndex] = {
+                ...updatedOrderDetails[selectedProductIndex],
+                productNm: selectedProduct.productNm || '', // 제품 이름을 업데이트
+                orderDPrice: selectedProduct.price || 0,
+                orderDQty: selectedProduct.quantity || 0,
+                productCd: selectedProduct.productCd || '' // 상품 코드
+            };
+
+            console.log('Updated order details:', updatedOrderDetails);
+            setOrderDetails(updatedOrderDetails);
+        } else {
+            console.error('No selectedProductIndex set');
+        }
+        closeModal();
+    };
+
+
+
+    
+    
+
+    //주문 생성 및 정보 직관화 한 alert 생성
     const handleSubmit = async () => {
-        // DOM에서 직접 값을 가져오는 대신 상태에서 관리하는 값을 사용하세요.
-        const customerNo = document.querySelector('input[name="customerNo"]').value.trim(); // 고객번호
-        const totalAmount = products.reduce((sum, product) => sum + product.price * product.quantity, 0); // 총 금액
+        const customerName = document.querySelector('input[name="customerName"]').value.trim();
+        const employeeElement = document.querySelector('.employee-name');
+        const employeeName = employeeElement ? employeeElement.textContent.trim() : "담당자 이름 없음";
+        const customerNo = document.querySelector('input[name="customerNo"]').value.trim();
+        const totalAmount = products.reduce((sum, product) => sum + product.price * product.quantity, 0);
         const employeeIdElement = document.querySelector('.employee-id');
-        const employeeId = employeeIdElement ? employeeIdElement.textContent.trim() : null; // 담당자의 ID를 가져오는 방법
+        const employeeId = employeeIdElement ? employeeIdElement.textContent.trim() : null;
 
         console.log(customerNo);
         console.log(employeeId);
         console.log(totalAmount);
 
-
-        // 고객번호와 직원 ID를 숫자로 변환합니다.
         const orderData = {
-            customer: {customerNo: customerNo},  // 서버에서 Expecting Customer 객체
-            employee: {employeeId: employeeId},  // 서버에서 Expecting Employee 객체
+            customer: { customerNo: customerNo },
+            employee: { employeeId: employeeId },
             orderHTotalPrice: totalAmount,
             orderHStatus: "ing",
             orderHInsertDate: new Date().toISOString(),
             orderHUpdateDate: null,
-            orderHDeleteYn : "N"
+            orderHDeleteYn: "N"
         };
-
-        console.log(orderData);
 
         console.log("-------------------------------------handleSubmit");
         try {
@@ -274,31 +341,25 @@ function Order() {
                 body: JSON.stringify(orderData),
             });
 
-            // 오류
             if (response.ok) {
-                // 서버 응답에서 orderNo 값을 추출
                 const data = await response.json();
-                const order_h_no = data.orderNo; // JSON에서 'orderNo'을 추출하여 'order_h_no'로 사용
-
+                const order_h_no = data.orderNo;
 
                 console.log("order_h_no : " + order_h_no);
 
-
-                // 각 제품의 상세 주문 정보를 서버에 전송
+                // 제품별 상세 주문 정보를 서버에 전송
                 for (let product of products) {
                     const deliveryDateElement = document.querySelector('.delivery-date');
                     const deliveryRequestDate = deliveryDateElement ? deliveryDateElement.value : null;
 
                     const orderDetailData = {
                         orderNo: order_h_no,
-                        productCd: product.code, // 상품 코드
+                        productCd: product.code,
                         orderDPrice: product.price,
                         orderDQty: product.quantity,
                         orderDTotalPrice: product.price * product.quantity,
                         orderDDeliveryRequestDate: deliveryRequestDate,
                     };
-
-                    console.log("product.code : " + product.code);
 
                     const detailResponse = await fetch('/api/orderDetails', {
                         method: 'POST',
@@ -314,10 +375,21 @@ function Order() {
                     }
                 }
 
+                // 상품이 두 개 이상일 때 첫 번째 상품과 나머지 상품 수 계산
+                const firstProduct = products[0];
+                const additionalProductsCount = products.length > 1 ? products.length - 1 : 0;
+
+                // 첫 번째 상품과 나머지 상품 수를 포함하여 알림 메시지 생성
+                const summaryString = additionalProductsCount > 0
+                    ? `제품명: ${firstProduct.name} 외 ${additionalProductsCount}건\n총 수량: ${products.reduce((sum, product) => sum + product.quantity, 0)}\n총액: ${totalAmount}원`
+                    : `제품명: ${firstProduct.name}\n수량: ${firstProduct.quantity}\n단가: ${firstProduct.price}\n금액: ${firstProduct.price * firstProduct.quantity}원`;
+
+                // 요약된 알림 생성
+                alert(`${employeeName}님의 주문 생성이 완료되었습니다.\n\n주문번호: ${order_h_no}\n고객사: ${customerName}\n\n${summaryString}`);
+
                 // 주문 처리 후 페이지 이동
-                window.location.href = '/orderListAll';
+                window.location.href = `/order?no=${order_h_no}`;
             } else {
-                // 응답 상태가 OK가 아닌 경우, 응답 본문을 텍스트로 변환하여 오류를 확인합니다.
                 const errorText = await response.text();
                 console.error('주문 처리 오류:', errorText);
             }
@@ -325,6 +397,9 @@ function Order() {
             console.error('주문 처리 중 오류 발생:', error.message);
         }
     };
+
+
+
 
 
     //수정
@@ -447,6 +522,7 @@ function Order() {
 
     return (
         <Layout currentMenu="order">
+            <main className="main-content menu_order">
             <div className="orderDetail-title">
                 <h3>{isCreateMode ? '주문 등록' : isEditMode ? '주문 수정' : '주문 상세보기'}</h3>
             </div>
@@ -573,7 +649,7 @@ function Order() {
                             <th>단가</th>
                             <th>수량</th>
                             <th>총 금액</th>
-                            {(isCreateMode || isEditMode) && <th>삭제</th>}
+                            {(isCreateMode) && <th>삭제</th>}
                         </tr>
                         </thead>
                         <tbody>
@@ -632,7 +708,7 @@ function Order() {
                         ))}
                         </tbody>
                     </table>
-                    {(isCreateMode || isEditMode) &&
+                    {(isCreateMode) &&
                         <button className="add-button" onClick={addProductRow}>+</button>}
                 </div>
                 )}
@@ -707,9 +783,6 @@ function Order() {
                             ))}
                             </tbody>
                         </table>
-                        {isEditMode && (
-                            <button className="add-button" onClick={addProductRow}>+</button>
-                        )}
                     </div>
                 )}
 
@@ -727,7 +800,7 @@ function Order() {
                         </tr>
                         </thead>
                         <tbody>
-                        {displayItems.map((item, index) => (
+                        {displayItemEdit.map((item, index) => (
                             <tr key={index}>
                                 <td>{index + 1}</td>
                                 <td>
@@ -736,9 +809,10 @@ function Order() {
                                         value={item.productNm}
                                         readOnly={!isEditMode}
                                         onChange={(e) => isEditMode
-                                            ? handleProductChange(index, 'productNm', e.target.value)
+                                            ? handleProductEdit(index, 'productNm', e.target.value)
                                             : null
                                         }
+
                                     />
                                     {isEditMode && (
                                         <button className="search-button" onClick={() => openModal(index)}>
@@ -752,7 +826,7 @@ function Order() {
                                         value={item.orderDPrice}
                                         readOnly={!isEditMode}
                                         onChange={(e) => isEditMode
-                                            ? handleProductChange(index, 'orderDPrice', Number(e.target.value))
+                                            ? handleProductEdit(index, 'orderDPrice', Number(e.target.value))
                                             : null
                                         }
                                     />
@@ -763,7 +837,7 @@ function Order() {
                                         value={item.orderDQty}
                                         readOnly={!isEditMode}
                                         onChange={(e) => isEditMode
-                                            ? handleProductChange(index, 'orderDQty', Number(e.target.value))
+                                            ? handleProductEdit(index, 'orderDQty', Number(e.target.value))
                                             : null
                                         }
                                     />
@@ -771,7 +845,7 @@ function Order() {
                                 <td>{item.orderDPrice * item.orderDQty}</td>
                                 {isEditMode && (
                                     <td>
-                                        <button onClick={() => removeProductRow(index)}>&times;</button>
+                                        <button onClick={() => removeProducteditRow(index)}>&times;</button>
                                     </td>
                                 )}
                                 {/* 숨겨진 상품 코드 */}
@@ -783,16 +857,10 @@ function Order() {
                         </tbody>
                     </table>
                     {isEditMode && (
-                        <button className="add-button" onClick={addProductRow}>+</button>
+                        <button className="add-button" onClick={editProductRow}>+</button>
                     )}
                 </div>
                 )}
-
-
-
-
-
-
 
 
 
@@ -905,30 +973,33 @@ function Order() {
 
                             {/* 검색 결과 */}
                             <div className="search-results">
-                                {searchResults.length > 0 ? (
-                                    <table className="search-results-table">
-                                        <thead>
-                                        <tr>
-                                            <th>상품코드</th>
-                                            <th>카테고리</th>
-                                            <th>상품명</th>
-                                            <th>가격</th>
+                            {searchResults.length > 0 ? (
+                                <table className="search-results-table">
+                                    <thead>
+                                    <tr>
+                                        <th>상품코드</th>
+                                        <th>카테고리</th>
+                                        <th>상품명</th>
+                                        <th>가격</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {paginatedSearchResults.map((result, index) => (
+                                        <tr
+                                            key={index}
+                                            onClick={() => isEditMode ? handleProductSelectEdit(result) : handleProductSelect(result)}
+                                        >
+                                            <td>{result.productCd}</td>
+                                            <td>{result.category.categoryNo}</td>
+                                            <td>{result.productNm}</td>
+                                            <td>{result.price}</td>
                                         </tr>
-                                        </thead>
-                                        <tbody>
-                                        {paginatedSearchResults.map((result, index) => (
-                                            <tr key={index} onClick={() => handleProductSelect(result)}>
-                                                <td>{result.productCd}</td>
-                                                <td>{result.category.categoryNo}</td>
-                                                <td>{result.productNm}</td>
-                                                <td>{result.price}</td>
-                                            </tr>
-                                        ))}
-                                        </tbody>
-                                    </table>
-                                ) : (
-                                    <div>검색 결과가 없습니다.</div>
-                                )}
+                                    ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <div>검색 결과가 없습니다.</div>
+                            )}
                                 {/* 페이지네이션 */}
                                 <div className="pagination">
                                     {Array.from({ length: totalProductPages }, (_, i) => i + 1).map(number => (
@@ -966,6 +1037,7 @@ function Order() {
                     <button className="close-btn" onClick={() => window.location.href = '/orderListAll'}>닫기</button>
                 </div>
             </div>
+            </main>
         </Layout>
     );
 }
