@@ -381,8 +381,8 @@ function Order() {
 
                 // 첫 번째 상품과 나머지 상품 수를 포함하여 알림 메시지 생성
                 const summaryString = additionalProductsCount > 0
-                    ? `제품명: ${firstProduct.name} 외 ${additionalProductsCount}건\n총 수량: ${products.reduce((sum, product) => sum + product.quantity, 0)}\n총액: ${totalAmount}원`
-                    : `제품명: ${firstProduct.name}\n수량: ${firstProduct.quantity}\n단가: ${firstProduct.price}\n금액: ${firstProduct.price * firstProduct.quantity}원`;
+                    ? `제품명: ${firstProduct.name} 외 ${additionalProductsCount}건\n총 수량: ${products.reduce((sum, product) => sum + product.quantity, 0)}개\n총액: ${totalAmount.toLocaleString()}원`
+                    : `제품명: ${firstProduct.name}\n수량: ${firstProduct.quantity.toLocaleString()}개\n단가: ${firstProduct.price.toLocaleString()}원\n금액: ${(firstProduct.price * firstProduct.quantity).toLocaleString()}원`;
 
                 // 요약된 알림 생성
                 alert(`${employeeName}님의 주문 생성이 완료되었습니다.\n\n주문번호: ${order_h_no}\n고객사: ${customerName}\n\n${summaryString}`);
@@ -556,7 +556,7 @@ function Order() {
                         <>
                             <div className="form-group">
                                 <label>물품 총액</label>
-                                <span className="orderHtotal-price"> {orderHTotalPrice}원</span>
+                                <span className="orderHtotal-price"> {orderHTotalPrice.toLocaleString()}원</span>
                             </div>
                             <div className="form-group">
                                 <label>주문 등록일</label>
@@ -694,7 +694,7 @@ function Order() {
                                         }
                                     />
                                 </td>
-                                <td>{(isCreateMode ? item.price * item.quantity : item.orderDPrice * item.orderDQty) || 0}</td>
+                                <td>{(isCreateMode ? (item.price * item.quantity).toLocaleString() : item.orderDPrice * item.orderDQty) || 0}</td>
                                 {(isCreateMode || isEditMode) && (
                                     <td>
                                         <button onClick={() => removeProductRow(index)}>&times;</button>
@@ -769,7 +769,7 @@ function Order() {
                                             }
                                         />
                                     </td>
-                                    <td>{item.orderDPrice * item.orderDQty}</td>
+                                    <td>{(item.orderDPrice * item.orderDQty).toLocaleString()}</td>
                                     {isEditMode && (
                                         <td>
                                             <button onClick={() => removeProductRow(index)}>&times;</button>
@@ -842,7 +842,7 @@ function Order() {
                                         }
                                     />
                                 </td>
-                                <td>{item.orderDPrice * item.orderDQty}</td>
+                                <td>{(item.orderDPrice * item.orderDQty).toLocaleString()}</td>
                                 {isEditMode && (
                                     <td>
                                         <button onClick={() => removeProducteditRow(index)}>&times;</button>
@@ -1022,7 +1022,7 @@ function Order() {
                     {isCreateMode ? (
                         <>
                             <label>총 금액: </label>
-                            <span>{products.reduce((sum, product) => sum + product.price * product.quantity, 0)}원</span>
+                            <span>{(products.reduce((sum, product) => sum + product.price * product.quantity, 0)).toLocaleString()}원</span>
                         </>
                     ) : (
                         <span></span>
