@@ -2,12 +2,12 @@ import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴포넌트를 DOM에 렌더링
 import {BrowserRouter, Route, Routes, useSearchParams} from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
 import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
-import '../../../resources/static/css/product/ProductDetail.css';
+import '../../../resources/static/css/product/ProductDetailModal.css';
 import {formatDate} from '../../util/dateUtils'
 
 //import {response} from "express"; // 개별 CSS 스타일 적용
 
-function ProductDetail() {
+function ProductDetail2() {
     const [searchParams] = useSearchParams();
     const productCd = searchParams.get('no');
     const [productDetail, setProductDetail] = useState([]);
@@ -29,7 +29,7 @@ function ProductDetail() {
     };
 
     return (
-        <Layout currentMenu="ProductDetail">
+        <Layout currentMenu="ProductDetail2">
             <h1>상품 상세</h1>
             <div className="product-detail-container">
                 <div className="form-group">
@@ -106,7 +106,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
         <Routes>
-            <Route path="/productDetail" element={<ProductDetail/>}/>
+            <Route path="/productDetail" element={<ProductDetail2/>}/>
         </Routes>
     </BrowserRouter>
 );
