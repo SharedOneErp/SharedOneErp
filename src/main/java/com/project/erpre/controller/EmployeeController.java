@@ -79,10 +79,10 @@ public class EmployeeController {
         return ResponseEntity.ok(employeePage);
     }
 
-    //직원목록화면에서 체크된 직원 data지우기
+    //직원목록화면에서 체크된 직원 logical 삭제
     @PostMapping("/deleteEmployees")
-    public ResponseEntity<?> deleteEmployees(@RequestBody List<String> id) {
-        employeeService.deleteEmployees(id);
+    public ResponseEntity<?> deleteEmployees(@RequestBody List<String> ids) {
+        employeeService.deleteLogicalEmployees(ids);
         return ResponseEntity.ok("Employees deleted successfully");
     }
 }
