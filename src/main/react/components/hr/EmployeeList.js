@@ -15,8 +15,10 @@ function EmployeeList() {
     const [selectAll, setSelectAll] = useState(false);
     const [selectedEmployees, setSelectedEmployees] = useState([]);
 
+
+    //초기화면은 재직자만
     useEffect(() => {
-        pageEmployees(0);
+        pageEmployeesN(0);
     }, []);
 
 //    const handleRegiClick = () => {
@@ -28,16 +30,39 @@ function EmployeeList() {
 //
 //    }; 조회버튼을 눌러야 조회,, 이제는 안씀
 
-    //서희씨 처럼 화면에 몇개 보여줄지 유저가 선택하게 할까 하다가 자료가 너무 많으면 가독성이 떨어지지않나해서 일단 20개만 보이게 해놨습니다
-    const pageEmployees = (page) => {
+    //재직자만
+    const pageEmployeesN = (page) => {
         axios.get(`/api/employeeList?page=${page}&size=20`)
             .then(response => {
                 console.log('응답 데이터:', response.data);
                 setEmployees(response.data.content);
                 setTotalPages(response.data.totalPages);
                 setSelectedEmployees(new Array(response.data.content.length).fill(false));
+
             })
 
+    };
+
+    //퇴직자만
+    const pageEmployeesY = (page) => {
+        axios.get(`/api/employeeListY?page=${page}&size=20`)
+            .then(response => {
+            console.log('응답 데이터:', response.data);
+            setEmployees(response.data.content);
+            setTotalPages(response.data.totalPages);
+            setSelectedEmployees(new Array(response.data.content.length).fill(false));
+        })
+
+    };
+
+    const pageAllEmployees = (page) => {
+        axios.get(`/api/allEmployees?page=${page}&size=20`)
+            .then(response => {
+            console.log('전체 직원 조회 응답 데이터:', response.data);
+            setEmployees(response.data.content);
+            setTotalPages(response.data.totalPages);
+            setSelectedEmployees(new Array(response.data.content.length).fill(false));
+        });
     };
 
     const handleSelectAll = () => {
@@ -65,6 +90,14 @@ function EmployeeList() {
         }
     };
 
+    // 퇴직자 포함한 전체 직원 조회 시 페이징 처리
+    const PageChangeAllEmployees = (newPage) => {
+        if (newPage >= 0 && newPage < totalPages) {
+            setPage(newPage);
+            pageAllEmployees(newPage);  // 퇴직자 포함한 조회로 페이지 변경
+        }
+    };
+
     //체크된것만 논리적 삭제
     const checkedDelete = () => {
         const selectedId = employees
@@ -76,7 +109,7 @@ function EmployeeList() {
             axios.post('/api/deleteEmployees', selectedId)
                 .then(response => {
                 alert('삭제가 완료되었습니다.');
-                pageEmployees(page);
+                pageEmployeesN(page);
             })
                 .catch(error => {
                 console.error('삭제 중 발생된 에러 : ', error);
@@ -96,9 +129,13 @@ function EmployeeList() {
             <main className="main-content menu_employee">
             <h1>직원 목록</h1>
             {/*<button className="filter-button" onClick={showTwentyEmployees}>조회</button>*/}
-            <button className="filter-button">등록</button>
-            <button className="filter-button" onClick={checkedDelete}>삭제</button>
-            <button className="filter-button">퇴직자포함한 직원보기</button>
+            <div className="btn-wrap">
+                <button className="filter-button">등록</button>
+                <button className="filter-button" onClick={checkedDelete}>삭제</button>
+                <button className="filter-button" onClick={() => pageAllEmployees(0)}>퇴직자포함한 직원보기</button>
+                <button className="filter-button" onClick={() => pageEmployeesN(0)}>재직자만 보기</button>
+                <button className="filter-button" onClick={() => pageEmployeesY(0)}>퇴직자만 보기</button>
+            </div>
 
             <table className="employee-table">
                 <thead>
