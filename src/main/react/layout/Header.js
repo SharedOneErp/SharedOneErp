@@ -28,7 +28,7 @@ function Header() {
         <header>
             <div className="header-container">
                 <div className="logo">
-                    <a href="/"><img src="/img/logo2.png" alt="IKEA Logo"/></a>
+                    <a href="/"><img src="/img/logo2.png" alt="IKEA Logo"/><span>Erpenterprise Resource  Planning</span></a>
                 </div>
                 <div className="header-right">
                     <div className="notifications">

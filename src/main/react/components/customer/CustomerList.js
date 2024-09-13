@@ -557,7 +557,6 @@ function CustomerList() {
                     <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>다음
                     </button>
                 </div>
-
                 {/* 모달창 */}
                 <CustomerDetailModal
                     show={showDetailModal}
