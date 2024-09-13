@@ -541,6 +541,7 @@ function CustomerList() {
             onSave={handleSaveCustomer}
             customerData={selectedCustomer}
         />
+            </main>
         </Layout>
     );
 }

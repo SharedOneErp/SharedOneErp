@@ -4,9 +4,6 @@ import {useLocation} from "react-router-dom";
 
 function Sidebar({currentMenu}) {
 
-    // 기본 activeMenu를 'sales'로 설정
-    const [activeMenu, setActiveMenu] = useState(() => localStorage.getItem('activeMenu') || 'sales');
-    //     로컬 스토리지에서 getItem으로 activeMenu 값을 가져와요 (sidemenu 값 저장)
     const [activeSubMenu, setActiveSubMenu] = useState(() => {  // 서브 메뉴에 대한 useState
         const path = window.location.pathname;
         return path.split('/').pop();
@@ -37,11 +34,6 @@ function Sidebar({currentMenu}) {
 
     const handleMenuClick = (menu) => {
         // 메뉴 클릭 시 상태
-        // 같은 메뉴를 클릭해도 닫히지 않게 수정
-        if (activeMenu !== menu) {
-            setActiveMenu(menu);
-            localStorage.setItem('activeMenu', menu); // 클릭한 메뉴를 로컬스토리지에 저장
-        }
         setActiveSubMenu(null); // 서브메뉴 값은 null로 설정
     };
 
@@ -50,25 +42,12 @@ function Sidebar({currentMenu}) {
         window.location.href = path; // 페이지 이동
     }; //서브메뉴 설정값
 
-    // 페이지가 처음 로드될 때 localStorage에서 상태를 읽어옴 !
-    useEffect(() => {
-        const savedMenu = localStorage.getItem('activeMenu');
-        if (savedMenu) {
-            setActiveMenu(savedMenu);
-        }
-    }, []);
-
     // 경로가 변경될 때 사이드바 상태를 초기화
     useEffect(() => {
         if (location.pathname === '/main') { // 메인 페이지로 이동할 때
-            setActiveMenu('sales'); // 기본 메뉴는 'sales'
             setActiveSubMenu(null); // 전부 null
-            localStorage.removeItem('activeMenu'); // activemenu값 삭제
         }
     }, [location.pathname]);
-
-
-
 
     const handleLogout = async () => {
         try {
@@ -100,45 +79,34 @@ function Sidebar({currentMenu}) {
                         )}
                     </div>
                     <div className="login-time">2024-09-05 13:54:06</div>
-                    <button onClick={handleLogout} className="logout-button">로그아웃</button>
+                    <button onClick={handleLogout} className="btn">로그아웃</button>
                 </div>
             </div>
             <ul className="menu">
-                <li className={activeMenu === 'sales' ? 'active' : ''}>
-                    <a href="#" onClick={(e) => {
-                        e.preventDefault();
-                        handleMenuClick('sales')
-                    }}
-                       className={activeMenu === 'sales' ? 'active' : ''}>영업관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
+                <li>
+                    <span className={currentMenu.startsWith('order') ? 'active' : ''}><i className="bi bi-piggy-bank"></i>영업 관리</span>
                     <ul className="submenu">
                         <li className={currentMenu === 'order' ? 'active' : ''}>
                             <a href="#" onClick={() => handleSubMenuClick('order', '/order')}>주문 등록</a>
                         </li>
                         <li className={currentMenu === 'orderList' ? 'active' : ''}>
-                            <a href="#" onClick={() => handleSubMenuClick('orderList', '/orderList')}>주문 목록 (-)</a>
+                            <a href="#" onClick={() => handleSubMenuClick('orderList', '/orderList')}>주문 목록</a>
                         </li>
                         <li className={currentMenu === 'orderRegisterApproval' ? 'active' : ''}>
                             <a href="#"
-                               onClick={() => handleSubMenuClick('orderRegisterApproval', '/orderRegisterApproval')}>주문 등록 승인 (-)</a>
+                               onClick={() => handleSubMenuClick('orderRegisterApproval', '/orderRegisterApproval')}>주문 등록 승인</a>
                         </li>
                         <li className={currentMenu === 'orderReport' ? 'active' : ''}>
                             <a href="#" onClick={() => handleSubMenuClick('orderReport', '/orderReport')}>영업 실적 보고서</a>
                         </li>
                     </ul>
                 </li>
-                <li className={activeMenu === 'product' ? 'active' : ''}>
-                    <a href="#" onClick={(e) => {
-                        e.preventDefault();
-                        handleMenuClick('product')
-                    }}
-                       className={activeMenu === 'product' ? 'active' : ''}>상품관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
+                <li>
+                    <span className={currentMenu.startsWith('product') ? 'active' : ''}><i className="bi bi-cart-check"></i>상품 관리</span>
                     <ul className="submenu">
                         <li className={currentMenu === 'productList' ? 'active' : ''}>
                             <a href="#" onClick={() => handleSubMenuClick('productList', '/productList')}>전체 상품 목록</a>
                         </li>
-                        {/*<li className={currentMenu === 'product' ? 'active' : ''}>*/}
-                        {/*    <a href="#" onClick={() => handleSubMenuClick('product', '/product')}>상품 등록</a>*/}
-                        {/*</li>*/}
                         <li className={currentMenu === 'productPrice' ? 'active' : ''}>
                             <a href="#"
                                onClick={() => handleSubMenuClick('productPrice', '/productPrice')}>상품 가격 관리</a>
@@ -148,37 +116,20 @@ function Sidebar({currentMenu}) {
                         </li>
                     </ul>
                 </li>
-                <li className={activeMenu === 'customer' ? 'active' : ''}>
-                    <a href="#" onClick={(e) => {
-                        e.preventDefault();
-                        handleMenuClick('customer')
-                    }}
-                       className={activeMenu === 'customer' ? 'active' : ''}>고객관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
-                    <ul className="submenu">
+                <li>
+                    <ul className="submenu one">
                         <li className={currentMenu === 'customer' ? 'active' : ''}>
                             <a href="#"
-                               onClick={() => handleSubMenuClick('customerList', '/customerList')}>고객사 목록</a>
+                               onClick={() => handleSubMenuClick('customerList', '/customerList')}><i className="bi bi-people-fill"></i>고객 관리</a>
                         </li>
-                        {/*<li className={currentMenu === 'customer' ? 'active' : ''}>*/}
-                        {/*    <a href="#"*/}
-                        {/*       onClick={() => handleSubMenuClick('customer', '/customer')}>고객사 등록</a>*/}
-                        {/*</li>*/}
                     </ul>
                 </li>
-                <li className={activeMenu === 'hr' ? 'active' : ''}>
-                    <a href="#" onClick={(e) => {
-                        e.preventDefault();
-                        handleMenuClick('hr')
-                    }}
-                       className={activeMenu === 'hr' ? 'active' : ''}>인사관리 <span className="menu-icon"><i className="bi bi-chevron-down"></i></span></a>
-                    <ul className="submenu">
+                <li>
+                    <ul className="submenu one">
                         <li className={currentMenu === 'employee' ? 'active' : ''}>
                             <a href="#"
-                               onClick={() => handleSubMenuClick('employeeList', '/employeeList')}>직원 목록</a>
+                               onClick={() => handleSubMenuClick('employeeList', '/employeeList')}><i className="bi bi-person-vcard"></i>직원 관리</a>
                         </li>
-                        {/*<li className={currentMenu === 'employeeRegister' ? 'active' : ''}>*/}
-                        {/*    <a href="#" onClick={() => handleSubMenuClick('EmployeeRegister', '/employeeRegister')}>직원 등록</a>*/}
-                        {/*</li>*/}
                     </ul>
                 </li>
             </ul>

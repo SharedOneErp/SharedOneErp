@@ -1,11 +1,12 @@
 
 header {
     background-color: #0058A3;
-    padding: 14px 8px;
+    padding: 14px;
     color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
     flex-shrink: 0; /* header의 크기가 줄어들지 않도록 설정 */
+    padding: 13px 18px;
 }
 
 .header-container {
@@ -17,7 +18,12 @@ header {
 }
 
 .logo a {
-    display: flex; /* 로고 수직 정렬 */
+    display: flex;
+    font-size: 15px;
+    display: flex;
+    align-items: flex-end;
+    color: #fbd914;
+    gap: 5px;
 }
 
 .logo img {
@@ -26,7 +32,7 @@ header {
 }
 
 .logo img:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .header-right {

@@ -29,6 +29,8 @@ function ProductPrice() {
         handleCancelAdd,
         editingId,
         editedPriceData,
+        pageInputValue,
+        handlePageInputChange,
     } = useHooksList();          // 커스텀 훅 사용
 
     return (
@@ -44,7 +46,7 @@ function ProductPrice() {
                     <div className="list_count_wrap">
                         <div className="left_content"><span className="title_cnt">총 100건</span></div>
                         <div className="right_content">
-                            <button className="btn_add" onClick={() => setIsAdding(true)}><i className="bi bi-plus-circle"></i> 추가하기</button>
+                            <button className="btn btn_add" onClick={() => setIsAdding(true)}><i className="bi bi-plus-circle"></i> 추가하기</button>
                         </div>
                     </div>
                     <div className="table_wrap">
@@ -144,63 +146,87 @@ function ProductPrice() {
                     </div>
 
                     {/* 페이지네이션 버튼들 */}
-                    <div className="pagination">
+                    <div className="pagination-container">
 
                         <div className="pagination-left"> {/* 좌측 정렬을 위한 래퍼 */}
                             <input
                                 type="number"
-                                className="input-box"
+                                id="itemsPerPage"
+                                className="box"
                                 value={itemsPerPage}
                                 onChange={handleItemsPerPageChange}
                                 min={1}    // 최소값 설정
                                 max={100}  // 최대값 설정
                                 step={1}   // 1씩 증가/감소 가능
-                            />건씩 보기
+                            />
+                            <label htmlFor="itemsPerPage">건씩 보기</label>
                         </div>
 
-                        {/* '처음' 버튼 */}
-                        {currentPage > 1 && (
-                            <button className="first" onClick={() => handlePageChange(1)}>
-                                <i className="bi bi-chevron-double-left"></i>
-                            </button>
-                        )}
+                        {/* 가운데: 페이지네이션 */}
+                        <div className="pagination">
 
-                        {/* '이전' 버튼 */}
-                        {currentPage > 1 && (
-                            <button className="left" onClick={() => handlePageChange(currentPage - 1)}>
-                                <i className="bi bi-chevron-left"></i>
-                            </button>
-                        )}
+                            {/* '처음' 버튼 */}
+                            {currentPage > 1 && (
+                                <button className="btn first" onClick={() => handlePageChange(1)}>
+                                    <i className="bi bi-chevron-double-left"></i>
+                                </button>
+                            )}
 
-                        {/* 페이지 번호 블록 계산 (1~5, 6~10 방식) */}
-                        {Array.from({length: Math.min(5, totalPages)}, (_, index) => {
-                            const startPage = Math.floor((currentPage - 1) / 5) * 5 + 1;
-                            const page = startPage + index;
-                            return (
-                                page <= totalPages && (
-                                    <button
-                                        key={page}
-                                        onClick={() => handlePageChange(page)}
-                                        className={currentPage === page ? 'active' : ''}
-                                    >
-                                        {page}
-                                    </button>
-                                )
-                            );
-                        })}
+                            {/* '이전' 버튼 */}
+                            {currentPage > 1 && (
+                                <button className="btn left" onClick={() => handlePageChange(currentPage - 1)}>
+                                    <i className="bi bi-chevron-left"></i>
+                                </button>
+                            )}
 
-                        {/* '다음' 버튼 */}
-                        {currentPage < totalPages && (
-                            <button className="right" onClick={() => handlePageChange(currentPage + 1)}><i className="bi bi-chevron-right"></i></button>
-                        )}
+                            {/* 페이지 번호 블록 계산 (1~5, 6~10 방식) */}
+                            {Array.from({length: Math.min(5, totalPages)}, (_, index) => {
+                                const startPage = Math.floor((currentPage - 1) / 5) * 5 + 1;
+                                const page = startPage + index;
+                                return (
+                                    page <= totalPages && (
+                                        <button
+                                            key={page}
+                                            onClick={() => handlePageChange(page)}
+                                            className={currentPage === page ? 'btn active' : 'btn'}
+                                        >
+                                            {page}
+                                        </button>
+                                    )
+                                );
+                            })}
 
-                        {/* '끝' 버튼 */}
-                        {currentPage < totalPages && (
-                            <button className="last" onClick={() => handlePageChange(totalPages)}>
-                                <i className="bi bi-chevron-double-right"></i>
-                            </button>
-                        )}
+                            {/* '다음' 버튼 */}
+                            {currentPage < totalPages && (
+                                <button className="btn right" onClick={() => handlePageChange(currentPage + 1)}>
+                                    <i className="bi bi-chevron-right"></i>
+                                </button>
+                            )}
+
+                            {/* '끝' 버튼 */}
+                            {currentPage < totalPages && (
+                                <button className="btn last" onClick={() => handlePageChange(totalPages)}>
+                                    <i className="bi bi-chevron-double-right"></i>
+                                </button>
+                            )}
+                        </div>
+
+                        {/* 오른쪽: 페이지 번호 입력 */}
+                        <div className="pagination-right">
+                            <input
+                                className="box"
+                                id="pageInput"
+                                type="number"
+                                min="1"
+                                max={totalPages}
+                                value={pageInputValue} /* 상태로 관리되는 입력값 */
+                                onChange={handlePageInputChange}
+                            />
+                            <label htmlFor="pageInput">/ {totalPages}</label>
+                        </div>
+
                     </div>
+
                 </div>
             </main>
         </Layout>

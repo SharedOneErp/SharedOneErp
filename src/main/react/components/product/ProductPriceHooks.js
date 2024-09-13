@@ -37,34 +37,7 @@ export const useHooksList = () => {
     const [editingId, setEditingId] = useState(null); // 수정 중인 항목 ID를 저장
     const [editedPriceData, setEditedPriceData] = useState({}); // 수정 중인 항목 데이터를 저장
 
-    // 입력값 변경 핸들러
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewPriceData({
-            ...newPriceData,
-            [name]: value
-        });
-    };
-
-    // 날짜 선택 핸들러
-    const handleDateChange = (name, date) => {
-        setNewPriceData({
-            ...newPriceData,
-            [name]: date
-        });
-    };
-
-    // 등록 버튼 클릭 시 처리할 함수
-    const handleAddNewPrice = () => {
-        // 추가된 데이터를 서버에 전송하거나 상태에 반영하는 로직 구현🟥
-        console.log('새 가격 정보 등록:', newPriceData);
-        setIsAdding(false); // 추가 행 숨기기
-    };
-
-    // 취소 버튼 클릭 시 처리할 함수
-    const handleCancelAdd = () => {
-        setIsAdding(false); // 추가 행 숨기기
-    };
+    const [pageInputValue, setPageInputValue] = useState(1); // 페이지 입력 필드의 값
 
     // 가격 리스트를 서버에서 받아오는 함수
     useEffect(() => {
@@ -128,15 +101,63 @@ export const useHooksList = () => {
         fetchData();
     }, [selectedCustomerNo, selectedProductCd, startDate, endDate, currentPage, itemsPerPage, sortField, sortOrder]); // 필터 및 페이지 변경 시마다 데이터 재요청
 
+    // 페이지 입력 필드의 값과 currentPage 동기화
+    useEffect(() => {
+        setPageInputValue(currentPage); // currentPage가 변경되면 pageInputValue 업데이트
+    }, [currentPage]);
+
+    // 페이지 번호
+    const handlePageInputChange = (e) => {
+        setCurrentPage(e.target.value);
+    };
+
+    // 입력값 변경 핸들러
+    const handleInputChange = (e) => {
+        const {name, value} = e.target;
+        setNewPriceData({
+            ...newPriceData,
+            [name]: value
+        });
+    };
+
+    // 날짜 선택 핸들러
+    const handleDateChange = (name, date) => {
+        setNewPriceData({
+            ...newPriceData,
+            [name]: date
+        });
+    };
+
+    // 등록 버튼 클릭 시 처리할 함수
+    const handleAddNewPrice = () => {
+        // 추가된 데이터를 서버에 전송하거나 상태에 반영하는 로직 구현🟥
+        console.log('새 가격 정보 등록:', newPriceData);
+        setIsAdding(false); // 추가 행 숨기기
+    };
+
+    // 취소 버튼 클릭 시 처리할 함수
+    const handleCancelAdd = () => {
+        setIsAdding(false); // 추가 행 숨기기
+    };
+
     // 페이지당 항목 수 변경 함수
     const handleItemsPerPageChange = (e) => {
         console.log("---------------------------handleItemsPerPageChange()");
-        let value = parseInt(e.target.value, 10); // 입력값을 정수로 변환
+        let value = e.target.value; // 입력값을 그대로 받아옴
+
+        // 입력이 비었을 때는 값을 ''로 유지하여 값을 초기화할 수 있게 함
+        if (value === '') {
+            setItemsPerPage(''); // 값 비우기
+            return;
+        }
+
+        value = parseInt(value, 10); // 입력값을 정수로 변환
+
         if (!isNaN(value)) {
             if (value > 100) {
                 value = 100; // 100을 초과하면 100으로 설정
             }
-            if (value > 0 && value <= 100) { // 유효성 검사: 1 ~ 100 사이
+            if (value >= 1 && value <= 100) { // 유효성 검사: 1 ~ 100 사이
                 setItemsPerPage(value); // 페이지당 항목 수 변경
                 setCurrentPage(1); // 페이지 번호 초기화
             }
@@ -166,6 +187,8 @@ export const useHooksList = () => {
         handleCancelAdd,
         editingId,
         editedPriceData,
+        pageInputValue,
+        handlePageInputChange,
     };
 
 };

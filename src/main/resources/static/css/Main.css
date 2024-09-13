@@ -7,10 +7,10 @@
 }
 
 .card {
-    background-color: white;
     padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fdfdfd;
     border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 2px 6px, rgba(0, 0, 0, 0.06) 0px -1px 0px inset, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px inset;
 }
 
 .card-large {
@@ -25,6 +25,7 @@
     margin-bottom: 10px;
     font-size: 1.2em;
 }
+
 .orderstatus {
     padding: 20px;
     border: 1px solid #ddd;
@@ -36,16 +37,17 @@
     color: #333;
     font-weight: bold;
 }
+
 .info-group {
     padding: 30px;
 }
-
 
 .info-group p {
     margin-bottom: 10px;
     font-size: 15px;
     color: #555;
 }
+
 .image-container {
     display: flex; /* 이미지들을 수평으로 배치합니다. */
     justify-content: center; /* 이미지들을 가로 중앙에 정렬합니다. */

@@ -1,285 +1,5 @@
 /* 🟥 product/ProductPrice.css */
 
-.input-box {
-    display: inline-block;
-    padding: 7px 9px;
-    border: 1px solid #cbccd3;
-    border-radius: 6px;
-    outline: none;
-    -webkit-appearance: none;
-    font-size: 14px;
-    line-height: 20px
-}
-
-.input-box.error,.input-box:focus.error {
-    -webkit-box-shadow: 0 0 0 2px rgba(251,97,100,.25098);
-    box-shadow: 0 0 0 2px rgba(251,97,100,.25098);
-    border-color: rgba(251,97,100,.25098)
-}
-
-.input-box.focused,.input-box:focus {
-    border-color: #4f67ff;
-    -webkit-box-shadow: 0 0 0 2px rgba(79,103,255,.25098);
-    box-shadow: 0 0 0 2px rgba(79,103,255,.25098)
-}
-
-.input-box::placeholder, .input-box::-webkit-input-placeholder {
-    color: #8f91a0!important
-}
-
-.input-box.disabled,.input-box:disabled {
-    background-color: #f1f1f4!important;
-    color: #cbccd3!important;
-    border-color: #cbccd3!important
-}
-
-.input-box.disabled::-webkit-input-placeholder,.input-box:disabled::-webkit-input-placeholder
-.input-box.disabled::placeholder,.input-box:disabled::placeholder {
-    color: #cbccd3!important
-}
-
-.input-box[type=date].input-box {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    min-height: 36px;
-    padding: 0 9px
-}
-
-.borderless-select-box::-ms-expand,.select-box::-ms-expand {
-    display: none
-}
-
-.borderless-select-box,.select-box {
-    overflow: hidden;
-    text-overflow: ellipsis
-}
-
-.select-box {
-    font-size: 14px;
-    line-height: 20px;
-    padding: 7px 26px 7px 9px;
-    border: 1px solid #cbccd3;
-    border-radius: 6px;
-    background-size: 16px;
-    background-repeat: no-repeat;
-    background-position: center right 5px;
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%238f91a0' d='M4.389 7c-.32 0-.503-.371-.31-.632l3.11-4.21a.387.387 0 01.623 0l3.11 4.21c.192.26.01.632-.31.632H4.389zm6.222 2c.32 0 .503.371.31.632l-3.11 4.21a.387.387 0 01-.623 0l-3.11-4.21C3.888 9.37 4.069 9 4.389 9h6.223z'/%3E%3C/svg%3E");
-    -webkit-appearance: none;
-    outline: none
-}
-
-.select-box:focus {
-    -webkit-box-shadow: 0 0 0 2px rgba(79,103,255,.25098);
-    box-shadow: 0 0 0 2px rgba(79,103,255,.25098)
-}
-
-.select-box:disabled {
-    opacity: 1;
-    color: #cbccd3;
-    border-color: #cbccd3;
-    background-color: #f1f1f4;
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23cbccd3' d='M4.389 7c-.32 0-.503-.371-.31-.632l3.11-4.21a.387.387 0 01.623 0l3.11 4.21c.192.26.01.632-.31.632H4.389zm6.222 2c.32 0 .503.371.31.632l-3.11 4.21a.387.387 0 01-.623 0l-3.11-4.21C3.888 9.37 4.069 9 4.389 9h6.223z'/%3E%3C/svg%3E")
-}
-
-.select-box.full-width {
-    width: 100%
-}
-
-
-
-.btn {
-    display: inline-flex;
-    -webkit-box-pack: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    align-items: center;
-    min-height: 36px;
-    outline: none;
-    border-radius: 6px;
-    padding: 7px 9px;
-    line-height: normal;
-    background-color: #fff;
-    border: 1px solid #cbccd3;
-    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    cursor: pointer
-}
-
-.btn:active,.btn:focus {
-    -webkit-box-shadow: 0 0 0 2px rgba(79,103,255,.25098),0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 0 0 2px rgba(79,103,255,.25098),0 1px 1px 0 rgba(0,0,0,.1)
-}
-
-.btn:active {
-    color: #292a2f;
-    background-color: #f1f1f4
-}
-
-.btn.delete {
-    background-color: #fff;
-    color: #989aa7;
-    border: 1px solid #cbccd3;
-    color: #f0443b
-}
-
-.btn.blue {
-    color: #fff;
-    background-color: #4f67ff;
-    border-color: #4d5ecd
-}
-
-.btn.blue:active {
-    background-color: #4d5ecd
-}
-
-.btn.green {
-    color: #fff;
-    background-color: #37b047;
-    border-color: #2b9a3a
-}
-
-.btn.green.active,.btn.green:focus {
-    -webkit-box-shadow: 0 0 0 2px rgba(55,176,71,.25098),0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 0 0 2px rgba(55,176,71,.25098),0 1px 1px 0 rgba(0,0,0,.1)
-}
-
-.btn.green:active {
-    background-color: #2b9a3a
-}
-
-.btn.red {
-    color: #fff;
-    background-color: #f0443b;
-    border-color: #d43c34
-}
-
-.btn.red.active,.btn.red:focus {
-    -webkit-box-shadow: 0 0 0 2px rgba(240,68,59,.25098),0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 0 0 2px rgba(240,68,59,.25098),0 1px 1px 0 rgba(0,0,0,.1)
-}
-
-.btn.red:active {
-    background-color: #d43c34
-}
-
-.btn.outline-blue {
-    border-color: #4f67ff;
-    background-color: #fff;
-    color: #4f67ff
-}
-
-.btn.outline-white {
-    border-color: #fff;
-    background-color: transparent;
-    color: #fff
-}
-
-.btn.disabled,.btn:disabled {
-    color: #cbccd3!important;
-    background-color: #f1f1f4!important;
-    border: 1px solid #cbccd3!important;
-    cursor: not-allowed
-}
-
-.btn.with-icon i {
-    line-height: 1;
-    color: #8f91a0;
-    font-size: 16px
-}
-
-.btn.with-icon .left-icon {
-    margin-right: 6px
-}
-
-.btn.with-icon .right-icon {
-    margin-left: 6px
-}
-
-.btn.with-icon.blue i,.btn.with-icon.disabled i,.btn.with-icon.green i,.btn.with-icon:disabled i {
-    color: inherit
-}
-
-.btn.only-icon i {
-    line-height: 1;
-    color: #8f91a0;
-    font-size: 16px
-}
-
-.btn.only-icon.blue i,.btn.only-icon.disabled i,.btn.only-icon.green i,.btn.only-icon:disabled i {
-    color: inherit
-}
-
-.btn.no-shrink {
-    -webkit-box-flex: 0;
-    -ms-flex: 0 0 auto;
-    flex: 0 0 auto
-}
-
-.btn.rounded {
-    padding: 7px 17px;
-    border-radius: 18px
-}
-
-.btn.normal {
-    padding: 7px 10px
-}
-
-.btn.medium {
-    min-width: 86px;
-    padding: 7px
-}
-
-.btn.mid-wide {
-    min-width: 160px;
-    padding: 7px
-}
-
-.btn.large {
-    min-width: 100px;
-    min-height: 44px;
-    padding: 11px 10px;
-    font-size: 16px
-}
-
-.btn.large.rounded {
-    border-radius: 24px
-}
-
-.btn.full-width {
-    width: 100%;
-    min-height: 44px;
-    padding: 11px 0;
-    font-size: 16px
-}
-
-.btn.thick {
-    font-weight: 500;
-    font-size: 16px;
-    padding: 11px 9px;
-    line-height: 1.5
-}
-
-.btn.thick.rounded {
-    border-radius: 8px
-}
-
-/* 💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡 */
-select, button {
-    padding: 8px 5px;
-    border: 1px solid #cacaca;
-    border-radius: 4px;
-    cursor: pointer;
-    color: #333;
-    font-size: 14px;
-}
-
-button {
-    padding: 7px 10px;
-    margin-right: 5px;
-    transition: all .2s ease;
-}
-
 .main-content {
     overflow-y: hidden;
 }
@@ -507,16 +227,17 @@ button {
 }
 
 /* 🟥 페이지네이션 */
-.menu_price .pagination {
+/* 전체 페이지네이션 컨테이너 */
+.pagination-container {
     height: 60px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between; /* 좌, 중앙, 우로 배치 */
     align-items: center;
+    padding: 0 10px; /* 좌우 패딩 추가 */
 }
 
-/* 항목 개수 */
-.pagination-left {
-    margin-right: auto;
+/* 항목 개수 선택 (왼쪽) */
+.pagination-container .pagination-left {
     font-size: 15px;
     display: flex;
     align-items: center;
@@ -524,7 +245,14 @@ button {
     color: #777;
 }
 
-.menu_price .pagination button {
+/* 중앙의 페이지네이션 버튼 */
+.pagination-container .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination-container .pagination button {
     padding: 3px 8px;
     margin: 0 2px;
     background-color: #ffffff;
@@ -533,199 +261,73 @@ button {
     border-radius: 25px;
     cursor: pointer;
     font-size: 15px;
+    transition: background-color 0.3s ease, border 0.3s ease;
 }
 
-.menu_price .pagination button:disabled {
+.pagination-container .pagination button:disabled {
     background-color: #ddd;
     cursor: not-allowed;
 }
 
-.menu_price .pagination button.active {
+.pagination-container .pagination button.active {
     background-color: #c7c7c7;
     font-weight: 500;
     border: 1px solid #c7c7c7;
 }
 
-.menu_price .pagination button.left, .menu_price .pagination button.right {
+.pagination-container .pagination button.left,
+.pagination-container .pagination button.right,
+.pagination-container .pagination button.first,
+.pagination-container .pagination button.last {
     padding: 3px 5px;
 }
 
-.menu_price .pagination button.first, .menu_price .pagination button.last {
-    padding: 3px 5px;
-}
-
-.menu_price .pagination button:hover {
+.pagination-container .pagination button:hover {
     background-color: #eaeaea;
     font-weight: 500;
     border: 1px solid #eaeaea;
 }
 
-/* 🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥 */
-/* 🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥 */
-/* 🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥 */
-/* 🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥 */
-/* 🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥 */
-
-/* 전체 페이지 레이아웃 */
-/*body {*/
-/*    font-family: Arial, sans-serif;*/
-/*    background-color: #f4f4f4;*/
-/*    margin: 0;*/
-/*    padding: 0;*/
-/*}*/
-
-.menu_price h2 {
-    text-align: center;
-    margin-top: 20px;
-    color: #333;
-}
-
-/* 검색 영역 */
-.menu_price search-section {
+/* 페이지 번호 입력 (오른쪽) */
+.pagination-container .pagination-right {
     display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 20px;
-    padding: 10px;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    align-items: center;
 }
 
-.menu_price .search-section input {
-    padding: 8px;
-    font-size: 16px;
+.pagination-container .pagination-right label {
+    margin-right: 8px;
+    font-size: 15px;
+    color: #777;
+}
+
+.pagination-container .pagination-right input {
+    width: 50px;
+    padding: 3px;
+    font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    margin-right: 8px;
 }
 
-.menu_price .search-section button {
-    padding: 8px 16px;
-    background-color: #3e4c5b;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.menu_price .search-section button:hover {
-    background-color: #0056b3;
-}
-
-/* 테이블 헤더 */
-.menu_price .table-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    background-color: #3e4c5b;
-    color: white;
-    font-weight: bold;
-}
-
-.menu_price .table-header div {
-    cursor: pointer;
-}
-
-/* 테이블 내용 */
-.menu_price .price-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    background-color: #fff;
-    border-bottom: 1px solid #ddd;
-}
-
-.menu_price .price-row:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.menu_price .price-row div {
-    margin-right: 10px;
-}
-
-.menu_price .price-row button {
-    margin-left: 5px;
+.pagination-container .pagination-right button {
     padding: 5px 10px;
     font-size: 14px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.menu_price .price-row button:hover {
-    opacity: 0.8;
-}
-
-.menu_price .price-row button[type="button"] {
-    background-color: #28a745;
-    color: white;
-}
-
-.menu_price .price-row button[type="button"]:nth-child(2) {
-    background-color: #dc3545;
-}
-
-/* 모달 스타일 */
-.menu_price .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.menu_price .modal-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    width: 400px;
-    text-align: center;
-}
-
-.menu_price .modal-content h2 {
-    margin-top: 0;
-}
-
-.menu_price .modal-content form {
-    margin-bottom: 20px;
-}
-
-.menu_price .modal-content input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.menu_price .modal-content button {
-    padding: 10px 20px;
-    background-color: #3e4c5b;
+    background-color: #0058A3;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 25px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.modal-content button:hover {
-    background-color: #0056b3;
+.pagination-container .pagination-right button:hover {
+    background-color: #00394f;
 }
 
-.menu_price ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.menu_price ul li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
-}
-
-.menu_price ul li:hover {
-    background-color: #f1f1f1;
+.pagination-container label {
+    margin: 0;
+    font-weight: normal;
+    font-size: 14px;
+    margin-left: 5px;
+    color: #444;
 }
