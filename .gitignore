@@ -43,3 +43,4 @@ src/main/resources/static/bundle/*.bundle.js
 
 # application.properties 무시
 application.properties
+src/main/resources/application.properties
