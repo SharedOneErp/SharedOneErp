@@ -39,6 +39,22 @@ export const useHooksList = () => {
     const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지당 아이템 수
     const [totalItems, setTotalItems] = useState(0); // 총 아이템 수
 
+    // 모달 상태
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedProductCd, setSelectedProductCd] = useState(null); // 선택된 상품 코드
+
+    // 모달 열기
+    const handleOpenModal = (productCd) => {
+        setSelectedProductCd(productCd);
+        setIsModalOpen(true);
+    };
+
+    // 모달 닫기
+    const handleCloseModal = () => {
+        setSelectedProductCd(null);
+        setIsModalOpen(false);
+    };
+
     // 상품 목록과 카테고리 목록을 서버에서 받아오는 함수
     useEffect(() => {
         axios
@@ -58,6 +74,17 @@ export const useHooksList = () => {
             .catch((error) => console.error('전체 상품 목록 조회 실패', error));
 
     }, [currentPage, itemsPerPage]);
+
+    // 상품 상세 데이터 (모달)
+    const [productDetail, setProductDetail] = useState([]);
+
+    useEffect(() => {
+        if (selectedProductCd) {
+            axios.get(`/api/products/productDetail/${selectedProductCd}`)
+                .then(response => setProductDetail(response.data))
+                .catch(error => console.error('상세 정보 조회 실패', error));
+        }
+    }, [selectedProductCd]);
 
     // 상품 전체 선택
     const handleAllSelectProducts = (checked) => {
@@ -330,6 +357,11 @@ export const useHooksList = () => {
         totalItems,
         totalPages,
         handlePageChange,
-        handleItemsPerPageChange
+        handleItemsPerPageChange,
+        isModalOpen,
+        handleOpenModal,
+        handleCloseModal,
+        productDetail,
+        selectedProductCd,
     };
 };
