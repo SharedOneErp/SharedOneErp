@@ -519,7 +519,6 @@ function Order() {
     const formattedDate = isCreateMode ? '' : formatDateForInput(customer.customerInsertDate);
 
 
-
     return (
         <Layout currentMenu="order">
             <main className="main-content menu_order">
@@ -696,6 +695,7 @@ function Order() {
                                 </td>
                                 <td>{(isCreateMode ? (item.price * item.quantity).toLocaleString() : item.orderDPrice * item.orderDQty) || 0}</td>
                                 {(isCreateMode || isEditMode) && (
+
                                     <td>
                                         <button onClick={() => removeProductRow(index)}>&times;</button>
                                     </td>
