@@ -58,17 +58,25 @@ function EmployeeList() {
         }
     };
 
+    const PageChange = (newPage) => {
+        if (newPage >= 0 && newPage < totalPages) {
+            setPage(newPage);
+            pageEmployees(newPage);
+        }
+    };
+
+    //체크된것만 논리적 삭제
     const checkedDelete = () => {
         const selectedId = employees
-            .filter((_, index) => selectedEmployees[index])  // 체크된 직원만 필터링
-            .map(employee => employee.employeeId);  // 해당 직원의 ID만 추출
+            .filter((_, index) => selectedEmployees[index])
+            .map(employee => employee.employeeId);
 
         if (selectedId.length > 0) {
             // 서버로 삭제 요청 보내기
-            axios.post('/api/deleteEmployees', { id: selectedId })
+            axios.post('/api/deleteEmployees', selectedId)
                 .then(response => {
                 alert('삭제가 완료되었습니다.');
-                pageEmployees(page);  // 데이터 갱신
+                pageEmployees(page);
             })
                 .catch(error => {
                 console.error('삭제 중 발생된 에러 : ', error);
@@ -76,24 +84,21 @@ function EmployeeList() {
         } else {
             alert('삭제할 직원을 선택해주세요.');
         }
+        console.log('삭제할 직원 id : ', selectedId) // 아이디 잘찍히나 확인
     };
 
-    const PageChange = (newPage) => {
-        if (newPage >= 0 && newPage < totalPages) {
-                setPage(newPage);
-                pageEmployees(newPage);
-            }
-    };
+
 
 
 
     return (
-        <Layout currentMenu="employeeList"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
+        <Layout currentMenu="employee"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
+            <main className="main-content menu_employee">
             <h1>직원 목록</h1>
             {/*<button className="filter-button" onClick={showTwentyEmployees}>조회</button>*/}
-            {/*<button className="filter-button">수정</button>*/}
-            {/*<button className="filter-button" onClick={handleRegiClick}>등록</button>*/}
-            <button className="filter-button" onClick={() => checkedDelete}>삭제</button>
+            <button className="filter-button">등록</button>
+            <button className="filter-button" onClick={checkedDelete}>삭제</button>
+            <button className="filter-button">퇴직자포함한 직원보기</button>
 
             <table className="employee-table">
                 <thead>
@@ -130,7 +135,7 @@ function EmployeeList() {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="10">직원 데이터를 조회해보세요</td>
+                            <td colSpan="10">직원이 없네요. 회사가 망했나봐요 ㅋ</td>
                         </tr>
                     )}
                 </tbody>
@@ -149,6 +154,7 @@ function EmployeeList() {
                 ))}
                 <button onClick={() => PageChange(page + 1)} disabled={page === totalPages - 1}>다음</button>
             </div>
+            </main>
         </Layout>
     );
 }

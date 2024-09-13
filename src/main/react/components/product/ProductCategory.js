@@ -135,6 +135,7 @@ function ProductCategory() {
 
     return (
         <Layout currentMenu="productCategory"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
+            <main className="main-content menu_category">
             <div className="top-container">
                 <h2>상품 카테고리 관리</h2>
             </div>
@@ -277,7 +278,7 @@ function ProductCategory() {
 
                 </div>
             )}
-
+            </main>
         </Layout>
     );
 }
