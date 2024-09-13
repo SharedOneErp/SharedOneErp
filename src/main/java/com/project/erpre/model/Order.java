@@ -1,5 +1,7 @@
 package com.project.erpre.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.erpre.model.Customer;
 import com.project.erpre.model.Employee;
 import lombok.*;
@@ -58,7 +60,7 @@ public class Order {
     private List<OrderDetail> orderDetails;
     // 주문과 상품 간의 관계
 
-
+    @JsonIgnore
     @Transient
     public List<String> getProductNames() {
         return orderDetails.stream()
@@ -66,5 +68,6 @@ public class Order {
                 .collect(Collectors.toList());
 //        상품명을 리스트로 반환
     }
+
 }
 
