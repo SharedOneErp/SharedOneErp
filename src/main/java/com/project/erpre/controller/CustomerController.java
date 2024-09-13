@@ -41,12 +41,15 @@ public class CustomerController {
         return customerService.updateCustomer(customerNo, updatedCustomer);
     }
 
-    // 고객 정보 삭제
+    // 고객 삭제
+// 고객 삭제
     @DeleteMapping("/delete/{customerNo}")
     public void deleteCustomer(@PathVariable Integer customerNo) {
-        logger.info("고객 정보 삭제");
+        logger.info("고객 삭제: customerNo=" + customerNo);
         customerService.deleteCustomer(customerNo);
     }
+
+
 
     //고객 이름 검색
     @GetMapping("/search")

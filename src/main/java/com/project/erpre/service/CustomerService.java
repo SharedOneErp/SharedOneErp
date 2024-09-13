@@ -6,6 +6,7 @@ import com.project.erpre.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -61,9 +62,10 @@ public class CustomerService {
         return customerRepository.findAll();
     }
 
-    // 고객 등록 또는 수정
+    // 고객 등록
     public Customer insertCustomer(Customer customer) {
-        return customerRepository.save(customer); // 새로운 고객 등록 또는 기존 고객 수정
+        customer.setCustomerDeleteYn("N"); // 기본값 N
+        return customerRepository.save(customer);
     }
 
     // 고객 정보 수정
@@ -87,8 +89,7 @@ public class CustomerService {
             existingCustomer.setCustomerEtaxInvoiceYn(updatedCustomer.getCustomerEtaxInvoiceYn());
             existingCustomer.setCustomerTransactionStartDate(updatedCustomer.getCustomerTransactionStartDate());
             existingCustomer.setCustomerTransactionEndDate(updatedCustomer.getCustomerTransactionEndDate());
-            existingCustomer.setCustomerInsertDate(updatedCustomer.getCustomerInsertDate());
-            existingCustomer.setCustomerUpdateDate(updatedCustomer.getCustomerUpdateDate());
+            // customerUpdateDate는 DB에서 자동으로 설정됨
 
             return customerRepository.save(existingCustomer); // 수정 후 저장
         } else {
@@ -98,7 +99,15 @@ public class CustomerService {
 
     // 고객 삭제
     public void deleteCustomer(Integer customerNo) {
-        customerRepository.deleteById(customerNo);
+        Optional<Customer> existingCustomerOptional = customerRepository.findById(customerNo);
+        if (existingCustomerOptional.isPresent()) {
+            Customer customer = existingCustomerOptional.get();
+            customer.setCustomerDeleteYn("Y");
+            customer.setCustomerDeleteDate(new Timestamp(System.currentTimeMillis())); // 삭제일시 기록
+            customerRepository.save(customer); // 삭제 여부 저장
+        } else {
+            throw new RuntimeException("Customer not found with customerNo: " + customerNo);
+        }
     }
 
     public List<Customer> searchCustomers(String name) {
