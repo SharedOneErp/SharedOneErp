@@ -394,7 +394,8 @@ function CustomerList() {
     const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
 
     return (
-        <Layout>
+        <Layout currentMenu="customer"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
+            <main className="main-content menu_customer">
             <h1>고객사 목록</h1>
             <div className="table-header">
                 <button className="register-button" onClick={() => openRegisterModal(null)}>등록</button>
@@ -461,6 +462,7 @@ function CustomerList() {
                 onSave={handleSaveCustomer}
                 customerData={selectedCustomer}
             />
+            </main>
         </Layout>
     );
 }

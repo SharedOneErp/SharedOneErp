@@ -447,6 +447,7 @@ function Order() {
 
     return (
         <Layout currentMenu="order">
+            <main className="main-content menu_order">
             <div className="orderDetail-title">
                 <h3>{isCreateMode ? '주문 등록' : isEditMode ? '주문 수정' : '주문 상세보기'}</h3>
             </div>
@@ -966,6 +967,7 @@ function Order() {
                     <button className="close-btn" onClick={() => window.location.href = '/orderListAll'}>닫기</button>
                 </div>
             </div>
+            </main>
         </Layout>
     );
 }

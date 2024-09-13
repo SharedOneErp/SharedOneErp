@@ -39,6 +39,7 @@ function OrderReport() {
 
     return (
         <Layout currentMenu="orderReport">
+            <main className="main-content menu_order_report">
 
             <div className="top-container">
                 <h2>영업 실적 보고서</h2>
@@ -185,9 +186,7 @@ function OrderReport() {
 
 
             </div>
-
-
-
+            </main>
 
         </Layout>
 

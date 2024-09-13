@@ -42,6 +42,7 @@ function OrderList() {
 
     return (
         <Layout currentMenu={`orderList`}>
+            <main className="main-content menu_order_list">
             {/* 권한에 따라 다른 텍스트를 표시 */}
             <h1>{role === 'admin' ? '전체 주문 목록' : '담당 주문 목록'}</h1>
 
@@ -106,6 +107,7 @@ function OrderList() {
                     <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>다음</button>
                 </div>
             </div>
+            </main>
         </Layout>
     );
 }

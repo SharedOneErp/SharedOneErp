@@ -88,7 +88,8 @@ function EmployeeList() {
 
 
     return (
-        <Layout currentMenu="employeeList"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
+        <Layout currentMenu="employee"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
+            <main className="main-content menu_employee">
             <h1>직원 목록</h1>
             {/*<button className="filter-button" onClick={showTwentyEmployees}>조회</button>*/}
             {/*<button className="filter-button">수정</button>*/}
@@ -149,6 +150,7 @@ function EmployeeList() {
                 ))}
                 <button onClick={() => PageChange(page + 1)} disabled={page === totalPages - 1}>다음</button>
             </div>
+            </main>
         </Layout>
     );
 }

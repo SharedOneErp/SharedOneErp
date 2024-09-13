@@ -11,7 +11,7 @@ module.exports = {
     context: path.resolve(__dirname, 'src/main/react'), // 기본 디렉토리 설정
     entry: {
         login: './components/auth/Login.js', // 로그인
-        main: './components/Main.js', // 메인 대시보드
+        main: './components/main/Main.js', // 메인 대시보드
 
         // Sales 관련 엔트리 포인트
         order: `${salesPath}Order.js`, // 주문 등록or상세or수정

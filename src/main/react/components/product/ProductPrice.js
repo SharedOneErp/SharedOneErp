@@ -8,7 +8,7 @@ import DatePicker from 'react-datepicker'; // 날짜 선택 컴포넌트
 import 'react-datepicker/dist/react-datepicker.css'; // 날짜 선택 스타일 임포트
 // import ProductPriceModal from './ProductPriceModal'; // 상품 검색 모달 컴포넌트
 import {useHooksList} from './ProductPriceHooks'; // 가격 관리에 필요한 상태 및 로직을 처리하는 훅
-import {add,format} from 'date-fns';
+import {add, format} from 'date-fns';
 
 // 컴포넌트(고객사별 상품 가격 관리)
 function ProductPrice() {
@@ -33,8 +33,11 @@ function ProductPrice() {
 
     return (
         <Layout currentMenu="productPrice">
-            <div className="menu_product_price">
-                <div className="menu_title">고객사별 상품 가격 관리</div>
+            <main className="main-content menu_price">
+                <div className="menu_title">
+                    <div className="sub_title">상품 관리</div>
+                    <div className="main_title">고객사별 상품 가격 관리</div>
+                </div>
                 <div className="menu_content">
                     <div className="search_wrap">
                     </div>
@@ -42,13 +45,6 @@ function ProductPrice() {
                         <div className="left_content"><span className="title_cnt">총 100건</span></div>
                         <div className="right_content">
                             <button className="btn_add" onClick={() => setIsAdding(true)}><i className="bi bi-plus-circle"></i> 추가하기</button>
-                            <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
-                                <option value={2}>2건씩 보기</option>
-                                <option value={10}>10건씩 보기</option>
-                                <option value={20}>20건씩 보기</option>
-                                <option value={50}>50건씩 보기</option>
-                                <option value={100}>100건씩 보기</option>
-                            </select>
                         </div>
                     </div>
                     <div className="table_wrap">
@@ -62,7 +58,8 @@ function ProductPrice() {
                                 <th>적용기간</th>
                                 <th>등록일시</th>
                                 <th>수정일시</th>
-                                <th></th> {/* 수정/삭제 버튼 열 추가 */}
+                                <th></th>
+                                {/* 수정/삭제 버튼 열 추가 */}
                             </tr>
                             </thead>
                             <tbody>
@@ -70,9 +67,9 @@ function ProductPrice() {
                             {isAdding && (
                                 <tr>
                                     <td></td>
-                                    <td><input type="text" name="customerName" value={newPriceData.customerName} onChange={handleInputChange} /></td>
-                                    <td><input type="text" name="productNm" value={newPriceData.productNm} onChange={handleInputChange} /></td>
-                                    <td><input type="number" name="priceCustomer" value={newPriceData.priceCustomer} onChange={handleInputChange} /></td>
+                                    <td><input type="text" name="customerName" value={newPriceData.customerName} onChange={handleInputChange}/></td>
+                                    <td><input type="text" name="productNm" value={newPriceData.productNm} onChange={handleInputChange}/></td>
+                                    <td><input type="number" name="priceCustomer" value={newPriceData.priceCustomer} onChange={handleInputChange}/></td>
                                     <td>
                                         <DatePicker
                                             selected={newPriceData.priceStartDate}
@@ -85,8 +82,10 @@ function ProductPrice() {
                                             dateFormat="yyyy-MM-dd"
                                         />
                                     </td>
-                                    <td>-</td> {/* 등록일시 */}
-                                    <td>-</td> {/* 수정일시 */}
+                                    <td>-</td>
+                                    {/* 등록일시 */}
+                                    <td>-</td>
+                                    {/* 수정일시 */}
                                     <td>
                                         <button onClick={handleAddNewPrice}>등록</button>
                                         <button onClick={handleCancelAdd}>취소</button>
@@ -147,6 +146,18 @@ function ProductPrice() {
                     {/* 페이지네이션 버튼들 */}
                     <div className="pagination">
 
+                        <div className="pagination-left"> {/* 좌측 정렬을 위한 래퍼 */}
+                            <input
+                                type="number"
+                                className="input-box"
+                                value={itemsPerPage}
+                                onChange={handleItemsPerPageChange}
+                                min={1}    // 최소값 설정
+                                max={100}  // 최대값 설정
+                                step={1}   // 1씩 증가/감소 가능
+                            />건씩 보기
+                        </div>
+
                         {/* '처음' 버튼 */}
                         {currentPage > 1 && (
                             <button className="first" onClick={() => handlePageChange(1)}>
@@ -191,7 +202,7 @@ function ProductPrice() {
                         )}
                     </div>
                 </div>
-            </div>
+            </main>
         </Layout>
     );
 }
