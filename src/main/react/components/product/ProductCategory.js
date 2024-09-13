@@ -109,7 +109,7 @@ function ProductCategory() {
         }
     };
 
-    // 
+    //
 
     // 상품 선택
     const handleSelectCategory = (categoryNo) => {
@@ -279,37 +279,37 @@ function ProductCategory() {
                 </label> */}
                     <table className="approval-list">
                         <thead>
-                            <tr className='table-tr'>
-                                <th><input type="checkbox"
-                                    onChange={(e) => handleAllSelectCategory(e.target.checked)} /></th>
-                                <th>카테고리 번호</th>
-                                <th>카테고리 레벨</th>
-                                <th>상위 카테고리</th>
-                                <th>카테고리 이름</th>
-                                <th>카테고리 등록일시</th>
-                                <th>카테고리 수정일시</th>
-                            </tr>
+                        <tr className='table-tr'>
+                            <th><input type="checkbox"
+                                       onChange={(e) => handleAllSelectCategory(e.target.checked)} /></th>
+                            <th>카테고리 번호</th>
+                            <th>카테고리 레벨</th>
+                            <th>상위 카테고리</th>
+                            <th>카테고리 이름</th>
+                            <th>카테고리 등록일시</th>
+                            <th>카테고리 수정일시</th>
+                        </tr>
                         </thead>
                         <tbody className="approval-list-content">
-                            {category.map((category, index) => (
-                                <tr key={category.categoryNo}
-                                    className={selectedCategory.includes(category.categoryNo) ? 'selected' : ''}>
-                                    <td><input type="checkbox"
-                                        onChange={() => handleSelectCategory(category.categoryNo)}
-                                        checked={selectedCategory.includes(category.categoryNo)} /></td>
-                                    <td>{category.categoryNo}</td>
-                                    <td>{category.categoryLevel === 1 ? "대분류" :
-                                        category.categoryLevel === 2 ? "중분류" :
-                                            category.categoryLevel === 3 ? "소분류" : "ㆍ"
-                                    }</td>
-                                    <td>{category.parentCategoryNo ? category.parentCategoryNo : 'ㆍ'}</td>
-                                    <td>{category.categoryNm}</td>
-                                    <td>{formatDate(category.categoryInsertDate)}</td>
-                                    <td>{category.categoryUpdateDate ? formatDate(category.categoryUpdateDate) : 'ㆍ'}</td>
-                                </tr>
+                        {category.map((category, index) => (
+                            <tr key={category.categoryNo}
+                                className={selectedCategory.includes(category.categoryNo) ? 'selected' : ''}>
+                                <td><input type="checkbox"
+                                           onChange={() => handleSelectCategory(category.categoryNo)}
+                                           checked={selectedCategory.includes(category.categoryNo)} /></td>
+                                <td>{category.categoryNo}</td>
+                                <td>{category.categoryLevel === 1 ? "대분류" :
+                                    category.categoryLevel === 2 ? "중분류" :
+                                        category.categoryLevel === 3 ? "소분류" : "ㆍ"
+                                }</td>
+                                <td>{category.parentCategoryNo ? category.parentCategoryNo : 'ㆍ'}</td>
+                                <td>{category.categoryNm}</td>
+                                <td>{formatDate(category.categoryInsertDate)}</td>
+                                <td>{category.categoryUpdateDate ? formatDate(category.categoryUpdateDate) : 'ㆍ'}</td>
+                            </tr>
 
 
-                            ))}
+                        ))}
 
 
                         </tbody>
