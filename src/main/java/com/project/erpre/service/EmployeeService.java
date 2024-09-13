@@ -54,15 +54,29 @@ public class EmployeeService {
 //        return employeeRepository.findAll();
 //    }
 
+    //재직자만
     public Page<Employee> getPageEmployees(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return employeeRepository.findByEmployeeDeleteYn("N", pageable);
     }
+
+    //퇴직자까지
+    public Page<Employee> getAllPageEmployees(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return employeeRepository.findAll(pageable); // 필터 없이 전체 조회
+    }
+
+    public Page<Employee> getPageEmployeesY(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return employeeRepository.findByEmployeeDeleteYn("Y", pageable);
+    }
+
 //    public Page<Employee> getPageEmployees(int page, int size) {
 //        Pageable pageable = PageRequest.of(page, size);
 //        return employeeRepository.findAll(pageable);
 //    }
 
+    //delete_yn만 바꾸기(논리적삭제)
     public void deleteLogicalEmployees(List<String> ids) {
         for (String id : ids) {
             Employee employee = employeeRepository.findById(id).orElse(null);

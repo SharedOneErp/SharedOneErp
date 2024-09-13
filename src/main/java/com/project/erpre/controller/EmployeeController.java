@@ -70,7 +70,7 @@ public class EmployeeController {
 //        return ResponseEntity.ok(employeeList);
 //    }
 
-    //페이징해서 직원 목록 보여주기
+    //페이징해서 재직중인 직원 목록 보여주기
     @GetMapping("/employeeList")
     public ResponseEntity<Page<Employee>> getAllEmployees(
             @RequestParam(defaultValue = "0") int page,
@@ -79,10 +79,28 @@ public class EmployeeController {
         return ResponseEntity.ok(employeePage);
     }
 
+    //페이징해서 퇴직자만
+    @GetMapping("/employeeListY")
+    public ResponseEntity<Page<Employee>> getAllEmployeesY(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Page<Employee> employeePage = employeeService.getPageEmployeesY(page, size);
+        return ResponseEntity.ok(employeePage);
+    }
+
     //직원목록화면에서 체크된 직원 logical 삭제
     @PostMapping("/deleteEmployees")
     public ResponseEntity<?> deleteEmployees(@RequestBody List<String> ids) {
         employeeService.deleteLogicalEmployees(ids);
         return ResponseEntity.ok("Employees deleted successfully");
+    }
+
+    //퇴직자까지 보기
+    @GetMapping("/allEmployees")
+    public ResponseEntity<Page<Employee>> getAllEmployeesWithResigned(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Page<Employee> employeePage = employeeService.getAllPageEmployees(page, size);
+        return ResponseEntity.ok(employeePage);
     }
 }
