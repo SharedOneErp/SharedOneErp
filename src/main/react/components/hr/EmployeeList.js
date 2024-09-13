@@ -15,6 +15,9 @@ function EmployeeList() {
     const [selectAll, setSelectAll] = useState(false);
     const [selectedEmployees, setSelectedEmployees] = useState([]);
 
+    //모달 관련(기본은 안보이게)
+    const[showModifyModal, setShowModifyModal] = useState(false);
+    const[showInsertModal, setShowInsertModal] = useState(false);
 
     //초기화면은 재직자만
     useEffect(() => {
@@ -120,7 +123,22 @@ function EmployeeList() {
         console.log('삭제할 직원 id : ', selectedId) // 아이디 잘찍히나 확인
     };
 
+    ////////////// 모달
+    const openModifyModal = () => {
+        setShowModifyModal(true);
+    };
 
+    const closeModifyModal = () => {
+        setShowModifyModal(false);
+    };
+
+    const openInsertModal = () => {
+        setShowInsertModal(true);
+    };
+
+    const closeInsertModal = () => {
+        setShowInsertModal(false);
+    };
 
 
 
@@ -130,7 +148,7 @@ function EmployeeList() {
             <h1>직원 목록</h1>
             {/*<button className="filter-button" onClick={showTwentyEmployees}>조회</button>*/}
             <div className="btn-wrap">
-                <button className="filter-button">등록</button>
+                <button className="filter-button" onClick={openInsertModal}>등록</button>
                 <button className="filter-button" onClick={checkedDelete}>삭제</button>
                 <button className="filter-button" onClick={() => pageAllEmployees(0)}>퇴직자포함한 직원보기</button>
                 <button className="filter-button" onClick={() => pageEmployeesN(0)}>재직자만 보기</button>
@@ -167,7 +185,7 @@ function EmployeeList() {
                                 <td>{employee.employeeUpdateDate ? format(employee.employeeUpdateDate,'yyyy-MM-dd HH:mm') : '-'}</td>
                                 <td>{employee.employeeDeleteYn}</td>
                                 <td>{employee.employeeDeleteDate ? format(employee.employeeDeleteDate,'yyyy-MM-dd HH:mm') : '-'}</td>
-                                <td><button className = "modifyBtn">수정하기</button></td>
+                                <td><button className='modifyModal-btn' onClick={openModifyModal}>수정하기</button></td>
                             </tr>
                         ))
                     ) : (
@@ -191,6 +209,22 @@ function EmployeeList() {
                 ))}
                 <button onClick={() => PageChange(page + 1)} disabled={page === totalPages - 1}>다음</button>
             </div>
+
+            {showModifyModal && (
+                <div className='modal-overlay'>
+                    <div className='modifyModal-content'>
+                        <h2>정보수정모달</h2>
+                    </div>
+                </div>
+            )}
+
+            {showInsertModal && (
+                <div className='modal-overlay'>
+                    <div className='insertModal-content'>
+                        <h2>직원등록모달</h2>
+                    </div>
+                </div>
+            )}
             </main>
         </Layout>
     );
