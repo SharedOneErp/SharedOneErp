@@ -14,9 +14,8 @@ function ProductCategory() {
     const [categoryName, setCategoryName] = useState('');
     const [selectedCategory, setSelectedCategory] = useState([]); // 선택된 카테고리
     const [categoryLevel, setCategoryLevel] = useState('대분류'); // 카테고리 레벨 (대분류/중분류/소분류)
-    const [insertedTopList, setInsertedTopList] = useState([]);
-    const [insertedMidList, setInsertedMidList] = useState([]);
-    const [insertedLowList, setInsertedLowList] = useState([]);
+
+
 
     // 모달 관련
     const [showModal, setShowModal] = useState(false);
@@ -34,6 +33,11 @@ function ProductCategory() {
     //선택된 카테고리 저장
     const [selectedTopCategory, setSelectedTopCategory] = useState(null);
     const [selectedMidCategory, setSelectedMidCategory] = useState(null);
+
+    // 새로 추가된 카테고리 리스트를 저장
+    const [insertedTopList, setInsertedTopList] = useState([]);
+    const [insertedMidList, setInsertedMidList] = useState([]);
+    const [insertedLowList, setInsertedLowList] = useState([]);
 
     // 선택 카테고리 호버 저장
     const [hoverTop, setHoverTop] = useState(null);
