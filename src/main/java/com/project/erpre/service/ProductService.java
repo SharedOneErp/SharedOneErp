@@ -76,7 +76,7 @@ public class ProductService {
     }
 
     // 엔티티 -> DTO 변환 메서드
-    private ProductDTO convertToDTO(Product product) {
+    public static ProductDTO convertToDTO(Product product) {
         return ProductDTO.builder()
                 .productCd(product.getProductCd())
                 .productNm(product.getProductNm())
@@ -132,12 +132,18 @@ public class ProductService {
     }
 
 
-    public List<Product> searchProducts(String productCd, Category category, String productNm) {
-        if (category == null) {
-            return productRepository.findByProductCdContainingIgnoreCaseAndProductNmContainingIgnoreCase(productCd, productNm);
-        } else {
-            return productRepository.findByProductCdContainingIgnoreCaseAndCategoryAndProductNmContainingIgnoreCase(productCd, category, productNm);
-        }
+    //카테고리 서치 (상품이름 , 카테고리 레벨 , 상품코드 별 경우의 수 고려)
+    public List<Product> searchProducts(String productCd, String productNm, Integer topCategory, Integer middleCategory, Integer lowCategory) {
+        // 포괄적인 쿼리 메서드를 사용하여 모든 검색 조건을 처리합니다.
+        return productRepository.findByProductCdContainingIgnoreCaseAndProductNmContainingIgnoreCaseAndCategory(
+                productCd != null ? productCd : "", // 상품 코드가 null일 경우 빈 문자열로 대체
+                productNm != null ? productNm : "", // 상품명이 null일 경우 빈 문자열로 대체
+                topCategory,
+                middleCategory,
+                lowCategory
+        );
     }
-
 }
+
+
+
