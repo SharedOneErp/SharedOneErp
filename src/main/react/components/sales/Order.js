@@ -58,6 +58,66 @@ function Order() {
     const paginatedCustomerSearchResults = customerSearchResults.slice(indexOfFirstCustomerResult, indexOfLastCustomerResult);
     const totalCustomerPages = Math.ceil(customerSearchResults.length / itemsPerPageCustomer);
 
+    //카테고리 셀렉터
+    const [categories, setCategories] = useState({
+        topCategories: [],
+        middleCategories: [],
+        lowCategories: []
+    });
+    const [selectedCategory, setSelectedCategory] = useState({
+        top: '',
+        middle: '',
+        low: ''
+    });
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const topResponse = await fetch('/api/category/top');
+                const topData = await topResponse.json();
+                setCategories(prev => ({ ...prev, topCategories: topData }));
+
+                if (selectedCategory.top) {
+                    const middleResponse = await fetch(`/api/category/middle/${selectedCategory.top}`);
+                    const middleData = await middleResponse.json();
+                    setCategories(prev => ({ ...prev, middleCategories: middleData }));
+                }
+
+                if (selectedCategory.middle) {
+                    const lowResponse = await fetch(`/api/category/low/${selectedCategory.middle}/${selectedCategory.top}`);
+                    const lowData = await lowResponse.json();
+                    setCategories(prev => ({ ...prev, lowCategories: lowData }));
+                }
+
+            } catch (error) {
+                console.error('Failed to fetch categories:', error);
+            }
+        };
+
+        fetchCategories();
+    }, [selectedCategory.top, selectedCategory.middle]);
+
+    const handleTopChange = (e) => {
+        const topValue = e.target.value;
+        setSelectedCategory({
+            top: topValue,
+            middle: '',
+            low: ''
+        });
+        setCategories(prev => ({ ...prev, middleCategories: [], lowCategories: [] }));
+    };
+
+    const handleMiddleChange = (e) => {
+        const middleValue = e.target.value;
+        setSelectedCategory({
+            ...selectedCategory,
+            middle: middleValue,
+            low: ''
+        });
+        setCategories(prev => ({ ...prev, lowCategories: [] }));
+    };
+
+
 // 페이지 변경 핸들러
     const handlePageChangeProduct = (pageNumber) => {
         setCurrentPageProduct(pageNumber);
@@ -194,15 +254,12 @@ function Order() {
         setOrderDetails(updatedOrderDetails);
     };
 
-
-
-    // 모달 열기
     const openModal = (index) => {
         setSelectedProductIndex(index);
         setShowModal(true);
         setSearchQuery('');
         setSearchCode('');
-        setSearchResults([]);
+        handleSearch();
     };
 
     // 모달 닫기
@@ -214,7 +271,7 @@ function Order() {
     const openCustomerModal = () => {
         setCustomerModalOpen(true);
         setSearchQuery('');
-        setSearchResults([]);
+        customerSearch(); // 전체 고객사 목록을 불러오는 함수 호출
     };
 
     // Customer 모달 닫기
@@ -223,11 +280,35 @@ function Order() {
     };
 
 
-    // 상품 검색 처리
+    // // 상품 검색 처리
+    // const handleSearch = async () => {
+    //     console.log("-------------------------------------handleSearch");
+    //     try {
+    //         const response = await fetch(`/api/order/search?productCd=${searchCode}&productNm=${searchQuery}`);
+    //         if (!response.ok) throw new Error('검색 결과가 없습니다.');
+    //         const data = await response.json();
+    //         setSearchResults(data);
+    //         setCurrentPageProduct(1); // 검색 시 페이지를 첫 페이지로 초기화
+    //     } catch (error) {
+    //         console.error('검색 중 오류 발생:', error);
+    //         setSearchResults([]);
+    //     }
+    // };
+
     const handleSearch = async () => {
         console.log("-------------------------------------handleSearch");
+
+        // URL에 포함할 쿼리 파라미터 생성
+        const params = new URLSearchParams({
+            productCd: searchCode,
+            productNm: searchQuery,
+            topCategory: selectedCategory.top,
+            middleCategory: selectedCategory.middle,
+            lowCategory: selectedCategory.low
+        });
+
         try {
-            const response = await fetch(`/api/order/search?productCd=${searchCode}&productNm=${searchQuery}`);
+            const response = await fetch(`/api/order/search?${params.toString()}`);
             if (!response.ok) throw new Error('검색 결과가 없습니다.');
             const data = await response.json();
             setSearchResults(data);
@@ -237,6 +318,8 @@ function Order() {
             setSearchResults([]);
         }
     };
+
+
 
     //고객사 서치
     const customerSearch = async () => {
@@ -304,8 +387,8 @@ function Order() {
 
 
 
-    
-    
+
+
 
     //주문 생성 및 정보 직관화 한 alert 생성
     const handleSubmit = async () => {
@@ -492,19 +575,6 @@ function Order() {
         closeCustomerModal();
     };
 
-    // const handleCustomerSelect = (selectedCustomer) => {
-    //     // 선택된 고객 정보 처리
-    //     console.log('Selected customer:', selectedCustomer);
-    //     setCustomer({
-    //         customerNo: selectedCustomer.customerNo || '',
-    //         customerName: selectedCustomer.customerName || '',
-    //         customerAddr: selectedCustomer.customerAddr || '',
-    //         customerTel: selectedCustomer.customerTel || '',
-    //         customerRepresentativeName: selectedCustomer.customerRepresentativeName || '',
-    //         customerInsertDate : selectedCustomer.customerInsertDate || ''
-    //     });
-    //     closeCustomerModal();
-    // };
 
     //날짜 형식 처리
     const formatDateForInput = (dateString) => {
@@ -936,21 +1006,32 @@ function Order() {
                             </div>
 
                             <div className="category-selectors">
-                                <select>
+                                <select value={selectedCategory.top} onChange={handleTopChange}>
                                     <option value="">대분류</option>
-                                    <option value="furniture">가구</option>
+                                    {categories.topCategories.map(category => (
+                                        <option key={category.categoryNo}
+                                                value={category.categoryNo}>{category.categoryNm}</option>
+                                    ))}
                                 </select>
 
-                                <select>
+                                <select value={selectedCategory.middle} onChange={handleMiddleChange}
+                                        disabled={!selectedCategory.top}>
                                     <option value="">중분류</option>
-                                    <option value="chair">의자</option>
-                                    <option value="table">테이블</option>
+                                    {categories.middleCategories.map(category => (
+                                        <option key={category.categoryNo}
+                                                value={category.categoryNo}>{category.categoryNm}</option>
+                                    ))}
                                 </select>
 
-                                <select>
+                                <select value={selectedCategory.low} onChange={(e) => setSelectedCategory({
+                                    ...selectedCategory,
+                                    low: e.target.value
+                                })} disabled={!selectedCategory.middle}>
                                     <option value="">소분류</option>
-                                    <option value="office-chair">사무용 의자</option>
-                                    <option value="dining-chair">식탁 의자</option>
+                                    {categories.lowCategories.map(category => (
+                                        <option key={category.categoryNo}
+                                                value={category.categoryNo}>{category.categoryNm}</option>
+                                    ))}
                                 </select>
                             </div>
 
@@ -973,36 +1054,36 @@ function Order() {
 
                             {/* 검색 결과 */}
                             <div className="search-results">
-                            {searchResults.length > 0 ? (
-                                <table className="search-results-table">
-                                    <thead>
-                                    <tr>
-                                        <th>상품코드</th>
-                                        <th>카테고리</th>
-                                        <th>상품명</th>
-                                        <th>가격</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {paginatedSearchResults.map((result, index) => (
-                                        <tr
-                                            key={index}
-                                            onClick={() => isEditMode ? handleProductSelectEdit(result) : handleProductSelect(result)}
-                                        >
-                                            <td>{result.productCd}</td>
-                                            <td>{result.category.categoryNo}</td>
-                                            <td>{result.productNm}</td>
-                                            <td>{result.price}</td>
+                                {searchResults.length > 0 ? (
+                                    <table className="search-results-table">
+                                        <thead>
+                                        <tr>
+                                            <th>상품코드</th>
+                                            <th>카테고리</th>
+                                            <th>상품명</th>
+                                            <th>가격</th>
                                         </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
-                            ) : (
-                                <div>검색 결과가 없습니다.</div>
-                            )}
+                                        </thead>
+                                        <tbody>
+                                        {paginatedSearchResults.map((result, index) => (
+                                            <tr
+                                                key={index}
+                                                onClick={() => isEditMode ? handleProductSelectEdit(result) : handleProductSelect(result)}
+                                            >
+                                                <td>{result.productCd}</td>
+                                                <td>{result.category.categoryNo}</td>
+                                                <td>{result.productNm}</td>
+                                                <td>{result.price}</td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <div>검색 결과가 없습니다.</div>
+                                )}
                                 {/* 페이지네이션 */}
                                 <div className="pagination">
-                                    {Array.from({ length: totalProductPages }, (_, i) => i + 1).map(number => (
+                                    {Array.from({length: totalProductPages}, (_, i) => i + 1).map(number => (
                                         <button
                                             key={number}
                                             onClick={() => handlePageChangeProduct(number)}

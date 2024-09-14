@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/products")
@@ -39,8 +40,8 @@ public class ProductController {
     // 상품 수정 API
     @PutMapping("/update")
     public ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductDTO productDTO) {
-            ProductDTO updatedProduct = productService.saveOrUpdate(productDTO);
-            return ResponseEntity.ok(updatedProduct);
+        ProductDTO updatedProduct = productService.saveOrUpdate(productDTO);
+        return ResponseEntity.ok(updatedProduct);
     }
 
 

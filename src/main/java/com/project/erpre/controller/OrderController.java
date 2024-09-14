@@ -70,15 +70,29 @@ public class OrderController {
 
     }
 
+//    / 검색 API/
+//    @GetMapping("/search")
+//    public List<Product> searchProducts(
+//            @RequestParam(required = false) String productCd,
+//            @RequestParam(required = false) Category category,
+//            @RequestParam(required = false) String productNm
+//    ) {
+//        return productService.searchProducts(productCd, category, productNm);
+//    }
+
+
     // 검색 API
     @GetMapping("/search")
     public List<Product> searchProducts(
             @RequestParam(required = false) String productCd,
-            @RequestParam(required = false) Category category,
-            @RequestParam(required = false) String productNm
-    ) {
-        return productService.searchProducts(productCd, category, productNm);
+            @RequestParam(required = false) String productNm,
+            @RequestParam(required = false) Integer topCategory,
+            @RequestParam(required = false) Integer middleCategory,
+            @RequestParam(required = false) Integer lowCategory) {
+        return productService.searchProducts(productCd, productNm, topCategory, middleCategory, lowCategory);
     }
+
+
 
     @GetMapping
     public ResponseEntity<?> searchOrder(@RequestParam Integer no) {
