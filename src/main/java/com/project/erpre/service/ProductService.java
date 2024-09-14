@@ -132,7 +132,6 @@ public class ProductService {
     }
 
 
-    //카테고리 서치 (상품이름 , 카테고리 레벨 , 상품코드 별 경우의 수 고려)
     public List<Product> searchProducts(String productCd, String productNm, Integer topCategory, Integer middleCategory, Integer lowCategory) {
         // 포괄적인 쿼리 메서드를 사용하여 모든 검색 조건을 처리합니다.
         return productRepository.findByProductCdContainingIgnoreCaseAndProductNmContainingIgnoreCaseAndCategory(
@@ -143,6 +142,7 @@ public class ProductService {
                 lowCategory
         );
     }
+
 }
 
 
