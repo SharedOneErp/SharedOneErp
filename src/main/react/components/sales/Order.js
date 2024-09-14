@@ -455,6 +455,7 @@ function Order() {
                     if (!detailResponse.ok) {
                         const errorText = await detailResponse.text();
                         throw new Error(`상세 주문 처리 중 오류 발생: ${errorText}`);
+                        alert("주문 처리 중 오류가 발생했습니다. 다시 확인해주세요");
                     }
                 }
 
@@ -475,9 +476,13 @@ function Order() {
             } else {
                 const errorText = await response.text();
                 console.error('주문 처리 오류:', errorText);
+                alert("주문 처리 중 오류가 발생했습니다. 다시 확인해주세요");
+
             }
         } catch (error) {
             console.error('주문 처리 중 오류 발생:', error.message);
+            alert("주문 처리 중 오류가 발생했습니다. 다시 확인해주세요");
+
         }
     };
 
@@ -856,6 +861,7 @@ function Order() {
                     </div>
                 )}
 
+                {/*여기는 수정 모드*/}
                 {isEditMode && (
                 <div className="product-table">
                     <table className="styled-table">
