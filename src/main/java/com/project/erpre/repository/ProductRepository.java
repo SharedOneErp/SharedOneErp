@@ -56,11 +56,20 @@ public interface ProductRepository extends JpaRepository<Product, String> {
             String productCd, Category category, String productNm);
 
 
-    @Query("SELECT p FROM Product p WHERE p.productCd LIKE %:productCd% AND p.productNm LIKE %:productNm% AND (" +
-            "(p.category.categoryNo = :lowCategory) OR " +
+    @Query("SELECT p FROM Product p WHERE " +
+            "(p.productCd LIKE %:productCd%) AND " +
+            "(p.productNm LIKE %:productNm%) AND " +
+            "(:topCategory IS NULL OR p.category.parentCategoryNo IS NULL AND :middleCategory IS NULL AND :lowCategory IS NULL OR " +
+            "(p.category.parentCategoryNo IS NULL AND :topCategory IS NOT NULL AND :middleCategory IS NULL AND :lowCategory IS NULL) OR " +
             "(p.category.parentCategoryNo = :middleCategory AND p.category.categoryNo IS NULL) OR " +
-            "(p.category.parentCategoryNo IS NULL AND :topCategory IS NOT NULL AND :middleCategory IS NULL AND :lowCategory IS NULL))")
-    List<Product> findByProductCdContainingIgnoreCaseAndProductNmContainingIgnoreCaseAndCategory(@Param("productCd") String productCd, @Param("productNm") String productNm, @Param("topCategory") Integer topCategory, @Param("middleCategory") Integer middleCategory, @Param("lowCategory") Integer lowCategory);
+            "(p.category.parentCategoryNo = :middleCategory AND p.category.categoryNo = :lowCategory))")
+    List<Product> findByProductCdContainingIgnoreCaseAndProductNmContainingIgnoreCaseAndCategory(
+            @Param("productCd") String productCd,
+            @Param("productNm") String productNm,
+            @Param("topCategory") Integer topCategory,
+            @Param("middleCategory") Integer middleCategory,
+            @Param("lowCategory") Integer lowCategory);
+
 
 }
 

@@ -98,8 +98,8 @@ function OrderList() {
                     setOrders(filteredOrders);
                 }
             } catch (err) {
-                setError('문제가 발생했습니다. 주문 목록을 가져올 수 없습니다.');
-                console.error(err);
+                alert('해당 페이지에 접근 권한이 없습니다.');
+                window.location.href = '/main';
             }
         };
         fetchData();
