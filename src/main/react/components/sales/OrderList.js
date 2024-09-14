@@ -8,13 +8,30 @@ const fetchOrders = async () => {
     try {
         const response = await fetch('/api/order/all');
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('네트워크 연결이 불안정합니다.');
         }
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Failed to fetch orders:', error);
         return [];
+    }
+};
+
+const fetchEmployee = async () => {
+    try {
+        const response = await fetch('/api/employee', {
+            credentials: "include", // 세션 포함
+        });
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            console.error('사용자 정보를 가져오는 데 실패했습니다.');
+            return null;
+        }
+    } catch (error) {
+        console.error('사용자 정보를 가져오는 중 오류 발생:', error);
+        return null;
     }
 };
 
@@ -25,6 +42,7 @@ function OrderList() {
     const [itemsPerPage, setItemsPerPage] = useState(20);
     const [currentPage, setCurrentPage] = useState(1);
     const [role, setRole] = useState('');
+    const [employeeId, setEmployeeId] = useState('');
     const [orders, setOrders] = useState([]);
     const [error, setError] = useState('');
 
@@ -56,33 +74,53 @@ function OrderList() {
     };
 
     useEffect(() => {
-        const userRole = searchParams.get('role') || 'admin';
-        setRole(userRole);
+        const fetchData = async () => {
+            try {
+                // 직원 정보 가져오기
+                const empData = await fetchEmployee();
+                if (empData) {
+                    setRole(empData.employeeRole);
+                    setEmployeeId(empData.employeeId);
+                }
+                // 주문 정보 가져오기
+                const orderData = await fetchOrders();
 
-        fetchOrders().then(data => {
-            setOrders(data);
-        }).catch(err => {
-            setError('문제가 발생했습니다. 주문 목록을 가져올 수 없습니다.');
-        });
-    }, [searchParams]);
+                // employeeId가 일치하는 주문만 필터링 (order.employee.employeeId=== empData.employeeId)
+                const filteredOrders = orderData.filter(order => order.employee.employeeId=== empData.employeeId);
+
+
+                // 주문 필터링: 관리자일 경우 전체 주문 표시 , 직원일때 본인과 연결된 주문만 표시경우
+                if (empData.employeeRole === 'admin') {
+                    setOrders(orderData); // 관리자일 경우 모든 주문 표시
+                } else {
+                    // 직원일 경우, employeeId가 동일한 주문만 필터링
+                    const filteredOrders = orderData.filter(order => order.employee.employeeId === empData.employeeId);
+                    setOrders(filteredOrders);
+                }
+            } catch (err) {
+                setError('문제가 발생했습니다. 주문 목록을 가져올 수 없습니다.');
+                console.error(err);
+            }
+        };
+        fetchData();
+    }, []);
+
+
 
     const filteredOrders = orders.filter(order => {
-        const customerName = (order.customer?.customerName || '').toLowerCase();
-        const orderDate = (order.orderHInsertDate?.split('T')[0] || '').toLowerCase();
-        const orderStatus = mapStatusFromDbToUi(order.orderHStatus).toLowerCase();
-        const productNames = (order.productNames || []).join(', ').toLowerCase();
+        // 필터와 검색어 조건에 맞는 주문만 반환
+        const customerName = order.customer?.customerName || '';
+        const orderDate = order.orderHInsertDate?.split('T')[0] || '';
+        const orderStatus = mapStatusFromDbToUi(order.orderHStatus) || '';
+        const productNames = (order.productNames || []).join(', ');
 
-        // Convert filter and searchTerm to lowercase
-        const filterLower = filter.toLowerCase();
-        const searchTermLower = searchTerm.toLowerCase();
-
-        const matchesFilter = filterType === 'customer' ? customerName.includes(filterLower) :
-            filterType === 'date' ? orderDate.includes(filterLower) :
-                filterType === 'status' ? orderStatus.includes(filterLower) :
-                    filterType === 'items' ? productNames.includes(filterLower) :
+        const matchesFilter = filterType === 'customer' ? customerName.includes(filter) :
+            filterType === 'date' ? orderDate.includes(filter) :
+                filterType === 'status' ? orderStatus.includes(filter) :
+                    filterType === 'items' ? productNames.includes(filter) :
                         true;
 
-        const matchesSearch = searchTermLower ? [customerName, orderDate, orderStatus, productNames].some(field => field.includes(searchTermLower)) : true;
+        const matchesSearch = searchTerm ? [customerName, orderDate, orderStatus, productNames].some(field => field.includes(searchTerm)) : true;
 
         return matchesFilter && matchesSearch;
     });
