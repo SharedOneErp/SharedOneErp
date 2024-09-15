@@ -96,7 +96,7 @@ module.exports = {
                 const now = new Date().toLocaleString();
                 // 콘솔에 빨간색 구분선 및 메시지 출력
                 console.log("\x1b[31m%s\x1b[0m", "\n\n\n=============================================");
-                console.log("\x1b[31m%s\x1b[0m", `✔ ${now} 빌드 완료`); // 빌드 완료 시간 출력
+                console.log("\x1b[31m%s\x1b[0m", `${now} 빌드 완료`); // 빌드 완료 시간 출력
                 console.log("\x1b[31m%s\x1b[0m", "=============================================");
             });
         },

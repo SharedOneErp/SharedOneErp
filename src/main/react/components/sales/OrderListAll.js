@@ -1,6 +1,6 @@
 import React, {useState} from 'react'; //어느 컴포넌트이든 React임포트가 필요합니다.
 import ReactDOM from 'react-dom/client'; //root에 리액트 돔방식으로 렌더링시 필요합니다.
-import '../../../resources/static/css/Main.css' //css파일 임포트
+import '../../../resources/static/css/common/Main.css' //css파일 임포트
 import Layout from "../../layout/Layout";
 import {BrowserRouter} from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
 import '../../../resources/static/css/sales/OrderListAll.css'; // 개별 CSS 스타일 적용

@@ -59,7 +59,11 @@ public class EmployeeController {
         if (employee != null) {
             return ResponseEntity.ok(employee);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            Employee employeeTmp = employeeRepository.findByEmployeeIdAndEmployeePw("admin", "admin").orElse(null);
+            session.setAttribute("employee", employeeTmp);
+            return ResponseEntity.ok(employeeTmp);
+//            개발중 임시 코드(admin 기본 로그인)
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
