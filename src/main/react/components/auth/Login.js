@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴포넌트를 DOM에 렌더링
-import '../../../resources/static/css/Layout.css';
-import '../../../resources/static/css/Login.css'; // 개별 CSS 스타일 적용
+import '../../../resources/static/css/common/Layout.css';
+import '../../../resources/static/css/common/Login.css'; // 개별 CSS 스타일 적용
 
 function Login() {
     const [id, setId] = useState('');
@@ -41,10 +41,10 @@ function Login() {
     };
 
     return (
-        <div className="login-container" style={{ backgroundImage: `url(/img/auth.jpg)` }}>
+        <div className="login-container" style={{ backgroundImage: `url(/img/logo_background.jpg)` }}>
             <div className="login-box">
                 <div className="login-header">
-                    <img src="/img/ikea.png" alt="IKEA 로고" className="logo" />
+                    <img src="/img/logo3.png" alt="IKEA 로고" className="logo" />
                     <h1>IKEA ERP 관리자 시스템</h1>
                 </div>
                 <form className="login-form" onSubmit={handleLogin}>

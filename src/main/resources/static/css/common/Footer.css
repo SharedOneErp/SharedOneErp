@@ -1,0 +1,9 @@
+footer { display: none; } 
+.container-footer { background-color: #f4f4f4; padding: 25px 0; text-align: center; /*margin-top: 1px; */}
+.info-area { margin-bottom: 20px; } 
+.info-area ul { list-style: none; padding: 0; margin: 0; } 
+.info-area li { display: inline-block; margin: 0 15px; } 
+.info-area a { text-decoration: none; font-size: 16px; transition: color 0.3s; color: black; } 
+.copyright-area { margin-bottom: 10px; font-size: 14px; } 
+.copyright-area p { margin: 5px 0; } 
+.copyright { display: block; font-size: 12px; margin-top: 10px; } 

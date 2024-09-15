@@ -23,35 +23,35 @@ public class PriceController {
     @Autowired
     private PriceService priceService;
 
-    // [1] 가격 정보 삽입
+    // [1] 🟢 가격 정보 삽입
     @PostMapping("/insert")
     public PriceDTO insertPrice(@RequestBody PriceDTO priceDTO) {
         logger.info("Inserting price: {}", priceDTO);
         return priceService.saveOrUpdate(priceDTO);  // DTO 전달 후 서비스에서 변환 및 저장
     }
 
-    // [2] 가격 정보 수정
+    // [2] 🟢 가격 정보 수정
     @PutMapping("/update")
     public PriceDTO updatePrice(@RequestBody PriceDTO priceDTO) {
         logger.info("Updating price: {}", priceDTO);
         return priceService.saveOrUpdate(priceDTO);  // DTO 전달 후 서비스에서 변환 및 저장
     }
 
-    // [3] 특정 가격 정보 삭제
+    // [3] 🟣 특정 가격 정보 삭제
     @DeleteMapping("/delete/{id}")
     public void deletePrice(@PathVariable("id") Integer priceNo) {
         logger.info("Deleting price with ID: {}", priceNo);
         priceService.deletePrice(priceNo);
     }
 
-    // [4] 특정 가격 정보 조회
+    // [4] 🟡 특정 가격 정보 조회
     @GetMapping("/find/{id}")
     public Optional<PriceDTO> getPriceById(@PathVariable("id") Integer priceNo) {
         logger.info("Fetching price with ID: {}", priceNo);
         return priceService.getPriceById(priceNo);
     }
 
-    // [5] 가격 정보 목록 조회 (필터링, 페이징, 정렬 지원) 🟥
+    // [5] 🔴 가격 정보 목록 조회 (필터링, 페이징, 정렬 지원)
     @GetMapping("/all")
     public Page<PriceDTO> getAllPrices(
             @RequestParam(required = false) Integer customerNo,  // 고객 번호 필터
@@ -69,21 +69,21 @@ public class PriceController {
         return priceService.getAllPrices(customerNo, productCd, startDate, endDate, pageRequest);
     }
 
-    // [6] 특정 제품(Product)의 가격 정보 조회
+    // [6] 🟡 특정 제품(Product)의 가격 정보 조회
     @GetMapping("/product/{productCd}")
     public List<PriceDTO> getPricesByProduct(@PathVariable("productCd") String productCd) {
         logger.info("Fetching prices for product with Code: {}", productCd);
         return priceService.getPricesByProduct(productCd);
     }
 
-    // [7] 특정 고객(Customer)의 가격 정보 조회
+    // [7] 🟡 특정 고객(Customer)의 가격 정보 조회
     @GetMapping("/customer/{customerNo}")
     public List<PriceDTO> getPricesByCustomer(@PathVariable("customerNo") Integer customerNo) {
         logger.info("Fetching prices for customer with ID: {}", customerNo);
         return priceService.getPricesByCustomer(customerNo);
     }
 
-    // [8] 특정 기간 내의 가격 정보 조회
+    // [8] 🟡 특정 기간 내의 가격 정보 조회
     @GetMapping("/date-range")
     public List<PriceDTO> getPricesByDateRange(
             @RequestParam("startDate") String startDate,

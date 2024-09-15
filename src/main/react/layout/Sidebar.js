@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import '../../resources/static/css/Sidebar.css';
+import '../../resources/static/css/common/Sidebar.css';
 import {useLocation} from "react-router-dom";
 
 function Sidebar({currentMenu}) {
@@ -79,10 +79,10 @@ function Sidebar({currentMenu}) {
                         )}
                     </div>
                     <div className="login-time">2024-09-05 13:54:06</div>
-                    <button onClick={handleLogout} className="btn">로그아웃</button>
+                    <button onClick={handleLogout} className="box small">로그아웃</button>
                 </div>
             </div>
-            <ul className="menu">
+            <ul className={`menu ${currentMenu}`}>
                 <li>
                     <span className={currentMenu.startsWith('order') ? 'active' : ''}><i className="bi bi-piggy-bank"></i>영업 관리</span>
                     <ul className="submenu">
@@ -105,7 +105,7 @@ function Sidebar({currentMenu}) {
                     <span className={currentMenu.startsWith('product') ? 'active' : ''}><i className="bi bi-cart-check"></i>상품 관리</span>
                     <ul className="submenu">
                         <li className={currentMenu === 'productList' ? 'active' : ''}>
-                            <a href="#" onClick={() => handleSubMenuClick('productList', '/productList')}>전체 상품 목록</a>
+                            <a href="#" onClick={() => handleSubMenuClick('productList', '/productList')}>상품 목록</a>
                         </li>
                         <li className={currentMenu === 'productPrice' ? 'active' : ''}>
                             <a href="#"

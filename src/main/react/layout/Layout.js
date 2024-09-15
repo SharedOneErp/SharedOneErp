@@ -2,7 +2,7 @@
 import React from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import '../../resources/static/css/Layout.css';
+import '../../resources/static/css/common/Layout.css';
 
 function Layout({currentMenu, children}) {
 

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
 import Layout from "../../layout/Layout";
-import '../../../resources/static/css/Main.css';
+import '../../../resources/static/css/common/Main.css';
 
 function Main() {
     return (

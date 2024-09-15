@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
-import '../../../resources/static/css/Main.css';
+import '../../../resources/static/css/common/Main.css';
 import Layout from "../../layout/Layout";
 import { BrowserRouter } from "react-router-dom";
 import '../../../resources/static/css/hr/EmployeeList.css';
