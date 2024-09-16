@@ -94,8 +94,19 @@ function OrderList() {
     const [endDate, setEndDate] = useState(''); // 종료 날짜
     const [selectedOrders, setSelectedOrders] = useState(new Set()); // 체크된 주문 번호 집합
     const [allSelected, setAllSelected] = useState(false); // 전체 선택 체크박스 상태
+    const [itsAssignedMode, setItsAssignedMode] = useState(false);
 
     const [searchParams] = useSearchParams();
+
+    useEffect(() => {
+        const mode = searchParams.get('mode');
+        if (mode === 'Assigned') {
+            setItsAssignedMode(true);
+        } else {
+            setItsAssignedMode(false);
+        }
+    }, [searchParams]);
+
 
     const applyFilter = (filterValue) => {
         setFilter(filterValue);
@@ -131,6 +142,14 @@ function OrderList() {
                 if (empData) {
                     setRole(empData.employeeRole);
                     setEmployeeId(empData.employeeId);
+
+                    // Assigned 모드에 대한 권한 검사
+                    if (itsAssignedMode && empData.employeeRole !== 'admin') {
+                        alert('해당 페이지에 접근 권한이 없습니다.');
+                        window.location.href='/main'; // 권한 없는 사용자는 메인 페이지로 리디렉션
+                        return;
+                    }
+
                 }
                 // 주문 정보 가져오기
                 const orderData = await fetchOrders();
@@ -150,12 +169,11 @@ function OrderList() {
             }
         };
         fetchData();
-
         // 현재 날짜를 기본값으로 설정
         const today = new Date().toISOString().split('T')[0];
         setEndDate(today);
 
-    }, []);
+    }, [itsAssignedMode]);
 
     useEffect(() => {
         if (Array.isArray(filteredOrders)) {
@@ -329,10 +347,16 @@ function OrderList() {
     };
 
     return (
-        <Layout currentMenu="orderList">
+        <Layout currentMenu={itsAssignedMode && role === 'admin' ? 'orderRegisterApproval' : 'orderList'}>
             <main className="main-content menu_order_list">
                 <div className="orderList-title">
-                    <h3>{role === 'admin' ? '전체 주문 목록' : '담당 주문 목록'}</h3>
+                    <h3>
+                        {itsAssignedMode && role === 'admin'
+                            ? '주문 등록 승인'
+                            : role === 'admin'
+                                ? '전체 주문 목록'
+                                : '담당 주문 목록'}
+                    </h3>
                 </div>
                 <div className="orderList-container">
 
@@ -428,15 +452,16 @@ function OrderList() {
                             </div>
 
                             <div className="right">
-                                {role === 'admin' && (
-                                    <button className="box color" onClick={handleApproveSelectedOrders}>
-                                        결제승인
-                                    </button>
+                                {itsAssignedMode && role === 'admin' && (
+                                    <>
+                                        <button className="box color" onClick={handleApproveSelectedOrders}>
+                                            결제승인
+                                        </button>
+                                        <button className="box" onClick={handleDeniedSelectedOrders}>
+                                            반려요청
+                                        </button>
+                                    </>
                                 )}
-                                {role === 'admin' && (
-                                    <button className="box" onClick={handleDeniedSelectedOrders}>
-                                        반려요청
-                                    </button>)}
                             </div>
                         </div>
 
@@ -444,7 +469,7 @@ function OrderList() {
                             <table>
                                 <thead>
                                 <tr>
-                                    {role === 'admin' && (
+                                    {itsAssignedMode && role === 'admin' && (
                                         <th className="checkbox-input">
                                             <input
                                                 type="checkbox"
@@ -468,28 +493,27 @@ function OrderList() {
                                     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                                     .map(order => (
                                         <tr key={order.orderNo}>
-                                            {role === 'admin' && order.orderHStatus==='ing' ? (
+                                            {itsAssignedMode && role === 'admin' && (
                                                 <td className="checkbox-input">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={selectedOrders.has(order.orderNo)}
-                                                        onChange={() => handleCheckboxChange(order.orderNo)}
-                                                    />
+                                                    {order.orderHStatus === 'ing' ? (
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectedOrders.has(order.orderNo)}
+                                                            onChange={() => handleCheckboxChange(order.orderNo)}
+                                                        />
+                                                    ) : (
+                                                        <></>
+                                                    )}
                                                 </td>
-                                            ) : (
-                                                <td className="checkbox-input"></td>
                                             )}
+
                                             <td>{String(order.orderNo).padStart(3, '0')}</td>
                                             <td>{order.customer?.customerName || 'N/A'}</td>
                                             <td>{order.orderHInsertDate?.split('T')[0] || 'N/A'}</td>
                                             <td>{mapStatusFromDbToUi(order.orderHStatus) || 'N/A'}</td>
                                             <td>{formatProductNames(order.productNames || []) || 'N/A'}</td>
                                             <td>{order.orderHTotalPrice?.toLocaleString() + '원' || 'N/A'}</td>
-                                            {role === 'admin' && (
-                                                <td>
-                                                    {order.employee?.employeeName || 'N/A'}
-                                                </td>
-                                            )}
+                                                <td>{order.employee?.employeeName || 'N/A'}</td>
                                             <td><a href={`/order?no=${order.orderNo}`}>내역 보기</a></td>
                                         </tr>
                                     ))}
