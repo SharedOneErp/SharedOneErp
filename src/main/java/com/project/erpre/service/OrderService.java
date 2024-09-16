@@ -140,4 +140,8 @@ public class OrderService {
         orderRepository.deleteById(orderNo);
     }
 
+    public Order updateOrder(Order order) {
+        return orderRepository.save(order);
+    }
+
 }
