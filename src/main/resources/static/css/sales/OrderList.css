@@ -32,8 +32,20 @@
 }
 .orderList-container{
     padding: 20px;
-    background-color: #f8f8f8;
     border-radius: 5px;
+}
+.filter-type{
+    position: relative;
+    align-items: center;
+    border-radius: 5px;
+    border: 1px solid rgba(36, 42, 48, .14);
+    display: inline-flex;
+    font-size: 14px;
+    padding-left: 12px;
+    color: #666;
+}
+.date-separator {
+    font-size: 1.5rem; /* 기호 크기 조절 */
 }
 
 /* 검색 필터*/
