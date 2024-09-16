@@ -48,6 +48,9 @@ function OrderList() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
     const [selectedStatus, setSelectedStatus] = useState(''); // 상태
+    const [pageInputValue, setPageInputValue] = useState('1'); // 페이지 입력값
+    const [startDate, setStartDate] = useState(''); // 시작 날짜
+    const [endDate, setEndDate] = useState(''); // 종료 날짜
 
     const [searchParams] = useSearchParams();
 
@@ -104,6 +107,11 @@ function OrderList() {
             }
         };
         fetchData();
+
+        // 현재 날짜를 기본값으로 설정
+        const today = new Date().toISOString().split('T')[0];
+        setEndDate(today);
+
     }, []);
 
     if (loading) {
@@ -118,7 +126,14 @@ function OrderList() {
         );
     }
 
-    const filteredOrders = orders.filter(order => {
+    // 필터링된 주문을 등록일 기준으로 내림차순 정렬
+    const sortedOrders = [...orders].sort((a, b) => {
+        const dateA = new Date(a.orderHInsertDate);
+        const dateB = new Date(b.orderHInsertDate);
+        return dateB - dateA; // 내림차순 정렬
+    });
+
+    const filteredOrders = sortedOrders.filter(order => {
         const customerName = order.customer?.customerName || '';
         const orderDate = order.orderHInsertDate?.split('T')[0] || '';
         const orderStatus = mapStatusFromDbToUi(order.orderHStatus) || '';
@@ -134,7 +149,12 @@ function OrderList() {
 
         const matchesSearch = searchTerm ? [customerName, orderDate, orderStatus, productNames, employeeName].some(field => field.includes(searchTerm)) : true;
 
-        return matchesFilter && matchesSearch;
+        const orderDateObj = new Date(order.orderHInsertDate.split('T')[0]);
+
+        const isDateInRange = (!startDate || orderDateObj >= new Date(startDate)) &&
+            (!endDate || orderDateObj <= new Date(endDate));
+
+        return matchesFilter && matchesSearch && isDateInRange;
     });
 
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
@@ -148,6 +168,56 @@ function OrderList() {
         }
     };
 
+    const handleItemsPerPageChange = (event) => {
+        const value = Number(event.target.value);
+        if (value > 0 && value <= 100) {
+            setItemsPerPage(value);
+            setCurrentPage(1); // 페이지 수 초기화
+        }
+    };
+
+    const handlePageClick = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        setPageInputValue(pageNumber.toString()); // 페이지 입력값 업데이트
+    };
+
+    const handlePageInputChange = (event) => {
+        const value = event.target.value;
+        if (/^\d*$/.test(value)) { // 숫자만 허용
+            const pageNumber = Number(value);
+            if (pageNumber >= 1 && pageNumber <= totalPages) {
+                setPageInputValue(value);
+                setCurrentPage(pageNumber);
+            } else if (value === '') { // 입력값이 비어있는 경우
+                setPageInputValue(value);
+            }
+        }
+    };
+
+
+
+
+    const renderPageButtons = () => {
+        const pageButtons = [];
+        const startPage = Math.floor((currentPage - 1) / 5) * 5 + 1;
+        const endPage = Math.min(startPage + 4, totalPages);
+
+        for (let page = startPage; page <= endPage; page++) {
+            pageButtons.push(
+                <button
+                    key={page}
+                    onClick={() => handlePageClick(page)}
+                    className={currentPage === page ? 'box active' : 'box'}
+                >
+                    {page}
+                </button>
+            );
+        }
+
+        return pageButtons;
+    };
+
+
     return (
         <Layout currentMenu="orderList">
             <main className="main-content menu_order_list">
@@ -160,85 +230,100 @@ function OrderList() {
                     <div className="menu_content">
                         <div className="search_wrap">
                             <div className="left">
-                                    <select onChange={(e) => setFilterType(e.target.value)} value={filterType}>
-                                        <option value="customer">고객사</option>
-                                        <option value="date">주문 등록일</option>
-                                        <option value="status">주문 상태</option>
-                                        <option value="items">물품(계약) 리스트</option>
-                                        {role === 'admin' && (
-                                            <option value="employee">담당자</option>
-                                        )}
-                                    </select>
+                                <select className="filter-type" onChange={(e) => setFilterType(e.target.value)}
+                                        value={filterType}>
+                                    <option value="customer">고객사</option>
+                                    <option value="date">주문 등록일</option>
+                                    <option value="status">주문 상태</option>
+                                    <option value="items">물품(계약) 리스트</option>
+                                    {role === 'admin' && (
+                                        <option value="employee">담당자</option>
+                                    )}
+                                </select>
 
-                                    <div className="search_box">
-                                        <i className="bi bi-search"></i>
-                                        <input
-                                            type="text"
-                                            className="box search"
-                                            placeholder="검색어 입력"
-                                            value={searchTerm}
-                                            onChange={(e) => setSearchTerm(e.target.value)}
-                                        /></div>
-
-                                    <br/>
-                                    <div className="radio_box">
-                                        <span>상태</span>
-                                        <input
-                                            type="radio"
-                                            id="all"
-                                            name="status"
-                                            value=""
-                                            checked={selectedStatus === ''}
-                                            onChange={handleStatusChange}
-                                        />
-                                        <label htmlFor="all">전체</label>
-
-                                        <input
-                                            type="radio"
-                                            id="pending"
-                                            name="status"
-                                            value="결제중"
-                                            checked={selectedStatus === '결제중'}
-                                            onChange={handleStatusChange}
-                                        />
-                                        <label htmlFor="pending">결제중</label>
-
-                                        <input
-                                            type="radio"
-                                            id="completed"
-                                            name="status"
-                                            value="결제완료"
-                                            checked={selectedStatus === '결제완료'}
-                                            onChange={handleStatusChange}
-                                        />
-                                        <label htmlFor="completed">결제완료</label>
-
-                                        <input
-                                            type="radio"
-                                            id="rejected"
-                                            name="status"
-                                            value="반려"
-                                            checked={selectedStatus === '반려'}
-                                            onChange={handleStatusChange}
-                                        />
-                                        <label htmlFor="rejected">반려</label>
+                                <div className="search_box">
+                                    <i className="bi bi-search"></i>
+                                    <input
+                                        type="text"
+                                        className="box search"
+                                        placeholder="검색어 입력"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                    />
                                 </div>
+
+                                <br/>
+                                <div className="radio_box">
+                                    <span>상태</span>
+                                    <input
+                                        type="radio"
+                                        id="all"
+                                        name="status"
+                                        value=""
+                                        checked={selectedStatus === ''}
+                                        onChange={handleStatusChange}
+                                    />
+                                    <label htmlFor="all">전체</label>
+
+                                    <input
+                                        type="radio"
+                                        id="pending"
+                                        name="status"
+                                        value="결제중"
+                                        checked={selectedStatus === '결제중'}
+                                        onChange={handleStatusChange}
+                                    />
+                                    <label htmlFor="pending">결제중</label>
+
+                                    <input
+                                        type="radio"
+                                        id="completed"
+                                        name="status"
+                                        value="결제완료"
+                                        checked={selectedStatus === '결제완료'}
+                                        onChange={handleStatusChange}
+                                    />
+                                    <label htmlFor="completed">결제완료</label>
+
+                                    <input
+                                        type="radio"
+                                        id="rejected"
+                                        name="status"
+                                        value="반려"
+                                        checked={selectedStatus === '반려'}
+                                        onChange={handleStatusChange}
+                                    />
+                                    <label htmlFor="rejected">반려</label>
+                                </div>
+
+                                <div className={`date_box ${startDate ? 'has_text' : ''}`}>
+                                    <label>주문 등록일</label>
+                                    <input
+                                        type="date"
+                                        max="9999-12-31"
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                    />
+                                </div>
+                                <span className="date-separator">~</span>
+                                <div className={`date_box ${endDate ? 'has_text' : ''}`}>
+                                    <input
+                                        type="date"
+                                        max="9999-12-31"
+                                        value={endDate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                    />
+                                </div>
+
                             </div>
 
                             <div className="right">
-                            <div className="pagination-section">
-                                전체 {filteredOrders.length}건 페이지 당
-                                <select onChange={(e) => setItemsPerPage(Number(e.target.value))} value={itemsPerPage}>
-                                    <option value={100}>100</option>
-                                    <option value={50}>50</option>
-                                    <option value={20}>20</option>
-                                </select>
-                            </div>
+
                             </div>
                         </div>
 
-
-                            <table className="order-table">
+                        <div className="table_wrap">
+                            <table>
                                 <thead>
                                 <tr>
                                     <th>주문번호</th>
@@ -272,17 +357,70 @@ function OrderList() {
                                     ))}
                                 </tbody>
                             </table>
-                            <div className="pagination-buttons">
-                                <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>이전
-                                </button>
-                                {Array.from({length: totalPages}, (_, i) => (
-                                    <button key={i + 1} onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
-                                ))}
-                                <button disabled={currentPage === totalPages}
-                                        onClick={() => setCurrentPage(currentPage + 1)}>다음
-                                </button>
+                        </div>
+
+                        <div className="pagination-container">
+                            <div className="pagination-sub left">
+                                <input
+                                    type="number"
+                                    id="itemsPerPage"
+                                    className="box"
+                                    value={itemsPerPage}
+                                    onChange={handleItemsPerPageChange}
+                                    min={1}
+                                    max={100}
+                                    step={1}
+                                />
+                                <label htmlFor="itemsPerPage">건씩 보기 / <b>{filteredOrders.length}</b>건</label>
+                            </div>
+                            <div className="pagination">
+                                {/* '처음' 버튼 */}
+                                {currentPage > 1 && (
+                                    <button className="box icon first" onClick={() => handlePageClick(1)}>
+                                        <i className="bi bi-chevron-double-left"></i>
+                                    </button>
+                                )}
+
+                                {/* '이전' 버튼 */}
+                                {currentPage > 1 && (
+                                    <button className="box icon left" onClick={() => handlePageClick(currentPage - 1)}>
+                                        <i className="bi bi-chevron-left"></i>
+                                    </button>
+                                )}
+
+                                {/* 페이지 번호 블록 계산 (1~5, 6~10 방식) */}
+                                {renderPageButtons()}
+
+                                {/* '다음' 버튼 */}
+                                {currentPage < totalPages && (
+                                    <button className="box icon right" onClick={() => handlePageClick(currentPage + 1)}>
+                                        <i className="bi bi-chevron-right"></i>
+                                    </button>
+                                )}
+
+                                {/* '끝' 버튼 */}
+                                {currentPage < totalPages && (
+                                    <button className="box icon last" onClick={() => handlePageClick(totalPages)}>
+                                        <i className="bi bi-chevron-double-right"></i>
+                                    </button>
+                                )}
                             </div>
 
+                            {/* 오른쪽: 페이지 번호 입력 */}
+                            <div className="pagination-sub right">
+                                <input
+                                    type="text"
+                                    id="pageInput"
+                                    className="box"
+                                    min={1}    // 최소값 설정
+                                    step={1}   // 1씩 증가/감소 가능
+                                    max={totalPages}
+                                    value={pageInputValue} // 상태로 관리되는 입력값
+                                    onChange={handlePageInputChange}
+                                />
+                                <label htmlFor="pageInput">/ <b>{totalPages}</b>페이지</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </main>
@@ -293,6 +431,6 @@ function OrderList() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <OrderList/>
+        <OrderList />
     </BrowserRouter>
 );

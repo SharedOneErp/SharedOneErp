@@ -594,8 +594,6 @@ function Order() {
     const formattedDate = isCreateMode ? '' : formatDateForInput(customer.customerInsertDate);
 
 
-
-
     return (
         <Layout currentMenu="order">
             <main className="main-content menu_order">
