@@ -75,4 +75,29 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;    
+    
+}
+
+.modal-th {
+    color: white;
+}
+
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #e3e3e3; /* 기본 색상 */
+    transition: color 0.3s ease;
+  }
+
+.insert-form {
+  display: grid;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+  
 }
