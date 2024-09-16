@@ -154,7 +154,7 @@ function ProductPrice() {
                                             </i>
                                         </label>
                                     </th>
-                                    <th>번호7</th>
+                                    <th>번호</th>
                                     <th>고객사</th>
                                     <th>상품</th>
                                     <th>가격</th>

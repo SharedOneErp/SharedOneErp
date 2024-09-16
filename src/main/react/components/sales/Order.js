@@ -594,6 +594,8 @@ function Order() {
     const formattedDate = isCreateMode ? '' : formatDateForInput(customer.customerInsertDate);
 
 
+
+
     return (
         <Layout currentMenu="order">
             <main className="main-content menu_order">
@@ -749,7 +751,7 @@ function Order() {
                                 <td>
                                     <input
                                         type="number"
-                                        value={isCreateMode ? (item.price || 0) : (item.orderDPrice || 0)} // 기본값을 0으로 설정
+                                        value={isCreateMode ? (item.price || '') : (item.orderDPrice || '')} // 기본값을 0으로 설정
                                         readOnly={!isEditMode && !isCreateMode}
                                         onChange={(e) => isCreateMode
                                             ? handleProductChange(index, 'price', Number(e.target.value))
