@@ -342,7 +342,7 @@ function ProductCategory() {
                                     <div className='input-button'>
                                         <input type='text' placeholder='대분류 검색' className='input-field' />
                                         <button className='search-button'>검색</button>
-                                    </div>
+                                </div>
                                     <br />
 
                                     <div className='list-form'>

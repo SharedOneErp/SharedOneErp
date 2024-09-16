@@ -1,6 +1,7 @@
 package com.project.erpre.controller;
 
 import com.project.erpre.model.Employee;
+import com.project.erpre.model.EmployeeDTO;
 import com.project.erpre.repository.EmployeeRepository;
 import com.project.erpre.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,5 +107,26 @@ public class EmployeeController {
             @RequestParam(defaultValue = "20") int size) {
         Page<Employee> employeePage = employeeService.getAllPageEmployees(page, size);
         return ResponseEntity.ok(employeePage);
+    }
+
+    //모달에서 신규직원 등록
+    @PostMapping("/registerEmployee")
+    public ResponseEntity<String> registerEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        employeeService.registerEmployee(employeeDTO);
+        return ResponseEntity.ok("직원이 성공적으로 등록되었습니다.");
+    }
+
+    // 직원 정보 수정
+    @PutMapping("/updateEmployee/{employeeId}")
+    public ResponseEntity<String> updateEmployee(@PathVariable String employeeId, @RequestBody EmployeeDTO employeeDTO) {
+        employeeService.updateEmployee(employeeId, employeeDTO);
+        return ResponseEntity.ok("직원 정보가 성공적으로 수정되었습니다.");
+    }
+
+    // 수정모달에서 직원 삭제
+    @PutMapping("/deleteEmployee/{employeeId}")
+    public ResponseEntity<String> deleteEmployee(@PathVariable String employeeId) {
+        employeeService.deleteLogicalEmployee(employeeId);
+        return ResponseEntity.ok("직원이 논리적으로 삭제되었습니다.");
     }
 }

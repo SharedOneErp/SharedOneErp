@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -84,6 +85,46 @@ public class EmployeeService {
                 employee.setEmployeeDeleteYn("Y");
                 employeeRepository.save(employee);  // update로 N -> Y로 바꿈
             }
+        }
+    }
+
+    //신규직원 등록
+    public void registerEmployee(EmployeeDTO employeeDTO) {
+        Employee employee = Employee.builder()
+                .employeeId(employeeDTO.getEmployeeId())
+                .employeePw(employeeDTO.getEmployeePw())
+                .employeeName(employeeDTO.getEmployeeName())
+                .employeeEmail(employeeDTO.getEmployeeEmail())
+                .employeeTel(employeeDTO.getEmployeeTel())
+                .employeeRole(employeeDTO.getEmployeeRole())
+                .employeeDeleteYn("N")  // 기본값 설정
+                .employeeInsertDate(new Timestamp(System.currentTimeMillis()))
+                .build();
+
+        employeeRepository.save(employee);
+    }
+
+    //수정모달에서 직원정보 수정
+    public void updateEmployee(String employeeId, EmployeeDTO employeeDTO) {
+        Employee employee = employeeRepository.findById(employeeId).orElse(null);
+        if (employee != null) {
+            employee.setEmployeePw(employeeDTO.getEmployeePw());
+            employee.setEmployeeName(employeeDTO.getEmployeeName());
+            employee.setEmployeeEmail(employeeDTO.getEmployeeEmail());
+            employee.setEmployeeTel(employeeDTO.getEmployeeTel());
+            employee.setEmployeeRole(employeeDTO.getEmployeeRole());
+            employee.setEmployeeUpdateDate(new Timestamp(System.currentTimeMillis()));  // 수정일자 업데이트
+            employeeRepository.save(employee);  // 수정된 정보 저장
+        }
+    }
+
+    //수정모달에서 직원삭제
+    public void deleteLogicalEmployee(String employeeId) {
+        Employee employee = employeeRepository.findById(employeeId).orElse(null);
+        if (employee != null) {
+            employee.setEmployeeDeleteYn("Y");
+            employee.setEmployeeDeleteDate(new Timestamp(System.currentTimeMillis()));  // 삭제일자 업데이트
+            employeeRepository.save(employee);  // 논리적 삭제 저장
         }
     }
 }
