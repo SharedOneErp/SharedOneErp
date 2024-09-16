@@ -27,7 +27,7 @@ export const useHooksList = () => {
 
     // 체크박스 상태 관리
     const [selectedItems, setSelectedItems] = useState([]);
-    const [selectAll, setSelectAll] = useState(false);
+    const [selectAll, setSelectAll] = useState(false); // 초기값을 false로 설정
 
     const [sortField, setSortField] = useState(null); // 정렬 필드
     const [sortOrder, setSortOrder] = useState('asc'); // 정렬 순서
@@ -46,9 +46,10 @@ export const useHooksList = () => {
 
     const [editingId, setEditingId] = useState(null); // 수정 중인 항목 ID를 저장
     const [editedPriceData, setEditedPriceData] = useState({}); // 수정 중인 항목 데이터를 저장
-
+    
     // 🟡 조건에 따른 가격 리스트 출력
     useEffect(() => {
+        
         const fetchData = async () => {
             setLoading(true); // 데이터를 가져오기 전에 로딩 상태를 true로 설정
             const MIN_LOADING_TIME = 300; //600; // 최소 로딩 시간
@@ -88,15 +89,19 @@ export const useHooksList = () => {
 
                 if (remainingTime > 0) {
                     setTimeout(() => {
-                        setLoading(false); // 최소 최소 로딩 시간 후 로딩 상최소 로딩 시간 false로 설정
+                        setLoading(false);
                     }, remainingTime);
                 } else {
-                    setLoading(false); // 최소 로딩 시간 이상 경과했으최소 로딩 시간즉시 로딩 상태를 false로 설정
+                    setLoading(false);
                 }
             }
         };
 
+        setSelectAll(false);  // 전체 선택을 false로 명확히 설정
+        setSelectedItems([]);  // 개별 선택 항목 초기화
         fetchData();
+        console.log("🚀  🔴  file: ProductPriceHooks.js:13  🔴  useHooksList  🔴  setEditedPriceData:");
+        return;
     }, [selectedCustomerNo, selectedProductCd, startDate, endDate, currentPage, itemsPerPage, sortField, sortOrder]); // 필터 및 페이지 변경 시마다 데이터 재요청
 
     // 🟡 currentPage가 변경될 때 pageInputValue 업데이트
@@ -156,12 +161,14 @@ export const useHooksList = () => {
         setSearchText(event.target.value);
     };
 
-    // 🟢 날짜 변경
-    const handleDateChange = (name, date) => {
-        setNewPriceData({
-            ...newPriceData,
-            [name]: date
-        });
+    // 🟢 시작 날짜 변경
+    const handleStartDateChange = (value) => {
+        setStartDate(value); // 시작 날짜 상태 업데이트
+    };
+
+    // 🟢 종료 날짜 변경
+    const handleEndDateChange = (value) => {
+        setEndDate(value); // 종료 날짜 상태 업데이트
     };
 
     // 🟢 상태 변경
@@ -231,7 +238,9 @@ export const useHooksList = () => {
         handleSearchTextChange,
         handleSearchTextDelClick,
         startDate,
+        handleStartDateChange,
         endDate,
+        handleEndDateChange,
         selectedStatus,
         handleStatusChange,
 

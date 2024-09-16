@@ -31,7 +31,9 @@ function ProductPrice() {
         handleSearchTextChange,
         handleSearchTextDelClick,
         startDate,
+        handleStartDateChange,
         endDate,
+        handleEndDateChange,
         selectedStatus,
         handleStatusChange,
 
@@ -62,7 +64,8 @@ function ProductPrice() {
                 <div className="menu_content">
                     <div className="search_wrap">
                         <div className="left">
-                            <div className="search_box">
+                            {/* 1️⃣ 검색어 입력 */}
+                            <div className={`search_box ${searchText ? 'has_text' : ''}`}>
                                 <i className="bi bi-search"></i>
                                 <input
                                     type="text"
@@ -77,18 +80,30 @@ function ProductPrice() {
                                         className="btn-del"
                                         onClick={handleSearchTextDelClick}
                                     >
-                                        <i class="bi bi-x"></i>
+                                        <i className="bi bi-x"></i>
                                     </button>
                                 )}
                             </div>
-                            <div className="date_box">
+                            {/* 2️⃣ 적용 기간 입력 */}
+                            <div className={`date_box ${startDate ? 'has_text' : ''}`}>
                                 <label>적용 시작일</label>
-                                <input type="date" max="9999-12-31"></input>
+                                <input
+                                    type="date"
+                                    max="9999-12-31"
+                                    value={startDate || ''}
+                                    onChange={(e) => handleStartDateChange(e.target.value)}
+                                />
                             </div>
-                            <div className="date_box">
+                            <div className={`date_box ${endDate ? 'has_text' : ''}`}>
                                 <label>적용 종료일</label>
-                                <input type="date" max="9999-12-31"></input>
+                                <input
+                                    type="date"
+                                    max="9999-12-31"
+                                    value={endDate || ''}
+                                    onChange={(e) => handleEndDateChange(e.target.value)}
+                                />
                             </div>
+                            {/* 3️⃣ 상태 선택 */}
                             <div className="radio_box">
                                 <span>상태</span>
                                 <input
@@ -127,19 +142,26 @@ function ProductPrice() {
                                 <tr>
                                     {/* 전체 선택 체크박스 */}
                                     <th>
-                                        <input
-                                            type="checkbox"
-                                            checked={selectAll}
-                                            onChange={handleSelectAllChange}
-                                        />
+                                        <label className="chkbox_label">
+                                            <input
+                                                type="checkbox" className="chkbox"
+                                                disabled={isLoading}  // 로딩 중일 때는 비활성화
+                                                checked={selectAll}    // selectAll 상태에 따라 체크 여부 제어
+                                                onChange={handleSelectAllChange}
+                                            />
+                                            <i className="chkbox_icon">
+                                                <i className="bi bi-check-lg"></i>
+                                            </i>
+                                        </label>
                                     </th>
-                                    <th>번호</th>
+                                    <th>번호7</th>
                                     <th>고객사</th>
                                     <th>상품</th>
                                     <th>가격</th>
                                     <th>적용기간</th>
                                     <th>등록일시</th>
                                     <th>수정일시</th>
+                                    <th>삭제일시</th>
                                     {/* 수정/삭제 버튼 */}
                                     <th></th>
                                 </tr>
@@ -168,8 +190,8 @@ function ProductPrice() {
                                 {/* 로딩 중일 때 로딩 이미지 표시 */}
                                 {isLoading ? (
                                     <tr>
-                                        <td colSpan="9"> {/* 8개의 열을 합쳐 로딩 애니메이션 중앙 배치 */}
-                                            <div className="isLoading">
+                                        <td colSpan="10"> {/* 로딩 애니메이션 중앙 배치 */}
+                                            <div className="loading">
                                                 <span></span> {/* 첫 번째 원 */}
                                                 <span></span> {/* 두 번째 원 */}
                                                 <span></span> {/* 세 번째 원 */}
@@ -181,17 +203,22 @@ function ProductPrice() {
                                         <tr key={m_price.priceNo}
                                             className={
                                                 selectedItems.includes(m_price.priceNo)
-                                                    ? 'selected-row'  // 선택된 행에 클래스 추가
+                                                    ? 'selected_row'  // 선택된 행에 클래스 추가
                                                     : ''
                                             }
                                         >
                                             {/* 개별 항목 체크박스 */}
                                             <td>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={selectedItems.includes(m_price.priceNo)}
-                                                    onChange={() => handleCheckboxChange(m_price.priceNo)}
-                                                />
+                                                <label className="chkbox_label">
+                                                    <input
+                                                        type="checkbox" className="chkbox"
+                                                        checked={selectedItems.includes(m_price.priceNo)}
+                                                        onChange={() => handleCheckboxChange(m_price.priceNo)}
+                                                    />
+                                                    <i className="chkbox_icon">
+                                                        <i className="bi bi-check-lg"></i>
+                                                    </i>
+                                                </label>
                                             </td>
                                             {/* 번호: (현재 페이지 - 1) * 페이지 당 항목 수 + index + 1 */}
                                             <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
@@ -203,25 +230,29 @@ function ProductPrice() {
                                                 <p>({m_price.categoryNm})</p>
                                             </td>
                                             {/* 고객별 가격 */}
-                                            <td>{m_price.priceCustomer.toLocaleString()}원</td>
+                                            <td><b>{m_price.priceCustomer.toLocaleString()}</b>원</td>
                                             {/* 적용 기간 */}
                                             <td>{format(m_price.priceStartDate, 'yyyy-MM-dd')} ~ {format(m_price.priceEndDate, 'yyyy-MM-dd')}</td>
                                             {/* 등록일시 */}
-                                            <td>{format(m_price.priceInsertDate, 'yyyy-MM-dd HH:mm')}</td>
+                                            <td>{format(m_price.priceInsertDate, 'yy-MM-dd HH:mm')}</td>
                                             {/* 수정일시: 수정일시가 없으면 '-' 표시 */}
-                                            <td>{m_price.priceUpdateDate ? format(m_price.priceUpdateDate, 'yyyy-MM-dd HH:mm') : '-'}</td>
+                                            <td>{m_price.priceUpdateDate ? format(m_price.priceUpdateDate, 'yy-MM-dd HH:mm') : '-'}</td>
+                                            {/* 삭제일시: 삭제일시가 없으면 '-' 표시 */}
+                                            <td>{m_price.priceDeleteDate ? format(m_price.priceDeleteDate, 'yy-MM-dd HH:mm') : '-'}</td>
                                             <td>
-                                                {editingId === m_price.priceNo ? (
-                                                    <>
-                                                        <button onClick={handleSaveEdit}>저장</button>
-                                                        <button onClick={handleCancelEdit}>취소</button>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <button onClick={() => handleEdit(m_price.priceNo)}>수정</button>
-                                                        <button onClick={() => handleDelete(m_price.priceNo)}>삭제</button>
-                                                    </>
-                                                )}
+                                                <div className='btn_group'>
+                                                    {editingId === m_price.priceNo ? (
+                                                        <>
+                                                            <button className="box icon" onClick={handleSaveEdit}><i className="bi bi-floppy"></i></button>
+                                                            <button className="box icon" onClick={handleCancelEdit}><i className="bi bi-backspace"></i></button>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <button className="box icon" onClick={() => handleEdit(m_price.priceNo)}><i className="bi bi-pencil-square"></i></button>
+                                                            <button className="box icon" onClick={() => handleDelete(m_price.priceNo)}><i className="bi bi-trash3"></i></button>
+                                                        </>
+                                                    )}
+                                                </div>
                                             </td>
                                         </tr>
                                     ))
