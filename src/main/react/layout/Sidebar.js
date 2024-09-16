@@ -94,7 +94,7 @@ function Sidebar({currentMenu}) {
                         </li>
                         <li className={currentMenu === 'orderRegisterApproval' ? 'active' : ''}>
                             <a href="#"
-                               onClick={() => handleSubMenuClick('orderRegisterApproval', '/orderRegisterApproval')}>주문 등록 승인</a>
+                               onClick={() => handleSubMenuClick('orderRegisterApproval', '/orderList?mode=Assigned')}>주문 등록 승인</a>
                         </li>
                         <li className={currentMenu === 'orderReport' ? 'active' : ''}>
                             <a href="#" onClick={() => handleSubMenuClick('orderReport', '/orderReport')}>영업 실적 보고서</a>
