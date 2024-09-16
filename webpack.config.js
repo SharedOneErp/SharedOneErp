@@ -15,11 +15,8 @@ module.exports = {
 
         // Sales 관련 엔트리 포인트
         order: `${salesPath}Order.js`, // 주문 등록or상세or수정
-        orderRegister: `${salesPath}OrderRegister.js`, // 주문 등록
-        orderDetail: `${salesPath}OrderDetail.js`, // 주문 상세
         orderList: `${salesPath}OrderList.js`, // 전체/담당 주문 목록
-        orderListAll: `${salesPath}OrderListAll.js`, // 전체 주문 목록
-        orderListAssigned: `${salesPath}OrderListAssigned.js`, // 담당 주문 목록
+        orderRegister: `${salesPath}OrderRegister.js`, // 주문 등록
         orderRegisterApproval: `${salesPath}OrderRegisterApproval.js`, // 주문 등록 승인
         orderRegisterApprovalDetail: `${salesPath}OrderRegisterApprovalDetail.js`, // 주문 등록 승인 상세
         orderReport: `${salesPath}OrderReport.js`, // 영업실적 보고서

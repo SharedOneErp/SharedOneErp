@@ -89,10 +89,7 @@ src
 │  │  │  │  │  └─ ProductPriceModal2.js
 │  │  │  │  └─ sales
 │  │  │  │     ├─ Order.js
-│  │  │  │     ├─ OrderDetail.js
 │  │  │  │     ├─ OrderList.js
-│  │  │  │     ├─ OrderListAll.js
-│  │  │  │     ├─ OrderListAssigned.js
 │  │  │  │     ├─ OrderRegister.js
 │  │  │  │     ├─ OrderRegisterApproval.js
 │  │  │  │     ├─ OrderRegisterApprovalDetail.js
