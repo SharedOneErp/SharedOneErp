@@ -19,7 +19,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     //날짜로 주문 목록 조회
     List<Order> findByOrderHInsertDateContaining(String orderHInsertDate);
 
-
-
+    // 리스트에 포함된 모든 주문 조회
+    List<Order> findAllByOrderNoIn(List<Integer> orderNos);
 
 }

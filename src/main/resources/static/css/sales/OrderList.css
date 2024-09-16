@@ -47,6 +47,15 @@
 .date-separator {
     font-size: 1.5rem; /* 기호 크기 조절 */
 }
+.checkbox-input{
+    width: 50px;
+
+}
+.approve-button{
+
+}
+
+
 
 /* 검색 필터*/
 .filter-section {

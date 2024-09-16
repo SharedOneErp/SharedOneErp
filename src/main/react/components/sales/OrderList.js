@@ -35,6 +35,47 @@ const fetchEmployee = async () => {
     }
 };
 
+const updateOrderStatus = async (orderNo) => {
+    try {
+        const response = await fetch(`/api/order/updateStatus/${orderNo}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ orderHStatus: 'approved' }),
+        });
+        if (response.ok) {
+            alert('주문 상태가 업데이트되었습니다.');
+        } else {
+            throw new Error('주문 상태 업데이트 실패');
+        }
+    } catch (error) {
+        alert('주문 상태를 업데이트하는 중 오류 발생');
+    }
+};
+
+
+const deniedOrderStatus = async (orderNo) => {
+    try {
+        const response = await fetch(`/api/order/updateStatus/${orderNo}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ orderHStatus: 'denied' }),
+        });
+        if (response.ok) {
+            alert('주문 상태가 업데이트되었습니다.');
+        } else {
+            throw new Error('주문 상태 업데이트 실패');
+        }
+    } catch (error) {
+        alert('주문 상태를 업데이트하는 중 오류 발생');
+    }
+};
+
+
+
 function OrderList() {
     const [filterValue, setFilterValue] = useState('');
     const [filter, setFilter] = useState('');
@@ -51,6 +92,8 @@ function OrderList() {
     const [pageInputValue, setPageInputValue] = useState('1'); // 페이지 입력값
     const [startDate, setStartDate] = useState(''); // 시작 날짜
     const [endDate, setEndDate] = useState(''); // 종료 날짜
+    const [selectedOrders, setSelectedOrders] = useState(new Set()); // 체크된 주문 번호 집합
+    const [allSelected, setAllSelected] = useState(false); // 전체 선택 체크박스 상태
 
     const [searchParams] = useSearchParams();
 
@@ -113,6 +156,17 @@ function OrderList() {
         setEndDate(today);
 
     }, []);
+
+    useEffect(() => {
+        if (Array.isArray(filteredOrders)) {
+            // 전체 선택 체크박스 상태 업데이트
+            const isAllSelected = filteredOrders.length > 0 &&
+                filteredOrders.every(order => selectedOrders.has(order.orderNo));
+            setAllSelected(isAllSelected);
+        } else {
+            setAllSelected(false);
+        }
+    }, [selectedOrders, filteredOrders]);
 
     if (loading) {
         return (
@@ -194,8 +248,65 @@ function OrderList() {
         }
     };
 
+    const handleCheckboxChange = (orderNo) => {
+        setSelectedOrders(prev => {
+            const newSelectedOrders = new Set(prev);
+            if (newSelectedOrders.has(orderNo)) {
+                newSelectedOrders.delete(orderNo);
+            } else {
+                newSelectedOrders.add(orderNo);
+            }
+            return newSelectedOrders;
+        });
+    };
+
+    const handleSelectAll = (event) => {
+        const isChecked = event.target.checked;
+        if (isChecked) {
+            const newSelectedOrders = new Set(filteredOrders.map(order => order.orderNo));
+            setSelectedOrders(newSelectedOrders);
+        } else {
+            setSelectedOrders(new Set());
+        }
+    };
 
 
+
+
+    const handleDeniedSelectedOrders = async () => {
+        if (selectedOrders.size === 0) {
+            alert('승인할 주문을 선택해 주세요.');
+            return;
+        }
+
+        for (const orderNo of selectedOrders) {
+            await deniedOrderStatus(orderNo);
+        }
+
+        // 반려 후 선택된 주문 목록 초기화
+        setSelectedOrders(new Set());
+        // 주문 목록 새로고침
+        const orderData = await fetchOrders();
+        setOrders(role === 'admin' ? orderData : orderData.filter(order => order.employee.employeeId === employeeId));
+    };
+
+
+    const handleApproveSelectedOrders = async () => {
+        if (selectedOrders.size === 0) {
+            alert('승인할 주문을 선택해 주세요.');
+            return;
+        }
+
+        for (const orderNo of selectedOrders) {
+            await updateOrderStatus(orderNo);
+        }
+
+        // 승인 후 선택된 주문 목록 초기화
+        setSelectedOrders(new Set());
+        // 주문 목록 새로고침
+        const orderData = await fetchOrders();
+        setOrders(role === 'admin' ? orderData : orderData.filter(order => order.employee.employeeId === employeeId));
+    };
 
     const renderPageButtons = () => {
         const pageButtons = [];
@@ -216,7 +327,6 @@ function OrderList() {
 
         return pageButtons;
     };
-
 
     return (
         <Layout currentMenu="orderList">
@@ -318,7 +428,15 @@ function OrderList() {
                             </div>
 
                             <div className="right">
-
+                                {role === 'admin' && (
+                                    <button className="box color" onClick={handleApproveSelectedOrders}>
+                                        결제승인
+                                    </button>
+                                )}
+                                {role === 'admin' && (
+                                    <button className="box" onClick={handleDeniedSelectedOrders}>
+                                        반려요청
+                                    </button>)}
                             </div>
                         </div>
 
@@ -326,6 +444,15 @@ function OrderList() {
                             <table>
                                 <thead>
                                 <tr>
+                                    {role === 'admin' && (
+                                        <th className="checkbox-input">
+                                            <input
+                                                type="checkbox"
+                                                checked={allSelected}
+                                                onChange={handleSelectAll}
+                                            />
+                                        </th>
+                                    )}
                                     <th>주문번호</th>
                                     <th>고객사</th>
                                     <th>주문 등록일</th>
@@ -333,7 +460,7 @@ function OrderList() {
                                     <th>물품(계약) 리스트</th>
                                     <th>총액(원)</th>
                                     <th>담당자명</th>
-                                    <th>내역 보기</th>
+                                    <th>상세</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -341,6 +468,17 @@ function OrderList() {
                                     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                                     .map(order => (
                                         <tr key={order.orderNo}>
+                                            {role === 'admin' && order.orderHStatus==='ing' ? (
+                                                <td className="checkbox-input">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedOrders.has(order.orderNo)}
+                                                        onChange={() => handleCheckboxChange(order.orderNo)}
+                                                    />
+                                                </td>
+                                            ) : (
+                                                <td className="checkbox-input"></td>
+                                            )}
                                             <td>{String(order.orderNo).padStart(3, '0')}</td>
                                             <td>{order.customer?.customerName || 'N/A'}</td>
                                             <td>{order.orderHInsertDate?.split('T')[0] || 'N/A'}</td>

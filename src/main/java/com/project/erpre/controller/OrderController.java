@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -143,6 +144,27 @@ public class OrderController {
         return orderService.getOrdersByOrderDate(orderDate);
     }
 
+    // 주문 상태 업데이트 엔드포인트
+    @PatchMapping("/updateStatus/{orderNo}")
+    public ResponseEntity<?> updateOrderStatus(@PathVariable Integer orderNo, @RequestBody OrderDTO orderDTO) {
+        try {
+            // 주문 엔티티를 조회합니다.
+            Order existingOrder = orderService.getOrderById(orderNo);
+            if (existingOrder == null) {
+                return new ResponseEntity<>("주문을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
+            }
 
+            // 상태를 DTO에서 가져와서 업데이트합니다.
+            existingOrder.setOrderHStatus(orderDTO.getOrderHStatus());
+            existingOrder.setOrderHUpdateDate(LocalDateTime.now());
+
+            // 엔티티를 업데이트하고 저장합니다.
+            Order updatedOrder = orderService.updateOrder(existingOrder);
+            return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("주문 상태 업데이트 중 오류 발생: ", e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }
