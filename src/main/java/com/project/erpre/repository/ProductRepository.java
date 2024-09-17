@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, String> {
+public interface ProductRepository extends JpaRepository<Product, String>, ProductRepositoryCustom {
 
     // 전체 상품 목록 조회 + 페이지네이션
     @Query("SELECT new com.project.erpre.model.ProductDTO(" +
@@ -26,23 +26,6 @@ public interface ProductRepository extends JpaRepository<Product, String> {
             "JOIN c2.parentCategory c1 " +
             "ORDER BY p.productCd ASC")
     Page<ProductDTO> getAllProducts(Pageable pageable);
-
-    // 상품 상세 조회 (최근 납품일 최대 5건 조회)
-    @Query("SELECT new com.project.erpre.model.ProductDTO( " +
-            "p.productCd, p.productNm, p.productInsertDate, p.productUpdateDate, " +
-            "e.employeeName, c.customerName, od.orderDDeliveryRequestDate, od.orderDQty, od.orderDTotalPrice, " +
-            "c1.categoryNm, c2.categoryNm, c3.categoryNm) " +
-            "FROM Product p " +
-            "JOIN p.category c3 " +
-            "JOIN c3.parentCategory c2 " +
-            "JOIN c2.parentCategory c1 " +
-            "JOIN OrderDetail od ON p.productCd = od.product.productCd " +
-            "JOIN od.order o " +
-            "JOIN o.employee e " +
-            "JOIN o.customer c " +
-            "WHERE p.productCd IN :productCd " +
-            "ORDER BY od.orderDDeliveryRequestDate DESC ")
-    Page<ProductDTO> getProductDetailsByProductCd(@Param("productCd") String productCd, Pageable pageable);
 
     // 선택한상품 삭제
     void deleteByProductCdIn(List<String> productCds);

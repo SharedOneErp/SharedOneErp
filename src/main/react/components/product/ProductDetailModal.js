@@ -1,4 +1,3 @@
-// ProductDetailModal.js
 import React, { useEffect, useState } from 'react';
 import '../../../resources/static/css/product/ProductDetailModal.css';
 import { formatDate } from '../../util/dateUtils';
@@ -15,6 +14,8 @@ function ProductDetailModal({ productCd, onClose }) {
     }
   }, [productCd]);
 
+  const detail = productDetail[0] || {};
+
   return (
       <div className="modal-overlay">
         <div className="modal-content">
@@ -23,29 +24,27 @@ function ProductDetailModal({ productCd, onClose }) {
           <div className="product-detail-container">
             <div className="form-group">
               <label htmlFor="productName">상품명</label>
-              <input type="text" id="productName" value={productDetail[0]?.productNm || ''} readOnly/>
+              <input type="text" id="productName" value={detail.productNm || ''} readOnly />
             </div>
             <div className="form-group">
               <label htmlFor="productCode">상품코드</label>
-              <input type="text" id="productCode" value={productDetail[0]?.productCd || ''} readOnly/>
+              <input type="text" id="productCode" value={detail.productCd || ''} readOnly />
             </div>
             <div className="form-group">
               <label>카테고리</label>
               <div className="category-inputs">
-                <span className="category-item">{productDetail[0]?.topCategory || ''}</span>
-                <span className="category-item">{productDetail[0]?.middleCategory || ''}</span>
-                <span className="category-item">{productDetail[0]?.lowCategory || ''}</span>
+                <span className="category-item">{detail.topCategory || ''}</span>
+                <span className="category-item">{detail.middleCategory || ''}</span>
+                <span className="category-item">{detail.lowCategory || ''}</span>
               </div>
             </div>
             <div className="form-group">
               <label htmlFor="registrationDate">상품 등록일</label>
-              <input type="text" id="registrationDate" value={formatDate(productDetail[0]?.productInsertDate) || ''}
-                     readOnly/>
+              <input type="text" id="registrationDate" value={formatDate(detail.productInsertDate) || ''} readOnly />
             </div>
             <div className="form-group">
               <label htmlFor="updateDate">상품 수정일</label>
-              <input type="text" id="updateDate" value={formatDate(productDetail[0]?.productUpdateDate) || ''}
-                     readOnly/>
+              <input type="text" id="updateDate" value={formatDate(detail.productUpdateDate) || ''} readOnly />
             </div>
             <table className="transaction-table">
               <thead>
@@ -58,17 +57,18 @@ function ProductDetailModal({ productCd, onClose }) {
               </tr>
               </thead>
               <tbody>
-              {productDetail.slice(0, 5).map((detail, index) => (
+              {productDetail.map((detail, index) => (
                   <tr key={index}>
-                    <td>{formatDate(detail.orderDDeliveryRequestDate)}</td>
-                    <td>{detail.customerName}</td>
-                    <td>{detail.orderDQty}</td>
-                    <td>{detail.orderDTotalPrice.toLocaleString()}</td>
-                    <td>{detail.employeeName}</td>
+                    <td>{detail.orderDDeliveryRequestDate ? formatDate(detail.orderDDeliveryRequestDate) : '-'}</td>
+                    <td>{detail.customerName || '-'}</td>
+                    <td>{detail.orderDQty || '-'}</td>
+                    <td>{detail.orderDTotalPrice ? detail.orderDTotalPrice.toLocaleString() : '-'}</td>
+                    <td>{detail.employeeName || '-'}</td>
                   </tr>
               ))}
               </tbody>
             </table>
+            <p>납품내역은 최근 5건까지 표시됩니다</p>
           </div>
           <div className="modal-bottom">
             <button className="modal-close-bottom" onClick={onClose}>닫기</button>
