@@ -46,7 +46,7 @@ function ProductDetailModal({ productCd, onClose }) {
               <label htmlFor="updateDate">상품 수정일</label>
               <input type="text" id="updateDate" value={formatDate(detail.productUpdateDate) || ''} readOnly />
             </div>
-            <table className="delivery-table">
+            <table className="transaction-table">
               <thead>
               <tr>
                 <th>최근 납품일</th>
