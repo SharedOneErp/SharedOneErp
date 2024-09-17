@@ -58,4 +58,6 @@ public class OrderDetail {
     @Column(name = "order_d_delete_date")
     private Timestamp orderDDeleteDate; // 삭제 일시
 
+
+
 }

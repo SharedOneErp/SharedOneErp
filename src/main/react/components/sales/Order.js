@@ -24,7 +24,8 @@ function Order() {
         productNm: '', // 제품명
         orderDPrice: '', // 주문 가격
         orderDQty: '', // 주문 수량
-        productCd: '' // 제품 코드
+        productCd: '', // 제품 코드
+        orderDDeliveryRequestDate:''
     }]);
     const [showModal, setShowModal] = useState(false); // 모달 상태
     const [customerModalOpen, setCustomerModalOpen] = useState(false);
@@ -75,6 +76,8 @@ function Order() {
     const indexOfFirstCustomerResult = indexOfLastCustomerResult - itemsPerPageCustomer;
     const paginatedCustomerSearchResults = customerSearchResults.slice(indexOfFirstCustomerResult, indexOfLastCustomerResult);
     const totalCustomerPages = Math.ceil(customerSearchResults.length / itemsPerPageCustomer);
+
+    const [deliveryDate, setDeliveryDate] = useState('');
 
     //카테고리 셀렉터
     const [categories, setCategories] = useState({
@@ -172,9 +175,11 @@ function Order() {
         return {
             orderNo: orderDetail.orderNo,
             productCd: orderDetail.productCd,
-            productNm: matchingProduct ? matchingProduct.productNm : '', // products에서 찾은 상품명
+            productNm: matchingProduct ? matchingProduct.productNm : orderDetail.productNm, // 기본값으로 orderDetail.productNm 사용
             orderDPrice: orderDetail.orderDPrice,
             orderDQty: orderDetail.orderDQty,
+            orderDTotalPrice: orderDetail.orderDTotalPrice,
+            orderDDeliveryRequestDate: orderDetail.orderDDeliveryRequestDate,
         };
     });
 
@@ -214,12 +219,11 @@ function Order() {
     }, [orderNo]);
 
     const fetchOrderDetail = async (orderNo) => {
-        console.log("-------------------------------------fetchOrderDetail");
+
         try {
             const response = await fetch(`/api/order?no=${orderNo}`);
             if (!response.ok) throw new Error('주문 데이터를 가져올 수 없습니다.');
             const data = await response.json();
-            console.log("Order Details from server:", data.orderDetails); // 데이터 확인
             setOrderDetails(data.orderDetails || []);
             setProducts(data.products || []);
             setEmployee(data.employee || null);
@@ -228,11 +232,6 @@ function Order() {
             setOrderHInsertDate(data.orderHInsertDate || 0);
 
             // 상태 업데이트 후 콘솔에 출력
-            console.log(data.customer);
-            console.log(data.employee);
-            console.log("Order Details:", data.orderDetails);
-            console.log("Products:", data.products);
-
 
         } catch (error) {
             console.error('주문 정보를 가져오는 중 오류가 발생했습니다.', error);
@@ -305,8 +304,6 @@ function Order() {
 
 
     const handleSearch = async () => {
-        console.log("-------------------------------------handleSearch");
-
         // URL에 포함할 쿼리 파라미터 생성
         const params = new URLSearchParams({
             productCd: searchCode,
@@ -332,7 +329,6 @@ function Order() {
 
     //고객사 서치
     const customerSearch = async () => {
-        console.log("-------------------------------------customerSearch");
         try {
             const response = await fetch(`/api/customer/search?name=${encodeURIComponent(searchQuery)}`);
             if (!response.ok) throw new Error('검색 결과가 없습니다.');
@@ -348,7 +344,6 @@ function Order() {
 
     // 상품 선택 처리
     const handleProductSelect = (selectedProduct) => {
-        console.log('Selected product:', selectedProduct);
 
         if (selectedProductIndex !== null) {
             const updatedProducts = [...products];
@@ -360,11 +355,9 @@ function Order() {
                 quantity: selectedProduct.quantity || 0,
                 code: selectedProduct.productCd // 상품 코드를 추가
             };
-            console.log('Updated products:', updatedProducts);
-            console.log('Updated product codes:', updatedProducts.map(product => product.code));
             setProducts(updatedProducts);
         } else {
-            console.error('No selectedProductIndex set');
+            console.error('handleProductSelect error');
         }
         closeModal();
     };
@@ -372,7 +365,6 @@ function Order() {
 
     //수정시 상품 선택
     const handleProductSelectEdit = (selectedProduct) => {
-        console.log('Selected product for edit:', selectedProduct);
 
         if (selectedProductIndex !== null) {
             const updatedOrderDetails = [...orderDetails];
@@ -384,10 +376,9 @@ function Order() {
                 productCd: selectedProduct.productCd || '' // 상품 코드
             };
 
-            console.log('Updated order details:', updatedOrderDetails);
             setOrderDetails(updatedOrderDetails);
         } else {
-            console.error('No selectedProductIndex set');
+            console.error('handleProductSelectEdit error');
         }
         closeModal();
     };
@@ -404,9 +395,7 @@ function Order() {
         const employeeIdElement = document.querySelector('.employee-id');
         const employeeId = employeeIdElement ? employeeIdElement.textContent.trim() : null;
 
-        console.log(customerNo);
-        console.log(employeeId);
-        console.log(totalAmount);
+
 
         const orderData = {
             customer: { customerNo: customerNo },
@@ -418,7 +407,6 @@ function Order() {
             orderHDeleteYn: "N"
         };
 
-        console.log("-------------------------------------handleSubmit");
         try {
             const response = await fetch('/api/order', {
                 method: 'POST',
@@ -437,7 +425,9 @@ function Order() {
                 // 제품별 상세 주문 정보를 서버에 전송
                 for (let product of products) {
                     const deliveryDateElement = document.querySelector('.delivery-date');
-                    const deliveryRequestDate = deliveryDateElement ? deliveryDateElement.value : null;
+                    const deliveryRequestDate = deliveryDateElement ? formatDateForInput(deliveryDateElement.value) : null;
+
+                    console.log("deliveryRequestDate:", deliveryRequestDate);
 
                     const orderDetailData = {
                         orderNo: order_h_no,
@@ -459,7 +449,6 @@ function Order() {
                     if (!detailResponse.ok) {
                         const errorText = await detailResponse.text();
                         throw new Error(`상세 주문 처리 중 오류 발생: ${errorText}`);
-                        alert("주문 처리 중 오류가 발생했습니다. 다시 확인해주세요");
                     }
                 }
 
@@ -481,14 +470,14 @@ function Order() {
                 const errorText = await response.text();
                 console.error('주문 처리 오류:', errorText);
                 alert("주문 처리 중 오류가 발생했습니다. 다시 확인해주세요");
-
             }
         } catch (error) {
             console.error('주문 처리 중 오류 발생:', error.message);
             alert("주문 처리 중 오류가 발생했습니다. 다시 확인해주세요");
-
         }
     };
+
+
 
 
     // 주문 수정
@@ -605,7 +594,6 @@ function Order() {
     const formatDateForInput = (dateString) => {
         const date = new Date(dateString);
         if (isNaN(date.getTime())) {  // 날짜가 유효하지 않으면
-            console.error('유효하지 않은 날짜:', dateString);
             return '';  // 또는 기본값으로 빈 문자열 반환
         }
         return date.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 변환
@@ -622,7 +610,23 @@ function Order() {
         const formattedDate = `${year}-${month}-${day}`;
 
         setTodayDate(formattedDate);
+        setDeliveryDate(formattedDate); // 기본값을 설정
     }, []);
+
+    useEffect(() => {
+    }, [orderDetails]);
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) {  // 날짜가 유효하지 않으면
+            console.error('유효하지 않은 날짜:', dateString);
+            return '';  // 또는 기본값으로 빈 문자열 반환
+        }
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`; // YYYY-MM-DD 형식으로 변환
+    };
 
     return (
         <Layout currentMenu="order">
@@ -674,23 +678,14 @@ function Order() {
                         <div className="form-group">
                             {/*위는 주문 생성 , 아래는 수정과 변경*/}
                             <label>납품요청일</label>
-                            <input type="date" className="delivery-date" defaultValue={todayDate}
-                                   readOnly={!isEditMode && !isCreateMode}
-                                   style={{display: isCreateMode ? 'block' : 'none'}}/>
-                            <input
-                                type="date"
-                                value={formattedDate}
-                                readOnly
-                                style={{display: isCreateMode ? 'none' : 'block'}}
-                                name="delivery-datex"
-                            />
+                                <input type="date" className="delivery-date" defaultValue={formatDateForInput(orderDetails[0]?.orderDDeliveryRequestDate)} readOnly={isDetailView}/>
                         </div>
 
                         <div className="form-group">
                             <label>담당자</label>
                             <span className="employee-id" style={{display: 'none'}}>{employee ? (
                                 <>
-                                    {employee.employeeId}
+                                {employee.employeeId}
                                 </>
                             ) : (
                                 'LOADING'
@@ -757,15 +752,15 @@ function Order() {
                                         <input
                                             type="text"
                                             value={isCreateMode
-                                                ? item?.name
-                                                : isEditMode
-                                                    ? item?.productNm
-                                                    : item?.productNm || ''}
+                                                ? item?.name || ''
+                                                : isEditMode || isDetailView
+                                                    ? item?.productNm || ''
+                                                    : ''}
                                             readOnly={!isEditMode && !isCreateMode}
                                             onChange={(e) => {
                                                 if (isCreateMode) {
                                                     handleProductChange(index, 'name', e.target.value);
-                                                } else if (isEditMode) {
+                                                } else  {
                                                     handleProductEdit(index, 'productNm', e.target.value);
                                                 }
                                             }}
