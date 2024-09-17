@@ -9,11 +9,8 @@
     position: relative;
 }
 
-
 .order-detail-container {
     padding: 20px;
-    background-color: #f8f8f8;
-    border-radius: 5px;
 }
 
 .form-row {
@@ -26,6 +23,10 @@
     flex: 1 1 30%;
     display: flex;
 }
+
+.order-detail-container
+
+
 .form-group > input {
     width: 50%;
     margin-left: 20px;
