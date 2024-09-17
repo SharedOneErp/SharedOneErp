@@ -76,8 +76,7 @@ public class ProductController {
         }
     }
 
-
-    // 상품 상세 조회 API
+    // 2. 상품 상세정보 조회 (최근 납품내역 5건 포함)
     @GetMapping("/productDetail/{productCd}")
     public ResponseEntity<List<ProductDTO>> getProductDetailsByProductCd(@PathVariable String productCd) {
         try {
@@ -85,7 +84,7 @@ public class ProductController {
             if (productDetails.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
-            return ResponseEntity.ok(productDetails); // JSON 형식으로 반환
+            return ResponseEntity.ok(productDetails);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }

@@ -26,7 +26,7 @@ public class ProductService {
 
     public ProductDTO saveOrUpdate(ProductDTO productDTO) {
         Product product = productRepository.findById(productDTO.getProductCd())
-                .orElse(new Product()); // 기존 제품이 없으면 새 제품 생성
+                .orElse(new Product());
 
         // DTO 데이터를 엔티티에 설정
         product.setProductCd(productDTO.getProductCd());
@@ -50,6 +50,11 @@ public class ProductService {
         // 상품 저장
         Product savedProduct = productRepository.save(product);
         return convertToDTO(savedProduct);
+    }
+
+    // 2. 상품 상세 조회 (최근 납품내역 5건 포함)
+    public List<ProductDTO> getProductDetailsByProductCd(String productCd) {
+        return productRepository.findProductDetailsByProductCd(productCd);
     }
 
     // DTO -> 엔티티 변환 메서드
@@ -93,12 +98,12 @@ public class ProductService {
         return productRepository.getAllProducts(pageable);
     }
 
-    // 상품 상세 조회
-    public List<ProductDTO> getProductDetailsByProductCd(String productCd) {
-        Pageable pageable = PageRequest.of(0, 5);
-        Page<ProductDTO> pageResult = productRepository.getProductDetailsByProductCd(productCd, pageable);
-        return pageResult.getContent();
-    }
+//    // 상품 상세 조회
+//    public List<ProductDTO> getProductDetailsByProductCd(String productCd) {
+//        Pageable pageable = PageRequest.of(0, 5);
+//        Page<ProductDTO> pageResult = productRepository.getProductDetailsByProductCd(productCd, pageable);
+//        return pageResult.getContent();
+//    }
 
     // 선택한 상품 삭제
     @Transactional
