@@ -29,6 +29,8 @@ function Login() {
 
             if (response.ok) {
                 console.log('Login successful:', result); // 디버깅용 로그
+                // 현재 시간 저장
+                localStorage.setItem('loginTime', new Date().toLocaleString());
                 location.href = "/main";
             } else {
                 console.log('Login failed:', result); // 디버깅용 로그

@@ -105,7 +105,15 @@ function OrderList() {
         } else {
             setItsAssignedMode(false);
         }
-    }, [searchParams]);
+    }, [searchParams])
+
+    useEffect(() => {
+        if (itsAssignedMode) {
+            setSelectedStatus('결제중');
+            applyFilter('결제중');
+        }
+    }, [itsAssignedMode]);
+
 
 
     const applyFilter = (filterValue) => {
@@ -114,6 +122,7 @@ function OrderList() {
         setSearchTerm('');
         setCurrentPage(1);
     };
+
 
     const handleStatusChange = (event) => {
         const status = event.target.value;
@@ -172,8 +181,8 @@ function OrderList() {
         // 현재 날짜를 기본값으로 설정
         const today = new Date().toISOString().split('T')[0];
         setEndDate(today);
-
     }, [itsAssignedMode]);
+
 
     useEffect(() => {
         if (Array.isArray(filteredOrders)) {
@@ -388,46 +397,65 @@ function OrderList() {
                                 <br/>
                                 <div className="radio_box">
                                     <span>상태</span>
-                                    <input
-                                        type="radio"
-                                        id="all"
-                                        name="status"
-                                        value=""
-                                        checked={selectedStatus === ''}
-                                        onChange={handleStatusChange}
-                                    />
-                                    <label htmlFor="all">전체</label>
+                                    {/* 'itsAssignedMode'가 참일 때는 '결제중' 라디오 버튼만 보이도록 설정 */}
+                                    {itsAssignedMode ? (
+                                        <>
+                                            <input
+                                                type="radio"
+                                                id="pending"
+                                                name="status"
+                                                value="결제중"
+                                                checked={selectedStatus === '결제중'}
+                                                onChange={handleStatusChange}
+                                            />
+                                            <label htmlFor="pending">결제중</label>
+                                        </>
+                                    ) : (
+                                        <>
 
-                                    <input
-                                        type="radio"
-                                        id="pending"
-                                        name="status"
-                                        value="결제중"
-                                        checked={selectedStatus === '결제중'}
-                                        onChange={handleStatusChange}
-                                    />
-                                    <label htmlFor="pending">결제중</label>
+                                            <input
+                                                type="radio"
+                                                id="all"
+                                                name="status"
+                                                value=""
+                                                checked={selectedStatus === ''}
+                                                onChange={handleStatusChange}
+                                            />
+                                            <label htmlFor="all">전체</label>
 
-                                    <input
-                                        type="radio"
-                                        id="completed"
-                                        name="status"
-                                        value="결제완료"
-                                        checked={selectedStatus === '결제완료'}
-                                        onChange={handleStatusChange}
-                                    />
-                                    <label htmlFor="completed">결제완료</label>
+                                            <input
+                                                type="radio"
+                                                id="pending"
+                                                name="status"
+                                                value="결제중"
+                                                checked={selectedStatus === '결제중'}
+                                                onChange={handleStatusChange}
+                                            />
+                                            <label htmlFor="pending">결제중</label>
 
-                                    <input
-                                        type="radio"
-                                        id="rejected"
-                                        name="status"
-                                        value="반려"
-                                        checked={selectedStatus === '반려'}
-                                        onChange={handleStatusChange}
-                                    />
-                                    <label htmlFor="rejected">반려</label>
+                                            <input
+                                                type="radio"
+                                                id="completed"
+                                                name="status"
+                                                value="결제완료"
+                                                checked={selectedStatus === '결제완료'}
+                                                onChange={handleStatusChange}
+                                            />
+                                            <label htmlFor="completed">결제완료</label>
+
+                                            <input
+                                                type="radio"
+                                                id="rejected"
+                                                name="status"
+                                                value="반려"
+                                                checked={selectedStatus === '반려'}
+                                                onChange={handleStatusChange}
+                                            />
+                                            <label htmlFor="rejected">반려</label>
+                                        </>
+                                    )}
                                 </div>
+
 
                                 <div className={`date_box ${startDate ? 'has_text' : ''}`}>
                                     <label>주문 등록일</label>
@@ -501,7 +529,11 @@ function OrderList() {
                                                             onChange={() => handleCheckboxChange(order.orderNo)}
                                                         />
                                                     ) : (
-                                                        <></>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectedOrders.has(order.orderNo)}
+                                                            disabled
+                                                        />
                                                     )}
                                                 </td>
                                             )}

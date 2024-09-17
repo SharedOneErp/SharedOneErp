@@ -124,15 +124,18 @@ public class OrderService {
         return orderDTO;
     }
     public Order updateOrder(Integer orderNo, OrderDTO orderDTO) {
-        Order order = orderRepository.findById(orderNo)
-                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
+        Order existingOrder = orderRepository.findById(orderNo)
+                .orElseThrow(() -> new RuntimeException("주문 정보를 찾을 수 없습니다."));
 
-        // 주문 정보 업데이트
-        order.setOrderHTotalPrice(orderDTO.getOrderHTotalPrice());
-        order.setOrderHStatus(orderDTO.getOrderHStatus());
-        order.setOrderHUpdateDate(LocalDateTime.now());
+        // 필요한 필드만 업데이트
+        existingOrder.setCustomer(customerRepository.findById(orderDTO.getCustomer().getCustomerNo()).orElse(null));
+        existingOrder.setEmployee(employeeRepository.findById(orderDTO.getEmployee().getEmployeeId()).orElse(null));
+        existingOrder.setOrderHTotalPrice(orderDTO.getOrderHTotalPrice());
+        existingOrder.setOrderHStatus(orderDTO.getOrderHStatus());
+        existingOrder.setOrderHUpdateDate(LocalDateTime.now());
+        existingOrder.setOrderHDeleteYn(orderDTO.getOrderHDeleteYn());
 
-        return orderRepository.save(order);
+        return orderRepository.save(existingOrder);
     }
 
     // 주문 삭제
