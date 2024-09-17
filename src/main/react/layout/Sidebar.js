@@ -7,21 +7,25 @@ function Sidebar({ currentMenu }) {
         const path = window.location.pathname;
         return path.split('/').pop();
     });
-
-    const location = useLocation();
+    const [loginTime, setLoginTime] = useState('시간 정보 없음');
     const [employee, setEmployee] = useState(null);
     const [role, setRole] = useState('');
+    const location = useLocation();
+
+    useEffect(() => {
+        const storedLoginTime = localStorage.getItem('loginTime');
+        setLoginTime(storedLoginTime || '시간 정보 없음');
+    }, []);
+
 
     useEffect(() => {
         const fetchEmployee = async () => {
             try {
-                const response = await fetch('/api/employee', {
-                    credentials: 'include',
-                });
+                const response = await fetch('/api/employee', { credentials: 'include' });
                 if (response.ok) {
                     const data = await response.json();
                     setEmployee(data);
-                    setRole(data.employeeRole); // role 상태 업데이트
+                    setRole(data.employeeRole);
                 } else {
                     console.error('사용자 정보를 가져오는 데 실패했습니다.');
                 }
@@ -76,7 +80,7 @@ function Sidebar({ currentMenu }) {
                             'LOADING'
                         )}
                     </div>
-                    <div className="login-time">2024-09-05 13:54:06</div>
+                    <div className="login-time">{loginTime}</div>
                     <button onClick={handleLogout} className="box small">로그아웃</button>
                 </div>
             </div>

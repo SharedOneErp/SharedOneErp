@@ -98,7 +98,12 @@ public class OrderDetailService {
         existingOrderDetail.setOrderDTotalPrice(orderDetailDTO.getOrderDTotalPrice());
         existingOrderDetail.setOrderDUpdateDate(LocalDateTime.now());
 
+        // 연관된 Order와 Product 엔티티도 업데이트
+        existingOrderDetail.setOrder(orderRepository.findById(orderDetailDTO.getOrderNo()).orElse(null));
+        existingOrderDetail.setProduct(productRepository.findById(orderDetailDTO.getProductCd()).orElse(null));
+
         return orderDetailRepository.save(existingOrderDetail);
     }
+
 
 }

@@ -37,6 +37,14 @@ function Order() {
     const [customerNo, setCustomerNo] = useState('');
     const [employeeId, setEmployeeId] = useState('');
 
+    const [customerData, setCustomerData] = useState({
+        customerNo: '',
+        customerName: '',
+        customerAddr: '',
+        customerTel: '',
+        customerRepresentativeName: ''
+    });
+
     //날짜
     const [todayDate, setTodayDate] = useState('');
 
@@ -79,6 +87,10 @@ function Order() {
         middle: '',
         low: ''
     });
+
+    useEffect(() => {
+        setCustomerData(customer || {});
+    }, [customer]);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -489,25 +501,31 @@ function Order() {
 
             // 2. 주문 데이터 준비
             const cleanProducts = displayItemEdit.map((product) => ({
-                orderNo: product.orderNo, // order_d_no를 detailId로 사용
+                orderNo: product.orderNo,
                 productCd: product.productCd,
                 orderDPrice: product.orderDPrice,
                 orderDQty: product.orderDQty,
                 orderDTotalPrice: product.orderDPrice * product.orderDQty,
-                orderDDeliveryRequestDate: product.orderDDeliveryRequestDate, // 추가된 필드
+                orderDDeliveryRequestDate: product.orderDDeliveryRequestDate,
             }));
 
             console.log("Clean Products: ", cleanProducts);
 
+            // customerNo와 employeeId를 실제 값을 가져와야 합니다.
+            const customerNo = document.querySelector('input[name="customerNo"]').value.trim();
+            const employeeId = document.querySelector('.employee-id').textContent.trim();
+
             const orderData = {
                 orderNo: orderNo,
-                customer: { customerNo: customerNo },
-                employee: { employeeId: employeeId },
+                customer: { customerNo: customerNo }, // 실제 customerNo로 설정
+                employee: { employeeId: employeeId }, // 실제 employeeId로 설정
                 orderHTotalPrice: totalAmount,
                 orderHStatus: "ing",
                 orderHUpdateDate: new Date().toISOString(),
                 orderHDeleteYn: "N"
             };
+
+            console.log("Order Data:", JSON.stringify(orderData));
 
             // 3. 주문 데이터 업데이트 API 호출
             const response = await fetch(`/api/order/${orderNo}`, {
@@ -530,7 +548,6 @@ function Order() {
 
             // 4. 주문 상세 정보 업데이트
             for (let product of cleanProducts) {
-                // detailId가 유효한지 확인 후 API 호출
                 if (product.orderNo) {
                     const orderDetailData = {
                         orderNo: updatedOrderNo,
@@ -540,6 +557,8 @@ function Order() {
                         orderDTotalPrice: product.orderDTotalPrice,
                         orderDDeliveryRequestDate: product.orderDDeliveryRequestDate,
                     };
+
+                    console.log("Order Detail Data:", JSON.stringify(orderDetailData));
 
                     const detailResponse = await fetch(`/api/orderDetails/${product.orderNo}`, {
                         method: 'PUT',
@@ -559,6 +578,7 @@ function Order() {
             }
 
             // 5. 성공 후 페이지 이동
+            alert("주문을 성공적으로 수정했습니다.");
             window.location.href = `/orderList`;
         } catch (error) {
             console.error('주문 수정 중 오류 발생:', error.message);
@@ -566,15 +586,17 @@ function Order() {
         }
     };
 
+
     const handleCustomerSelect = (selectedCustomer) => {
-        // 선택된 고객 정보 처리
         console.log('Selected customer:', selectedCustomer);
-        // 예를 들어, 고객 번호를 폼에 설정할 수 있습니다.
-        document.querySelector('input[name="customerNo"]').value = selectedCustomer.customerNo;
-        document.querySelector('input[name="customerName"]').value = selectedCustomer.customerName;
-        document.querySelector('input[name="customerAddr"]').value = selectedCustomer.customerAddr;
-        document.querySelector('input[name="customerTel"]').value = selectedCustomer.customerTel;
-        document.querySelector('input[name="customerRepresentativeName"]').value = selectedCustomer.customerRepresentativeName;
+
+        setCustomerData({
+            customerNo: selectedCustomer.customerNo,
+            customerName: selectedCustomer.customerName,
+            customerAddr: selectedCustomer.customerAddr,
+            customerTel: selectedCustomer.customerTel,
+            customerRepresentativeName: selectedCustomer.customerRepresentativeName
+        });
         closeCustomerModal();
     };
 
@@ -619,11 +641,10 @@ function Order() {
 
                         <div className="form-group">
                             <label>고객사</label>
-                            <input type="hidden" name="customerNo" readOnly/>
+                            <input type="hidden" name="customerNo" value={customerData.customerNo} readOnly/>
                             {/*위는 주문 생성 , 아래는 수정과 변경*/}
-                            <input type="text" name="customerName" style={{display: isCreateMode ? 'block' : 'none'}}/>
-                            <input type="text" name="customerNamex" value={isCreateMode ? '' : customer.customerName}
-                                   style={{display: isCreateMode ? 'none' : 'block'}} readOnly/>
+                            <input type="text" name="customerName" value={customerData.customerName || ''}
+                                   readOnly/>
 
                             <button
                                 className="search-button"
@@ -687,31 +708,20 @@ function Order() {
                         </div>
                         <div className="form-group">
                             <label>주소</label>
-
-                            <input type="text" name="customerAddr" style={{display: isCreateMode ? 'block' : 'none'}}
-                                   readOnly/>
-
-                            <input type="text" name="customerAddrx" value={isCreateMode ? '' : customer.customerAddr}
-                                   style={{display: isCreateMode ? 'none' : 'block'}}
+                            <input type="text" name="customerAddrx" value={customerData.customerAddr || ''}
                                    readOnly/>
                         </div>
 
                         <div className="form-group">
                             <label>연락처</label>
-                            <input type="text" name="customerTel" style={{display: isCreateMode ? 'block' : 'none'}}
-                                   readOnly/>
-                            <input type="text" name="customerTelx" value={isCreateMode ? '' : customer.customerTel}
-                                   style={{display: isCreateMode ? 'none' : 'block'}} readOnly/>
-
+                            <input type="text" name="customerTel"  value={customerData.customerTel || ''}
+                                    readOnly/>
                         </div>
 
                         <div className="form-group">
                             <label>대표명</label>
                             <input type="text" name="customerRepresentativeName"
-                                   style={{display: isCreateMode ? 'block' : 'none'}} readOnly/>
-                            <input type="text" name="customerRepresentativeNamex"
-                                   value={isCreateMode ? '' : customer.customerRepresentativeName}
-                                   style={{display: isCreateMode ? 'none' : 'block'}}
+                                   value={customerData.customerRepresentativeName || ''}
                                    readOnly/>
                         </div>
 

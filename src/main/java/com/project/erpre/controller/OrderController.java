@@ -112,7 +112,7 @@ public class OrderController {
     @PutMapping("/{orderNo}")
     public ResponseEntity<?> updateOrder(@PathVariable Integer orderNo, @RequestBody OrderDTO orderDTO) {
         try {
-            Order updatedOrder = orderDTOService.updateOrder(orderNo, orderDTO);
+            Order updatedOrder = orderService.updateOrder(orderNo, orderDTO);
             return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("주문 수정 중 오류 발생: ", e);
