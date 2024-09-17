@@ -6,6 +6,6 @@
 | **프레임워크** | Spring Boot 2.7.18 |
 | **빌드 도구** | Gradle |
 | **데이터베이스(DB)** | PostgreSQL 16.3 (AWS RDS) |
-| **ORM** | JPA |
+| **ORM** | Spring Data JPA 2.2 |
 | **프론트엔드(View)** | React |
 | **개발 도구(IDE)** | IntelliJ IDEA |
