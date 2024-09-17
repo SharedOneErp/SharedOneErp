@@ -359,7 +359,6 @@ function OrderList() {
                     </h3>
                 </div>
                 <div className="orderList-container">
-
                     {error && <div className="error-message">{error}</div>}
                     <div className="menu_content">
                         <div className="search_wrap">
@@ -514,7 +513,8 @@ function OrderList() {
                                             <td>{formatProductNames(order.productNames || []) || 'N/A'}</td>
                                             <td>{order.orderHTotalPrice?.toLocaleString() + '원' || 'N/A'}</td>
                                                 <td>{order.employee?.employeeName || 'N/A'}</td>
-                                            <td><a href={`/order?no=${order.orderNo}`}>내역 보기</a></td>
+                                            <td><a href={`/order?no=${order.orderNo}`}><i
+                                                className="bi bi-pencil-square"></i></a></td>
                                         </tr>
                                     ))}
                                 </tbody>
