@@ -1,4 +1,4 @@
-/* src/components/Layout.css */
+/* src/main/resources/static/css/common/Layout.css */
 /* 🔴 폰트 */
 @font-face { font-family: 'Pretendard'; font-weight: 100; font-style: normal; src: url('https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-Thin.woff') format('woff'); font-display: swap; } 
 @font-face { font-family: 'Pretendard'; font-weight: 200; font-style: normal; src: url('https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-ExtraLight.woff') format('woff'); font-display: swap; } 
@@ -26,6 +26,8 @@ p { margin: 0; }
 .input-field { transition: all 0.3s ease; } 
 /* placeholder */
 input::placeholder { color: #888; } 
+/* 🔴 단축 css */
+.wp100 { width: 100%; } 
 /* 🔴 기본 박스(button, input, select) */
 .box { font-family: "Pretendard", sans-serif; align-items: center; background: #fff; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); box-sizing: border-box; color: #555; display: inline-flex; flex-shrink: 0; font-size: 16px; font-weight: 500; justify-content: center; padding: 8px 12px; min-width: 32px; outline: none; transition: box-shadow .2s, background-color .1s, color .1s, transform .15s; white-space: nowrap; } 
 .box.small { font-size: 13px; } 
@@ -40,25 +42,45 @@ button.box:disabled { background-color: #ddd; cursor: not-allowed; }
 /* 검색어 입력(i) */
 .search_box { position:relative; align-items: center; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); display: inline-flex; font-size: 14px; padding-left: 12px; color: #666; } 
 .search_box.has_text { border-color: #007CC1; } 
-.search_box.has_text i { color: #007CC1; } 
+.search_box.has_text i, .search_box.has_text input { color: #007CC1; } 
 .search_box .box { border: none; padding-right: 30px; } 
-.search_box .btn-del { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; border-radius: 20px; padding: 0 1px; color: #666; font-size: 18px; transition: all .8s; } 
-.search_box .btn-del:hover { background-color: #ddd; } 
+/* 검색어/날짜 입력 삭제(button) */
+.search_wrap .btn-del { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; border-radius: 20px; padding: 0 1px; color: #666; font-size: 18px; transition: all .8s; } 
+.search_wrap .date_box .btn-del { right: 7px; } 
+.search_wrap .date_box .btn-del i { color: #007CC1; } 
+.search_wrap .btn-del:hover { background-color: #e4f1f7a3; } 
 /* 날짜 입력(label) */
 .date_box { position:relative; align-items: center; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); display: inline-flex; font-size: 16px; padding-left: 12px; color: #666; } 
-.date_box.has_text { border-color: #007CC1; } 
-.date_box.has_text label { color: #007CC1; } 
+.date_box.has_text { border-color: #007CC1; padding-right: 20px; } 
+.date_box.has_text label, .date_box.has_text input[type='date'] { color: #007CC1; } 
 .date_box label { font-size: 14px; } 
-.date_box input[type='date'] { border: none; margin: 0 10px 0 12px; font-family: "Pretendard", sans-serif; color: #555; font-size: 15px; font-weight: 500; outline: none; } 
+.date_box input[type='date'] { border: none; margin: 0 7px 0 9px; font-family: "Pretendard", sans-serif; color: #555; font-size: 15px; font-weight: 500; outline: none; } 
 /* 상태 선택(radio) */
 .radio_box { align-items: center; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); display: inline-flex; font-size: 14px; padding:0 4px 0 12px; color: #666; } 
 .radio_box span { margin-right: 10px; } 
 .radio_box input[type="radio"] { display: none; } 
 .radio_box label { font-size: 16px; font-weight: 500; color: #555; padding: 5px 10px; border-radius: 5px; cursor: pointer; transition: all 0.3s; } 
 .radio_box input[type="radio"]:checked + label { border-color: #007CC1; color: #007CC1; background-color: #e4f1f7a3; } 
+/* 상태 선택(checkbox) */
+.checkbox_box input[type="checkbox"] { display: none; } 
+.checkbox_box label { align-items: center; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); display: inline-flex; font-size: 16px; padding: 8px 12px 8px 8px; color: #666; cursor: pointer; } 
+.checkbox_box label i { margin-right: 3px; } 
+.checkbox_box input[type="checkbox"]:checked + label { border-color: #007CC1; color: #007CC1; font-weight: 500; } 
 /* 컬러 버튼 */
 button.box.color { background-color: #007CC1; border-color: #007CC1; color: white; } 
 button.box.color:not(:active):not(:focus):not(.active):hover { background-color: #06689f; border-color: #06689f; } 
+button.box.color_border { border-color:#007CC1; color:#007CC1 } 
+button.box.color_border:not(:active):not(:focus):not(.active):hover { background-color: #e4f1f7a3; } 
+/* 기간 입력 */
+.period_box { display: inline-flex; gap: 3px; align-items: center; } 
+/* 체크박스 */
+label.chkbox_label { display: flex; } 
+input[type="checkbox"].chkbox { display: none; } 
+.chkbox_icon { display: inline-block; width: 16px; height: 16px; border: 2px solid #d8d8d8bd; border-radius: 4px; background-color: white; position: relative; cursor: pointer; } 
+.chkbox_icon:hover { background-color: #f7f7f7; } 
+.chkbox_icon .bi-check-lg { display: none; } 
+input[type="checkbox"]:checked + .chkbox_icon .bi-check-lg { display: block; color: white; font-size: 14px; position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); } 
+input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; border-color: #199be3; } 
 /* 🟡 기본 레이아웃 */
 #root, .container { display: flex; flex-direction: column; height: 100%; } 
 .main-container { display: flex; flex: 1; overflow: hidden; } 
@@ -68,15 +90,6 @@ button.box.color:not(:active):not(:focus):not(.active):hover { background-color:
 ::-webkit-scrollbar-thumb { background-color: #888; border-radius: 10px; border: 3px solid #fff; } 
 ::-webkit-scrollbar-track { background-color: #f1f1f1; border-radius: 10px; } 
 ::-webkit-scrollbar-thumb:active { background-color: #555; } 
-/* 🟡 로딩 중 */
-.loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center; gap: 10px; } 
-.loading span { display: inline-block; width: 13px; height: 13px; background-color: gray; border-radius: 50%; animation: loading 1s 0s linear infinite; } 
-.loading span:nth-child(1) { animation-delay: 0s; background-color: #0058A3; } 
-.loading span:nth-child(2) { animation-delay: 0.2s; background-color: rgba(29, 104, 168, 0.78); } 
-.loading span:nth-child(3) { animation-delay: 0.4s; background-color: rgba(70, 124, 168, 0.6); } 
-@keyframes loading { 0%, 100% { opacity: 0; transform: scale(0.5); } 
- 50% { opacity: 1; transform: scale(1.2); } 
- }
 /* 🟡 메뉴 제목 */
 .menu_title { padding-bottom: 10px; } 
 .menu_title .sub_title { font-size: 15px; line-height: 24px; font-weight: 400; color: #8f91a0; } 
@@ -84,17 +97,9 @@ button.box.color:not(:active):not(:focus):not(.active):hover { background-color:
 /* 🟡 메뉴 내용 */
 .menu_content { border-radius: 5px; flex: 1; overflow-y: auto; width: 100%; display: flex; flex-direction: column; } 
 /* 🟡 검색 영역 */
-.menu_content .search_wrap { display: flex; justify-content: space-between; align-items: flex-end; } 
+.menu_content .search_wrap { display: flex; justify-content: space-between; align-items: flex-end; -webkit-user-select: none; user-select: none; } 
 .menu_content .search_wrap .left, 
 .menu_content .search_wrap .right { display: flex; gap: 8px; } 
-/* 🟢 체크박스 */
-label.chkbox_label { display: flex; } 
-input[type="checkbox"].chkbox { display: none; } 
-.chkbox_icon { display: inline-block; width: 16px; height: 16px; border: 2px solid #d8d8d8bd; border-radius: 4px; background-color: white; position: relative; cursor: pointer; } 
-.chkbox_icon:hover { background-color: #f7f7f7; } 
-.chkbox_icon .bi-check-lg { display: none; } 
-input[type="checkbox"]:checked + .chkbox_icon .bi-check-lg { display: block; color: white; font-size: 14px; position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); } 
-input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; border-color: #199be3; } 
 /* 🟢 목록(table 영역만 스크롤) */
 .table_wrap { position: relative; margin-top: 10px; border: 1px solid #ddd; display: flex; flex-direction: column; flex: 1; overflow-y: auto; width: 100%; height: 100%; } 
 .table_wrap table { border-collapse: collapse; display: flex; flex-direction: column; } 
@@ -102,14 +107,29 @@ input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; borde
 .table_wrap table tbody { flex: 1 1 auto; font-size: 15px; } 
 .table_wrap table tr { display: table; width: 100%; table-layout: fixed; } 
 .table_wrap table tbody tr:hover { background-color: #f7f7f7; } 
-.table_wrap table tbody tr.selected_row { background-color: #e4f1f7a3; } 
+.table_wrap table tbody tr.selected_row,
+.table_wrap table tr.tr_input { background-color: #e4f1f7a3; } 
 .table_wrap table th { font-weight: 500; } 
 .table_wrap table th,
 .table_wrap table td { padding: 8px; text-align: left; } 
 .table_wrap table th { padding: 11px 8px; } 
 .table_wrap table td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
 .table_wrap table td b { font-weight: 500; color:555 } 
-.btn_group { display: flex; gap: 5px; } 
+.table_wrap table tr.tr_input td { padding: 10px 8px; } 
+.table_wrap table tr.tr_input td .box { font-size: 15px; padding: 5px 8px; } 
+/* 수정, 취소 버튼 등 */
+.table_wrap .btn_group { display: flex; gap: 5px; } 
+/* 🟢 로딩 중, 데이터가 없을 때 */
+.table_wrap .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center; gap: 10px; } 
+.table_wrap .loading span { display: inline-block; width: 13px; height: 13px; background-color: gray; border-radius: 50%; animation: loading 1s 0s linear infinite; } 
+.table_wrap .loading span:nth-child(1) { animation-delay: 0s; background-color: #0058A3; } 
+.table_wrap .loading span:nth-child(2) { animation-delay: 0.2s; background-color: rgba(29, 104, 168, 0.78); } 
+.table_wrap .loading span:nth-child(3) { animation-delay: 0.4s; background-color: rgba(70, 124, 168, 0.6); } 
+@keyframes loading { 0%, 100% { opacity: 0; transform: scale(0.5); } 
+50% { opacity: 1; transform: scale(1.2); } 
+ }
+.table_wrap .no_data { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center; font-size: 18px; color: #999; font-weight: 500; } 
+.table_wrap .no_data i { margin-right: 5px; margin-top: 2px; } 
 /* 🟢 페이지네이션 */
 .pagination-container { height: 60px; display: flex; justify-content: space-between; align-items: center; } 
 /* 중앙의 페이지네이션 버튼 */
@@ -122,3 +142,9 @@ input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; borde
 .pagination-container .pagination-sub .box { max-width: 75px; } 
 .pagination-container .pagination-sub label { font-weight: 400; font-size: 14px; margin: 0 0 0 5px; color: #444; } 
 .pagination-container .pagination-sub label b { font-weight: 700; color: #007CC1; } 
+/* 🟣 토스트 메시지(짧고 간결한 알림을 일정 시간 동안 화면에 표시) */
+.toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; } 
+.toast { background-color: #333; color: white; padding: 10px 20px; border-radius: 5px; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); opacity: 0.9; } 
+.toast i { margin-right: 2px; } 
+/* 🟣 툴팁 메시지(특정 요소에 마우스를 올리거나 포커스할 때 추가적인 정보 표시) - 라이브러리 설치 */
+.react-tooltip { z-index: 10; padding: 5px 10px !important; border-radius: 6px !important; } 

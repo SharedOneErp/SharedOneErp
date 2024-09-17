@@ -1,6 +1,5 @@
 package com.project.erpre.controller;
 
-import com.project.erpre.model.Price;
 import com.project.erpre.model.PriceDTO;
 import com.project.erpre.service.PriceService;
 import org.slf4j.Logger;
@@ -11,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,7 +44,7 @@ public class PriceController {
         priceService.deletePrice(priceNo);
     }
 
-    // [4] 🟡 특정 가격 정보 조회
+    // [4] 🔴 특정 가격 정보 조회
     @GetMapping("/find/{id}")
     public Optional<PriceDTO> getPriceById(@PathVariable("id") Integer priceNo) {
         logger.info("Fetching price with ID: {}", priceNo);
@@ -58,6 +58,9 @@ public class PriceController {
             @RequestParam(required = false) String productCd,    // 제품 코드 필터
             @RequestParam(required = false) String startDate,    // 시작 날짜 필터
             @RequestParam(required = false) String endDate,      // 종료 날짜 필터
+            @RequestParam(required = false) String targetDate,   // 적용 대상 일
+            @RequestParam(required = false) String searchText,   // 검색어 (고객사명 또는 상품명 필터)
+            @RequestParam(required = false) String selectedStatus, // 상태 필터 (전체all/정상N/삭제Y)
             @RequestParam(defaultValue = "1") int page,          // 페이지 번호 (기본값: 1)
             @RequestParam(defaultValue = "10") int size,         // 페이지당 항목 수 (기본값: 10)
             @RequestParam(defaultValue = "priceNo") String sort, // 정렬 필드 (기본값: priceNo)
@@ -66,7 +69,7 @@ public class PriceController {
         logger.info("Fetching all prices with filters");
         Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(direction, sort));
-        return priceService.getAllPrices(customerNo, productCd, startDate, endDate, pageRequest);
+        return priceService.getAllPrices(customerNo, productCd, startDate, endDate, targetDate, searchText, selectedStatus, pageRequest);
     }
 
     // [6] 🟡 특정 제품(Product)의 가격 정보 조회

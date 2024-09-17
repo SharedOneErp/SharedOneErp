@@ -4,6 +4,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.sql.Date;
 
 /**
  * Price 엔티티는 m_price 테이블과 매핑됩니다.
@@ -36,10 +37,10 @@ public class Price {
     private BigDecimal priceCustomer;  // 고객별 가격 (소수점 포함, 정밀도 15, 소수점 이하 2자리)
 
     @Column(name = "price_start_date")
-    private Timestamp priceStartDate;  // 가격 적용 시작 일자 (null일 경우 즉시 적용)
+    private Date priceStartDate;  // 가격 적용 시작 일자 (null일 경우 즉시 적용)
 
     @Column(name = "price_end_date")
-    private Timestamp priceEndDate;  // 가격 적용 종료 일자 (null일 경우 무기한 적용)
+    private Date priceEndDate;  // 가격 적용 종료 일자 (null일 경우 무기한 적용)
 
     @Column(name = "price_insert_date", nullable = false, insertable = false)
     private Timestamp priceInsertDate;  // 가격 등록 일시 (데이터베이스에서 자동으로 설정, CURRENT_TIMESTAMP 사용)
