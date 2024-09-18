@@ -16,16 +16,16 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String>, ProductRepositoryCustom {
 
-    // 전체 상품 목록 조회 + 페이지네이션
-    @Query("SELECT new com.project.erpre.model.ProductDTO(" +
-            "p.productCd, p.productNm, p.productInsertDate, p.productUpdateDate, " +
-            "c3.categoryNo, c1.categoryNm, c2.categoryNm, c3.categoryNm) " +
-            "FROM Product p " +
-            "JOIN p.category c3 " +
-            "JOIN c3.parentCategory c2 " +
-            "JOIN c2.parentCategory c1 " +
-            "ORDER BY p.productCd ASC")
-    Page<ProductDTO> getAllProducts(Pageable pageable);
+//    // 전체 상품 목록 조회 + 페이지네이션
+//    @Query("SELECT new com.project.erpre.model.ProductDTO(" +
+//            "p.productCd, p.productNm, p.productInsertDate, p.productUpdateDate, " +
+//            "c3.categoryNo, c1.categoryNm, c2.categoryNm, c3.categoryNm) " +
+//            "FROM Product p " +
+//            "JOIN p.category c3 " +
+//            "JOIN c3.parentCategory c2 " +
+//            "JOIN c2.parentCategory c1 " +
+//            "ORDER BY p.productCd ASC")
+//    Page<ProductDTO> getAllProducts(Pageable pageable);
 
     // 선택한상품 삭제
     void deleteByProductCdIn(List<String> productCds);

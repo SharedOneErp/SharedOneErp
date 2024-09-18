@@ -48,6 +48,7 @@ public class ProductDTO {
         this.lowCategory = lowCategory;
     }
 
+    // 2. 상품 상세정보 조회 생성자
     public ProductDTO(String productCd, String productNm, LocalDateTime productInsertDate, LocalDateTime productUpdateDate,
                       String employeeName, String customerName, Date orderDDeliveryRequestDate, Integer orderDQty, BigDecimal orderDTotalPrice,
                       String topCategory, String middleCategory, String lowCategory) {

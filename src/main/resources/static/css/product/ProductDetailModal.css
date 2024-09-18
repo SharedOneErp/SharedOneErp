@@ -111,3 +111,19 @@ input[type="text"] {
 .modal-close-bottom:hover {
     background-color: #004080;
 }
+
+.spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    padding: 20px;
+}
+
+.error-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    padding: 20px;
+}
