@@ -40,8 +40,8 @@ create table m_price (
     customer_no            int              not null, -- 고객 번호 (m_customer 테이블 참조)
     product_cd             varchar(10)      not null, -- 제품 코드 (m_product 테이블 참조)
     price_customer         decimal(15, 2)   not null, -- 고객별 가격
-    price_start_date            timestamp       null,     -- 가격 적용 시작 일자
-    price_end_date              timestamp       null,     -- 가격 적용 종료 일자
+    price_start_date       date             null,     -- 가격 적용 시작 일자
+    price_end_date         date             null,     -- 가격 적용 종료 일자
     price_insert_date      timestamp        not null default current_timestamp, -- 가격 등록 일시
     price_update_date      timestamp        null,     -- 가격 수정 일시
     price_delete_yn        varchar(20)      not null default 'N', -- 삭제 여부 기본값 'N'

@@ -1,9 +1,9 @@
-// src/components/product/ProductPriceModal.js
+// src/components/product/PriceModal.js
 import React, { useState } from 'react';
 import axios from 'axios';
 
 // 상품 검색 모달 컴포넌트
-const ProductPriceModal = ({ isOpen, onClose, onSelect }) => {
+const PriceModal = ({ isOpen, onClose, onSelect }) => {
     const [searchTerm, setSearchTerm] = useState(''); // 검색어 상태
     const [results, setResults] = useState([]); // 검색 결과 상태
 
@@ -53,4 +53,4 @@ const ProductPriceModal = ({ isOpen, onClose, onSelect }) => {
     );
 };
 
-export default ProductPriceModal;
+export default PriceModal;

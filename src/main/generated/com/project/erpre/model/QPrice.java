@@ -30,13 +30,13 @@ public class QPrice extends EntityPathBase<Price> {
 
     public final StringPath priceDeleteYn = createString("priceDeleteYn");
 
-    public final DateTimePath<java.sql.Timestamp> priceEndDate = createDateTime("priceEndDate", java.sql.Timestamp.class);
+    public final DatePath<java.sql.Date> priceEndDate = createDate("priceEndDate", java.sql.Date.class);
 
     public final DateTimePath<java.sql.Timestamp> priceInsertDate = createDateTime("priceInsertDate", java.sql.Timestamp.class);
 
     public final NumberPath<Integer> priceNo = createNumber("priceNo", Integer.class);
 
-    public final DateTimePath<java.sql.Timestamp> priceStartDate = createDateTime("priceStartDate", java.sql.Timestamp.class);
+    public final DatePath<java.sql.Date> priceStartDate = createDate("priceStartDate", java.sql.Date.class);
 
     public final DateTimePath<java.sql.Timestamp> priceUpdateDate = createDateTime("priceUpdateDate", java.sql.Timestamp.class);
 
