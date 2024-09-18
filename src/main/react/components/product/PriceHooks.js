@@ -305,6 +305,7 @@ export const useHooksList = () => {
         try {
             // 서버로 삭제 요청 전송 (필요에 따라 수정)
             // await axios.delete(`/api/price/${priceNo}`);
+            window.showToast('삭제되었습니다.', 5000);
 
             // 상태에서 해당 항목 제거
             setPriceList((prevList) => prevList.filter((item) => item.priceNo !== priceNo));
@@ -362,17 +363,17 @@ export const useHooksList = () => {
 
         customerSearchText,              // 검색어 상태(고객사)
         setCustomerSearchText,
-        handleCustomerSearchTextChange,  
+        handleCustomerSearchTextChange,
         productSearchText,              // 검색어 상태(상품)
         setProductSearchText,
-        handleProductSearchTextChange,  
+        handleProductSearchTextChange,
 
         startDate,               // 시작 날짜 상태
         setStartDate,
-        handleStartDateChange,   
+        handleStartDateChange,
         endDate,                 // 종료 날짜 상태
         setEndDate,
-        handleEndDateChange,     
+        handleEndDateChange,
         targetDate,              // 적용 대상 날짜 상태
         setTargetDate,
         handleTargetDateChange,

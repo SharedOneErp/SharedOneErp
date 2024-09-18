@@ -4,11 +4,11 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, useSearchParams } from "react-router-dom";
 import Layout from "../../layout/Layout";
 import '../../../resources/static/css/product/Price.css'; // 개별 CSS 파일 임포트
-// import PriceModal from './PriceModal'; // 상품 검색 모달 컴포넌트
 import { useHooksList } from './PriceHooks'; // 가격 관리에 필요한 상태 및 로직을 처리하는 훅
 import { add, format } from 'date-fns';
 import CustomerSearchModal from '../common/CustomerSearchModal'; // 고객사 검색 모달 임포트
 import ProductSearchModal from '../common/ProductSearchModal'; // 상품 검색 모달 임포트
+import Pagination from '../common/Pagination'; // 페이지네이션 컴포넌트 임포트
 
 // 컴포넌트(고객사별 상품 가격 관리)
 function Price() {
@@ -112,13 +112,6 @@ function Price() {
                         name="selectedCustomerNo"
                         value={selectedCustomer ? selectedCustomer.customerNo : ''}
                     />
-                    {/* 고객사 검색 모달 */}
-                    {isCustomerModalOpen && (
-                        <CustomerSearchModal
-                            onClose={() => setCustomerModalOpen(false)}
-                            onCustomerSelect={handleCustomerSelect}
-                        />
-                    )}
                 </td>
                 <td>
                     {/* 상품 검색 버튼 */}
@@ -134,13 +127,6 @@ function Price() {
                         name="selectedProductCd"
                         value={selectedProduct ? selectedProduct.ProductCd : ''}
                     />
-                    {/* 상품 검색 모달 */}
-                    {isProductModalOpen && (
-                        <ProductSearchModal
-                            onClose={() => setProductModalOpen(false)}
-                            onProductSelect={handleProductSelect}
-                        />
-                    )}
                 </td>
                 <td>
                     <input
@@ -257,7 +243,7 @@ function Price() {
                                 )}
                             </div>
                             <div className={`search_box ${productSearchText ? 'has_text' : ''}`}>
-                            <label className={`label_floating ${customerSearchText ? 'active' : ''}`}>상품명, 상품코드</label>
+                                <label className={`label_floating ${customerSearchText ? 'active' : ''}`}>상품명, 상품코드</label>
                                 <i className="bi bi-search"></i>
                                 <input
                                     type="text"
@@ -442,10 +428,10 @@ function Price() {
                                                     <td>{m_price.priceDeleteDate ? format(m_price.priceDeleteDate, 'yy-MM-dd HH:mm') : '-'}</td>
                                                     <td>
                                                         <div className='btn_group'>
-                                                            <button className="box icon" onClick={() => handleEdit(m_price.priceNo)}>
+                                                            <button className="box icon edit" onClick={() => handleEdit(m_price.priceNo)}>
                                                                 <i className="bi bi-pencil-square"></i>{/* 수정 */}
                                                             </button>
-                                                            <button className="box icon" onClick={() => handleDelete(m_price.priceNo)}>
+                                                            <button className="box icon del" onClick={() => handleDelete(m_price.priceNo)}>
                                                                 <i className="bi bi-trash3"></i>{/* 삭제 */}
                                                             </button>
                                                         </div>
@@ -465,91 +451,35 @@ function Price() {
                         </table>
                     </div>
 
-                    {/* 페이지네이션 버튼들 */}
-                    <div className="pagination-container">
-
-                        <div className="pagination-sub left"> {/* 좌측 정렬을 위한 래퍼 */}
-                            <input
-                                type="text"
-                                id="itemsPerPage"
-                                className="box"
-                                value={itemsPerPage}
-                                onChange={handleItemsPerPageChange}
-                                min={1}    // 최소값 설정
-                                max={100}  // 최대값 설정
-                                step={1}   // 1씩 증가/감소 가능
-                            />
-                            <label htmlFor="itemsPerPage">건씩 보기 / <b>{isLoading ? '-' : totalItems}</b>건</label>
-                        </div>
-
-                        {/* 가운데: 페이지네이션 */}
-                        <div className="pagination">
-
-                            {/* '처음' 버튼 */}
-                            {currentPage > 1 && (
-                                <button className="box icon first" onClick={() => handlePage(1)}>
-                                    <i className="bi bi-chevron-double-left"></i>
-                                </button>
-                            )}
-
-                            {/* '이전' 버튼 */}
-                            {currentPage > 1 && (
-                                <button className="box icon left" onClick={() => handlePage(currentPage - 1)}>
-                                    <i className="bi bi-chevron-left"></i>
-                                </button>
-                            )}
-
-                            {/* 페이지 번호 블록 계산 (1~5, 6~10 방식) */}
-                            {Array.from({ length: Math.min(5, totalPages) }, (_, index) => {
-                                const startPage = Math.floor((currentPage - 1) / 5) * 5 + 1;
-                                const page = startPage + index;
-                                return (
-                                    page <= totalPages && (
-                                        <button
-                                            key={page}
-                                            onClick={() => handlePage(page)}
-                                            className={currentPage === page ? 'box active' : 'box'}
-                                        >
-                                            {page}
-                                        </button>
-                                    )
-                                );
-                            })}
-
-                            {/* '다음' 버튼 */}
-                            {currentPage < totalPages && (
-                                <button className="box icon right" onClick={() => handlePage(currentPage + 1)}>
-                                    <i className="bi bi-chevron-right"></i>
-                                </button>
-                            )}
-
-                            {/* '끝' 버튼 */}
-                            {currentPage < totalPages && (
-                                <button className="box icon last" onClick={() => handlePage(totalPages)}>
-                                    <i className="bi bi-chevron-double-right"></i>
-                                </button>
-                            )}
-                        </div>
-
-                        {/* 오른쪽: 페이지 번호 입력 */}
-                        <div className="pagination-sub right">
-                            <input
-                                type="text"
-                                id="pageInput"
-                                className="box"
-                                value={pageInputValue} /* 상태로 관리되는 입력값 */
-                                onChange={handlePageInputChange}
-                                min={1}    // 최소값 설정
-                                max={totalPages}
-                                step={1}   // 1씩 증가/감소 가능
-                            />
-                            <label htmlFor="pageInput">/ <b>{totalPages}</b>페이지</label>
-                        </div>
-
-                    </div>
+                    {/* 페이지네이션 컴포넌트 사용 */}
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        itemsPerPage={itemsPerPage}
+                        totalItems={totalItems}
+                        isLoading={isLoading}
+                        pageInputValue={pageInputValue}
+                        handlePage={handlePage}
+                        handleItemsPerPageChange={handleItemsPerPageChange}
+                        handlePageInputChange={handlePageInputChange}
+                    />
 
                 </div>
             </main>
+            {/* 고객사 검색 모달 */}
+            {isCustomerModalOpen && (
+                <CustomerSearchModal
+                    onClose={() => setCustomerModalOpen(false)}
+                    onCustomerSelect={handleCustomerSelect}
+                />
+            )}
+            {/* 상품 검색 모달 */}
+            {isProductModalOpen && (
+                <ProductSearchModal
+                    onClose={() => setProductModalOpen(false)}
+                    onProductSelect={handleProductSelect}
+                />
+            )}
         </Layout>
     );
 }
