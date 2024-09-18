@@ -318,7 +318,6 @@ export const useHooksList = () => {
     };
 
     const totalPages = Math.ceil(totalItems / itemsPerPage); // 총 페이지 수 계산
-
     return {
         products,
         selectedProducts,

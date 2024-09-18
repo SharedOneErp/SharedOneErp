@@ -45,47 +45,50 @@ public class ProductController {
     }
 
 
-    // 전체 상품 목록 조회 API
-    @GetMapping("/productList")
-    public ResponseEntity<Map<String, Object>> getAllProducts(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        try {
-            Pageable pageable = PageRequest.of(page - 1, size);
-            Page<ProductDTO> productPage = productService.getAllProducts(pageable);
+//    // 전체 상품 목록 조회 API
+//    @GetMapping("/productList")
+//    public ResponseEntity<Map<String, Object>> getAllProducts(
+//            @RequestParam(defaultValue = "1") int page,
+//            @RequestParam(defaultValue = "10") int size
+//    ) {
+//        try {
+//            Pageable pageable = PageRequest.of(page - 1, size);
+//            Page<ProductDTO> productPage = productService.getAllProducts(pageable);
+//
+//            // 전체 카테고리 목록 조회
+//            List<Category> topCategories = categoryService.getTopCategory();
+//            List<Category> middleCategories = categoryService.getMiddleCategory(null);
+//            List<Category> lowCategories = categoryService.getLowCategory(null, null);
+//
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("products", productPage.getContent());
+//            response.put("totalItems", productPage.getTotalElements());
+//            response.put("totalPages", productPage.getTotalPages());
+//
+//            // 카테고리 목록 추가
+//            response.put("topCategories", topCategories);
+//            response.put("middleCategories", middleCategories);
+//            response.put("lowCategories", lowCategories);
+//
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+//    }
 
-            // 전체 카테고리 목록 조회
-            List<Category> topCategories = categoryService.getTopCategory();
-            List<Category> middleCategories = categoryService.getMiddleCategory(null);
-            List<Category> lowCategories = categoryService.getLowCategory(null, null);
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("products", productPage.getContent());
-            response.put("totalItems", productPage.getTotalElements());
-            response.put("totalPages", productPage.getTotalPages());
-
-            // 카테고리 목록 추가
-            response.put("topCategories", topCategories);
-            response.put("middleCategories", middleCategories);
-            response.put("lowCategories", lowCategories);
-
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-    // 2. 상품 상세정보 조회 (최근 납품내역 5건 포함)
+    // 2. 상품 상세정보 조회 API (최근 납품내역 5건 포함)
     @GetMapping("/productDetail/{productCd}")
     public ResponseEntity<List<ProductDTO>> getProductDetailsByProductCd(@PathVariable String productCd) {
         try {
             List<ProductDTO> productDetails = productService.getProductDetailsByProductCd(productCd);
             if (productDetails.isEmpty()) {
+                // 데이터가 없으면 404 Not Found 응답 반환
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
+            // 정상적으로 데이터를 찾으면 200 OK 응답 반환
             return ResponseEntity.ok(productDetails);
         } catch (Exception e) {
+            // 예외가 발생하면 500 Internal Server Error 응답 반환
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }

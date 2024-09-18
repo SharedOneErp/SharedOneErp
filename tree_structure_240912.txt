@@ -81,11 +81,11 @@ src
 │  │  │  │  │  ├─ ProductDetail2.js
 │  │  │  │  │  ├─ ProductHooks.js
 │  │  │  │  │  ├─ ProductList.js
-│  │  │  │  │  ├─ ProductPrice.js
+│  │  │  │  │  ├─ Price.js
 │  │  │  │  │  ├─ ProductPrice2.js
-│  │  │  │  │  ├─ ProductPriceHooks.js
+│  │  │  │  │  ├─ PriceHooks.js
 │  │  │  │  │  ├─ ProductPriceHooks2.js
-│  │  │  │  │  ├─ ProductPriceModal.js
+│  │  │  │  │  ├─ PriceModal.js
 │  │  │  │  │  └─ ProductPriceModal2.js
 │  │  │  │  └─ sales
 │  │  │  │     ├─ Order.js
@@ -131,7 +131,7 @@ src
 │  │     │  │  │  ├─ ProductCategory.css
 │  │     │  │  │  ├─ ProductDetail2.css
 │  │     │  │  │  ├─ ProductList.css
-│  │     │  │  │  └─ ProductPrice.css
+│  │     │  │  │  └─ Price.css
 │  │     │  │  └─ sales
 │  │     │  │     ├─ Order.css
 │  │     │  │     ├─ OrderDetail.css

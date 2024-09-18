@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,7 +66,7 @@ public class PriceService {
         return price;
     }
 
-    // [1] 가격 정보를 저장하거나 수정하는 메서드 (PriceDTO로 변환하여 반환)
+    // [1] 🟢 가격 정보를 저장하거나 수정하는 메서드 (PriceDTO로 변환하여 반환)
     public PriceDTO saveOrUpdate(PriceDTO priceDTO) {
         logger.info("[1],[2] Saving or updating price: {}", priceDTO);
         Price price = convertToEntity(priceDTO); // DTO -> 엔티티 변환
@@ -73,27 +74,28 @@ public class PriceService {
         return convertToDTO(savedPrice); // 저장 후 DTO로 반환
     }
 
-    // [2] 가격 정보 삭제
+    // [2] 🟣 가격 정보 삭제
     public void deletePrice(Integer priceNo) {
         logger.info("[3] Deleting price with ID: " + priceNo);
         priceRepository.deleteById(priceNo);
     }
 
-    // [3] 특정 가격 정보 조회
+    // [3] 🔴 특정 가격 정보 조회
     public Optional<PriceDTO> getPriceById(Integer priceNo) {
         logger.info("[4] Fetching price with ID: " + priceNo);
         Optional<Price> priceOpt = priceRepository.findById(priceNo);
         return priceOpt.map(this::convertToDTO); // Optional 처리 및 DTO 변환
     }
 
-    // [4] 필터링 + 페이지네이션 + 정렬 처리 (Price 엔티티를 PriceDTO로 변환하여 반환) 🟥
-    public Page<PriceDTO> getAllPrices(Integer customerNo, String productCd, String startDate, String endDate, PageRequest pageRequest) {
+    // [4] 🔴 필터링 + 페이지네이션 + 정렬 처리 (Price 엔티티를 PriceDTO로 변환하여 반환)
+    public Page<PriceDTO> getAllPrices(Integer customerNo, String productCd, String startDate, String endDate, String targetDate, String searchText, String selectedStatus, PageRequest pageRequest) {
         logger.info("[5] Fetching all prices with filters");
 
-        // 필터가 하나라도 존재하면 필터링된 가격 정보를 조회
-        if (customerNo != null || productCd != null || startDate != null || endDate != null) {
-            Page<Price> prices = priceRepository.findPricesWithFilters(customerNo, productCd, startDate, endDate, pageRequest);
-            return prices.map(this::convertToDTO); // 엔티티를 DTO로 변환 후 반환
+        // 필터 조건이 하나라도 존재할 경우 필터링된 가격 정보를 조회
+        if (customerNo != null || productCd != null || startDate != null || endDate != null || searchText != null || selectedStatus != null) {
+            // 리포지토리에서 필터링된 데이터를 가져옴
+            Page<Price> prices = priceRepository.findPricesWithFilters(customerNo, productCd, startDate, endDate, targetDate, searchText, selectedStatus, pageRequest);
+            return prices.map(this::convertToDTO); // 엔티티를 DTO로 변환하여 반환
         }
 
         // 필터가 없으면 전체 가격 정보를 조회
@@ -101,21 +103,21 @@ public class PriceService {
         return allPrices.map(this::convertToDTO); // 엔티티를 DTO로 변환 후 반환
     }
 
-    // [5] 특정 제품의 가격 정보 조회 (PriceDTO 리스트로 변환)
+    // [5] 🟡 특정 제품의 가격 정보 조회 (PriceDTO 리스트로 변환)
     public List<PriceDTO> getPricesByProduct(String productCd) {
         logger.info("[6] Fetching prices for product with Code: " + productCd);
         List<Price> prices = priceRepository.findByProduct_ProductCd(productCd);
         return prices.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // [6] 특정 고객의 가격 정보 조회 (PriceDTO 리스트로 변환)
+    // [6] 🟡 특정 고객의 가격 정보 조회 (PriceDTO 리스트로 변환)
     public List<PriceDTO> getPricesByCustomer(Integer customerNo) {
         logger.info("[7] Fetching prices for customer with ID: " + customerNo);
         List<Price> prices = priceRepository.findByCustomer_CustomerNo(customerNo);
         return prices.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // [7] 특정 기간 내의 가격 정보 조회 (PriceDTO로 변환하여 반환)
+    // [7] 🟡 특정 기간 내의 가격 정보 조회 (PriceDTO로 변환하여 반환)
     public List<PriceDTO> getPricesByDateRange(String startDate, String endDate) {
         logger.info("[8] Fetching prices between dates: " + startDate + " and " + endDate);
         List<Price> prices = priceRepository.findPricesByDateRange(startDate, endDate);
