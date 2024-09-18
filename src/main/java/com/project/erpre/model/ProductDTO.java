@@ -20,17 +20,16 @@ public class ProductDTO {
     private String productCd;
     private String productNm;
     private String categoryNm;
+
     private LocalDateTime productInsertDate;
     private LocalDateTime productUpdateDate;
+
     private String employeeName;
     private Date orderDDeliveryRequestDate;
     private Integer orderDQty;
     private BigDecimal orderDTotalPrice;
     private String customerName;
     private Integer categoryNo;
-    private Integer topCategoryNo;    // 대분류 번호
-    private Integer middleCategoryNo; // 중분류 번호
-    private Integer lowCategoryNo;    // 소분류 번호
     private String topCategory; // 대분류 이름
     private String middleCategory; // 중분류 이름
     private String lowCategory; // 소분류 이름
@@ -38,20 +37,15 @@ public class ProductDTO {
     private Timestamp productDeleteDate; // 삭제 일시
 
 
-    // 1. 전체 상품 목록 조회 생성자
-    public ProductDTO(String productCd, String productNm, LocalDateTime productInsertDate, LocalDateTime productUpdateDate,
-                      String lowCategory, String middleCategory, String topCategory,
-                      Integer lowCategoryNo, Integer middleCategoryNo,Integer topCategoryNo) {
+    public ProductDTO(String productCd, String productNm, LocalDateTime productInsertDate, LocalDateTime productUpdateDate, Integer categoryNo, String topCategory, String middleCategory, String lowCategory) {
         this.productCd = productCd;
         this.productNm = productNm;
         this.productInsertDate = productInsertDate;
         this.productUpdateDate = productUpdateDate;
-        this.lowCategory = lowCategory;
-        this.middleCategory = middleCategory;
+        this.categoryNo = categoryNo;
         this.topCategory = topCategory;
-        this.lowCategoryNo = lowCategoryNo;
-        this.middleCategoryNo = middleCategoryNo;
-        this.topCategoryNo = topCategoryNo;
+        this.middleCategory = middleCategory;
+        this.lowCategory = lowCategory;
     }
 
     // 2. 상품 상세정보 조회 생성자

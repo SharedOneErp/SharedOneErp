@@ -27,12 +27,10 @@ public class ProductService {
     private CategoryRepository categoryRepository;
 
 
-    // 1. 전체 상품 목록 조회 + 페이징 + 카테고리 조회 결합
+    // 1. 전체 상품 목록 조회 + 카테고리 조회 결합
     public Map<String, Object> getAllProductsAndCategories(int page, int size) {
         // 상품 목록 가져오기
         List<ProductDTO> products = productRepository.findAllProducts(page, size);
-
-        long totalItems = productRepository.count();
 
         // 모든 카테고리 목록 가져오기
         List<Category> topCategories = categoryRepository.findTopCategory();
@@ -41,7 +39,6 @@ public class ProductService {
 
         Map<String, Object> result = new HashMap<>();
         result.put("products", products);
-        result.put("totalItems", totalItems);
         result.put("topCategories", topCategories);
         result.put("middleCategories", middleCategories);
         result.put("lowCategories", lowCategories);
