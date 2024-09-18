@@ -282,7 +282,7 @@ export const useHooksList = () => {
     //     return map;
     // }, [topCategories, fullMiddleCategories, fullLowCategories]);
 
-    // 카테고리 필터링 (검색)
+    // 카테고리 필터링 (검색)dd
 
     // 필터링된 중분류 목록
     const filteredMiddleCategories = useMemo(() => {
