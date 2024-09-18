@@ -24,7 +24,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
             " join Category c1 on c2.parentCategoryNo = c1.categoryNo" +
             " where c1.categoryLevel = 1" +
             " and c2.categoryLevel = 2" +
-            " and c1.categoryNo = :topCategoryNo" +
+            " and (:topCategoryNo IS NULL OR c1.categoryNo = :topCategoryNo)" +
             " and c2.categoryDeleteYn = 'N'")
     List<Category> findMiddleCategory(@Param("topCategoryNo") Integer topCategoryNo);
 
@@ -35,8 +35,8 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
             " where c1.categoryLevel = 1" +
             " and c2.categoryLevel = 2" +
             " and c3.categoryLevel = 3" +
-            " and c1.categoryNo = :topCategoryNo" +
-            " and c2.categoryNo = :middleCategoryNo" +
+            " and (:topCategoryNo IS NULL OR c1.categoryNo = :topCategoryNo)" +
+            " and (:middleCategoryNo IS NULL OR c2.categoryNo = :middleCategoryNo)" +
             " and c3.categoryDeleteYn = 'N' ")
     List<Category> findLowCategoryByTopAndMiddleCategory(@Param("topCategoryNo") Integer topCategoryNo,
                                                          @Param("middleCategoryNo") Integer middleCategoryNo);
