@@ -42,7 +42,8 @@ public interface PriceRepository extends JpaRepository<Price, Integer> {
             + "(:startDate IS NULL OR p.priceStartDate >= TO_DATE(:startDate, 'YYYY-MM-DD')) AND "
             + "(:endDate IS NULL OR p.priceEndDate <= TO_DATE(:endDate, 'YYYY-MM-DD')) AND "
             + "(:targetDate IS NULL OR (p.priceStartDate <= TO_DATE(:targetDate, 'YYYY-MM-DD') AND p.priceEndDate >= TO_DATE(:targetDate, 'YYYY-MM-DD'))) AND "
-            + "(:searchText IS NULL OR LOWER(p.customer.customerName) LIKE LOWER(CONCAT('%', :searchText, '%')) OR LOWER(p.product.productNm) LIKE LOWER(CONCAT('%', :searchText, '%'))) AND "
+            + "(:customerSearchText IS NULL OR LOWER(p.customer.customerName) LIKE LOWER(CONCAT('%', :customerSearchText, '%'))) AND "
+            + "(:productSearchText IS NULL OR LOWER(p.product.productNm) LIKE LOWER(CONCAT('%', :productSearchText, '%')) OR p.product.productCd LIKE CONCAT('%', :productSearchText, '%')) AND "
             + "(COALESCE(:selectedStatus, 'all') = 'all' OR "
             + "(COALESCE(:selectedStatus, 'all') = 'deleted' AND p.priceDeleteYn = 'Y') OR "
             + "(COALESCE(:selectedStatus, 'all') = 'active' AND p.priceDeleteYn = 'N'))")
@@ -51,7 +52,8 @@ public interface PriceRepository extends JpaRepository<Price, Integer> {
                                       @Param("startDate") String startDate,
                                       @Param("endDate") String endDate,
                                       @Param("targetDate") String targetDate,
-                                      @Param("searchText") String searchText,
+                                      @Param("customerSearchText") String customerSearchText,
+                                      @Param("productSearchText") String productSearchText,
                                       @Param("selectedStatus") String selectedStatus,  // 상태 필터
                                       PageRequest pageRequest);
 
