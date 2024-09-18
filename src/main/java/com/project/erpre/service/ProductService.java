@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProductService {
@@ -23,6 +25,32 @@ public class ProductService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+
+    // 1. 전체 상품 목록 조회 + 카테고리 조회 결합
+    public Map<String, Object> getAllProductsAndCategories(int page, int size) {
+        // 상품 목록 가져오기
+        List<ProductDTO> products = productRepository.findAllProducts(page, size);
+
+        // 모든 카테고리 목록 가져오기
+        List<Category> topCategories = categoryRepository.findTopCategory();
+        List<Category> middleCategories = categoryRepository.findMiddleCategory(null);
+        List<Category> lowCategories = categoryRepository.findLowCategoryByTopAndMiddleCategory(null, null);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("products", products);
+        result.put("topCategories", topCategories);
+        result.put("middleCategories", middleCategories);
+        result.put("lowCategories", lowCategories);
+
+        return result;
+    }
+
+
+    // 2. 상품 상세 조회 (최근 납품내역 5건 포함)
+    public List<ProductDTO> getProductDetailsByProductCd(String productCd) {
+        return productRepository.findProductDetailsByProductCd(productCd);
+    }
 
     public ProductDTO saveOrUpdate(ProductDTO productDTO) {
         Product product = productRepository.findById(productDTO.getProductCd())
@@ -52,57 +80,11 @@ public class ProductService {
         return convertToDTO(savedProduct);
     }
 
-    // 2. 상품 상세 조회 (최근 납품내역 5건 포함)
-    public List<ProductDTO> getProductDetailsByProductCd(String productCd) {
-        return productRepository.findProductDetailsByProductCd(productCd);
-    }
 
-    // DTO -> 엔티티 변환 메서드
-    private Product convertToEntity(ProductDTO productDTO) {
-        Product product = new Product();
-        product.setProductCd(productDTO.getProductCd());
-        product.setProductNm(productDTO.getProductNm());
 
-        product.setProductInsertDate(productDTO.getProductInsertDate());
-        product.setProductUpdateDate(productDTO.getProductUpdateDate());
-
-        product.setProductDeleteYn(productDTO.getProductDeleteYn());
-        product.setProductDeleteDate(productDTO.getProductDeleteDate());
-
-        // Category 조회 및 설정
-        Integer categoryNo = productDTO.getCategoryNo();
-        if (categoryNo != null) {
-            Category category = categoryRepository.findById(categoryNo)
-                    .orElseThrow(() -> new RuntimeException("해당 카테고리를 찾을 수 없습니다."));
-            product.setCategory(category);
-        }
-
-        return product;
-    }
-
-    // 엔티티 -> DTO 변환 메서드
-    public static ProductDTO convertToDTO(Product product) {
-        return ProductDTO.builder()
-                .productCd(product.getProductCd())
-                .productNm(product.getProductNm())
-                .categoryNm(product.getCategory().getCategoryNm()) // 카테고리 이름
-                .productInsertDate(product.getProductInsertDate())
-                .productUpdateDate(product.getProductUpdateDate())
-                .productDeleteYn(product.getProductDeleteYn())
-                .productDeleteDate(product.getProductDeleteDate())
-                .build();
-    }
-
-    // 전체 상품 목록 조회
-    public Page<ProductDTO> getAllProducts(Pageable pageable) {
-        return productRepository.getAllProducts(pageable);
-    }
-
-//    // 상품 상세 조회
-//    public List<ProductDTO> getProductDetailsByProductCd(String productCd) {
-//        Pageable pageable = PageRequest.of(0, 5);
-//        Page<ProductDTO> pageResult = productRepository.getProductDetailsByProductCd(productCd, pageable);
-//        return pageResult.getContent();
+//    // 전체 상품 목록 조회
+//    public Page<ProductDTO> getAllProducts(Pageable pageable) {
+//        return productRepository.getAllProducts(pageable);
 //    }
 
     // 선택한 상품 삭제
@@ -148,6 +130,40 @@ public class ProductService {
         );
     }
 
+    // 주로 쓰기 작업(저장, 수정, 삭제 작업)이나 비즈니스 로직 처리에 사용
+    // DTO -> 엔티티 변환 메서드
+    private Product convertToEntity(ProductDTO productDTO) {
+        Product product = new Product();
+        product.setProductCd(productDTO.getProductCd());
+        product.setProductNm(productDTO.getProductNm());
+        product.setProductInsertDate(productDTO.getProductInsertDate());
+        product.setProductUpdateDate(productDTO.getProductUpdateDate());
+        product.setProductDeleteYn(productDTO.getProductDeleteYn());
+        product.setProductDeleteDate(productDTO.getProductDeleteDate());
+
+        // Category 조회 및 설정
+        Integer categoryNo = productDTO.getCategoryNo();
+        if (categoryNo != null) {
+            Category category = categoryRepository.findById(categoryNo)
+                    .orElseThrow(() -> new RuntimeException("해당 카테고리를 찾을 수 없습니다."));
+            product.setCategory(category);
+        }
+
+        return product;
+    }
+
+    // 엔티티 -> DTO 변환 메서드
+    public static ProductDTO convertToDTO(Product product) {
+        return ProductDTO.builder()
+                .productCd(product.getProductCd())
+                .productNm(product.getProductNm())
+                .categoryNm(product.getCategory().getCategoryNm())
+                .productInsertDate(product.getProductInsertDate())
+                .productUpdateDate(product.getProductUpdateDate())
+                .productDeleteYn(product.getProductDeleteYn())
+                .productDeleteDate(product.getProductDeleteDate())
+                .build();
+    }
 }
 
 
