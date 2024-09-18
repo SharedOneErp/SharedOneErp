@@ -23,7 +23,6 @@ module.exports = {
 
         // Product 관련 엔트리 포인트
         productList: `${productPath}ProductList.js`, // 상품 목록
-        productDetail: `${productPath}ProductDetail2.js`, // 상품 상세
         product: `${productPath}Product.js`, // 상품 등록 or 상세 or 수정
         productDetailModal: `${productPath}ProductDetailModal.js`, // 상품 상세 모달
         productHooks: `${productPath}ProductHooks.js`, // 상품 관리에 필요한 상태 및 로직들

@@ -7,9 +7,29 @@ import '../../../resources/static/css/product/Price.css'; // 개별 CSS 파일 �
 // import PriceModal from './PriceModal'; // 상품 검색 모달 컴포넌트
 import { useHooksList } from './PriceHooks'; // 가격 관리에 필요한 상태 및 로직을 처리하는 훅
 import { add, format } from 'date-fns';
+import CustomerSearchModal from '../common/CustomerSearchModal'; // 고객사 검색 모달 임포트
+import ProductSearchModal from '../common/ProductSearchModal'; // 상품 검색 모달 임포트
 
 // 컴포넌트(고객사별 상품 가격 관리)
 function Price() {
+
+    // 🔴 고객사검색, 상품 검색
+    const [isCustomerModalOpen, setCustomerModalOpen] = useState(false);
+    const [isProductModalOpen, setProductModalOpen] = useState(false);
+    const [selectedCustomer, setSelectedCustomer] = useState('고객사 선택');
+    const [selectedProduct, setSelectedProduct] = useState('상품 선택');
+
+    // 고객사 선택 시 모달을 닫고 버튼에 값 설정
+    const handleCustomerSelect = (customer) => {
+        setSelectedCustomer(customer.customerName);
+        setCustomerModalOpen(false);
+    };
+
+    // 상품 선택 시 모달을 닫고 버튼에 값 설정
+    const handleProductSelect = (product) => {
+        setSelectedProduct(product.productNm);
+        setProductModalOpen(false);
+    };
 
     // 🔴 커스텀 훅을 통해 상태와 함수 불러오기
     const {
@@ -27,19 +47,24 @@ function Price() {
         pageInputValue,          // 페이지 입력 필드의 값
         handlePageInputChange,   // 페이지 입력값 변경 함수 (입력된 페이지 번호를 변경하는 함수)
 
-        searchText,              // 검색어 상태
-        setSearchText,
-        handleSearchTextChange,  // 검색어 입력 값 변경 함수
+        customerSearchText,              // 검색어 상태(고객사)
+        setCustomerSearchText,
+        handleCustomerSearchTextChange,
+        productSearchText,              // 검색어 상태(상품)
+        setProductSearchText,
+        handleProductSearchTextChange,
+
         startDate,               // 시작 날짜 상태
         setStartDate,
-        handleStartDateChange,   // 시작 날짜 변경 함수
+        handleStartDateChange,
         endDate,                 // 종료 날짜 상태
         setEndDate,
-        handleEndDateChange,     // 종료 날짜 변경 함수
-        targetDate,
+        handleEndDateChange,
+        targetDate,              // 적용 대상 날짜 상태
         setTargetDate,
         handleTargetDateChange,
-        handleSearchDel,
+        handleSearchDel,         // 공통 검색어/검색날짜 삭제 함수
+
         isCurrentPriceChecked,
         setIsCurrentPriceChecked,
         selectedStatus,          // 선택된 상태 (전체/정상/삭제)
@@ -67,7 +92,110 @@ function Price() {
         handleDelete,            // 삭제 버튼 클릭 함수 (항목을 삭제하는 함수)
     } = useHooksList();          // 커스텀 훅 사용
 
-    // 🔵 UI 및 상태에 따라 렌더링
+    // 🔴 PriceRow 컴포넌트를 상위 컴포넌트 내부에 정의
+    const PriceRow = ({ isEditMode, priceData, onSave, onCancel, handleInputChange }) => {
+        return (
+            <tr className='tr_input'>
+                <td>-</td> {/* 체크박스 칸 */}
+                <td>-</td> {/* 번호 */}
+                <td>
+                    {/* 고객사 검색 버튼 */}
+                    <button
+                        className="box btn_search wp100"
+                        onClick={() => setCustomerModalOpen(true)}>
+                        {selectedCustomer}
+                        <i className="bi bi-search"></i>
+                    </button>
+                    {/* hidden input 필드 */}
+                    <input
+                        type="hidden"
+                        name="selectedCustomerNo"
+                        value={selectedCustomer ? selectedCustomer.customerNo : ''}
+                    />
+                    {/* 고객사 검색 모달 */}
+                    {isCustomerModalOpen && (
+                        <CustomerSearchModal
+                            onClose={() => setCustomerModalOpen(false)}
+                            onCustomerSelect={handleCustomerSelect}
+                        />
+                    )}
+                </td>
+                <td>
+                    {/* 상품 검색 버튼 */}
+                    <button
+                        className="box btn_search wp100"
+                        onClick={() => setProductModalOpen(true)}>
+                        {selectedProduct}
+                        <i className="bi bi-search"></i>
+                    </button>
+                    {/* hidden input 필드 */}
+                    <input
+                        type="hidden"
+                        name="selectedProductCd"
+                        value={selectedProduct ? selectedProduct.ProductCd : ''}
+                    />
+                    {/* 상품 검색 모달 */}
+                    {isProductModalOpen && (
+                        <ProductSearchModal
+                            onClose={() => setProductModalOpen(false)}
+                            onProductSelect={handleProductSelect}
+                        />
+                    )}
+                </td>
+                <td>
+                    <input
+                        type="number"
+                        className="box wp100"
+                        placeholder="가격 입력"
+                        value={priceData.priceCustomer}
+                        name="priceCustomer"
+                        onChange={handleInputChange}
+                    />
+                </td>
+                <td>
+                    <div className='period_box'>
+                        <input
+                            type="date"
+                            className="box"
+                            placeholder="시작일"
+                            value={priceData.priceStartDate || ''}
+                            name="priceStartDate"
+                            onChange={handleInputChange}
+                        />
+                        ~
+                        <input
+                            type="date"
+                            className="box"
+                            placeholder="종료일"
+                            value={priceData.priceEndDate || ''}
+                            name="priceEndDate"
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                </td>
+                <td>-</td> {/* 등록일시 */}
+                <td>-</td> {/* 수정일시 */}
+                <td>-</td> {/* 삭제일시 */}
+                <td>
+                    <div className='btn_group'>
+                        {isEditMode ? (
+                            <>
+                                <button className="box small color_border" onClick={onSave}>수정</button>
+                                <button className="box small" onClick={onCancel}>취소</button>
+                            </>
+                        ) : (
+                            <>
+                                <button className="box small color_border" onClick={onSave}>추가</button>
+                                <button className="box small" onClick={onCancel}>취소</button>
+                            </>
+                        )}
+                    </div>
+                </td>
+            </tr>
+        );
+    };
+
+    // 🔴 UI 및 상태에 따라 렌더링
     return (
         <Layout currentMenu="productPrice">
             <main className="main-content menu_price">
@@ -87,7 +215,7 @@ function Price() {
                                     checked={isCurrentPriceChecked} // 체크박스 상태
                                     onChange={(e) => setIsCurrentPriceChecked(e.target.checked)} // 체크 상태 업데이트
                                 />
-                                <label htmlFor="currentPrice"><i className="bi bi-check-lg"></i> 오늘 적용되는 가격만 보기</label>
+                                <label htmlFor="currentPrice"><i className="bi bi-check-lg"></i> 오늘</label>
                             </div>
                             {/* 2️⃣ 적용 대상일(ex. 내일 적용되는 가격들만 보기) */}
                             <div className={`date_box ${targetDate ? 'has_text' : ''}`}>
@@ -109,20 +237,39 @@ function Price() {
                                 )}
                             </div>
                             {/* 3️⃣ 검색어 입력 */}
-                            <div className={`search_box ${searchText ? 'has_text' : ''}`}>
+                            <div className={`search_box ${customerSearchText ? 'has_text' : ''}`}>
+                                <label className={`label_floating ${customerSearchText ? 'active' : ''}`}>고객사</label>
                                 <i className="bi bi-search"></i>
                                 <input
                                     type="text"
                                     className="box search"
-                                    placeholder="고객사, 상품명 검색"
-                                    value={searchText}
-                                    onChange={handleSearchTextChange}
+                                    value={customerSearchText}
+                                    onChange={handleCustomerSearchTextChange}
                                 />
                                 {/* 검색어 삭제 버튼 */}
-                                {searchText && (
+                                {customerSearchText && (
                                     <button
                                         className="btn-del"
-                                        onClick={() => handleSearchDel(setSearchText)} // 공통 함수 사용
+                                        onClick={() => handleSearchDel(setCustomerSearchText)} // 공통 함수 사용
+                                    >
+                                        <i className="bi bi-x"></i>
+                                    </button>
+                                )}
+                            </div>
+                            <div className={`search_box ${productSearchText ? 'has_text' : ''}`}>
+                            <label className={`label_floating ${customerSearchText ? 'active' : ''}`}>상품명, 상품코드</label>
+                                <i className="bi bi-search"></i>
+                                <input
+                                    type="text"
+                                    className="box search"
+                                    value={productSearchText}
+                                    onChange={handleProductSearchTextChange}
+                                />
+                                {/* 검색어 삭제 버튼 */}
+                                {productSearchText && (
+                                    <button
+                                        className="btn-del"
+                                        onClick={() => handleSearchDel(setProductSearchText)} // 공통 함수 사용
                                     >
                                         <i className="bi bi-x"></i>
                                     </button>
@@ -229,74 +376,13 @@ function Price() {
                             <tbody>
                                 {/* 추가 상태일 때 새로운 입력 행 추가 */}
                                 {isAdding && (
-                                    <tr className='tr_input'>
-                                        <td>-</td> {/* 체크박스 칸 */}
-                                        <td>-</td> {/* 번호 */}
-                                        <td>
-                                            <input
-                                                type="text"
-                                                className="box wp100"
-                                                placeholder="고객사 입력"
-                                                value={newPriceData.customerName}
-                                                name="customerName"
-                                                onChange={handleInputChange} // 입력값 변경 함수
-                                            />
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                className="box wp100"
-                                                placeholder="상품명 입력"
-                                                value={newPriceData.productNm}
-                                                name="productNm"
-                                                onChange={handleInputChange} // 입력값 변경 함수
-                                            />
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="number"
-                                                className="box wp100"
-                                                placeholder="가격 입력"
-                                                value={newPriceData.priceCustomer}
-                                                name="priceCustomer"
-                                                onChange={handleInputChange} // 입력값 변경 함수
-                                            />
-                                        </td>
-                                        <td>
-                                            <div className='period_box'>
-                                                <input
-                                                    type="date"
-                                                    className="box"
-                                                    placeholder="시작일"
-                                                    value={newPriceData.priceStartDate || ''}
-                                                    name="priceStartDate"
-                                                    onChange={handleInputChange} // 입력값 변경 함수
-                                                />
-                                                ~
-                                                <input
-                                                    type="date"
-                                                    className="box"
-                                                    placeholder="종료일"
-                                                    value={newPriceData.priceEndDate || ''}
-                                                    name="priceEndDate"
-                                                    onChange={handleInputChange} // 입력값 변경 함수
-                                                />
-                                            </div>
-                                        </td>
-                                        <td>-</td> {/* 등록일시 */}
-                                        <td>-</td> {/* 수정일시 */}
-                                        <td>-</td> {/* 삭제일시 */}
-                                        <td>
-                                            <div className='btn_group'>
-                                                <button className="box small color_border" onClick={handleAddSave}>
-                                                    추가
-                                                </button>
-                                                <button className="box small" onClick={handleAddCancel}>
-                                                    취소
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    <PriceRow
+                                        isEditMode={false} // 등록 모드🔴
+                                        priceData={newPriceData} // 새로운 데이터
+                                        onSave={handleAddSave} // 저장 함수
+                                        onCancel={handleAddCancel} // 취소 함수
+                                        handleInputChange={handleInputChange} // 입력값 변경 함수
+                                    />
                                 )}
                                 {/* 로딩 중일 때 로딩 이미지 표시 */}
                                 {isLoading ? (
@@ -312,123 +398,60 @@ function Price() {
                                 ) : (
                                     priceList.length > 0 ? (
                                         priceList.map((m_price, index) => (
-                                            <tr key={m_price.priceNo}
-                                                className={
-                                                    selectedItems.includes(m_price.priceNo)
-                                                        ? ('selected_row')  // 선택된 행
-                                                        : (editingId === m_price.priceNo ? 'tr_input' : '')  // 수정 중일 때만 'tr_input' 클래스 추가
-                                                }
-                                            >
-                                                {/* 개별 항목 체크박스 */}
-                                                <td>
-                                                    <label className="chkbox_label">
-                                                        <input
-                                                            type="checkbox" className="chkbox"
-                                                            checked={selectedItems.includes(m_price.priceNo)}
-                                                            onChange={() => handleCheckboxChange(m_price.priceNo)}
-                                                        />
-                                                        <i className="chkbox_icon">
-                                                            <i className="bi bi-check-lg"></i>
-                                                        </i>
-                                                    </label>
-                                                </td>
-                                                {/* 번호: (현재 페이지 - 1) * 페이지 당 항목 수 + index + 1 */}
-                                                <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                                                {/* 고객 이름 */}
-                                                <td>
-                                                    {editingId === m_price.priceNo ? (
-                                                        <input
-                                                            type="text"
-                                                            className="box wp100"
-                                                            value={editedPriceData.customerName || m_price.customerName}
-                                                            name="customerName"
-                                                            onChange={handleInputChange} // 수정 중인 데이터 변경
-                                                        />
-                                                    ) : (
-                                                        m_price.customerName
-                                                    )}
-                                                </td>
-                                                {/* 제품 이름 + 카테고리 */}
-                                                <td>
-                                                    {editingId === m_price.priceNo ? (
-                                                        <>
+                                            editingId === m_price.priceNo ? (
+                                                <PriceRow
+                                                    key={m_price.priceNo}
+                                                    isEditMode={true} // 수정 모드🔴
+                                                    priceData={editedPriceData} // 수정 중인 데이터
+                                                    onSave={handleSaveEdit} // 수정 저장 함수
+                                                    onCancel={handleCancelEdit} // 수정 취소 함수
+                                                    handleInputChange={handleInputChange} // 입력값 변경 함수
+                                                />
+                                            ) : (
+                                                // 수정 모드가 아닐 경우 기존 데이터를 보여줌
+                                                <tr key={m_price.priceNo}
+                                                    className={
+                                                        selectedItems.includes(m_price.priceNo)
+                                                            ? ('selected_row')  // 선택된 행
+                                                            : ''
+                                                    }
+                                                >
+                                                    <td>
+                                                        <label className="chkbox_label">
                                                             <input
-                                                                type="text"
-                                                                className="box wp100"
-                                                                value={editedPriceData.productNm || m_price.productNm}
-                                                                name="productNm"
-                                                                onChange={handleInputChange} // 수정 중인 데이터 변경
+                                                                type="checkbox"
+                                                                className="chkbox"
+                                                                checked={selectedItems.includes(m_price.priceNo)}
+                                                                onChange={() => handleCheckboxChange(m_price.priceNo)}
                                                             />
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <p>{m_price.productNm}</p>
-                                                            <p style={{ fontSize: '14px', color: '#999', marginTop: '2px' }}>{m_price.categoryNm}</p>
-                                                        </>
-                                                    )}
-                                                </td>
-                                                {/* 고객별 가격 */}
-                                                <td>
-                                                    {editingId === m_price.priceNo ? (
-                                                        <input
-                                                            type="number"
-                                                            className="box wp100"
-                                                            value={editedPriceData.priceCustomer || m_price.priceCustomer}
-                                                            name="priceCustomer"
-                                                            onChange={handleInputChange} // 수정 중인 데이터 변경
-                                                        />
-                                                    ) : (<><b>{m_price.priceCustomer.toLocaleString()}</b>원</>)}
-                                                </td>
-                                                {/* 적용 기간 */}
-                                                <td>
-                                                    {editingId === m_price.priceNo ? (
-                                                        <>
-                                                            <div className='period_box'>
-                                                                <input
-                                                                    type="date"
-                                                                    className="box"
-                                                                    value={editedPriceData.priceStartDate || m_price.priceStartDate}
-                                                                    name="priceStartDate"
-                                                                    onChange={handleInputChange} // 수정 중인 데이터 변경
-                                                                />
-                                                                ~
-                                                                <input
-                                                                    type="date"
-                                                                    className="box"
-                                                                    value={editedPriceData.priceEndDate || m_price.priceEndDate}
-                                                                    name="priceEndDate"
-                                                                    onChange={handleInputChange} // 수정 중인 데이터 변경
-                                                                />
-                                                            </div>
-                                                        </>
-                                                    ) : (
-                                                        `${format(m_price.priceStartDate, 'yyyy-MM-dd')} ~ ${format(m_price.priceEndDate, 'yyyy-MM-dd')}`
-                                                    )}
-                                                </td>
-                                                {/* 등록일시 */}
-                                                <td>{format(m_price.priceInsertDate, 'yy-MM-dd HH:mm')}</td>
-                                                {/* 수정일시: 수정일시가 없으면 '-' 표시 */}
-                                                <td>{m_price.priceUpdateDate ? format(m_price.priceUpdateDate, 'yy-MM-dd HH:mm') : '-'}</td>
-                                                {/* 삭제일시: 삭제일시가 없으면 '-' 표시 */}
-                                                <td>{m_price.priceDeleteDate ? format(m_price.priceDeleteDate, 'yy-MM-dd HH:mm') : '-'}</td>
-                                                <td>
-                                                    <div className='btn_group'>
-                                                        {editingId === m_price.priceNo ? (
-                                                            <>{/* 수정모드 */}
-                                                                <button className="box small color_border" onClick={handleSaveEdit}>수정</button>
-                                                                <button className="box small" onClick={handleCancelEdit}>취소</button>
-                                                            </>
-                                                        ) : (
-                                                            <>{/* 기본(목록에서 수정/삭제만 아이콘) */}
-                                                                <button className="box icon" onClick={() => handleEdit(m_price.priceNo)}>
-                                                                    <i className="bi bi-pencil-square"></i></button>{/* 수정 */}
-                                                                <button className="box icon" onClick={() => handleDelete(m_price.priceNo)}>
-                                                                    <i className="bi bi-trash3"></i></button>{/* 삭제 */}
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                                            <i className="chkbox_icon">
+                                                                <i className="bi bi-check-lg"></i>
+                                                            </i>
+                                                        </label>
+                                                    </td>
+                                                    <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                                                    <td>{m_price.customerName}</td>
+                                                    <td>
+                                                        <p>{m_price.productNm}</p>
+                                                        <p style={{ fontSize: '14px', color: '#999', marginTop: '2px' }}>{m_price.categoryNm}</p>
+                                                    </td>
+                                                    <td><b>{m_price.priceCustomer.toLocaleString()}</b>원</td>
+                                                    <td>{`${format(m_price.priceStartDate, 'yyyy-MM-dd')} ~ ${format(m_price.priceEndDate, 'yyyy-MM-dd')}`}</td>
+                                                    <td>{format(m_price.priceInsertDate, 'yy-MM-dd HH:mm')}</td>
+                                                    <td>{m_price.priceUpdateDate ? format(m_price.priceUpdateDate, 'yy-MM-dd HH:mm') : '-'}</td>
+                                                    <td>{m_price.priceDeleteDate ? format(m_price.priceDeleteDate, 'yy-MM-dd HH:mm') : '-'}</td>
+                                                    <td>
+                                                        <div className='btn_group'>
+                                                            <button className="box icon" onClick={() => handleEdit(m_price.priceNo)}>
+                                                                <i className="bi bi-pencil-square"></i>{/* 수정 */}
+                                                            </button>
+                                                            <button className="box icon" onClick={() => handleDelete(m_price.priceNo)}>
+                                                                <i className="bi bi-trash3"></i>{/* 삭제 */}
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )
                                         ))
                                     ) : (
                                         <tr>

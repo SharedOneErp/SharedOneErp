@@ -88,13 +88,13 @@ public class PriceService {
     }
 
     // [4] 🔴 필터링 + 페이지네이션 + 정렬 처리 (Price 엔티티를 PriceDTO로 변환하여 반환)
-    public Page<PriceDTO> getAllPrices(Integer customerNo, String productCd, String startDate, String endDate, String targetDate, String searchText, String selectedStatus, PageRequest pageRequest) {
+    public Page<PriceDTO> getAllPrices(Integer customerNo, String productCd, String startDate, String endDate, String targetDate, String customerSearchText, String productSearchText, String selectedStatus, PageRequest pageRequest) {
         logger.info("[5] Fetching all prices with filters");
 
         // 필터 조건이 하나라도 존재할 경우 필터링된 가격 정보를 조회
-        if (customerNo != null || productCd != null || startDate != null || endDate != null || searchText != null || selectedStatus != null) {
+        if (customerNo != null || productCd != null || startDate != null || endDate != null || customerSearchText != null || productSearchText != null || selectedStatus != null) {
             // 리포지토리에서 필터링된 데이터를 가져옴
-            Page<Price> prices = priceRepository.findPricesWithFilters(customerNo, productCd, startDate, endDate, targetDate, searchText, selectedStatus, pageRequest);
+            Page<Price> prices = priceRepository.findPricesWithFilters(customerNo, productCd, startDate, endDate, targetDate, customerSearchText, productSearchText, selectedStatus, pageRequest);
             return prices.map(this::convertToDTO); // 엔티티를 DTO로 변환하여 반환
         }
 

@@ -23,8 +23,10 @@ export const useHooksList = () => {
     const [selectedCustomerNo, setSelectedCustomerNo] = useState(''); // 선택된 고객사
     const [selectedProductCd, setSelectedProductCd] = useState(''); // 선택된 상품
 
-    const [searchText, setSearchText] = useState(''); // 검색어
-    const debouncedSearchText = useDebounce(searchText, 300); // 딜레이 적용
+    const [customerSearchText, setCustomerSearchText] = useState(''); // 고객사 검색어
+    const debouncedCustomerSearchText = useDebounce(customerSearchText, 300); // 딜레이 적용
+    const [productSearchText, setProductSearchText] = useState(''); // 상품 검색어
+    const debouncedProductSearchText = useDebounce(productSearchText, 300); // 딜레이 적용
 
     const [startDate, setStartDate] = useState(null); // 시작 날짜
     const [endDate, setEndDate] = useState(null); // 종료 날짜
@@ -69,7 +71,8 @@ export const useHooksList = () => {
                     startDate: startDate ? formatDate(startDate) : null,
                     endDate: endDate ? formatDate(endDate) : null,
                     targetDate: targetDate ? formatDate(targetDate) : null,
-                    searchText: debouncedSearchText || null,
+                    customerSearchText: debouncedCustomerSearchText || null,
+                    productSearchText: debouncedProductSearchText || null,
                     selectedStatus: selectedStatus || null,
                     page: currentPage > 0 ? currentPage : 1,
                     size: itemsPerPage > 0 ? itemsPerPage : 20,
@@ -145,10 +148,15 @@ export const useHooksList = () => {
         setSelectAll(selectedItems.length === priceList.length);
     }, [selectedItems, priceList]);
 
-    // 🟡 검색어가 디바운스된 후 fetchData 호출
+    // 🟡 검색어가 디바운스된 후 fetchData 호출(고객사)
     useEffect(() => {
         fetchData();
-    }, [debouncedSearchText]);
+    }, [debouncedCustomerSearchText]);
+
+    // 🟡 검색어가 디바운스된 후 fetchData 호출(상품)
+    useEffect(() => {
+        fetchData();
+    }, [debouncedProductSearchText]);
 
     // 🟡 startDate 또는 endDate가 변경될 때 targetDate를 확인하고 해제
     useEffect(() => {
@@ -194,9 +202,14 @@ export const useHooksList = () => {
         });
     };
 
-    // 🟢 검색어 변경
-    const handleSearchTextChange = (event) => {
-        setSearchText(event.target.value);
+    // 🟢 검색어 변경(고객사)
+    const handleCustomerSearchTextChange = (event) => {
+        setCustomerSearchText(event.target.value);
+    };
+
+    // 🟢 검색어 변경(상품)
+    const handleProductSearchTextChange = (event) => {
+        setProductSearchText(event.target.value);
     };
 
     // 🟢 시작 날짜 변경
@@ -347,9 +360,13 @@ export const useHooksList = () => {
         pageInputValue,          // 페이지 입력 필드의 값
         handlePageInputChange,   // 페이지 입력값 변경 함수 (입력된 페이지 번호를 변경하는 함수)
 
-        searchText,              // 검색어 상태
-        setSearchText,
-        handleSearchTextChange,  
+        customerSearchText,              // 검색어 상태(고객사)
+        setCustomerSearchText,
+        handleCustomerSearchTextChange,  
+        productSearchText,              // 검색어 상태(상품)
+        setProductSearchText,
+        handleProductSearchTextChange,  
+
         startDate,               // 시작 날짜 상태
         setStartDate,
         handleStartDateChange,   
