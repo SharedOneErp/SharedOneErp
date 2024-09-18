@@ -26,6 +26,7 @@ function ProductDetailModal({productCd, onClose}) { // 파라미터 구조 분�
     return (
         <div className="modal-overlay">
             <div className="modal-content">
+                <button className="modal-close" onClick={onClose} aria-label="닫기">닫기</button>
                 <h1>상품 상세</h1>
 
                 {isLoading ? (

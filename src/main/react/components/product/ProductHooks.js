@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from "react";
+import {useEffect, useState} from "react";
 import {formatDate} from '../../util/dateUtils';
 import axios from 'axios';
 
@@ -7,7 +7,6 @@ export const useHooksList = () => {
 
     const [products, setProducts] = useState([]);     // 상품 목록 저장 state
     const [selectedProducts, setSelectedProducts] = useState([]); // 선택된 상품 목록 state
-    const [filteredProducts, setFilteredProducts] = useState([]); // 필터링된 상품 목록
 
     const [isAdding, setIsAdding] = useState(false); // 상품 등록시 한 줄 추가
     const [newProductData, setNewProductData] = useState({
@@ -20,11 +19,7 @@ export const useHooksList = () => {
     const [editMode, setEditMode] = useState(null);
     const [editableProduct, setEditableProduct] = useState({});
 
-    // 원본 카테고리 목록 상태
-    const [fullMiddleCategories, setFullMiddleCategories] = useState([]);
-    const [fullLowCategories, setFullLowCategories] = useState([]);
-
-    // 카테고리 (필터) state
+    // 검색 카테고리 state
     const [filterTopCategory, setFilterTopCategory] = useState('');
     const [filterMiddleCategory, setFilterMiddleCategory] = useState('');
     const [filterLowCategory, setFilterLowCategory] = useState('');
@@ -67,32 +62,18 @@ export const useHooksList = () => {
                 params: {
                     page: currentPage,
                     size: itemsPerPage,
-                    topCategoryNo: filterTopCategory || null, // 대분류 필터
-                    middleCategoryNo: filterMiddleCategory || null, // 중분류 필터
-                    lowCategoryNo: filterLowCategory || null, // 소분류 필터
                 },
             })
             .then((response) => {
-                const productsWithCategoryNames = response.data.products.map(product => ({
-                    ...product,
-                    topCategory: product.topCategoryNo,
-                    middleCategory: product.middleCategoryNo,
-                    lowCategory: product.lowCategoryNo,
-                }));
-                setProducts(productsWithCategoryNames);
-                setFilteredProducts(productsWithCategoryNames);
-                setTotalItems(response.data.totalItems || 0);
-                setTopCategories(response.data.topCategories || []);
-                setFullMiddleCategories(response.data.middleCategories || []);
-                setFullLowCategories(response.data.lowCategories || []);
+                setProducts(response.data.products); // 받은 상품 목록
+                setTotalItems(response.data.totalItems); // 총 상품 개수
+                setTopCategories(response.data.topCategories); // 대분류 목록
+                setMiddleCategories(response.data.middleCategories); // 중분류 목록
+                setLowCategories(response.data.lowCategories); // 소분류 목록
             })
             .catch((error) => console.error('전체 상품 목록 조회 실패', error));
 
-    }, [currentPage, itemsPerPage, filterTopCategory, filterMiddleCategory, filterLowCategory]);
-
-    useEffect(() => {
-        filterProducts();
-    }, [products, filterTopCategory, filterMiddleCategory, filterLowCategory]);
+    }, [currentPage, itemsPerPage]);
 
     // 상품 상세 데이터 (모달)
     const [productDetail, setProductDetail] = useState([]);
@@ -113,25 +94,6 @@ export const useHooksList = () => {
         } else {
             setSelectedProducts([]);
         }
-    };
-
-    // 필터링된 상품 목록 조회
-    const filterProducts = () => {
-        let filtered = products;
-
-        if (filterTopCategory) {
-            filtered = filtered.filter(product => String(product.topCategoryNo) === String(filterTopCategory));
-        }
-
-        if (filterMiddleCategory) {
-            filtered = filtered.filter(product => String(product.middleCategoryNo) === String(filterMiddleCategory));
-        }
-
-        if (filterLowCategory) {
-            filtered = filtered.filter(product => String(product.lowCategoryNo) === String(filterLowCategory));
-        }
-
-        setFilteredProducts(filtered);
     };
 
     // 상품 개별선택
@@ -256,125 +218,26 @@ export const useHooksList = () => {
             .catch(error => console.error('상품 삭제 실패:', error));
     };
 
-    useEffect(() => {
-        // 대분류로 변경될 때 중분류와 소분류 초기화
-        if (filterTopCategory === '') {
-            setMiddleCategories(fullMiddleCategories);
-            setLowCategories(fullLowCategories);
-        }
-    }, [filterTopCategory, fullMiddleCategories, fullLowCategories]);
-
-    // // 카테고리 번호로 이름 찾기
-    // const categoryNoToNameMap = useMemo(() => {
-    //     const map = {};
-    //     [...topCategories, ...fullMiddleCategories, ...fullLowCategories].forEach(category => {
-    //         map[String(category.categoryNo)] = category.categoryNm;
-    //     });
-    //     return map;
-    // }, [topCategories, fullMiddleCategories, fullLowCategories]);
-    //
-    // // 카테고리 이름으로 번호 찾기
-    // const categoryNameToNoMap = useMemo(() => {
-    //     const map = {};
-    //     [...topCategories, ...fullMiddleCategories, ...fullLowCategories].forEach(category => {
-    //         map[category.categoryNm] = String(category.categoryNo);
-    //     });
-    //     return map;
-    // }, [topCategories, fullMiddleCategories, fullLowCategories]);
 
     // 카테고리 필터링 (검색)
-
-    // 필터링된 중분류 목록
-    const filteredMiddleCategories = useMemo(() => {
-        if (filterTopCategory) {
-            const parentCategoryNo = filterTopCategory;
-            return fullMiddleCategories.filter(cat => String(cat.parentCategoryNo) === String(parentCategoryNo));
-        }
-        return fullMiddleCategories;
-    }, [filterTopCategory, fullMiddleCategories]);
-
-    // 필터링된 소분류 목록
-    const filteredLowCategories = useMemo(() => {
-        if (filterMiddleCategory) {
-            const parentCategoryNo = filterMiddleCategory;
-            return fullLowCategories.filter(cat => String(cat.parentCategoryNo) === String(parentCategoryNo));
-        } else if (filterTopCategory) {
-            const parentCategoryNo = filterTopCategory;
-            const middleCategoriesUnderTop = fullMiddleCategories.filter(cat => String(cat.parentCategoryNo) === String(parentCategoryNo));
-            const middleCategoryNos = middleCategoriesUnderTop.map(cat => cat.categoryNo);
-            return fullLowCategories.filter(cat => middleCategoryNos.includes(cat.parentCategoryNo));
-        }
-        return fullLowCategories;
-    }, [filterTopCategory, filterMiddleCategory, fullLowCategories, fullMiddleCategories]);
-
-    // 대분류 변경시
-    const handleFilterTopCategoryChange = (e) => {
-        const selectedTopCategoryNo = e.target.value;
-        setFilterTopCategory(selectedTopCategoryNo);
-        setFilterMiddleCategory('');
-        setFilterLowCategory('');
-        setCurrentPage(1);
-    };
-
-    // 중분류 변경시
-    const handleFilterMiddleCategoryChange = (e) => {
-        const selectedMiddle = e.target.value;
-        console.log('선택된 중분류:', selectedMiddle);
-        setFilterMiddleCategory(selectedMiddle);
-        setFilterLowCategory('');
-        setCurrentPage(1);
-
-        const selectedMiddleCategory = fullMiddleCategories.find(cat => String(cat.categoryNo) === String(selectedMiddle));
-
-        if (selectedMiddleCategory) {
-            const relatedTopCategoryNo = selectedMiddleCategory.parentCategoryNo;
-
-            // 대분류 자동 설정
-            setFilterTopCategory(relatedTopCategoryNo);
-        }
-
-    };
-
-    useEffect(() => {
-        if (filterMiddleCategory) {
-            console.log('선택된 중분류:', filterMiddleCategory);
-        }
-    }, [filterMiddleCategory]);
-
-    // 소분류 변경시
     const handleFilterLowCategoryChange = (e) => {
         const selectedLow = e.target.value;
         setFilterLowCategory(selectedLow);
-        setCurrentPage(1);
 
-        // 중분류 및 대분류 자동 설정
-        const selectedLowCategory = fullLowCategories.find(
-            cat => String(cat.categoryNo) === String(selectedLow)
-        );
+        const relatedMiddle = products.find(product => product.lowCategory === selectedLow)?.middleCategory || '';
+        const relatedTop = products.find(product => product.lowCategory === selectedLow)?.topCategory || '';
 
-        if (selectedLowCategory) {
-            const relatedMiddle = String(selectedLowCategory.parentCategoryNo);
-            setFilterMiddleCategory(relatedMiddle);
-
-            const selectedMiddleCategory = fullMiddleCategories.find(
-                cat => String(cat.categoryNo) === relatedMiddle
-            );
-
-            if (selectedMiddleCategory) {
-                const relatedTop = String(selectedMiddleCategory.parentCategoryNo);
-                setFilterTopCategory(relatedTop);
-            }
-        }
+        setFilterMiddleCategory(relatedMiddle);
+        setFilterTopCategory(relatedTop);
     };
 
-    // 상품 목록에서 카테고리 이름 표시
-    const getCategoryNameByNo = (categoryNo) => {
-        const category = [...topCategories, ...fullMiddleCategories, ...fullLowCategories].find(
-            cat => String(cat.categoryNo) === String(categoryNo)
-        );
-        return category ? category.categoryNm : '';
-    };
+    const handleFilterMiddleCategoryChange = (e) => {
+        const selectedMiddle = e.target.value;
+        setFilterMiddleCategory(selectedMiddle);
 
+        const relatedTop = products.find(product => product.middleCategory === selectedMiddle)?.topCategory || '';
+        setFilterTopCategory(relatedTop);
+    };
 
     // 카테고리 필터링(등록)
     const topCategoriesRegister = [...new Set(products.map(product => product.topCategory))];
@@ -451,33 +314,10 @@ export const useHooksList = () => {
     // 페이지당 항목 수 변경
     const handleItemsPerPageChange = (e) => {
         setItemsPerPage(parseInt(e.target.value));
-        setCurrentPage(1); // 페이지당 항목 수를 변경하면 첫 페이지로 이동
+        //setCurrentPage(1); // 페이지당 항목 수를 변경하면 첫 페이지로 이동
     };
 
-    // 총 페이지 수 계산
-    const totalPages = totalItems > 0 && itemsPerPage > 0 ? Math.ceil(totalItems / itemsPerPage) : 0;
-
-    const paginationNumbers = useMemo(() => {
-        const maxPagesToShow = 5;
-        const currentPageGroup = Math.floor((currentPage - 1) / maxPagesToShow);
-        const startPage = currentPageGroup * maxPagesToShow + 1;
-        const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
-
-        return [...Array(endPage - startPage + 1)].map((_, i) => startPage + i);
-    }, [currentPage, totalPages]);
-
-    const handlePreviousPageGroup = () => {
-        if (currentPage > 1) {
-            setCurrentPage(Math.max(1, paginationNumbers[0] - 1));
-        }
-    };
-
-    const handleNextPageGroup = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(paginationNumbers[paginationNumbers.length - 1] + 1);
-        }
-    };
-
+    const totalPages = Math.ceil(totalItems / itemsPerPage); // 총 페이지 수 계산
     return {
         products,
         selectedProducts,
@@ -499,13 +339,10 @@ export const useHooksList = () => {
         filterMiddleCategory,
         filterTopCategory,
         lowCategoriesRegister,
-        filteredMiddleCategories,
-        filteredLowCategories,
         middleCategoriesRegister,
         topCategoriesRegister,
         handleFilterLowCategoryChange,
         handleFilterMiddleCategoryChange,
-        handleFilterTopCategoryChange,
         selectedLowCategory,
         selectedMiddleCategory,
         selectedTopCategory,
@@ -515,7 +352,6 @@ export const useHooksList = () => {
         handleLowCategoryChange,
         handleMiddleCategoryChange,
         currentPage,
-        setCurrentPage,
         itemsPerPage,
         totalItems,
         totalPages,
@@ -526,10 +362,5 @@ export const useHooksList = () => {
         handleCloseModal,
         productDetail,
         selectedProductCd,
-        paginationNumbers,
-        handlePreviousPageGroup,
-        handleNextPageGroup,
-        filteredProducts,
-        getCategoryNameByNo,
     };
 };

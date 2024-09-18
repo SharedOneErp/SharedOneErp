@@ -16,8 +16,8 @@ function ProductList() {
         handleAllSelectProducts,
         handleSelectProduct,
         isAdding,
-        setIsAdding,
         newProductData,
+        setIsAdding,
         handleAddNewProduct,
         handleInputChange,
         handleCancelAdd,
@@ -27,42 +27,36 @@ function ProductList() {
         handleConfirmClick,
         handleCancelEdit,
         handleDeleteSelected,
+        selectedTopCategory,
+        selectedMiddleCategory,
+        selectedLowCategory,
         filterLowCategory,
         filterMiddleCategory,
         filterTopCategory,
         lowCategoriesRegister,
         middleCategoriesRegister,
         topCategoriesRegister,
-        filteredLowCategories,
-        filteredMiddleCategories,
         handleFilterLowCategoryChange,
         handleFilterMiddleCategoryChange,
-        handleFilterTopCategoryChange,
-        selectedLowCategory,
-        selectedMiddleCategory,
-        selectedTopCategory,
+        setFilterLowCategory,
+        setFilterMiddleCategory,
+        setFilterTopCategory,
         lowCategories,
         middleCategories,
         topCategories,
         handleLowCategoryChange,
         handleMiddleCategoryChange,
-        currentPage,
-        itemsPerPage,
         totalItems,
         totalPages,
         handlePageChange,
         handleItemsPerPageChange,
+        itemsPerPage,
+        currentPage,
         isModalOpen,
         handleOpenModal,
         handleCloseModal,
         productDetail,
         selectedProductCd,
-        paginationNumbers,
-        handlePreviousPageGroup,
-        handleNextPageGroup,
-        filteredProducts,
-        setCurrentPage,
-        getCategoryNameByNo,
     } = useHooksList(); // 커스텀 훅 사용
 
     return (
@@ -76,34 +70,25 @@ function ProductList() {
                         <div style={{marginBottom: "10px"}}>
                             <span style={{marginRight: "5px"}}>카테고리 </span>
                             <select className="approval-select" value={filterTopCategory}
-                                    onChange={handleFilterTopCategoryChange}>
-                                <option value="">대분류</option>
-                                {topCategories
-                                    .map((category, index) => (
-                                        <option key={index} value={category.categoryNo}>
-                                            {category.categoryNm}
-                                        </option>
-                                    ))}
+                                    onChange={(e) => setFilterTopCategory(e.target.value)}>
+                                <option>대분류 선택</option>
+                                {topCategories.map((category, index) => (
+                                    <option key={index} value={category.categoryNo}>{category.categoryNm}</option>
+                                ))}
                             </select>
                             <select className="approval-select" value={filterMiddleCategory}
-                                    onChange={handleFilterMiddleCategoryChange}>
-                                <option value="">중분류</option>
-                                {filteredMiddleCategories
-                                    .map((category, index) => (
-                                        <option key={index} value={category.categoryNo}>
-                                            {category.categoryNm}
-                                        </option>
-                                    ))}
+                                    onChange={(e) => setFilterMiddleCategory(e.target.value)}>
+                                <option>중분류 선택</option>
+                                {middleCategories.filter(cat => cat.parentCategoryNo === filterTopCategory).map((category, index) => (
+                                    <option key={index} value={category.categoryNo}>{category.categoryNm}</option>
+                                ))}
                             </select>
                             <select className="approval-select" value={filterLowCategory}
-                                    onChange={handleFilterLowCategoryChange}>
-                                <option value="">소분류</option>
-                                {filteredLowCategories
-                                    .map((category, index) => (
-                                        <option key={index} value={category.categoryNo}>
-                                            {category.categoryNm}
-                                        </option>
-                                    ))}
+                                    onChange={(e) => setFilterLowCategory(e.target.value)}>
+                                <option>소분류 선택</option>
+                                {lowCategories.filter(cat => cat.parentCategoryNo === filterMiddleCategory).map((category, index) => (
+                                    <option key={index} value={category.categoryNo}>{category.categoryNm}</option>
+                                ))}
                             </select>
                         </div>
                         <div>
@@ -211,125 +196,91 @@ function ProductList() {
                             </tr>
                         )}
 
-                        {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
-                            filteredProducts.map((product, index) => (
-                                <tr key={product.productCd}
-                                    className={`${selectedProducts.includes(product.productCd) ? 'selected' : ''} ${editMode === product.productCd ? 'edit-mode-active' : ''}`}>
-                                    <td><input type="checkbox" onChange={() => handleSelectProduct(product.productCd)}
-                                               checked={selectedProducts.includes(product.productCd)}/></td>
-                                    <td>{product.productCd}</td>
-                                    <td>
-                                        {editMode === product.productCd ? (
-                                            <input type="text" name="productNm" value={editableProduct.productNm}
-                                                   onChange={handleInputChange}/>
-                                        ) : (
-                                            product.productNm
-                                        )}
-                                    </td>
-                                    <td>
-                                        {editMode === product.productCd ? (
-                                            <select name="topCategory" value={editableProduct.topCategory}
-                                                    onChange={(e) => handleMiddleCategoryChange(e, true)}>
-                                                {topCategoriesRegister.map((category, index) => (
-                                                    <option key={index} value={category}>{category}</option>
-                                                ))}
-                                            </select>
-                                        ) : (
-                                            product.topCategory
-                                        )}
-                                    </td>
-                                    <td>
-                                        {editMode === product.productCd ? (
-                                            <select name="middleCategory" value={editableProduct.middleCategory}
-                                                    onChange={(e) => handleMiddleCategoryChange(e, true)}>
-                                                {middleCategoriesRegister.map((category, index) => (
-                                                    <option key={index} value={category}>{category}</option>
-                                                ))}
-                                            </select>
-                                        ) : (
-                                            product.middleCategory
-                                        )}
-                                    </td>
-                                    <td>
-                                        {editMode === product.productCd ? (
-                                            <select name="lowCategory" value={editableProduct.lowCategory}
-                                                    onChange={(e) => handleLowCategoryChange(e, true)}>
-                                                {lowCategoriesRegister.map((category, index) => (
-                                                    <option key={index} value={category}>{category}</option>
-                                                ))}
-                                            </select>
-                                        ) : (
-                                            product.lowCategory
-                                        )}
-                                    </td>
-                                    <td>{product.productInsertDate ? formatDate(product.productInsertDate) : '-'}</td>
-                                    <td>{product.productUpdateDate ? formatDate(product.productUpdateDate) : '-'}</td>
-                                    <td>
-                                        <button onClick={() => handleOpenModal(product.productCd)}>상세</button>
-                                    </td>
-                                    <td>
-                                        {editMode === product.productCd ? (
-                                            <>
-                                                <button className="product-confirm-button"
-                                                        onClick={handleConfirmClick}>확인
-                                                </button>
-                                                <button className="filter-button" onClick={handleCancelEdit}>취소</button>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <button className="product-edit-button"
-                                                        onClick={() => handleEditClick(product)}>수정
-                                                </button>
-                                                <button className="filter-button" onClick={handleDeleteSelected}>삭제
-                                                </button>
-                                            </>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan={10}>상품이 없습니다.</td>
+                        {products.map((product, index) => (
+                            <tr key={product.productCd}
+                                className={`${selectedProducts.includes(product.productCd) ? 'selected' : ''} ${editMode === product.productCd ? 'edit-mode-active' : ''}`}>
+                                <td><input type="checkbox" onChange={() => handleSelectProduct(product.productCd)}
+                                           checked={selectedProducts.includes(product.productCd)}/></td>
+                                <td>{product.productCd}</td>
+                                <td>
+                                    {editMode === product.productCd ? (
+                                        <input type="text" name="productNm" value={editableProduct.productNm}
+                                               onChange={handleInputChange}/>
+                                    ) : (
+                                        product.productNm
+                                    )}
+                                </td>
+                                <td>
+                                    {editMode === product.productCd ? (
+                                        <select name="topCategory" value={editableProduct.topCategory}
+                                                onChange={(e) => handleMiddleCategoryChange(e, true)}>
+                                            {topCategoriesRegister.map((category, index) => (
+                                                <option key={index} value={category}>{category}</option>
+                                            ))}
+                                        </select>
+                                    ) : (
+                                        product.topCategory
+                                    )}
+                                </td>
+                                <td>
+                                    {editMode === product.productCd ? (
+                                        <select name="middleCategory" value={editableProduct.middleCategory}
+                                                onChange={(e) => handleMiddleCategoryChange(e, true)}>
+                                            {middleCategoriesRegister.map((category, index) => (
+                                                <option key={index} value={category}>{category}</option>
+                                            ))}
+                                        </select>
+                                    ) : (
+                                        product.middleCategory
+                                    )}
+                                </td>
+                                <td>
+                                    {editMode === product.productCd ? (
+                                        <select name="lowCategory" value={editableProduct.lowCategory}
+                                                onChange={(e) => handleLowCategoryChange(e, true)}>
+                                            {lowCategoriesRegister.map((category, index) => (
+                                                <option key={index} value={category}>{category}</option>
+                                            ))}
+                                        </select>
+                                    ) : (
+                                        product.lowCategory
+                                    )}
+                                </td>
+                                <td>{formatDate(product.productInsertDate)}</td>
+                                <td>{formatDate(product.productUpdateDate)}</td>
+                                <td>
+                                    <button onClick={() => handleOpenModal(product.productCd)}>상세</button>
+                                </td>
+                                <td>
+                                {editMode === product.productCd ? (
+                                        <>
+                                            <button className="product-confirm-button" onClick={handleConfirmClick}>확인
+                                            </button>
+                                            <button className="filter-button" onClick={handleCancelEdit}>취소</button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <button className="product-edit-button"
+                                                    onClick={() => handleEditClick(product)}>수정
+                                            </button>
+                                            <button className="filter-button" onClick={handleDeleteSelected}>삭제</button>
+                                        </>
+                                    )}
+                                </td>
                             </tr>
-                        )}
+                        ))}
                         </tbody>
                     </table>
                     <div className="pagination">
-                        <button
-                            onClick={() => setCurrentPage(1)}
-                            disabled={currentPage === 1}
-                        >
-                            {"<<"}
-                        </button>
-                        <button
-                            onClick={handlePreviousPageGroup}
-                            disabled={paginationNumbers[0] === 1}
-                        >
-                            {"<"}
-                        </button>
-
-                        {paginationNumbers.map((page) => (
+                        {[...Array(totalPages)].map((_, i) => (
                             <button
-                                key={page}
-                                onClick={() => handlePageChange(page)}
-                                className={currentPage === page ? 'active' : ''}
+                                key={i}
+                                onClick={() => handlePageChange(i + 1)}
+                                className={currentPage === i + 1 ? 'active' : ''}
                             >
-                                {page}
+                                {i + 1}
                             </button>
                         ))}
-
-                        <button
-                            onClick={handleNextPageGroup}
-                            disabled={paginationNumbers[paginationNumbers.length - 1] === totalPages}
-                        >
-                            {">"}
-                        </button>
-                        <button
-                            onClick={() => setCurrentPage(totalPages)}
-                            disabled={currentPage === totalPages}
-                        >
-                            {">>"}
-                        </button>
                     </div>
                     <div className="button-container">
                         <button className="filter-button" onClick={handleDeleteSelected}>삭제</button>
