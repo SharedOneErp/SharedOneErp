@@ -2,6 +2,7 @@ package com.project.erpre.repository;
 
 import com.project.erpre.model.*;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 
-    // 1. 전체 상품 목록 조회
+    // 1. 전체 상품 목록 조회 + 페이징
     @Override
     public List<ProductDTO> findAllProducts(int page, int size) {
         return queryFactory
@@ -33,13 +34,17 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                         product.productNm,
                         product.productInsertDate,
                         product.productUpdateDate,
-                        category.categoryNm, // 소분류 이름
-                        category.parentCategory.categoryNm, // 중분류 이름
-                        category.parentCategory.parentCategory.categoryNm // 대분류 이름
+                        category.categoryNm,
+                        category.parentCategory.categoryNm,
+                        category.parentCategory.parentCategory.categoryNm,
+                        category.categoryNo,
+                        category.parentCategory.categoryNo,
+                        category.parentCategory.parentCategory.categoryNo
                 ))
                 .from(product)
                 .leftJoin(product.category, category)
-                .offset(page * size)
+                .orderBy(product.productCd.asc())
+                .offset((long) page * size)
                 .limit(size)
                 .fetch();
     }
