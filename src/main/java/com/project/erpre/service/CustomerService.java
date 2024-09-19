@@ -62,6 +62,15 @@ public class CustomerService {
         return customerRepository.findAll();
     }
 
+    //전체 고객사, 삭제된 고객사 목록 조회
+    public List<Customer> getCustomersByDeleteYn(String deleteYn) {
+        if (deleteYn == null) {
+            return customerRepository.findAll(); // 전체 고객 조회
+        } else {
+            return customerRepository.findByCustomerDeleteYn(deleteYn); // deleteYn 값에 따라 필터링
+        }
+    }
+
     // 고객 등록
     public Customer insertCustomer(Customer customer) {
         customer.setCustomerDeleteYn("N"); // 기본값 N
@@ -110,6 +119,7 @@ public class CustomerService {
         }
     }
 
+    //고객 이름 검색
     public List<Customer> searchCustomers(String name) {
         return customerRepository.findByCustomerNameContainingIgnoreCase(name);
     }
