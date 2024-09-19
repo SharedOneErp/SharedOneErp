@@ -27,10 +27,11 @@ public class ProductController {
     @GetMapping("/productList")
     public ResponseEntity<Map<String, Object>> getAllProductsAndCategories(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "all",required = false) String status
     ) {
         try {
-            Map<String, Object> result = productService.getAllProductsAndCategories(page - 1, size);
+            Map<String, Object> result = productService.getAllProductsAndCategories(page - 1, size, status);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

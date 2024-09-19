@@ -4,10 +4,6 @@ import com.project.erpre.model.Product;
 import com.project.erpre.model.ProductDTO;
 import com.project.erpre.repository.CategoryRepository;
 import com.project.erpre.repository.ProductRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,11 +23,12 @@ public class ProductService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    // 1. 전체 상품 목록 조회 + 페이징 + 카테고리 조회 결합
-    public Map<String, Object> getAllProductsAndCategories(int page, int size) {
+    // 1. 전체 상품 목록 조회 + 페이징 + 카테고리 조회 + 상품 상태 결합
+    public Map<String, Object> getAllProductsAndCategories(int page, int size, String status) {
+
         // 상품 목록 가져오기
-        List<ProductDTO> products = productRepository.findAllProducts(page, size);
-        System.out.println("상품 개수:" + products.size());
+        List<ProductDTO> products = productRepository.findAllProducts(page, size, status);
+        //List<ProductDTO> products = productRepository.findProductsByStatus(status);
 
         long totalItems = productRepository.count();
 
@@ -39,6 +36,7 @@ public class ProductService {
         List<Category> topCategories = categoryRepository.findTopCategory();
         List<Category> middleCategories = categoryRepository.findMiddleCategory(null);
         List<Category> lowCategories = categoryRepository.findLowCategoryByTopAndMiddleCategory(null, null);
+
 
         Map<String, Object> result = new HashMap<>();
         result.put("products", products);
@@ -102,6 +100,7 @@ public class ProductService {
 
         productRepository.saveAll(products);
     }
+
 
     // 대분류 조회
     public List<Category> getTopCategory() {
