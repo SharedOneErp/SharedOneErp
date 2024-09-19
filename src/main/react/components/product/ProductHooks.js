@@ -15,11 +15,11 @@ export const useHooksList = () => {
     const [fullTopCategories, setFullTopCategories] = useState([]); // 대분류 전체 목록
     const [fullMiddleCategories, setFullMiddleCategories] = useState([]); // 중분류 전체 목록
     const [fullLowCategories, setFullLowCategories] = useState([]); // 소분류 전체 목록
-    
+
     const [filterTopCategory, setFilterTopCategory] = useState(''); // 대분류 필터링
     const [filterMiddleCategory, setFilterMiddleCategory] = useState(''); // 중분류 필터링
     const [filterLowCategory, setFilterLowCategory] = useState(''); // 소분류 필터링
-    
+
     const [topCategories, setTopCategories] = useState([]); // 대분류 상태
     const [middleCategories, setMiddleCategories] = useState([]); // 중분류 상태
     const [lowCategories, setLowCategories] = useState([]); // 소분류 상태
@@ -45,8 +45,17 @@ export const useHooksList = () => {
 
 
     // 3. Update
+
+    // [1] 상품 state
     const [editMode, setEditMode] = useState(null);
-    const [editableProduct, setEditableProduct] = useState({});
+    const [editableProduct, setEditableProduct] = useState({
+        productCd: '',
+        productNm: '',
+        categoryNo: '',
+        topCategoryNo: '',
+        middleCategoryNo: '',
+        lowCategoryNo: '',
+    });
 
 
     // 4. 페이지 state
@@ -56,7 +65,6 @@ export const useHooksList = () => {
 
 
     // 5. 모달 state
-
 
 
     // 모달 상태
@@ -224,14 +232,24 @@ export const useHooksList = () => {
                 setSelectedTopCategory('');
                 setSelectedMiddleCategory('');
                 setSelectedLowCategory('');
-                
+
             })
             .catch(error => console.error('상품 추가 실패:', error.response.data));
     };
 
     // 등록 모드 취소 버튼 클릭 시 처리할 함수
     const handleCancelAdd = () => {
-        setIsAdding(false); // 추가 행 숨기기
+        setIsAdding(false);
+
+        setSelectedTopCategory('');
+        setSelectedMiddleCategory('');
+        setSelectedLowCategory('');
+
+        setNewProductData({
+            productCd: '',
+            productNm: '',
+            categoryNo: null,
+        });
     };
 
     // 입력 필드의 변경을 처리하는 함수
@@ -248,16 +266,21 @@ export const useHooksList = () => {
 
     // 상품 수정
     const handleEditClick = (product) => {
-        setEditMode(product.productCd); // 수정할 상품의 코드 저장
-        setEditableProduct(product); // 수정할 상품의 데이터 저장
+        setEditMode(product.productCd);
+        setEditableProduct({
+            productCd: product.productCd,
+            productNm: product.productNm,
+            categoryNo: product.categoryNo || '',
+            topCategoryNo: product.topCategoryNo || '',
+            middleCategoryNo: product.middleCategoryNo || '',
+            lowCategoryNo: product.lowCategoryNo || '',
+        });
     };
 
     // 상품 수정 확인
     const handleConfirmClick = () => {
-        // 사용자에게 확인 메시지를 보여줍니다.
         const isConfirmed = window.confirm('상품을 수정하시겠습니까?');
 
-        // 사용자가 취소를 누르면 아무 작업도 하지 않습니다.
         if (!isConfirmed) {
             return;
         }
@@ -265,8 +288,10 @@ export const useHooksList = () => {
         const updatedProduct = {
             productCd: editableProduct.productCd,
             productNm: editableProduct.productNm,
-            categoryNo: editableProduct.categoryNo
+            categoryNo: editableProduct.categoryNo ? Number(editableProduct.categoryNo) : null
         };
+
+        console.log(updatedProduct)
 
         axios.put('/api/products/update', updatedProduct, {
             headers: {
@@ -275,10 +300,33 @@ export const useHooksList = () => {
         })
             .then(response => {
                 console.log('업데이트 성공:', response.data);
-                // 수정 성공 메시지 표시
                 alert('상품이 수정되었습니다.');
-                setEditMode(null); // 수정 모드 종료
-                setProducts(products.map(p => p.productCd === response.data.productCd ? response.data : p));
+
+                // 상품 목록 불러오기
+                axios.get('/api/products/productList', {
+                    params: {
+                        page: currentPage,
+                        size: itemsPerPage,
+                        topCategoryNo: filterTopCategory || null,
+                        middleCategoryNo: filterMiddleCategory || null,
+                        lowCategoryNo: filterLowCategory || null,
+                    },
+                })
+                    .then((response) => {
+                        const productsWithCategoryNames = response.data.products.map(product => ({
+                            ...product,
+                            topCategory: product.topCategoryNo,
+                            middleCategory: product.middleCategoryNo,
+                            lowCategory: product.lowCategoryNo,
+                        }));
+                        setProducts(productsWithCategoryNames);
+                        setFilteredProducts(productsWithCategoryNames);
+                        setTotalItems(response.data.totalItems || 0);
+                    })
+                    .catch((error) => console.error('상품 목록 갱신 실패', error));
+
+                setEditMode(null);
+                setEditableProduct({});
             })
             .catch(error => console.error('업데이트 실패:', error));
     };
@@ -428,9 +476,9 @@ export const useHooksList = () => {
     };
 
 
-    // 카테고리 (등록)
-    
-    // 중분류 필터링
+    // 카테고리 필터링 (등록)
+
+    // 중분류 필터링 (등록)
     const addFilteredMiddleCategories = useMemo(() => {
         if (selectedTopCategory) {
             return fullMiddleCategories.filter(cat => String(cat.parentCategoryNo) === String(selectedTopCategory));
@@ -438,16 +486,16 @@ export const useHooksList = () => {
         return [];
     }, [selectedTopCategory, fullMiddleCategories]);
 
-    // 소분류 필터링
+    // 소분류 필터링 (등록)
     const addFilteredLowCategories = useMemo(() => {
         if (selectedMiddleCategory) {
             return fullLowCategories.filter(cat => String(cat.parentCategoryNo) === String(selectedMiddleCategory));
         }
         return [];
     }, [selectedMiddleCategory, fullLowCategories]);
-    
+
     // 대분류 선택 시
-    const handleTopCategoryChange = (e, isEditing = false) => {
+    const handleTopCategoryChange = (e) => {
         const selectedTop = e.target.value;
         setSelectedTopCategory(selectedTop);
         setSelectedMiddleCategory('');
@@ -455,44 +503,71 @@ export const useHooksList = () => {
     }
 
     // 중분류 선택 시
-    const handleMiddleCategoryChange = (e, isEditing = false) => {
+    const handleMiddleCategoryChange = (e) => {
         const selectedMiddle = e.target.value;
         setSelectedMiddleCategory(selectedMiddle);
         setSelectedLowCategory('');
-
-        // const relatedTop = products.find(product => product.middleCategory === selectedMiddle)?.topCategory || '';
-        // const relatedCategoryNo = products.find(product => product.middleCategory === selectedMiddle)?.categoryNo || null;
-        //
-        // setSelectedTopCategory(relatedTop);
-        //
-        // if (isEditing) {
-        //     // 수정 모드
-        //     setEditableProduct((prevProduct) => ({
-        //         ...prevProduct,
-        //         middleCategory: selectedMiddle,
-        //         topCategory: relatedTop,
-        //         categoryNo: relatedCategoryNo
-        //     }));
-        // } else {
-        //     // 등록 모드
-        //     setNewProductData((prevData) => ({
-        //         ...prevData,
-        //         categoryNo: relatedCategoryNo
-        //     }));
-        // }
     };
 
     // 소분류 선택 시
-    const handleLowCategoryChange = (e, isEditing = false) => {
+    const handleLowCategoryChange = (e) => {
         const selectedLow = e.target.value;
         setSelectedLowCategory(selectedLow);
-        console.log("선택된 소분류:", selectedLow)
-
         setNewProductData(prevData => ({
             ...prevData,
-            categoryNo: selectedLow !== '' ? Number(selectedLow) : null  // 빈 값이 아닌 경우 숫자 변환
+            categoryNo: selectedLow !== '' ? Number(selectedLow) : null  // 소분류 선택시 categoryNo 설정
         }));
+    }
 
+    // 카테고리 필터링 (수정)
+
+    // 중분류 필터링 (수정)
+    const filteredEditMiddleCategories = useMemo(() => {
+        if (editableProduct.topCategoryNo) {
+            return fullMiddleCategories.filter(cat => String(cat.parentCategoryNo) === String(editableProduct.topCategoryNo));
+        }
+        return [];
+    }, [editableProduct.topCategoryNo, fullMiddleCategories]);
+
+    // 소분류 필터링 (수정)
+    const filteredEditLowCategories = useMemo(() => {
+        if (editableProduct.middleCategoryNo) {
+            return fullLowCategories.filter(cat => String(cat.parentCategoryNo) === String(editableProduct.middleCategoryNo));
+        }
+        return [];
+    }, [editableProduct.middleCategoryNo, fullLowCategories]);
+
+    // 대분류 변경시 (수정)
+    const handleFilterTopCategoryChangeForEdit = (e) => {
+        const selectedTopCategoryNo = e.target.value;
+        setEditableProduct(prev => ({
+            ...prev,
+            topCategoryNo: selectedTopCategoryNo,
+            middleCategoryNo: '',
+            lowCategoryNo: '',
+            categoryNo: '',
+        }));
+    };
+
+    // 중분류 변경시 (수정)
+    const handleFilterMiddleCategoryChangeForEdit = (e) => {
+        const selectedMiddleCategoryNo = e.target.value;
+        setEditableProduct(prev => ({
+            ...prev,
+            middleCategoryNo: selectedMiddleCategoryNo,
+            lowCategoryNo: '',
+            categoryNo: '',
+        }));
+    };
+
+    // 소분류 변경시 (수정)
+    const handleFilterLowCategoryChangeForEdit = (e) => {
+        const selectedLowCategoryNo = e.target.value;
+        setEditableProduct(prev => ({
+            ...prev,
+            lowCategoryNo: selectedLowCategoryNo,
+            categoryNo: selectedLowCategoryNo,
+        }));
     };
 
 
@@ -531,61 +606,66 @@ export const useHooksList = () => {
         }
     };
 
-    return {
-        products,
-        selectedProducts,
-        handleAllSelectProducts,
-        handleSelectProduct,
-        isAdding,
-        setIsAdding,
-        newProductData,
-        handleAddNewProduct,
-        handleInputChange,
-        handleCancelAdd,
-        editMode,
-        editableProduct,
-        handleEditClick,
-        handleConfirmClick,
-        handleCancelEdit,
-        handleDeleteSelected,
-        filterLowCategory,
-        filterMiddleCategory,
-        filterTopCategory,
-        filteredMiddleCategories,
-        filteredLowCategories,
-        handleFilterLowCategoryChange,
-        handleFilterMiddleCategoryChange,
-        handleFilterTopCategoryChange,
-        selectedLowCategory,
-        selectedMiddleCategory,
-        selectedTopCategory,
-        lowCategories,
-        middleCategories,
-        topCategories,
-        handleLowCategoryChange,
-        handleMiddleCategoryChange,
-        currentPage,
-        setCurrentPage,
-        itemsPerPage,
-        totalItems,
-        totalPages,
-        handlePageChange,
-        handleItemsPerPageChange,
-        isModalOpen,
-        handleOpenModal,
-        handleCloseModal,
-        productDetail,
-        selectedProductCd,
-        paginationNumbers,
-        handlePreviousPageGroup,
-        handleNextPageGroup,
-        filteredProducts,
-        getCategoryNameByNo,
-        searchTerm,
-        setSearchTerm,
-        handleTopCategoryChange,
-        fullTopCategories,
-        addFilteredMiddleCategories,
-        addFilteredLowCategories,
-    };
-};
+        return {
+            products,
+            selectedProducts,
+            handleAllSelectProducts,
+            handleSelectProduct,
+            isAdding,
+            setIsAdding,
+            newProductData,
+            handleAddNewProduct,
+            handleInputChange,
+            handleCancelAdd,
+            editMode,
+            editableProduct,
+            handleEditClick,
+            handleConfirmClick,
+            handleCancelEdit,
+            handleDeleteSelected,
+            filterLowCategory,
+            filterMiddleCategory,
+            filterTopCategory,
+            filteredMiddleCategories,
+            filteredLowCategories,
+            handleFilterLowCategoryChange,
+            handleFilterMiddleCategoryChange,
+            handleFilterTopCategoryChange,
+            selectedLowCategory,
+            selectedMiddleCategory,
+            selectedTopCategory,
+            lowCategories,
+            middleCategories,
+            topCategories,
+            handleLowCategoryChange,
+            handleMiddleCategoryChange,
+            currentPage,
+            setCurrentPage,
+            itemsPerPage,
+            totalItems,
+            totalPages,
+            handlePageChange,
+            handleItemsPerPageChange,
+            isModalOpen,
+            handleOpenModal,
+            handleCloseModal,
+            productDetail,
+            selectedProductCd,
+            paginationNumbers,
+            handlePreviousPageGroup,
+            handleNextPageGroup,
+            filteredProducts,
+            getCategoryNameByNo,
+            searchTerm,
+            setSearchTerm,
+            handleTopCategoryChange,
+            fullTopCategories,
+            addFilteredMiddleCategories,
+            addFilteredLowCategories,
+            filteredEditMiddleCategories,
+            filteredEditLowCategories,
+            handleFilterTopCategoryChangeForEdit,
+            handleFilterMiddleCategoryChangeForEdit,
+            handleFilterLowCategoryChangeForEdit
+        };
+    }

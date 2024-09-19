@@ -44,18 +44,31 @@ public class Product {
     @Column(name = "product_delete_date")
     private Timestamp productDeleteDate; // 삭제 일시
 
+//    @PrePersist
+//    @PreUpdate
+//    public void updateFields() {
+//        if (this.productDeleteYn == null) {
+//            this.productDeleteYn = "N"; // 기본값 설정
+//        }
+//        if (this.productUpdateDate != null) {
+//            this.productUpdateDate = LocalDateTime.now();
+//        }
+//        if (this.productInsertDate == null) {
+//            this.productInsertDate = LocalDateTime.now(); // 기본값 설정
+//        }
+//    }
+
     @PrePersist
-    @PreUpdate
-    public void updateFields() {
+    public void prePersist() {
+        this.productInsertDate = LocalDateTime.now();
         if (this.productDeleteYn == null) {
-            this.productDeleteYn = "N"; // 기본값 설정
+            this.productDeleteYn = "N";
         }
-        if (this.productUpdateDate != null) {
-            this.productUpdateDate = LocalDateTime.now();
-        }
-        if (this.productInsertDate == null) {
-            this.productInsertDate = LocalDateTime.now(); // 기본값 설정
-        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.productUpdateDate = LocalDateTime.now();
     }
 
     @ToString.Exclude

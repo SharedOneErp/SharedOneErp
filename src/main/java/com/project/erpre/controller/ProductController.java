@@ -61,7 +61,7 @@ public class ProductController {
         return ResponseEntity.ok(savedProduct);
     }
 
-    // 상품 수정 API
+    // 4. 상품 수정 API
     @PutMapping("/update")
     public ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductDTO productDTO) {
         ProductDTO updatedProduct = productService.saveOrUpdate(productDTO);
