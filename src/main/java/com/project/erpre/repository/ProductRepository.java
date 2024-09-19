@@ -16,27 +16,12 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String>, ProductRepositoryCustom {
 
-//    // 전체 상품 목록 조회 + 페이지네이션
-//    @Query("SELECT new com.project.erpre.model.ProductDTO(" +
-//            "p.productCd, p.productNm, p.productInsertDate, p.productUpdateDate, " +
-//            "c3.categoryNo, c1.categoryNm, c2.categoryNm, c3.categoryNm) " +
-//            "FROM Product p " +
-//            "JOIN p.category c3 " +
-//            "JOIN c3.parentCategory c2 " +
-//            "JOIN c2.parentCategory c1 " +
-//            "ORDER BY p.productCd ASC")
-//    Page<ProductDTO> getAllProducts(Pageable pageable);
-
-    // 선택한상품 삭제
+    // 선택한 상품 삭제
     void deleteByProductCdIn(List<String> productCds);
 
-    // category_no가 null인 경우를 처리하는 메서드
-    List<Product> findByProductCdContainingIgnoreCaseAndProductNmContainingIgnoreCase(
-            String productCd, String productNm);
 
-    // category_no가 null이 아닌 경우를 처리하는 메서드
-    List<Product> findByProductCdContainingIgnoreCaseAndCategoryAndProductNmContainingIgnoreCase(
-            String productCd, Category category, String productNm);
+
+
 
 
     @Query("SELECT p FROM Product p WHERE " +
@@ -52,8 +37,6 @@ public interface ProductRepository extends JpaRepository<Product, String>, Produ
             @Param("topCategory") Integer topCategory,
             @Param("middleCategory") Integer middleCategory,
             @Param("lowCategory") Integer lowCategory);
-
-
 }
 
 

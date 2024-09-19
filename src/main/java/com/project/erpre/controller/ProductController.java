@@ -68,39 +68,6 @@ public class ProductController {
         return ResponseEntity.ok(updatedProduct);
     }
 
-
-//    // 전체 상품 목록 조회 API
-//    @GetMapping("/productList")
-//    public ResponseEntity<Map<String, Object>> getAllProducts(
-//            @RequestParam(defaultValue = "1") int page,
-//            @RequestParam(defaultValue = "10") int size
-//    ) {
-//        try {
-//            Pageable pageable = PageRequest.of(page - 1, size);
-//            Page<ProductDTO> productPage = productService.getAllProducts(pageable);
-//
-//            // 전체 카테고리 목록 조회
-//            List<Category> topCategories = categoryService.getTopCategory();
-//            List<Category> middleCategories = categoryService.getMiddleCategory(null);
-//            List<Category> lowCategories = categoryService.getLowCategory(null, null);
-//
-//            Map<String, Object> response = new HashMap<>();
-//            response.put("products", productPage.getContent());
-//            response.put("totalItems", productPage.getTotalElements());
-//            response.put("totalPages", productPage.getTotalPages());
-//
-//            // 카테고리 목록 추가
-//            response.put("topCategories", topCategories);
-//            response.put("middleCategories", middleCategories);
-//            response.put("lowCategories", lowCategories);
-//
-//            return ResponseEntity.ok(response);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//    }
-
-
     // 선택한 상품 삭제 API
     @DeleteMapping("/productDelete")
     public ResponseEntity<List<Product>> deleteProducts(@RequestBody List<String> productCds) {

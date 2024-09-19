@@ -63,6 +63,8 @@ function ProductList() {
         filteredProducts,
         setCurrentPage,
         getCategoryNameByNo,
+        searchTerm,
+        setSearchTerm,
     } = useHooksList(); // 커스텀 훅 사용
 
     return (
@@ -111,8 +113,13 @@ function ProductList() {
                                 <option>상품명</option>
                                 <option>상품번호</option>
                             </select>
-                            <input type="text" className="search-box" placeholder="검색어를 입력하세요"></input>
-                            <button type="submit" className="search-button">검색</button>
+                            <input
+                                type="text"
+                                className="search-box"
+                                placeholder="검색어를 입력하세요"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}>
+                            </input>
                         </div>
                     </form>
                 </div>
@@ -235,7 +242,7 @@ function ProductList() {
                                                 ))}
                                             </select>
                                         ) : (
-                                            getCategoryNameByNo(product.topCategoryNo)
+                                            product.topCategoryNo ? getCategoryNameByNo(product.topCategoryNo) : '-'
                                         )}
                                     </td>
                                     <td>
@@ -247,7 +254,8 @@ function ProductList() {
                                                 ))}
                                             </select>
                                         ) : (
-                                            getCategoryNameByNo(product.middleCategoryNo)
+                                            product.middleCategoryNo ? getCategoryNameByNo(product.middleCategoryNo) : '-'
+
                                         )}
                                     </td>
                                     <td>
@@ -259,7 +267,8 @@ function ProductList() {
                                                 ))}
                                             </select>
                                         ) : (
-                                            getCategoryNameByNo(product.lowCategoryNo)
+                                            product.lowCategoryNo ? getCategoryNameByNo(product.lowCategoryNo) : '-'
+
                                         )}
                                     </td>
                                     <td>{product.productInsertDate ? formatDate(product.productInsertDate) : '-'}</td>
