@@ -9,6 +9,7 @@ import { add, format } from 'date-fns';
 import CustomerSearchModal from '../common/CustomerSearchModal'; // 고객사 검색 모달 임포트
 import ProductSearchModal from '../common/ProductSearchModal'; // 상품 검색 모달 임포트
 import Pagination from '../common/Pagination'; // 페이지네이션 컴포넌트 임포트
+import ConfirmModal from '../common/ConfirmModal'; // 사용자 정의 모달 컴포넌트
 
 // 컴포넌트(고객사별 상품 가격 관리)
 function Price() {
@@ -34,14 +35,16 @@ function Price() {
     // 🔴 커스텀 훅을 통해 상태와 함수 불러오기
     const {
         priceList,               // 가격 리스트 상태 (고객사별 상품 가격 데이터를 담고 있는 배열)
-        
         isLoading,               // 로딩 상태 (데이터를 불러오는 중일 때 true로 설정)
+
         totalItems,              // 전체 항목 수 상태
         itemsPerPage,            // 페이지당 항목 수 (사용자가 선택한 한 페이지에 표시할 데이터 개수)
         handleItemsPerPageChange,// 페이지당 항목 수 변경 함수 (사용자가 페이지당 몇 개의 항목을 볼지 선택하는 함수)
+
         handlePage,         // 페이지 변경 함수 (사용자가 페이지를 이동할 때 호출하는 함수)
         totalPages,              // 총 페이지 수 (전체 데이터에서 페이지당 항목 수로 나눈 페이지 개수)
         currentPage,             // 현재 페이지 (사용자가 현재 보고 있는 페이지 번호)
+
         pageInputValue,          // 페이지 입력 필드의 값
         handlePageInputChange,   // 페이지 입력값 변경 함수 (입력된 페이지 번호를 변경하는 함수)
 
@@ -87,7 +90,16 @@ function Price() {
         handleSaveEdit,          // 수정 저장 함수 (수정된 데이터를 저장하는 함수)
         handleCancelEdit,        // 수정 취소 함수 (수정 모드를 취소)
 
-        handleDelete,            // 삭제 버튼 클릭 함수 (항목을 삭제하는 함수)
+        updateDeleteYn,            // 삭제/복원 버튼 클릭 함수
+        handleDelete,
+        handleRestore,
+        handleDeleteSelected,    // 선택 삭제
+
+        isConfirmModalOpen,
+        openConfirmModal,
+        closeConfirmModal,
+        handleConfirmAction,
+        modalMessage
     } = useHooksList();          // 커스텀 훅 사용
 
     // 🔴 PriceRow 컴포넌트를 상위 컴포넌트 내부에 정의
@@ -402,15 +414,20 @@ function Price() {
                                                 >
                                                     <td>
                                                         <label className="chkbox_label">
-                                                            <input
-                                                                type="checkbox"
-                                                                className="chkbox"
-                                                                checked={selectedItems.includes(m_price.priceNo)}
-                                                                onChange={() => handleCheckboxChange(m_price.priceNo)}
-                                                            />
-                                                            <i className="chkbox_icon">
-                                                                <i className="bi bi-check-lg"></i>
-                                                            </i>
+                                                            {/* 삭제된 상태가 아닌 경우에만 체크박스 표시 */}
+                                                            {m_price.priceDeleteYn !== 'Y' && (
+                                                                <>
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        className="chkbox"
+                                                                        checked={selectedItems.includes(m_price.priceNo)}
+                                                                        onChange={() => handleCheckboxChange(m_price.priceNo)}
+                                                                    />
+                                                                    <i className="chkbox_icon">
+                                                                        <i className="bi bi-check-lg"></i>
+                                                                    </i>
+                                                                </>
+                                                            )}
                                                         </label>
                                                     </td>
                                                     <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
@@ -426,12 +443,20 @@ function Price() {
                                                     <td>{m_price.priceDeleteDate ? format(m_price.priceDeleteDate, 'yy-MM-dd HH:mm') : '-'}</td>
                                                     <td>
                                                         <div className='btn_group'>
-                                                            <button className="box icon edit" onClick={() => handleEdit(m_price.priceNo)}>
-                                                                <i className="bi bi-pencil-square"></i>{/* 수정 */}
-                                                            </button>
-                                                            <button className="box icon del" onClick={() => handleDelete(m_price.priceNo)}>
-                                                                <i className="bi bi-trash3"></i>{/* 삭제 */}
-                                                            </button>
+                                                            {m_price.priceDeleteYn === 'Y' ? (
+                                                                <button className="box icon restore" onClick={() => handleRestore(m_price.priceNo)}>
+                                                                    <i className="bi bi-arrow-clockwise"></i>{/* 복원 */}
+                                                                </button>
+                                                            ) : (
+                                                                <>
+                                                                    <button className="box icon edit" onClick={() => handleEdit(m_price.priceNo)}>
+                                                                        <i className="bi bi-pencil-square"></i>{/* 수정 */}
+                                                                    </button>
+                                                                    <button className="box icon del" onClick={() => handleDelete(m_price.priceNo)}>
+                                                                        <i className="bi bi-trash"></i>{/* 삭제 */}
+                                                                    </button>
+                                                                </>
+                                                            )}
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -460,6 +485,9 @@ function Price() {
                         handlePage={handlePage}
                         handleItemsPerPageChange={handleItemsPerPageChange}
                         handlePageInputChange={handlePageInputChange}
+                        handleDeleteSelected={handleDeleteSelected} // 선택 삭제 함수
+                        selectedItems={selectedItems} // 선택된 항목 배열 전달
+                        showFilters={true}
                     />
 
                 </div>
@@ -476,6 +504,14 @@ function Price() {
                 <ProductSearchModal
                     onClose={() => setProductModalOpen(false)}
                     onProductSelect={handleProductSelect}
+                />
+            )}
+            {/* 사용자 정의 삭제 확인 모달 */}
+            {isConfirmModalOpen && (
+                <ConfirmModal
+                    message={modalMessage}  // 동적으로 설정된 메시지 전달
+                    onConfirm={handleConfirmAction}
+                    onCancel={closeConfirmModal}
                 />
             )}
         </Layout>

@@ -57,6 +57,12 @@ export const useHooksList = () => {
     const [editingId, setEditingId] = useState(null); // 수정 중인 항목 ID를 저장
     const [editedPriceData, setEditedPriceData] = useState({}); // 수정 중인 항목 데이터를 저장
 
+    const [isConfirmModalOpen, setConfirmModalOpen] = useState(false); // 모달 상태
+    const [confirmedAction, setConfirmedAction] = useState(null); // 사용자가 확정한 작업
+
+    // 모달 메시지 상태
+    const [modalMessage, setModalMessage] = useState(''); // 모달에 표시할 메시지 상태
+
     // fetchData
     const fetchData = async () => {
         setLoading(true);
@@ -244,9 +250,11 @@ export const useHooksList = () => {
     // 🟢 전체 선택/해제
     const handleSelectAllChange = () => {
         if (selectAll) {
-            setSelectedItems([]); // 전체 해제
+            // 전체 해제
+            setSelectedItems([]);
         } else {
-            setSelectedItems(priceList.map(item => item.priceNo)); // 전체 선택
+            // 상태가 'N'인 항목만 선택
+            setSelectedItems(priceList.filter(item => item.priceDeleteYn !== 'Y').map(item => item.priceNo));
         }
         setSelectAll(!selectAll); // 전체 선택 상태 토글
     };
@@ -270,7 +278,7 @@ export const useHooksList = () => {
 
     // 🟣 추가하기-저장 버튼 클릭
     const handleAddSave = () => {
-        window.showToast('저장되었습니다.', 5000);
+        window.showToast('저장되었습니다.');
         console.log('새 가격 정보 등록:', newPriceData);
         setIsAdding(false); // 추가 행 숨기기
     };
@@ -300,17 +308,69 @@ export const useHooksList = () => {
         });
     };
 
-    // 🟣 삭제하기 버튼 클릭
-    const handleDelete = async (priceNo) => {
+    // 🟣 del_yn 업데이트 함수 (삭제 또는 복원)
+    const updateDeleteYn = async (priceNo, deleteYn) => {
         try {
-            // 서버로 삭제 요청 전송 (필요에 따라 수정)
-            // await axios.delete(`/api/price/${priceNo}`);
-            window.showToast('삭제되었습니다.', 5000);
+            // 서버로 del_yn 업데이트 요청 전송
+            await axios.put('/api/price/updateDel', [{ priceNo, priceDeleteYn: deleteYn }]);
 
-            // 상태에서 해당 항목 제거
-            setPriceList((prevList) => prevList.filter((item) => item.priceNo !== priceNo));
+            // 삭제 또는 복원 후 데이터 재조회
+            await fetchData();
+
+            // 성공 메시지 표시
+            window.showToast(deleteYn === 'Y' ? '해당 항목이 삭제되었습니다.' : '해당 항목이 복원되었습니다.');
         } catch (error) {
-            console.error("데이터 삭제 중 오류 발생:", error);
+            console.error(`${deleteYn === 'Y' ? '삭제' : '복원'} 처리 중 오류 발생:`, error);
+            window.showToast(`${deleteYn === 'Y' ? '삭제' : '복원'} 처리 중 오류가 발생했습니다.`);
+        }
+    };
+
+    // 🟣 삭제 버튼 클릭 (단일 삭제)
+    const handleDelete = (priceNo) => {
+        setConfirmedAction(() => async () => {
+            await updateDeleteYn(priceNo, 'Y');
+        });
+
+        // 모달 메시지를 설정
+        setModalMessage(`해당 항목을 삭제하시겠습니까?`);
+
+        // 모달 열기
+        openConfirmModal();
+    };
+
+    // 🟣 복원 버튼 클릭
+    const handleRestore = (priceNo) => updateDeleteYn(priceNo, 'N');
+
+    // 🟣 선택 삭제 버튼 클릭 (del_yn 업데이트)
+    const handleDeleteSelected = async () => {
+        try {
+            setConfirmedAction(() => async () => {
+                console.log('🟣 Selected Items:', selectedItems); // selectedItems 로그 찍기
+
+                const priceList = selectedItems.map(item => {
+                    console.log('🟣 Item:', item); // 각 item의 값 로그 찍기
+                    return {
+                        priceNo: item,
+                        priceDeleteYn: 'Y'  // del_yn 값을 'Y'로 업데이트
+                    };
+                });
+
+                await axios.put('/api/price/updateDel', priceList);
+
+                // 상태 업데이트 및 데이터 재조회
+                setSelectedItems([]);
+                await fetchData();
+                window.showToast('선택된 항목들이 삭제 처리되었습니다.');
+            });
+
+            // 모달 메시지를 설정
+            setModalMessage(`선택된 ${selectedItems.length}건을 삭제하시겠습니까?`);
+
+            // 모달 열기
+            openConfirmModal();
+        } catch (error) {
+            console.error("선택 항목 삭제 처리 중 오류 발생:", error);
+            window.showToast('선택 항목 삭제 처리 중 오류가 발생했습니다.');
         }
     };
 
@@ -320,7 +380,7 @@ export const useHooksList = () => {
         try {
             // 서버로 데이터 전송 예시 (필요에 따라 수정)
             // await axios.put(`/api/price/${editingId}`, editedPriceData);
-            window.showToast('수정되었습니다.', 5000);
+            window.showToast('수정되었습니다.');
 
             // 상태 업데이트: priceList에서 수정된 데이터를 반영
             setPriceList((prevList) =>
@@ -344,6 +404,24 @@ export const useHooksList = () => {
         // 수정 취소: editingId 및 수정 중인 데이터 초기화
         setEditingId(null);
         setEditedPriceData({});
+    };
+
+    // 🟣 모달 열기
+    const openConfirmModal = () => {
+        setConfirmModalOpen(true);
+    };
+
+    // 🟣 모달 닫기
+    const closeConfirmModal = () => {
+        setConfirmModalOpen(false);
+    };
+
+    // 사용자가 모달에서 확인 버튼을 누르면 실행
+    const handleConfirmAction = async () => {
+        if (confirmedAction) {
+            await confirmedAction();  // 사용자가 확정한 작업 실행
+        }
+        closeConfirmModal();  // 모달 닫기
     };
 
     return {
@@ -403,7 +481,17 @@ export const useHooksList = () => {
         handleSaveEdit,          // 수정 저장 함수 (수정된 데이터를 저장하는 함수)
         handleCancelEdit,        // 수정 취소 함수 (수정 모드를 취소)
 
-        handleDelete,            // 삭제 버튼 클릭 함수 (항목을 삭제하는 함수)
+        updateDeleteYn,            // 삭제/복원 버튼 클릭 함수
+        handleDelete,
+        handleRestore,
+        handleDeleteSelected,    // 선택 삭제
+
+        isConfirmModalOpen,
+        openConfirmModal,
+        closeConfirmModal,
+        handleConfirmAction,
+        modalMessage
+
     };
 
 };

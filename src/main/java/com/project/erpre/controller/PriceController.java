@@ -1,5 +1,6 @@
 package com.project.erpre.controller;
 
+import com.project.erpre.model.Price;
 import com.project.erpre.model.PriceDTO;
 import com.project.erpre.service.PriceService;
 import org.slf4j.Logger;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
@@ -23,18 +25,26 @@ public class PriceController {
     @Autowired
     private PriceService priceService;
 
-    // [1] 🟢 가격 정보 삽입
+    // 🟢 가격 정보 삽입
     @PostMapping("/insert")
-    public PriceDTO insertPrice(@RequestBody PriceDTO priceDTO) {
-        logger.info("Inserting price: {}", priceDTO);
-        return priceService.saveOrUpdate(priceDTO);  // DTO 전달 후 서비스에서 변환 및 저장
+    public List<PriceDTO> insertPrice(@RequestBody List<PriceDTO> priceDTOs) {
+        logger.info("🟢 Received PriceDTO List: {}", priceDTOs);  // priceDTOs 자체를 로그로 출력
+        return priceService.saveOrUpdate(priceDTOs);
     }
 
-    // [2] 🟢 가격 정보 수정
+    // 🟢 가격 정보 수정
     @PutMapping("/update")
-    public PriceDTO updatePrice(@RequestBody PriceDTO priceDTO) {
-        logger.info("Updating price: {}", priceDTO);
-        return priceService.saveOrUpdate(priceDTO);  // DTO 전달 후 서비스에서 변환 및 저장
+    public List<PriceDTO> updatePrice(@RequestBody List<PriceDTO> priceDTOs) {
+        logger.info("🟢 Received PriceDTO List: {}", priceDTOs);  // priceDTOs 자체를 로그로 출력
+        return priceService.saveOrUpdate(priceDTOs);
+    }
+
+    // 🟢 가격 정보 삭제 및 복원
+    @PutMapping("/updateDel")
+    public ResponseEntity<List<Price>> updatePriceDeleteYn(@RequestBody List<PriceDTO> priceDTOs) {
+        logger.info("🟢 Received PriceDTO List: {}", priceDTOs);  // priceDTOs 로그 출력
+        List<Price> updatedPrices = priceService.updatePriceDeleteYn(priceDTOs);
+        return ResponseEntity.ok(updatedPrices);  // 업데이트된 Price 리스트 반환
     }
 
     // [3] 🟣 특정 가격 정보 삭제
@@ -44,14 +54,17 @@ public class PriceController {
         priceService.deletePrice(priceNo);
     }
 
-    // [4] 🔴 특정 가격 정보 조회
-    @GetMapping("/find/{id}")
-    public Optional<PriceDTO> getPriceById(@PathVariable("id") Integer priceNo) {
-        logger.info("Fetching price with ID: {}", priceNo);
-        return priceService.getPriceById(priceNo);
+    // 🔴 특정 고객과 제품의 가격 정보 조회
+    @GetMapping("/customer-product")
+    public List<PriceDTO> getPricesByCustomerAndProduct(
+            @RequestParam("customerNo") Integer customerNo,
+            @RequestParam("productCd") String productCd
+    ) {
+        logger.info("Fetching prices for customer {} and product {}", customerNo, productCd);
+        return priceService.getPricesByCustomerAndProduct(customerNo, productCd);
     }
 
-    // [5] 🔴 가격 정보 목록 조회 (필터링, 페이징, 정렬 지원)
+    // 🔴 가격 정보 목록 조회 (필터링, 페이징, 정렬 지원)
     @GetMapping("/all")
     public Page<PriceDTO> getAllPrices(
             @RequestParam(required = false) Integer customerNo,  // 고객 번호 필터
@@ -71,29 +84,5 @@ public class PriceController {
         Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(direction, sort));
         return priceService.getAllPrices(customerNo, productCd, startDate, endDate, targetDate, customerSearchText, productSearchText, selectedStatus, pageRequest);
-    }
-
-    // [6] 🟡 특정 제품(Product)의 가격 정보 조회
-    @GetMapping("/product/{productCd}")
-    public List<PriceDTO> getPricesByProduct(@PathVariable("productCd") String productCd) {
-        logger.info("Fetching prices for product with Code: {}", productCd);
-        return priceService.getPricesByProduct(productCd);
-    }
-
-    // [7] 🟡 특정 고객(Customer)의 가격 정보 조회
-    @GetMapping("/customer/{customerNo}")
-    public List<PriceDTO> getPricesByCustomer(@PathVariable("customerNo") Integer customerNo) {
-        logger.info("Fetching prices for customer with ID: {}", customerNo);
-        return priceService.getPricesByCustomer(customerNo);
-    }
-
-    // [8] 🟡 특정 기간 내의 가격 정보 조회
-    @GetMapping("/date-range")
-    public List<PriceDTO> getPricesByDateRange(
-            @RequestParam("startDate") String startDate,
-            @RequestParam("endDate") String endDate
-    ) {
-        logger.info("Fetching prices between dates: {} and {}", startDate, endDate);
-        return priceService.getPricesByDateRange(startDate, endDate);
     }
 }

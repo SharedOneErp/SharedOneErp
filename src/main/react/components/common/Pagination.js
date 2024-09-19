@@ -11,6 +11,8 @@ function Pagination({
     handlePage,
     handleItemsPerPageChange,
     handlePageInputChange,
+    handleDeleteSelected, // 선택 삭제 핸들러
+    selectedItems, // 선택된 항목 배열
     showFilters = true, // 필터링 부분 표시 여부를 결정하는 옵션
 }) {
     return (
@@ -19,10 +21,17 @@ function Pagination({
             className="pagination-container"
             style={{ justifyContent: !showFilters ? 'space-around' : 'space-between' }}
         >
+
             {/* 좌측: 페이지당 항목 수 선택, showFilters가 true일 때만 표시 */}
             {
                 showFilters && (
                     <div className="pagination-sub left">
+                        {/* 선택된 항목이 있을 때만 "선택 삭제" 버튼 표시 */}
+                        {selectedItems.length > 0 && (
+                            <button className="box mr10 color_border red" onClick={handleDeleteSelected}>
+                                <i className="bi bi-trash3"></i>{selectedItems.length}건 삭제
+                            </button>
+                        )}
                         <input
                             type="text"
                             id="itemsPerPage"

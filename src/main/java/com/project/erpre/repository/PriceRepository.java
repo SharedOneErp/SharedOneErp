@@ -25,15 +25,8 @@ public interface PriceRepository extends JpaRepository<Price, Integer> {
     ---------------------------------------
      */
 
-    // 특정 제품(Product)의 가격 정보 조회
-    List<Price> findByProduct_ProductCd(String productCd);
-
-    // 특정 고객(Customer)의 가격 정보 조회
-    List<Price> findByCustomer_CustomerNo(Integer customerNo);
-
-    // 🔴 날짜 범위에 따라 가격 정보를 조회하는 쿼리
-    @Query("SELECT p FROM Price p WHERE p.priceStartDate >= :startDate AND p.priceEndDate <= :endDate")
-    List<Price> findPricesByDateRange(@Param("startDate") String startDate, @Param("endDate") String endDate);
+    // 🔴 특정 고객과 특정 제품의 가격 정보 조회
+    List<Price> findByCustomer_CustomerNoAndProduct_ProductCd(Integer customerNo, String productCd);
 
     // 🔴 가격 정보 조회 (필터링, 페이징, 정렬 지원)
     @Query("SELECT p FROM Price p WHERE "
