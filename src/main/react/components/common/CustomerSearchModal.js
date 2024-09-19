@@ -2,10 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Pagination from './Pagination'; // 페이지네이션 컴포넌트 임포트
+import { useDebounce } from '../common/useDebounce'; // useDebounce 훅 임포트
 
 function CustomerSearchModal({ onClose, onCustomerSelect }) {
     // 🔴 검색어 및 검색 결과 상태 관리
-    const [searchQuery, setSearchQuery] = useState(''); // 고객사 검색어 상태
+    const [customerSearchText, setCustomerSearchText] = useState(''); // 고객사 검색어 상태
+    const debouncedCustomerSearchText = useDebounce(customerSearchText, 300); // 딜레이 적용
     const [customerSearchResults, setCustomerSearchResults] = useState([]); // 고객사 검색 결과 상태
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
 
@@ -16,12 +18,12 @@ function CustomerSearchModal({ onClose, onCustomerSelect }) {
     const paginatedCustomerSearchResults = customerSearchResults.slice(indexOfFirstResult, indexOfLastResult); // 페이지에 맞는 항목 추출
 
     // 🔴 고객사 검색 처리 함수 (비동기)
-    const customerSearch = async () => {
+    const fetchData = async () => {
         try {
             // 검색 API 호출
             const response = await axios.get(`/api/customer/search`, {
                 params: {
-                    name: searchQuery // 고객사 이름 필터
+                    name: customerSearchText // 고객사 이름 필터
                 }
             });
             const data = response.data; // axios는 자동으로 JSON 응답을 변환
@@ -34,15 +36,30 @@ function CustomerSearchModal({ onClose, onCustomerSelect }) {
         }
     };
 
-    // 🔴 페이지 변경 처리 함수
+    // 🟣 페이지 변경 처리 함수
     const handlePage = (pageNumber) => {
         setCurrentPage(pageNumber); // 페이지 번호 상태 업데이트
     };
 
+    // 🟣 검색어 삭제 버튼 클릭 공통 함수
+    const handleSearchDel = (setSearch) => {
+        setSearch(''); // 공통적으로 상태를 ''로 설정
+    };
+
+    // 🟣 검색어 변경(고객사)
+    const handleCustomerSearchTextChange = (event) => {
+        setCustomerSearchText(event.target.value);
+    };
+
     // 🟡 컴포넌트가 처음 렌더링될 때 기본 검색 호출
     useEffect(() => {
-        customerSearch();
+        fetchData();
     }, []); // 빈 배열을 넣어 처음 렌더링 시 한 번만 실행
+
+    // 🟡 검색어가 디바운스된 후 fetchData 호출(고객사)
+    useEffect(() => {
+        fetchData();
+    }, [debouncedCustomerSearchText]);
 
     // 🟢 모달 렌더링
     return (
@@ -53,44 +70,58 @@ function CustomerSearchModal({ onClose, onCustomerSelect }) {
                     <button className="btn_close" onClick={onClose}><i className="bi bi-x-lg"></i></button> {/* 모달 닫기 버튼 */}
                 </div>
                 <div className="search_wrap">
-                    {/* 고객사 검색어 입력 필드 */}
-                    <input
-                        type="text"
-                        className="box"
-                        placeholder="검색하실 고객사를 입력하세요"
-                        value={searchQuery} // 입력된 검색어 상태값
-                        onChange={(e) => setSearchQuery(e.target.value)} // 검색어 변경 처리
-                    />
-                    {/* 검색 버튼 */}
-                    <button className="box color" onClick={customerSearch}>검색</button>
+                    <div className={`search_box ${customerSearchText ? 'has_text' : ''}`}>
+                        <i className="bi bi-search"></i>
+                        <input
+                            type="text"
+                            className="box search"
+                            placeholder="검색하실 고객사를 입력하세요"
+                            value={customerSearchText}
+                            onChange={handleCustomerSearchTextChange}
+                            style={{ width: '250px' }} // 인라인 스타일로 width 적용
+                        />
+                        {/* 검색어 삭제 버튼 */}
+                        {customerSearchText && (
+                            <button
+                                className="btn-del"
+                                onClick={() => handleSearchDel(setCustomerSearchText)} // 공통 함수 사용
+                            >
+                                <i className="bi bi-x"></i>
+                            </button>
+                        )}
+                    </div>
                 </div>
                 <div className="table_wrap">
                     {/* 검색 결과가 있을 경우 목록을 출력 */}
-                    {customerSearchResults.length > 0 ? (
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>고객사</th>
-                                    <th>주소</th>
-                                    <th>연락처</th>
-                                    <th>대표명</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {/* 검색된 고객사 목록을 출력 */}
-                                {paginatedCustomerSearchResults.map((result) => (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>고객사</th>
+                                <th>주소</th>
+                                <th>연락처</th>
+                                <th>대표명</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {customerSearchResults.length > 0 ? (
+                                /* 검색된 고객사 목록을 출력 */
+                                paginatedCustomerSearchResults.map((result) => (
                                     <tr key={result.customerNo} onClick={() => onCustomerSelect(result)}>
                                         <td>{result.customerName || '-'}</td> {/* 고객사 이름 */}
                                         <td>{result.customerAddr || '-'}</td> {/* 고객사 주소 */}
                                         <td>{result.customerTel || '-'}</td> {/* 고객사 연락처 */}
                                         <td>{result.customerRepresentativeName || '-'}</td> {/* 대표 이름 */}
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <div>검색 결과가 없습니다.</div>
-                    )}
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="4" className="tr_empty">
+                                        <div className="no_data">조회된 결과가 없습니다.</div>
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
                 </div>
 
                 {/* 페이지네이션 컴포넌트 사용 */}

@@ -464,7 +464,7 @@ function Price() {
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="10">
+                                            <td colSpan="10" className="tr_empty">
                                                 <div className="no_data"><i className="bi bi-exclamation-triangle"></i>조회된 결과가 없습니다.</div>
                                             </td>
                                         </tr>

@@ -19,4 +19,19 @@ public class CategoryDTO {
     private Timestamp categoryUpdateDate;
     private String categoryDeleteYn; // 삭제 여부 기본값 'N'
     private Timestamp categoryDeleteDate; // 삭제 일시
+
+    private Integer one; // 대분류 번호
+    private Integer two; // 중분류 번호
+    private Integer three; // 소분류 번호
+    private String paths; // 전체 경로
+    public CategoryDTO(Integer one, Integer two, Integer three, Integer categoryNo, Integer categoryLevel, String paths, Timestamp categoryInsertDate, Timestamp categoryUpdateDate) {
+        this.one = one;
+        this.two = two;
+        this.three = three;
+        this.categoryNo = categoryNo;
+        this.categoryLevel = categoryLevel;
+        this.paths = paths;
+        this.categoryInsertDate = categoryInsertDate;
+        this.categoryUpdateDate = categoryUpdateDate;
+    }
 }

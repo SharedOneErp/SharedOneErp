@@ -40,7 +40,7 @@ export const useHooksList = () => {
 
   // 전체목록 조회
   useEffect(() => {
-    fetch('/api/category/all')
+    fetch('/api/category/allPaths')
       .then(response => response.json())
       .then(data => setCategory(data))
       .catch(error => console.error('카테고리 목록을 불러오는 데 실패했습니다.', error))
