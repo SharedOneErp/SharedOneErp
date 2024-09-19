@@ -37,6 +37,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                         product.productNm,
                         product.productInsertDate,
                         product.productUpdateDate,
+                        product.productDeleteDate,
+                        product.productDeleteYn,
                         category.categoryNm.as("lowCategory"),
                         middleCategory.categoryNm.as("middleCategory"),
                         topCategory.categoryNm.as("topCategory"),
