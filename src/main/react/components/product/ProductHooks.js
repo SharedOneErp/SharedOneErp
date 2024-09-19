@@ -114,7 +114,6 @@ export const useHooksList = () => {
                 setFullLowCategories(response.data.lowCategories || []);
             })
             .catch((error) => console.error('전체 상품 목록 조회 실패', error));
-        console.log(selectedStatus);
     }, [currentPage, itemsPerPage, filterTopCategory, filterMiddleCategory, filterLowCategory, selectedStatus]);
 
     useEffect(() => {
