@@ -25,6 +25,7 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
         customerTransactionEndDate: ''       // 거래 종료일
     });
 
+    // 고객 데이터 변경 시 폼 업데이트
     useEffect(() => {
         if (customerData) {
             setForm(customerData); // 기존 고객 데이터를 폼에 반영
@@ -49,12 +50,13 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
         }
     }, [customerData]);
 
-
+    // 입력 값 변경 시 폼 상태 업데이트
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
     };
 
+    // 폼 제출 처리
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -74,7 +76,7 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
         }
     };
 
-    if (!show) return null;
+    if (!show) return null; // 모달 표시 여부 체크
 
     return (
         <div className="modal-overlay register-modal-overlay">
@@ -184,15 +186,17 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
 // 고객 상세 정보 모달창
 function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
 
-    const [isEditMode, setIsEditMode] = useState(false);
-    const [editableCustomer, setEditableCustomer] = useState(customer || {});
+    const [isEditMode, setIsEditMode] = useState(false); // 편집 모드 여부
+    const [editableCustomer, setEditableCustomer] = useState(customer || {}); // 편집 가능한 고객 데이터
 
+    // 고객 데이터 변경 시 상태 업데이트
     useEffect(() => {
         if (customer) {
-            setEditableCustomer(customer); // 선택된 고객 데이터를 설정
+            setEditableCustomer(customer);
         }
     }, [customer]);
 
+    // 편집 모드 토글 함수
     const toggleEditMode = () => {
         if (!isEditMode) {
             if (window.confirm('수정하시겠습니까?')) {
@@ -201,19 +205,21 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
         }
     };
 
+    // 저장 처리 함수
     const handleSave = () => {
         if (window.confirm('저장하시겠습니까?')) {
             onSave(editableCustomer);
-            onClose(); // 모달창 닫기
+            onClose();
         }
     };
 
+    // 입력 값 변경 시 상태 업데이트
     const handleChange = (e) => {
         const { name, value } = e.target;
         setEditableCustomer((prev) => ({ ...prev, [name]: value }));
     };
 
-    if (!show || !customer) return null;
+    if (!show || !customer) return null; // 모달 표시 여부 체크
 
     return (
         <div className="modal-overlay detail-modal-overlay">
@@ -359,69 +365,65 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
 
 // 고객 리스트
 function CustomerList() {
-    const [filter, setFilter] = useState('');
-    const [itemsPerPage, setItemsPerPage] = useState(20);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [customers, setCustomers] = useState([]);
-    const [selectedCustomer, setSelectedCustomer] = useState(null);
-    const [showRegisterModal, setShowRegisterModal] = useState(false);
-    const [showDetailModal, setShowDetailModal] = useState(false);
-    const [selectedCustomers, setSelectedCustomers] = useState([]);
-    const [sortColumn, setSortColumn] = useState(null);
-    const [sortOrder, setSortOrder] = useState('asc');
+    const [filter, setFilter] = useState(''); // 검색어 상태
+    const [itemsPerPage] = useState(20); // 페이지당 항목 수
+    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 번호
+    const [selectedCustomer, setSelectedCustomer] = useState(null); // 선택된 고객 정보
+    const [showRegisterModal, setShowRegisterModal] = useState(false); // 등록 모달 표시 여부
+    const [showDetailModal, setShowDetailModal] = useState(false); // 상세 모달 표시 여부
+    const [selectedCustomers, setSelectedCustomers] = useState([]); // 선택된 고객 번호 리스트
+    const [customers, setCustomers] = useState([]); // 전체 고객 리스트
+    const [displayedCustomers, setDisplayedCustomers] = useState([]); // 화면에 표시할 고객 리스트
+    const [sortColumn, setSortColumn] = useState(null); // 정렬할 컬럼
+    const [sortOrder, setSortOrder] = useState('asc'); // 정렬 순서
 
+    // 고객 목록 데이터 가져오기
     useEffect(() => {
         axios.get('/api/customer/getList')
-            .then(response => setCustomers(response.data.filter(customer => customer.customerDeleteYn === 'N')))
-            .catch(error => console.error('Error fetching customer data:', error));
+            .then(response => {
+                console.log(response); // 응답 데이터 확인
+                if (Array.isArray(response.data)) {
+                    setCustomers(response.data); // 전체 고객 데이터 저장
+                    // 초기에는 삭제되지 않은 고객만 표시
+                    setDisplayedCustomers(response.data.filter(customer => customer.customerDeleteYn === 'N'));
+                } else {
+                    console.error("Error: Expected an array but got ", typeof response.data);
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching customer data:", error);
+            });
     }, []);
 
+    // 전체 고객사(삭제 포함) 표시 함수
     const showAllCustomers = () => {
-        setCustomers(customers.filter(c => c.customerDeleteYn === 'N'));
+        setDisplayedCustomers(customers);
     };
 
+    // 삭제된 고객사만 표시 함수
     const showDeletedCustomers = () => {
-        setCustomers(customers.filter(c => c.customerDeleteYn === 'Y'));
+        setDisplayedCustomers(customers.filter(customer => customer.customerDeleteYn === 'Y'));
     };
 
-    // 고객 등록&수정 처리
-    const handleSaveCustomer = (customerData) => {
-        if (selectedCustomer) {
-            //수정 로직
-            if (window.confirm('수정하시겠습니까?')) {
-                axios.put(`/api/customer/update/${selectedCustomer.customerNo}`, customerData)
-                    .then(response => {
-                        setCustomers(customers.map(c => c.customerNo === selectedCustomer.customerNo ? response.data : c));
-                        setShowRegisterModal(false);
-                    })
-                    .catch(error => console.error('고객 수정 중 오류:', error));
-            }
-        } else {
-            //등록 로직
-            if (window.confirm('등록하시겠습니까?')) {
-                axios.post('/api/customer/register', customerData)
-                    .then(response => {
-                        setCustomers([...customers, response.data]);
-                        setShowRegisterModal(false);
-                    })
-                    .catch(error => console.error('고객 등록 중 오류:', error));
-            }
-        }
+    // 삭제되지 않은 고객사만 표시 함수
+    const showActiveCustomers = () => {
+        setDisplayedCustomers(customers.filter(customer => customer.customerDeleteYn === 'N'));
     };
 
-    // 고객 삭제 처리
-    const handleDeleteCustomer = () => {
-        if (window.confirm('정말 삭제하시겠습니까?')) {
-            axios.delete(`/api/customer/delete/${selectedCustomer.customerNo}`)
-                .then(() => {
-                    setCustomers(customers.filter(c => c.customerNo !== selectedCustomer.customerNo));
-                    setShowDetailModal(false);
-                })
-                .catch(error => console.error('고객 삭제 중 오류:', error));
-        }
+    // 고객 정렬 함수
+    const sortCustomers = (column) => {
+        const order = sortColumn === column && sortOrder === 'asc' ? 'desc' : 'asc';
+        const sortedCustomers = [...displayedCustomers].sort((a, b) => {
+            const aValue = a[column] ? a[column].toString() : '';
+            const bValue = b[column] ? b[column].toString() : '';
+            return order === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+        });
+        setDisplayedCustomers(sortedCustomers);
+        setSortColumn(column);
+        setSortOrder(order);
     };
 
-    //고객 체크박스 선택
+    // 고객 선택 처리 함수 (체크박스)
     const handleSelectCustomer = (customerNo) => {
         setSelectedCustomers(prevSelected =>
             prevSelected.includes(customerNo)
@@ -430,7 +432,7 @@ function CustomerList() {
         );
     };
 
-    //고객 전체삭제 처리
+    // 선택된 고객 삭제 처리 함수
     const handleDeleteAll = () => {
         if (selectedCustomers.length === 0) {
             alert('삭제할 고객을 선택하세요.');
@@ -442,6 +444,7 @@ function CustomerList() {
                 axios.delete(`/api/customer/delete/${customerNo}`)
                     .then(() => {
                         setCustomers(customers.filter(c => c.customerNo !== customerNo));
+                        setDisplayedCustomers(displayedCustomers.filter(c => c.customerNo !== customerNo));
                     })
                     .catch(error => console.error('고객 삭제 중 오류:', error));
             });
@@ -449,48 +452,88 @@ function CustomerList() {
         }
     };
 
+    // 검색어 삭제 버튼 클릭 처리 함수 (검색어 초기화 전용)
+    const handleFilterReset = () => {
+        setFilter(''); // 검색어 초기화
+    };
 
+    // 고객 저장 처리 함수 (등록 및 수정)
+    const handleSaveCustomer = (customerData) => {
+        if (selectedCustomer) {
+            // 수정 로직
+            if (window.confirm('수정하시겠습니까?')) {
+                axios.put(`/api/customer/update/${selectedCustomer.customerNo}`, customerData)
+                    .then(response => {
+                        setCustomers(customers.map(c => c.customerNo === selectedCustomer.customerNo ? response.data : c));
+                        setDisplayedCustomers(displayedCustomers.map(c => c.customerNo === selectedCustomer.customerNo ? response.data : c));
+                        setShowRegisterModal(false);
+                    })
+                    .catch(error => console.error('고객 수정 중 오류:', error));
+            }
+        } else {
+            // 등록 로직
+            if (window.confirm('등록하시겠습니까?')) {
+                axios.post('/api/customer/register', customerData)
+                    .then(response => {
+                        setCustomers([...customers, response.data]);
+                        setDisplayedCustomers([...displayedCustomers, response.data]);
+                        setShowRegisterModal(false);
+                    })
+                    .catch(error => console.error('고객 등록 중 오류:', error));
+            }
+        }
+    };
+
+    // 고객 삭제 처리 함수
+    const handleDeleteCustomer = () => {
+        if (window.confirm('정말 삭제하시겠습니까?')) {
+            axios.delete(`/api/customer/delete/${selectedCustomer.customerNo}`)
+                .then(() => {
+                    setCustomers(customers.filter(c => c.customerNo !== selectedCustomer.customerNo));
+                    setDisplayedCustomers(displayedCustomers.filter(c => c.customerNo !== selectedCustomer.customerNo));
+                    setShowDetailModal(false);
+                })
+                .catch(error => console.error('고객 삭제 중 오류:', error));
+        }
+    };
+
+    // 검색어 삭제 버튼 클릭 처리 함수
+    const handleSearchDel = () => {
+        setFilter(''); // 검색어 초기화
+    };
+
+
+    // 고객 등록 모달 열기
     const openRegisterModal = () => {
         setSelectedCustomer(null); // 새 고객 등록 시 기존 선택된 고객 정보 초기화
         setShowRegisterModal(true);
     };
 
+    // 고객 등록 모달 닫기
     const closeRegisterModal = () => setShowRegisterModal(false);
 
+    // 고객 상세 모달 열기
     const openDetailModal = (customer) => {
         setSelectedCustomer(customer); // 선택된 고객 정보 설정
         setShowDetailModal(true); // 상세 모달창 띄우기
     };
 
+    // 고객 상세 모달 닫기
     const closeDetailModal = () => setShowDetailModal(false);
 
-    const sortCustomers = (column) => {
-        const order = sortOrder === 'asc' ? 'desc' : 'asc';
-        const sortedCustomers = [...customers].sort((a, b) => {
-            const aValue = a[column] ? a[column].toString() : '';
-            const bValue = b[column] ? b[column].toString() : '';
-            return order === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
-        });
-        setCustomers(sortedCustomers);
-        setSortColumn(column);
-        setSortOrder(order);
-    };
-
-    const filteredCustomers = customers.filter(customer => {
+    // 검색어 적용된 고객 리스트
+    const filteredCustomers = displayedCustomers.filter(customer => {
+        const searchText = filter.toLowerCase();
         return (
-            customer.customerName.includes(filter) ||
-            customer.customerBusinessRegNo.includes(filter) ||
-            customer.customerCountryCode.includes(filter) ||
-            customer.customerManagerName.includes(filter)
+            (customer.customerName ? customer.customerName.toLowerCase() : '').includes(searchText) ||
+            (customer.customerBusinessRegNo ? customer.customerBusinessRegNo.toLowerCase() : '').includes(searchText) ||
+            (customer.customerCountryCode ? customer.customerCountryCode.toLowerCase() : '').includes(searchText) ||
+            (customer.customerManagerName ? customer.customerManagerName.toLowerCase() : '').includes(searchText)
         );
     });
 
+    // 총 페이지 수 계산
     const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
-
-    // 검색어 삭제 버튼 클릭 공통 함수
-    const handleSearchDel = (setSearch) => {
-        setSearch(''); // 공통적으로 상태를 ''로 설정
-    };
 
     return (
         <Layout currentMenu="customer">
@@ -517,30 +560,32 @@ function CustomerList() {
                                 {filter && (
                                     <button
                                         className="btn-del"
-                                        onClick={() => handleSearchDel(setFilter)} // 공통 함수 사용
+                                        onClick={handleSearchDel}
                                     >
                                         <i className="bi bi-x"></i>
                                     </button>
                                 )}
                             </div>
-                            <button className="box"
-                                onClick={() => setCustomers(customers.filter(c => c.customerDeleteYn === 'N'))}>전체 고객사
-                            </button>
-                            <button className="box"
-                                onClick={() => setCustomers(customers.filter(c => c.customerDeleteYn === 'Y'))}>삭제된 고객사
-                            </button>
+                            <button className="box" onClick={showAllCustomers}>전체 고객사(삭제포함)</button>
+                            <button className="box" onClick={showDeletedCustomers}>삭제된 고객사</button>
+                            <button className="box" onClick={showActiveCustomers}>삭제되지 않은 고객사</button>
                         </div>
                         <div className="right">
                             <button className="box color" onClick={openRegisterModal}>
-                                <i className="bi bi-plus-circle"></i> 등록하기</button>
+                                <i className="bi bi-plus-circle"></i> 등록하기
+                            </button>
                         </div>
                     </div>
                     <div className="table_wrap">
                         <table>
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox"
-                                        onChange={(e) => setSelectedCustomers(e.target.checked ? customers.map(c => c.customerNo) : [])} />
+                                    <th>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedCustomers.length === filteredCustomers.length}
+                                            onChange={(e) => setSelectedCustomers(e.target.checked ? filteredCustomers.map(c => c.customerNo) : [])}
+                                        />
                                     </th>
                                     <th onClick={() => sortCustomers('customerNo')}>No</th>
                                     <th onClick={() => sortCustomers('customerName')}>고객명</th>
@@ -555,13 +600,17 @@ function CustomerList() {
                                     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                                     .map((customer, index) => (
                                         <tr key={customer.customerNo}>
-                                            <td><input type="checkbox" checked={selectedCustomers.includes(customer.customerNo)}
-                                                onChange={() => handleSelectCustomer(customer.customerNo)} /></td>
-                                            <td>{index + 1}</td>
-                                            <td>{customer.customerName}</td>
-                                            <td>{customer.customerBusinessRegNo}</td>
-                                            <td>{customer.customerCountryCode}</td>
-                                            <td>{customer.customerManagerName}</td>
+                                            <td><input
+                                                type="checkbox"
+                                                checked={selectedCustomers.includes(customer.customerNo)}
+                                                onChange={() => handleSelectCustomer(customer.customerNo)}
+                                            />
+                                            </td>
+                                            <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                                            <td>{customer.customerName ? customer.customerName : ''}</td>
+                                            <td>{customer.customerBusinessRegNo ? customer.customerBusinessRegNo : ''}</td>
+                                            <td>{customer.customerCountryCode ? customer.customerCountryCode : ''}</td>
+                                            <td>{customer.customerManagerName ? customer.customerManagerName : ''}</td>
                                             <td>
                                                 <button onClick={() => openDetailModal(customer)}>내역보기</button>
                                             </td>
