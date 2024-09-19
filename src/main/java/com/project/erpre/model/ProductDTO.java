@@ -75,7 +75,7 @@ public class ProductDTO {
         this.lowCategory = lowCategory;
     }
 
-    // 3. 상품 등록 생성자
+    // 3. 상품 등록 및 수정 생성자
     public ProductDTO(String productCd, String productNm, Integer categoryNo) {
         this.productCd = productCd;
         this.productNm = productNm;

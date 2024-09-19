@@ -66,6 +66,11 @@ function ProductList() {
         addFilteredMiddleCategories,
         addFilteredLowCategories,
         fullTopCategories,
+        filteredEditMiddleCategories,
+        filteredEditLowCategories,
+        handleFilterTopCategoryChangeForEdit,
+        handleFilterMiddleCategoryChangeForEdit,
+        handleFilterLowCategoryChangeForEdit
     } = useHooksList(); // 커스텀 훅 사용
 
     return (
@@ -176,7 +181,8 @@ function ProductList() {
                                     >
                                         <option value="">대분류</option>
                                         {fullTopCategories.map((category, index) => (
-                                            <option key={index} value={category.categoryNo}>{category.categoryNm}</option>
+                                            <option key={index}
+                                                    value={category.categoryNo}>{category.categoryNm}</option>
                                         ))}
                                     </select>
                                 </td>
@@ -185,12 +191,14 @@ function ProductList() {
                                         name="middleCategory"
                                         value={selectedMiddleCategory}
                                         onChange={(e) => {
-                                            handleMiddleCategoryChange(e);}}
-                                            disabled={!selectedTopCategory}
+                                            handleMiddleCategoryChange(e);
+                                        }}
+                                        disabled={!selectedTopCategory}
                                     >
                                         <option value="">중분류</option>
                                         {addFilteredMiddleCategories.map((category, index) => (
-                                            <option key={index} value={category.categoryNo}>{category.categoryNm}</option>
+                                            <option key={index}
+                                                    value={category.categoryNo}>{category.categoryNm}</option>
                                         ))}
                                     </select>
                                 </td>
@@ -205,7 +213,8 @@ function ProductList() {
                                     >
                                         <option value="">소분류</option>
                                         {addFilteredLowCategories.map((category, index) => (
-                                            <option key={index} value={category.categoryNo}>{category.categoryNm}</option>
+                                            <option key={index}
+                                                    value={category.categoryNo}>{category.categoryNm}</option>
                                         ))}
                                     </select>
                                 </td>
@@ -236,10 +245,15 @@ function ProductList() {
                                     </td>
                                     <td>
                                         {editMode === product.productCd ? (
-                                            <select name="topCategory" value={editableProduct.topCategory}
-                                                    onChange={(e) => handleMiddleCategoryChange(e, true)}>
-                                                {topCategoriesRegister.map((category, index) => (
-                                                    <option key={index} value={category.categoryNo}>{category.categoryNm}</option>
+                                            <select
+                                                name="topCategoryNo"
+                                                value={editableProduct.topCategoryNo || ''}
+                                                onChange={handleFilterTopCategoryChangeForEdit}
+                                            >
+                                                <option value="">대분류</option>
+                                                {fullTopCategories.map((category, index) => (
+                                                    <option key={index}
+                                                            value={category.categoryNo}>{category.categoryNm}</option>
                                                 ))}
                                             </select>
                                         ) : (
@@ -248,28 +262,40 @@ function ProductList() {
                                     </td>
                                     <td>
                                         {editMode === product.productCd ? (
-                                            <select name="middleCategory" value={editableProduct.middleCategory}
-                                                    onChange={(e) => handleMiddleCategoryChange(e, true)}>
-                                                {middleCategoriesRegister.map((category, index) => (
-                                                    <option key={index} value={category.categoryNo}>{category.categoryNm}</option>
+                                            <select
+                                                name="middleCategoryNo"
+                                                value={editableProduct.middleCategoryNo || ''}
+                                                onChange={handleFilterMiddleCategoryChangeForEdit}
+                                                disabled={!editableProduct.topCategoryNo}
+                                            >
+                                                <option value="">중분류</option>
+                                                {filteredEditMiddleCategories.map((category, index) => (
+                                                    <option key={index}
+                                                            value={category.categoryNo}>{category.categoryNm}</option>
                                                 ))}
                                             </select>
+
                                         ) : (
                                             product.middleCategoryNo ? getCategoryNameByNo(product.middleCategoryNo) : '-'
-
                                         )}
                                     </td>
                                     <td>
                                         {editMode === product.productCd ? (
-                                            <select name="lowCategory" value={editableProduct.lowCategory}
-                                                    onChange={(e) => handleLowCategoryChange(e, true)}>
-                                                {lowCategoriesRegister.map((category, index) => (
-                                                    <option key={index} value={category.categoryNo}>{category.categoryNm}</option>
+                                            <select
+                                                name="lowCategoryNo"
+                                                value={editableProduct.lowCategoryNo || ''}
+                                                onChange={handleFilterLowCategoryChangeForEdit}
+                                                disabled={!editableProduct.middleCategoryNo}
+                                            >
+                                                <option value="">소분류</option>
+                                                {filteredEditLowCategories.map((category, index) => (
+                                                    <option key={index}
+                                                            value={category.categoryNo}>{category.categoryNm}</option>
                                                 ))}
                                             </select>
+
                                         ) : (
                                             product.lowCategoryNo ? getCategoryNameByNo(product.lowCategoryNo) : '-'
-
                                         )}
                                     </td>
                                     <td>{product.productInsertDate ? formatDate(product.productInsertDate) : '-'}</td>
