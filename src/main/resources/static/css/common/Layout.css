@@ -150,7 +150,7 @@ input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; borde
 .pagination-container .pagination .box.icon i { margin: 0; } 
 .pagination-container .pagination .box.active { background-color: #007CC1; border-color: #007CC1; color: white; } 
 /* 항목 개수 선택/페이지 번호 입력 (양 사이드) */
-.pagination-container .pagination-sub .box { max-width: 75px; } 
+.pagination-container .pagination-sub input.box { max-width: 75px; } 
 .pagination-container .pagination-sub label { font-weight: 400; font-size: 14px; margin: 0 0 0 5px; color: #444; } 
 .pagination-container .pagination-sub label b { font-weight: 700; color: #007CC1; } 
 /* 🟣 토스트 메시지(짧고 간결한 알림을 일정 시간 동안 화면에 표시) */
