@@ -372,7 +372,7 @@ function OrderList() {
                     <div className="menu_content">
                         <div className="search_wrap">
                             <div className="left">
-                                <select className="filter-type" onChange={(e) => setFilterType(e.target.value)}
+                                <select className="box" onChange={(e) => setFilterType(e.target.value)}
                                         value={filterType}>
                                     <option value="customer">고객사</option>
                                     <option value="date">주문 등록일</option>

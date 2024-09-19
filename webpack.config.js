@@ -15,16 +15,11 @@ module.exports = {
 
         // Sales 관련 엔트리 포인트
         order: `${salesPath}Order.js`, // 주문 등록or상세or수정
-        orderList: `${salesPath}OrderList.js`, // 전체/담당 주문 목록
-        orderRegister: `${salesPath}OrderRegister.js`, // 주문 등록
-        orderRegisterApproval: `${salesPath}OrderRegisterApproval.js`, // 주문 등록 승인
-        orderRegisterApprovalDetail: `${salesPath}OrderRegisterApprovalDetail.js`, // 주문 등록 승인 상세
+        orderList: `${salesPath}OrderList.js`, // 주문 목록 or 주문 등록 승인
         orderReport: `${salesPath}OrderReport.js`, // 영업실적 보고서
 
         // Product 관련 엔트리 포인트
         productList: `${productPath}ProductList.js`, // 상품 목록
-        product: `${productPath}Product.js`, // 상품 등록 or 상세 or 수정
-        productDetailModal: `${productPath}ProductDetailModal.js`, // 상품 상세 모달
         productPrice: `${productPath}Price.js`, // 고객사별 상품 가격 관리(목록/등록/수정)
         productCategory: `${productPath}ProductCategory.js`, // 상품 카테고리 관리(목록/등록/수정)
 
