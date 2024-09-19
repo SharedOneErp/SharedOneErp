@@ -25,9 +25,7 @@ module.exports = {
         productList: `${productPath}ProductList.js`, // 상품 목록
         product: `${productPath}Product.js`, // 상품 등록 or 상세 or 수정
         productDetailModal: `${productPath}ProductDetailModal.js`, // 상품 상세 모달
-        productHooks: `${productPath}ProductHooks.js`, // 상품 관리에 필요한 상태 및 로직들
         productPrice: `${productPath}Price.js`, // 고객사별 상품 가격 관리(목록/등록/수정)
-        productPriceHooks: `${productPath}PriceHooks.js`, // 가격 관리에 필요한 상태 및 로직을 처리하는 훅
         productCategory: `${productPath}ProductCategory.js`, // 상품 카테고리 관리(목록/등록/수정)
 
         // Customer 관련 엔트리 포인트
