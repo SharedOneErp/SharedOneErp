@@ -36,6 +36,8 @@ input::placeholder { color: #888; }
 .box.large { font-size: 17px; } 
 .box.icon { padding: 4px 8px; } 
 .box:not(.icon) i { margin-right: 5px; } 
+/* select */
+select.box { padding: 7px 12px; } 
 /* 버튼 */
 button.box { cursor: pointer; } 
 /* button.box.icon.edit { border-color:#007CC1; color:#007CAA } */
@@ -122,6 +124,7 @@ input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; borde
 .table_wrap table thead { flex: 0 0 auto; position: sticky; top: 0; background-color: #fafafa; border-bottom: 1px solid #ddd; color: #555; font-weight: 500; z-index: 1; } 
 .table_wrap table tbody { flex: 1 1 auto; font-size: 15px; } 
 .table_wrap table tr { display: table; width: 100%; table-layout: fixed; } 
+.table_wrap table tr:not(.tr_empty) { border-bottom: 1px solid #f1f1f1; } 
 .table_wrap table:not(.not_hover) tbody tr:not(.tr_empty):hover { background-color: #f7f7f7; } 
 .table_wrap table tbody tr.selected_row,
 .table_wrap table tr.tr_input { background-color: #e4f1f7a3; } 

@@ -27,7 +27,7 @@ function Pagination({
                 showFilters && (
                     <div className="pagination-sub left">
                         {/* 선택된 항목이 있을 때만 "선택 삭제" 버튼 표시 */}
-                        {selectedItems.length > 0 && (
+                        {Array.isArray(selectedItems) && selectedItems.length > 0 && (
                             <button className="box mr10 color_border red" onClick={handleDeleteSelected}>
                                 <i className="bi bi-trash3"></i>{selectedItems.length}건 삭제
                             </button>

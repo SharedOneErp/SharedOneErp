@@ -17,7 +17,7 @@ function ProductSearchModal({ onClose, onProductSelect }) {
     const paginatedSearchResults = searchResults.slice(indexOfFirstResult, indexOfLastResult); // 페이지에 해당하는 항목들만 추출
 
     // 🔴 상품 검색 처리 함수 (비동기)
-    const productSearch = async () => {
+    const fetchData = async () => {
         try {
             // 검색 API 호출
             const response = await axios.get(`/api/order/search`, {
@@ -56,7 +56,7 @@ function ProductSearchModal({ onClose, onProductSelect }) {
 
     // 🟡 컴포넌트가 처음 렌더링될 때 기본 검색 호출
     useEffect(() => {
-        productSearch();
+        fetchData();
     }, []); // 빈 배열을 넣어 처음 렌더링 시 한 번만 실행
 
     // 🟡 
@@ -162,7 +162,7 @@ function ProductSearchModal({ onClose, onProductSelect }) {
                         value={searchCode} // 상품코드 검색어 상태값 연결
                         onChange={(e) => setSearchCode(e.target.value)} // 상품코드 검색어 변경 처리
                     />
-                    <button className="box color" onClick={productSearch}>검색</button> {/* 검색 버튼 */}
+                    <button className="box color" onClick={fetchData}>검색</button> {/* 검색 버튼 */}
                 </div>
                 <div className="table_wrap">
                     {/* 검색 결과가 있을 때 */}

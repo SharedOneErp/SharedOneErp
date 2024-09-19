@@ -5,8 +5,8 @@ import Layout from "../../layout/Layout";
 import { BrowserRouter } from "react-router-dom";
 import '../../../resources/static/css/hr/EmployeeList.css';
 import axios from 'axios';
-import {formatDate} from '../../util/dateUtils'
-import {add,format} from 'date-fns';
+import { formatDate } from '../../util/dateUtils'
+import { add, format } from 'date-fns';
 import { useDebounce } from '../common/useDebounce';
 
 function EmployeeList() {
@@ -21,12 +21,12 @@ function EmployeeList() {
     // const debouncedFilteredEmployees = useDebounce(filteredEmployees,1000);
     //검색
     const [searchEmployee, setSearchEmployee] = useState('');
-    const debouncedSearchEmployee = useDebounce(searchEmployee,300);
+    const debouncedSearchEmployee = useDebounce(searchEmployee, 300);
 
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     //모달 관련(기본은 안보이게) 
-    const[showModifyModal, setShowModifyModal] = useState(false);
-    const[showInsertModal, setShowInsertModal] = useState(false);
+    const [showModifyModal, setShowModifyModal] = useState(false);
+    const [showInsertModal, setShowInsertModal] = useState(false);
 
     //초기화면은 재직자만
     useEffect(() => {
@@ -34,7 +34,7 @@ function EmployeeList() {
     }, []);
 
     //검색된 직원만 화면에 나오게끔
-    useEffect ( () => {
+    useEffect(() => {
         if (debouncedSearchEmployee === '') {
             setFilteredEmployees(employees);
         } else {
@@ -42,7 +42,7 @@ function EmployeeList() {
             setFilteredEmployees(filtered);
         }
     }, [debouncedSearchEmployee, employees])
-        
+
     //등록기능
     const [newEmployee, setNewEmployee] = useState({
         employeeId: '',
@@ -53,14 +53,14 @@ function EmployeeList() {
         employeeRole: ''
     });
 
-//    const handleRegiClick = () => {
-//        window.location.href = "/employeeRegister";
-//    }; 페이지이동,, 이제는 안씀
+    //    const handleRegiClick = () => {
+    //        window.location.href = "/employeeRegister";
+    //    }; 페이지이동,, 이제는 안씀
 
-//    const showTwentyEmployees = () => {
-//        pageEmployees(page);
-//
-//    }; 조회버튼을 눌러야 조회,, 이제는 안씀
+    //    const showTwentyEmployees = () => {
+    //        pageEmployees(page);
+    //
+    //    }; 조회버튼을 눌러야 조회,, 이제는 안씀
 
     //재직자만
     const pageEmployeesN = (page) => {
@@ -79,11 +79,11 @@ function EmployeeList() {
     const pageEmployeesY = (page) => {
         axios.get(`/api/employeeListY?page=${page}&size=20`)
             .then(response => {
-            console.log('응답 데이터:', response.data);
-            setEmployees(response.data.content);
-            setTotalPages(response.data.totalPages);
-            setSelectedEmployees(new Array(response.data.content.length).fill(false));
-        })
+                console.log('응답 데이터:', response.data);
+                setEmployees(response.data.content);
+                setTotalPages(response.data.totalPages);
+                setSelectedEmployees(new Array(response.data.content.length).fill(false));
+            })
 
     };
 
@@ -91,11 +91,11 @@ function EmployeeList() {
     const pageAllEmployees = (page) => {
         axios.get(`/api/allEmployees?page=${page}&size=20`)
             .then(response => {
-            console.log('전체 직원 조회 응답 데이터:', response.data);
-            setEmployees(response.data.content);
-            setTotalPages(response.data.totalPages);
-            setSelectedEmployees(new Array(response.data.content.length).fill(false));
-        });
+                console.log('전체 직원 조회 응답 데이터:', response.data);
+                setEmployees(response.data.content);
+                setTotalPages(response.data.totalPages);
+                setSelectedEmployees(new Array(response.data.content.length).fill(false));
+            });
     };
 
     //전체 체크박스
@@ -144,12 +144,12 @@ function EmployeeList() {
             // 서버로 삭제 요청 보내기
             axios.post('/api/deleteEmployees', selectedId)
                 .then(response => {
-                alert('삭제가 완료되었습니다.');
-                pageEmployeesN(page);
-            })
+                    alert('삭제가 완료되었습니다.');
+                    pageEmployeesN(page);
+                })
                 .catch(error => {
-                console.error('삭제 중 발생된 에러 : ', error);
-            });
+                    console.error('삭제 중 발생된 에러 : ', error);
+                });
         } else {
             alert('삭제할 직원을 선택해주세요.');
         }
@@ -167,11 +167,11 @@ function EmployeeList() {
         // }
 
         // const employeeToModify = employees[selectedIndex];
-//        if(!employee) {
-//            console.error('선택된 직원정보가 없습니다');
-//            return;
-//        }
-//        console.log(employee)
+        //        if(!employee) {
+        //            console.error('선택된 직원정보가 없습니다');
+        //            return;
+        //        }
+        //        console.log(employee)
         setSelectedEmployee(employee);
         setShowModifyModal(true);
     };
@@ -223,7 +223,7 @@ function EmployeeList() {
         }
     };
 
-//////////////////여기부터는 등록모달////////////////////////////////////////////////
+    //////////////////여기부터는 등록모달////////////////////////////////////////////////
 
     //등록모달
     const openInsertModal = () => {
@@ -244,16 +244,16 @@ function EmployeeList() {
 
     //직원등록
     const InsertSubmit = () => {
-        
+
         if (!validateEmployeeData(newEmployee)) {
-            return; 
+            return;
         }
 
-        
+
         axios.post('/api/registerEmployee', newEmployee)
             .then(response => {
                 alert('직원 등록이 완료되었습니다.');
-                closeInsertModal();  
+                closeInsertModal();
                 setNewEmployee({
                     employeeId: '',
                     employeePw: '',
@@ -262,7 +262,7 @@ function EmployeeList() {
                     employeeTel: '',
                     employeeRole: ''
                 });
-                pageEmployeesN(0);  
+                pageEmployeesN(0);
             })
             .catch(error => {
                 console.error('발생한 에러 : ', error);
@@ -291,79 +291,150 @@ function EmployeeList() {
             return false;
         }
 
-        
+
         return true;
     };
 
-
+    // 검색어 삭제 버튼 클릭 공통 함수
+    const handleSearchDel = (setSearch) => {
+        setSearch(''); // 공통적으로 상태를 ''로 설정
+    };
 
     return (
         <Layout currentMenu="employee"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
             <main className="main-content menu_employee">
-            <h1>직원 목록</h1>
-            {/*<button className="filter-button" onClick={showTwentyEmployees}>조회</button>*/}
-            <div className="btn-wrap">
-                <button className="filter-button" onClick={openInsertModal}>등록</button>
-                <button className="filter-button" onClick={checkedDelete}>삭제</button>
-                <button className="filter-button" onClick={() => pageAllEmployees(0)}>퇴직자포함한 직원보기</button>
-                <button className="filter-button" onClick={() => pageEmployeesN(0)}>재직자만 보기</button>
-                <button className="filter-button" onClick={() => pageEmployeesY(0)}>퇴직자만 보기</button>
-            </div>
-            <input type="text" placeholder="검색할 직원의 이름을 입력해주세요" value={searchEmployee} onChange={(e) => setSearchEmployee(e.target.value)} />
+                <div className="menu_title">
+                    <div className="sub_title">직원 관리</div>
+                    <div className="main_title">직원 목록</div>
+                </div>
+                <div className="menu_content">
+                    <div className="search_wrap">
+                        <div className="left">
+                            <div className={`search_box ${searchEmployee ? 'has_text' : ''}`}>
+                                <label className={`label_floating ${searchEmployee ? 'active' : ''}`}>이름</label>
+                                <i className="bi bi-search"></i>
+                                <input
+                                    type="text"
+                                    className="box search"
+                                    value={searchEmployee}
+                                    onChange={(e) => setSearchEmployee(e.target.value)}
+                                />
+                                {/* 검색어 삭제 버튼 */}
+                                {searchEmployee && (
+                                    <button
+                                        className="btn-del"
+                                        onClick={() => handleSearchDel(setSearchEmployee)} // 공통 함수 사용
+                                    >
+                                        <i className="bi bi-x"></i>
+                                    </button>
+                                )}
+                            </div>
+                            <button className="box" onClick={() => pageAllEmployees(0)}>퇴직자포함한 직원보기</button>
+                            <button className="box" onClick={() => pageEmployeesN(0)}>재직자만 보기</button>
+                            <button className="box" onClick={() => pageEmployeesY(0)}>퇴직자만 보기</button>
+                        </div>
+                        <div className="right">
+                            <button className="box color" onClick={openInsertModal}><i className="bi bi-plus-circle"></i> 등록하기</button>
+                        </div>
+                    </div>
+                    <div className="table_wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" checked={selectAll} onChange={handleSelectAll} /></th>
+                                    <th>직원아이디</th>
+                                    <th>이름</th>
+                                    <th>연락처</th>
+                                    {/*<th>이메일</th>*/}
+                                    <th>권한</th>
+                                    <th>등록일자</th>
+                                    <th>수정일자</th>
+                                    <th>삭제여부</th>
+                                    <th>삭제일자</th>
+                                    <th>상세정보수정</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {(searchEmployee ? filteredEmployees : employees).length > 0 ? (
+                                    (searchEmployee ? filteredEmployees : employees).map((employee, index) => (
+                                        <tr key={employee.employeeId}>
+                                            <td><input type="checkbox" checked={selectedEmployees[index] || false} onChange={() => handleSelect(index)} /></td>
+                                            <td>{employee.employeeId}</td>
+                                            <td>{employee.employeeName}</td>
+                                            <td>{employee.employeeTel}</td>
+                                            <td>{employee.employeeRole}</td>
+                                            <td>{formatDate(employee.employeeInsertDate)}</td>
+                                            <td>{employee.employeeUpdateDate ? format(employee.employeeUpdateDate, 'yyyy-MM-dd HH:mm') : '-'}</td>
+                                            <td>{employee.employeeDeleteYn}</td>
+                                            <td>{employee.employeeDeleteDate ? format(employee.employeeDeleteDate, 'yyyy-MM-dd HH:mm') : '-'}</td>
+                                            <td><button className='modifyModal-btn' onClick={() => openModifyModal(employee)}>수정하기</button></td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="10">검색한 직원이 없습니다.</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="pagination-container">
+                        <div className="pagination-sub left">
+                            <button className="box" onClick={checkedDelete}><i className="bi bi-trash3"></i>선택 삭제</button>
+                        </div>
 
-            <table className="employee-table">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" checked={selectAll} onChange={handleSelectAll}/></th>
-                        <th>직원아이디</th>
-                        <th>이름</th>
-                        <th>연락처</th>
-                        {/*<th>이메일</th>*/}
-                        <th>권한</th>
-                        <th>등록일자</th>
-                        <th>수정일자</th>
-                        <th>삭제여부</th>
-                        <th>삭제일자</th>
-                        <th>상세정보수정</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {(searchEmployee ? filteredEmployees : employees).length > 0 ? (
-                        (searchEmployee ? filteredEmployees : employees).map((employee, index) => (
-                            <tr key={employee.employeeId}>
-                                <td><input type="checkbox" checked={selectedEmployees[index] || false} onChange={() => handleSelect(index)} /></td>
-                                <td>{employee.employeeId}</td>
-                                <td>{employee.employeeName}</td>
-                                <td>{employee.employeeTel}</td>
-                                <td>{employee.employeeRole}</td>
-                                <td>{formatDate(employee.employeeInsertDate)}</td>
-                                <td>{employee.employeeUpdateDate ? format(employee.employeeUpdateDate, 'yyyy-MM-dd HH:mm') : '-'}</td>
-                                <td>{employee.employeeDeleteYn}</td>
-                                <td>{employee.employeeDeleteDate ? format(employee.employeeDeleteDate, 'yyyy-MM-dd HH:mm') : '-'}</td>
-                                <td><button className='modifyModal-btn' onClick={() => openModifyModal(employee)}>수정하기</button></td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="10">검색한 직원이 없습니다.</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
+                        {/* 가운데: 페이지네이션 */}
+                        <div className="pagination">
+                            {/* '처음' 버튼 */}
+                            {page > 1 && (
+                                <button className="box icon first" onClick={() => PageChange(1)}>
+                                    <i className="bi bi-chevron-double-left"></i>
+                                </button>
+                            )}
 
-            <div className="pagination">
-                <button onClick={() => PageChange(page - 1)} disabled={page === 0}>이전</button>
-                {[...Array(totalPages).keys()].map(pageNum => (
-                    <button
-                        key={pageNum}
-                        onClick={() => PageChange(pageNum)}
-                        disabled={pageNum === page}
-                    >
-                        {pageNum + 1}
-                    </button>
-                ))}
-                <button onClick={() => PageChange(page + 1)} disabled={page === totalPages - 1}>다음</button>
-            </div>
+                            {/* '이전' 버튼 */}
+                            {page > 1 && (
+                                <button className="box icon left" onClick={() => PageChange(page - 1)}>
+                                    <i className="bi bi-chevron-left"></i>
+                                </button>
+                            )}
+
+                            {/* 페이지 번호 블록 */}
+                            {Array.from({ length: Math.min(5, totalPages) }, (_, index) => {
+                                const startPage = Math.floor((page - 1) / 5) * 5 + 1;
+                                const currentPage = startPage + index; // page 대신 currentPage로 변경
+                                return (
+                                    currentPage <= totalPages && (
+                                        <button
+                                            key={currentPage}
+                                            onClick={() => PageChange(currentPage)}
+                                            className={currentPage === page ? 'box active' : 'box'} // 비교 시 page 대신 currentPage 사용
+                                        >
+                                            {currentPage}
+                                        </button>
+                                    )
+                                );
+                            })}
+
+                            {/* '다음' 버튼 */}
+                            {page < totalPages && (
+                                <button className="box icon right" onClick={() => PageChange(page + 1)}>
+                                    <i className="bi bi-chevron-right"></i>
+                                </button>
+                            )}
+
+                            {/* '끝' 버튼 */}
+                            {page < totalPages && (
+                                <button className="box icon last" onClick={() => PageChange(totalPages)}>
+                                    <i className="bi bi-chevron-double-right"></i>
+                                </button>
+                            )}
+                        </div>
+
+                        <div className="pagination-sub right"></div>
+                    </div>
+                </div>
+            </main>
 
             {showModifyModal && (
                 <div className='modal-overlay'>
@@ -414,7 +485,7 @@ function EmployeeList() {
                                         value={selectedEmployee.employeeRole}
                                         onChange={(e) => handleEmployeeChange('employeeRole', e.target.value)}
                                     /></td>
-                                    </tr>
+                                </tr>
                             </tbody>
                             <tfoot>
                                 <tr>
@@ -432,11 +503,11 @@ function EmployeeList() {
                 <div className='modal-overlay'>
                     <div className='insertModal-content'>
                         <h2>직원등록모달</h2>
-                        
+
                         <div className='insert-form'>
                             <button className='close-button' onClick={closeInsertModal}>X</button>
                             <div className='insert-column'>
-                                
+
                                 <input
                                     type='text'
                                     placeholder='아이디를 입력해주세요'
@@ -480,7 +551,6 @@ function EmployeeList() {
                     </div>
                 </div>
             )}
-            </main>
         </Layout>
     );
 }

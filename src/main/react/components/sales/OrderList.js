@@ -109,8 +109,8 @@ function OrderList() {
 
     useEffect(() => {
         if (itsAssignedMode) {
-            setSelectedStatus('결제중');
-            applyFilter('결제중');
+            setSelectedStatus('결재중');
+            applyFilter('결재중');
         }
     }, [itsAssignedMode]);
 
@@ -133,9 +133,9 @@ function OrderList() {
     const mapStatusFromDbToUi = (dbStatus) => {
         switch (dbStatus) {
             case 'ing':
-                return '결제중';
+                return '결재중';
             case 'approved':
-                return '결제완료';
+                return '결재완료';
             case 'denied':
                 return '반려';
             default:
@@ -155,7 +155,7 @@ function OrderList() {
                     // Assigned 모드에 대한 권한 검사
                     if (itsAssignedMode && empData.employeeRole !== 'admin') {
                         alert('해당 페이지에 접근 권한이 없습니다.');
-                        window.location.href='/main'; // 권한 없는 사용자는 메인 페이지로 리디렉션
+                        window.location.href = '/main'; // 권한 없는 사용자는 메인 페이지로 리디렉션
                         return;
                     }
 
@@ -194,18 +194,6 @@ function OrderList() {
             setAllSelected(false);
         }
     }, [selectedOrders, filteredOrders]);
-
-    if (loading) {
-        return (
-            <Layout currentMenu="orderList">
-                <main className="main-content menu_order_list">
-                    <div className="loading-container">
-                        <div className="spinner"></div>
-                    </div>
-                </main>
-            </Layout>
-        );
-    }
 
     // 필터링된 주문을 등록일 기준으로 내림차순 정렬
     const sortedOrders = [...orders].sort((a, b) => {
@@ -358,143 +346,140 @@ function OrderList() {
     return (
         <Layout currentMenu={itsAssignedMode && role === 'admin' ? 'orderRegisterApproval' : 'orderList'}>
             <main className="main-content menu_order_list">
-                <div className="orderList-title">
-                    <h3>
-                        {itsAssignedMode && role === 'admin'
-                            ? '주문 등록 승인'
-                            : role === 'admin'
-                                ? '전체 주문 목록'
-                                : '담당 주문 목록'}
-                    </h3>
+                <div className="menu_title">
+                    <div className="sub_title">영업 관리</div>
+                    <div className="main_title">{itsAssignedMode && role === 'admin'
+                        ? '주문 등록 승인'
+                        : role === 'admin'
+                            ? '전체 주문 목록'
+                            : '담당 주문 목록'}</div>
                 </div>
-                <div className="orderList-container">
-                    {error && <div className="error-message">{error}</div>}
-                    <div className="menu_content">
-                        <div className="search_wrap">
-                            <div className="left">
-                                <select className="box" onChange={(e) => setFilterType(e.target.value)}
-                                        value={filterType}>
-                                    <option value="customer">고객사</option>
-                                    <option value="date">주문 등록일</option>
-                                    <option value="status">주문 상태</option>
-                                    <option value="items">물품(계약) 리스트</option>
-                                    {role === 'admin' && (
-                                        <option value="employee">담당자</option>
-                                    )}
-                                </select>
+                <div className="menu_content">
+                    <div className="search_wrap">
+                        <div className="left">
+                            <select className="box" onChange={(e) => setFilterType(e.target.value)}
+                                value={filterType}>
+                                <option value="customer">고객사</option>
+                                <option value="date">주문 등록일</option>
+                                <option value="status">주문 상태</option>
+                                <option value="items">물품(계약) 리스트</option>
+                                {role === 'admin' && (
+                                    <option value="employee">담당자</option>
+                                )}
+                            </select>
 
-                                <div className="search_box">
-                                    <i className="bi bi-search"></i>
-                                    <input
-                                        type="text"
-                                        className="box search"
-                                        placeholder="검색어 입력"
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                    />
-                                </div>
-
-                                <br/>
-                                <div className="radio_box">
-                                    <span>상태</span>
-                                    {/* 'itsAssignedMode'가 참일 때는 '결제중' 라디오 버튼만 보이도록 설정 */}
-                                    {itsAssignedMode ? (
-                                        <>
-                                            <input
-                                                type="radio"
-                                                id="pending"
-                                                name="status"
-                                                value="결제중"
-                                                checked={selectedStatus === '결제중'}
-                                                onChange={handleStatusChange}
-                                            />
-                                            <label htmlFor="pending">결제중</label>
-                                        </>
-                                    ) : (
-                                        <>
-
-                                            <input
-                                                type="radio"
-                                                id="all"
-                                                name="status"
-                                                value=""
-                                                checked={selectedStatus === ''}
-                                                onChange={handleStatusChange}
-                                            />
-                                            <label htmlFor="all">전체</label>
-
-                                            <input
-                                                type="radio"
-                                                id="pending"
-                                                name="status"
-                                                value="결제중"
-                                                checked={selectedStatus === '결제중'}
-                                                onChange={handleStatusChange}
-                                            />
-                                            <label htmlFor="pending">결제중</label>
-
-                                            <input
-                                                type="radio"
-                                                id="completed"
-                                                name="status"
-                                                value="결제완료"
-                                                checked={selectedStatus === '결제완료'}
-                                                onChange={handleStatusChange}
-                                            />
-                                            <label htmlFor="completed">결제완료</label>
-
-                                            <input
-                                                type="radio"
-                                                id="rejected"
-                                                name="status"
-                                                value="반려"
-                                                checked={selectedStatus === '반려'}
-                                                onChange={handleStatusChange}
-                                            />
-                                            <label htmlFor="rejected">반려</label>
-                                        </>
-                                    )}
-                                </div>
-
-
-                                <div className={`date_box ${startDate ? 'has_text' : ''}`}>
-                                    <label>주문 등록일</label>
-                                    <input
-                                        type="date"
-                                        max="9999-12-31"
-                                        value={startDate}
-                                        onChange={(e) => setStartDate(e.target.value)}
-                                    />
-                                </div>
-                                <span className="date-separator">~</span>
-                                <div className={`date_box ${endDate ? 'has_text' : ''}`}>
-                                    <input
-                                        type="date"
-                                        max="9999-12-31"
-                                        value={endDate}
-                                        onChange={(e) => setEndDate(e.target.value)}
-                                    />
-                                </div>
-
+                            <div className="search_box">
+                                <i className="bi bi-search"></i>
+                                <input
+                                    type="text"
+                                    className="box search"
+                                    placeholder="검색어 입력"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
                             </div>
 
-                            <div className="right">
-                                {itsAssignedMode && role === 'admin' && (
+                            <br />
+                            <div className="radio_box">
+                                <span>상태</span>
+                                {/* 'itsAssignedMode'가 참일 때는 '결재중' 라디오 버튼만 보이도록 설정 */}
+                                {itsAssignedMode ? (
                                     <>
-                                        <button className="box color" onClick={handleApproveSelectedOrders}>
-                                            결제승인
-                                        </button>
-                                        <button className="box" onClick={handleDeniedSelectedOrders}>
-                                            반려요청
-                                        </button>
+                                        <input
+                                            type="radio"
+                                            id="pending"
+                                            name="status"
+                                            value="결재중"
+                                            checked={selectedStatus === '결재중'}
+                                            onChange={handleStatusChange}
+                                        />
+                                        <label htmlFor="pending">결재중</label>
+                                    </>
+                                ) : (
+                                    <>
+
+                                        <input
+                                            type="radio"
+                                            id="all"
+                                            name="status"
+                                            value=""
+                                            checked={selectedStatus === ''}
+                                            onChange={handleStatusChange}
+                                        />
+                                        <label htmlFor="all">전체</label>
+
+                                        <input
+                                            type="radio"
+                                            id="pending"
+                                            name="status"
+                                            value="결재중"
+                                            checked={selectedStatus === '결재중'}
+                                            onChange={handleStatusChange}
+                                        />
+                                        <label htmlFor="pending">결재중</label>
+
+                                        <input
+                                            type="radio"
+                                            id="completed"
+                                            name="status"
+                                            value="결재완료"
+                                            checked={selectedStatus === '결재완료'}
+                                            onChange={handleStatusChange}
+                                        />
+                                        <label htmlFor="completed">결재완료</label>
+
+                                        <input
+                                            type="radio"
+                                            id="rejected"
+                                            name="status"
+                                            value="반려"
+                                            checked={selectedStatus === '반려'}
+                                            onChange={handleStatusChange}
+                                        />
+                                        <label htmlFor="rejected">반려</label>
                                     </>
                                 )}
                             </div>
+
+
+                            <div className={`date_box ${startDate ? 'has_text' : ''}`}>
+                                <label>주문 등록일</label>
+                                <input
+                                    type="date"
+                                    max="9999-12-31"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                />
+                            </div>
+                            <span className="date-separator">~</span>
+                            <div className={`date_box ${endDate ? 'has_text' : ''}`}>
+                                <input
+                                    type="date"
+                                    max="9999-12-31"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                />
+                            </div>
+
                         </div>
 
-                        <div className="table_wrap">
-                            <table>
-                                <thead>
+                        <div className="right">
+                            {itsAssignedMode && role === 'admin' && (
+                                <>
+                                    <button className="box color" onClick={handleApproveSelectedOrders}>
+                                        결재승인
+                                    </button>
+                                    <button className="box" onClick={handleDeniedSelectedOrders}>
+                                        반려요청
+                                    </button>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                    {error && <div className="error-message">{error}</div>}
+                    <div className="table_wrap">
+                        <table>
+                            <thead>
                                 <tr>
                                     {itsAssignedMode && role === 'admin' && (
                                         <th className="checkbox-input">
@@ -514,108 +499,121 @@ function OrderList() {
                                     <th>담당자명</th>
                                     <th>상세</th>
                                 </tr>
-                                </thead>
-                                <tbody>
-                                {filteredOrders
-                                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                                    .map(order => (
-                                        <tr key={order.orderNo}>
-                                            {itsAssignedMode && role === 'admin' && (
-                                                <td className="checkbox-input">
-                                                    {order.orderHStatus === 'ing' ? (
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={selectedOrders.has(order.orderNo)}
-                                                            onChange={() => handleCheckboxChange(order.orderNo)}
-                                                        />
-                                                    ) : (
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={selectedOrders.has(order.orderNo)}
-                                                            disabled
-                                                        />
-                                                    )}
-                                                </td>
-                                            )}
+                            </thead>
+                            <tbody>
+                                {/* 로딩 중일 때 로딩 애니메이션 표시 */}
+                                {loading ? (
+                                    <tr className="tr_empty">
+                                        <td colSpan={role === 'admin' ? 10 : 9}> {/* admin 여부에 따라 colSpan 결정 */}
+                                            <div className="loading">
+                                                <span></span> {/* 첫 번째 원 */}
+                                                <span></span> {/* 두 번째 원 */}
+                                                <span></span> {/* 세 번째 원 */}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    filteredOrders
+                                        .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                                        .map(order => (
+                                            <tr key={order.orderNo}>
+                                                {itsAssignedMode && role === 'admin' && (
+                                                    <td className="checkbox-input">
+                                                        {order.orderHStatus === 'ing' ? (
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={selectedOrders.has(order.orderNo)}
+                                                                onChange={() => handleCheckboxChange(order.orderNo)}
+                                                            />
+                                                        ) : (
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={selectedOrders.has(order.orderNo)}
+                                                                disabled
+                                                            />
+                                                        )}
+                                                    </td>
+                                                )}
 
-                                            <td>{String(order.orderNo).padStart(3, '0')}</td>
-                                            <td>{order.customer?.customerName || 'N/A'}</td>
-                                            <td>{order.orderHInsertDate?.split('T')[0] || 'N/A'}</td>
-                                            <td>{mapStatusFromDbToUi(order.orderHStatus) || 'N/A'}</td>
-                                            <td>{formatProductNames(order.productNames || []) || 'N/A'}</td>
-                                            <td>{order.orderHTotalPrice?.toLocaleString() + '원' || 'N/A'}</td>
+                                                <td>{String(order.orderNo).padStart(3, '0')}</td>
+                                                <td>{order.customer?.customerName || 'N/A'}</td>
+                                                <td>{order.orderHInsertDate?.split('T')[0] || 'N/A'}</td>
+                                                <td>{mapStatusFromDbToUi(order.orderHStatus) || 'N/A'}</td>
+                                                <td>{formatProductNames(order.productNames || []) || 'N/A'}</td>
+                                                <td>{order.orderHTotalPrice?.toLocaleString() + '원' || 'N/A'}</td>
                                                 <td>{order.employee?.employeeName || 'N/A'}</td>
-                                            <td><a href={`/order?no=${order.orderNo}`}><i
-                                                className="bi bi-pencil-square"></i></a></td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                                <td><a href={`/order?no=${order.orderNo}`}><i
+                                                    className="bi bi-pencil-square"></i></a></td>
+                                            </tr>
+                                        ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="pagination-container">
+                        <div className="pagination-sub left">
+                            <input
+                                type="number"
+                                id="itemsPerPage"
+                                className="box"
+                                value={itemsPerPage}
+                                onChange={handleItemsPerPageChange}
+                                min={1}
+                                max={100}
+                                step={1}
+                            />
+                            <label htmlFor="itemsPerPage">건씩 보기 / <b>{filteredOrders.length}</b>건</label>
+                        </div>
+                        <div className="pagination">
+                            {/* '처음' 버튼 */}
+                            {currentPage > 1 && (
+                                <button className="box icon first" onClick={() => handlePageClick(1)}>
+                                    <i className="bi bi-chevron-double-left"></i>
+                                </button>
+                            )}
+
+                            {/* '이전' 버튼 */}
+                            {currentPage > 1 && (
+                                <button className="box icon left" onClick={() => handlePageClick(currentPage - 1)}>
+                                    <i className="bi bi-chevron-left"></i>
+                                </button>
+                            )}
+
+                            {/* 페이지 번호 블록 계산 (1~5, 6~10 방식) */}
+                            {renderPageButtons()}
+
+                            {/* '다음' 버튼 */}
+                            {currentPage < totalPages && (
+                                <button className="box icon right" onClick={() => handlePageClick(currentPage + 1)}>
+                                    <i className="bi bi-chevron-right"></i>
+                                </button>
+                            )}
+
+                            {/* '끝' 버튼 */}
+                            {currentPage < totalPages && (
+                                <button className="box icon last" onClick={() => handlePageClick(totalPages)}>
+                                    <i className="bi bi-chevron-double-right"></i>
+                                </button>
+                            )}
                         </div>
 
-                        <div className="pagination-container">
-                            <div className="pagination-sub left">
-                                <input
-                                    type="number"
-                                    id="itemsPerPage"
-                                    className="box"
-                                    value={itemsPerPage}
-                                    onChange={handleItemsPerPageChange}
-                                    min={1}
-                                    max={100}
-                                    step={1}
-                                />
-                                <label htmlFor="itemsPerPage">건씩 보기 / <b>{filteredOrders.length}</b>건</label>
-                            </div>
-                            <div className="pagination">
-                                {/* '처음' 버튼 */}
-                                {currentPage > 1 && (
-                                    <button className="box icon first" onClick={() => handlePageClick(1)}>
-                                        <i className="bi bi-chevron-double-left"></i>
-                                    </button>
-                                )}
-
-                                {/* '이전' 버튼 */}
-                                {currentPage > 1 && (
-                                    <button className="box icon left" onClick={() => handlePageClick(currentPage - 1)}>
-                                        <i className="bi bi-chevron-left"></i>
-                                    </button>
-                                )}
-
-                                {/* 페이지 번호 블록 계산 (1~5, 6~10 방식) */}
-                                {renderPageButtons()}
-
-                                {/* '다음' 버튼 */}
-                                {currentPage < totalPages && (
-                                    <button className="box icon right" onClick={() => handlePageClick(currentPage + 1)}>
-                                        <i className="bi bi-chevron-right"></i>
-                                    </button>
-                                )}
-
-                                {/* '끝' 버튼 */}
-                                {currentPage < totalPages && (
-                                    <button className="box icon last" onClick={() => handlePageClick(totalPages)}>
-                                        <i className="bi bi-chevron-double-right"></i>
-                                    </button>
-                                )}
-                            </div>
-
-                            {/* 오른쪽: 페이지 번호 입력 */}
-                            <div className="pagination-sub right">
-                                <input
-                                    type="text"
-                                    id="pageInput"
-                                    className="box"
-                                    min={1}    // 최소값 설정
-                                    step={1}   // 1씩 증가/감소 가능
-                                    max={totalPages}
-                                    value={pageInputValue} // 상태로 관리되는 입력값
-                                    onChange={handlePageInputChange}
-                                />
-                                <label htmlFor="pageInput">/ <b>{totalPages}</b>페이지</label>
-                            </div>
+                        {/* 오른쪽: 페이지 번호 입력 */}
+                        <div className="pagination-sub right">
+                            <input
+                                type="text"
+                                id="pageInput"
+                                className="box"
+                                min={1}    // 최소값 설정
+                                step={1}   // 1씩 증가/감소 가능
+                                max={totalPages}
+                                value={pageInputValue} // 상태로 관리되는 입력값
+                                onChange={handlePageInputChange}
+                            />
+                            <label htmlFor="pageInput">/ <b>{totalPages}</b>페이지</label>
                         </div>
                     </div>
+
                 </div>
             </main>
         </Layout>
