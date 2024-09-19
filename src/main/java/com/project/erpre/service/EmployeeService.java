@@ -67,6 +67,7 @@ public class EmployeeService {
         return employeeRepository.findAll(pageable); // 필터 없이 전체 조회
     }
 
+    //퇴직자조회
     public Page<Employee> getPageEmployeesY(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return employeeRepository.findByEmployeeDeleteYn("Y", pageable);
@@ -83,6 +84,7 @@ public class EmployeeService {
             Employee employee = employeeRepository.findById(id).orElse(null);
             if (employee != null) {
                 employee.setEmployeeDeleteYn("Y");
+                employee.setEmployeeDeleteDate(new Timestamp(System.currentTimeMillis()));
                 employeeRepository.save(employee);  // update로 N -> Y로 바꿈
             }
         }

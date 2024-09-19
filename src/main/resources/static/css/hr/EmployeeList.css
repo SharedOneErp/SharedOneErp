@@ -83,9 +83,9 @@
 }
 
 .close-button {
-    position: absolute;
-    top: 20px;
-    right: 20px;
+    /* position: absolute; */
+    /* top: 20px; */
+    /* right: 20px; */
     background-color: transparent;
     border: none;
     font-size: 24px;

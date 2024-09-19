@@ -100,7 +100,7 @@ public class EmployeeController {
         return ResponseEntity.ok("Employees deleted successfully");
     }
 
-    //퇴직자까지 보기
+    //퇴직자까지 보기(전체직원보기)
     @GetMapping("/allEmployees")
     public ResponseEntity<Page<Employee>> getAllEmployeesWithResigned(
             @RequestParam(defaultValue = "0") int page,
