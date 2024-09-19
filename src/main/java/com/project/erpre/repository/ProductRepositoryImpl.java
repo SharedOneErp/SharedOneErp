@@ -2,6 +2,7 @@ package com.project.erpre.repository;
 
 import com.project.erpre.model.*;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -31,6 +32,11 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         QCategory middleCategory = new QCategory("middleCategory");
         QCategory topCategory = new QCategory("torCategory");
 
+        BooleanExpression statusCondition = null;
+        if (!status.equals("all")) {
+            statusCondition = product.productDeleteYn.eq(status.equals("active") ? "N" : "Y");
+        }
+
         return queryFactory
                 .select(Projections.fields(ProductDTO.class, // constructor -> fields로 null 값 허용하도록 수정
                         product.productCd,
@@ -50,9 +56,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .leftJoin(product.category, category)
                 .leftJoin(category.parentCategory, middleCategory)
                 .leftJoin(middleCategory.parentCategory, topCategory)
-                .where(
-                        status.equals("all") ? null : product.productDeleteYn.eq(status.equals("active") ? "N" : "Y")
-                )
+                .where(statusCondition)
                 .orderBy(product.productCd.asc())
                 .offset((long) page * size)
                 .limit(size)

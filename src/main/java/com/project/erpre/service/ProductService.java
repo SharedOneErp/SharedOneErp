@@ -26,11 +26,16 @@ public class ProductService {
     // 1. 전체 상품 목록 조회 + 페이징 + 카테고리 조회 + 상품 상태 결합
     public Map<String, Object> getAllProductsAndCategories(int page, int size, String status) {
 
-        // 상품 목록 가져오기
+        // 상태별 상품 목록 가져오기
         List<ProductDTO> products = productRepository.findAllProducts(page, size, status);
-        //List<ProductDTO> products = productRepository.findProductsByStatus(status);
 
-        long totalItems = productRepository.count();
+        // 상태에 따른 상품 수 계산
+        long totalItems;
+        if (status.equals("all")) {
+            totalItems = productRepository.count();  // 전체 상품 수
+        } else {
+            totalItems = productRepository.countByStatus(status.equals("active") ? "N" : "Y");  // 상태별 상품 수
+        }
 
         // 모든 카테고리 목록 가져오기
         List<Category> topCategories = categoryRepository.findTopCategory();
