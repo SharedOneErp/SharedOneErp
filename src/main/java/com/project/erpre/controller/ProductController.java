@@ -68,17 +68,14 @@ public class ProductController {
         return ResponseEntity.ok(updatedProduct);
     }
 
-    // 선택한 상품 삭제 API
-    @DeleteMapping("/productDelete")
-    public ResponseEntity<List<Product>> deleteProducts(@RequestBody List<String> productCds) {
+    // 5. 선택한 상품 삭제 API
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteProducts(@RequestBody List<String> productCds) {
         try {
-            List<Product> deletedProducts = productService.deleteProducts(productCds);
-            if (deletedProducts.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-            return ResponseEntity.ok(deletedProducts); // 삭제된 상품 목록 반환
+            productService.deleteProducts(productCds);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

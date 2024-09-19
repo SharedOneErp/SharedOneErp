@@ -337,27 +337,61 @@ export const useHooksList = () => {
         setEditableProduct({}); // 수정된 데이터 초기화
     };
 
-    // 선택 상품 삭제
-    const handleDeleteSelected = () => {
-        if (selectedProducts.length === 0) {
+    const handleDeleteSelected = (productCd = null) => {
+        if (!productCd && selectedProducts.length === 0) {
             alert('삭제할 상품을 선택해주세요.');
             return;
         }
-        if (!window.confirm('상품을 정말 삭제하시겠습니까?')) {
+
+        // if(!selectedProducts.productDeleteDate.empty()) {
+        //    alert('이미 삭제된 상품을 선택하셨습니다.');
+        //    return;
+        // }
+
+        if (!window.confirm('정말 삭제하시겠습니까?')) {
             return;
         }
-        axios.delete('/api/products/productDelete', {
+
+        const productsToDelete = productCd ? [productCd] : selectedProducts;
+
+        axios.delete('/api/products/delete', {
             headers: {
                 'Content-Type': 'application/json'
             },
-            data: selectedProducts
+            data: productsToDelete
         })
             .then(response => {
                 alert('상품이 삭제되었습니다.');
-                setProducts(response.data);
-                setSelectedProducts([]);
+                fetchProducts();
+                setSelectedProducts([]); // 선택된 상품 초기화
             })
-            .catch(error => console.error('상품 삭제 실패:', error));
+            .catch(error => {
+                console.error('상품 삭제 실패:', error);
+            });
+    };
+
+    const fetchProducts = () => {
+        axios.get('/api/products/productList', {
+            params: {
+                page: currentPage,
+                size: itemsPerPage,
+                topCategoryNo: filterTopCategory || null,
+                middleCategoryNo: filterMiddleCategory || null,
+                lowCategoryNo: filterLowCategory || null,
+            },
+        })
+            .then((response) => {
+                const productsWithCategoryNames = response.data.products.map(product => ({
+                    ...product,
+                    topCategory: product.topCategoryNo,
+                    middleCategory: product.middleCategoryNo,
+                    lowCategory: product.lowCategoryNo,
+                }));
+                setProducts(productsWithCategoryNames);
+                setFilteredProducts(productsWithCategoryNames);
+                setTotalItems(response.data.totalItems || 0);
+            })
+            .catch((error) => console.error('상품 목록 갱신 실패', error));
     };
 
     useEffect(() => {
@@ -606,66 +640,66 @@ export const useHooksList = () => {
         }
     };
 
-        return {
-            products,
-            selectedProducts,
-            handleAllSelectProducts,
-            handleSelectProduct,
-            isAdding,
-            setIsAdding,
-            newProductData,
-            handleAddNewProduct,
-            handleInputChange,
-            handleCancelAdd,
-            editMode,
-            editableProduct,
-            handleEditClick,
-            handleConfirmClick,
-            handleCancelEdit,
-            handleDeleteSelected,
-            filterLowCategory,
-            filterMiddleCategory,
-            filterTopCategory,
-            filteredMiddleCategories,
-            filteredLowCategories,
-            handleFilterLowCategoryChange,
-            handleFilterMiddleCategoryChange,
-            handleFilterTopCategoryChange,
-            selectedLowCategory,
-            selectedMiddleCategory,
-            selectedTopCategory,
-            lowCategories,
-            middleCategories,
-            topCategories,
-            handleLowCategoryChange,
-            handleMiddleCategoryChange,
-            currentPage,
-            setCurrentPage,
-            itemsPerPage,
-            totalItems,
-            totalPages,
-            handlePageChange,
-            handleItemsPerPageChange,
-            isModalOpen,
-            handleOpenModal,
-            handleCloseModal,
-            productDetail,
-            selectedProductCd,
-            paginationNumbers,
-            handlePreviousPageGroup,
-            handleNextPageGroup,
-            filteredProducts,
-            getCategoryNameByNo,
-            searchTerm,
-            setSearchTerm,
-            handleTopCategoryChange,
-            fullTopCategories,
-            addFilteredMiddleCategories,
-            addFilteredLowCategories,
-            filteredEditMiddleCategories,
-            filteredEditLowCategories,
-            handleFilterTopCategoryChangeForEdit,
-            handleFilterMiddleCategoryChangeForEdit,
-            handleFilterLowCategoryChangeForEdit
-        };
-    }
+    return {
+        products,
+        selectedProducts,
+        handleAllSelectProducts,
+        handleSelectProduct,
+        isAdding,
+        setIsAdding,
+        newProductData,
+        handleAddNewProduct,
+        handleInputChange,
+        handleCancelAdd,
+        editMode,
+        editableProduct,
+        handleEditClick,
+        handleConfirmClick,
+        handleCancelEdit,
+        handleDeleteSelected,
+        filterLowCategory,
+        filterMiddleCategory,
+        filterTopCategory,
+        filteredMiddleCategories,
+        filteredLowCategories,
+        handleFilterLowCategoryChange,
+        handleFilterMiddleCategoryChange,
+        handleFilterTopCategoryChange,
+        selectedLowCategory,
+        selectedMiddleCategory,
+        selectedTopCategory,
+        lowCategories,
+        middleCategories,
+        topCategories,
+        handleLowCategoryChange,
+        handleMiddleCategoryChange,
+        currentPage,
+        setCurrentPage,
+        itemsPerPage,
+        totalItems,
+        totalPages,
+        handlePageChange,
+        handleItemsPerPageChange,
+        isModalOpen,
+        handleOpenModal,
+        handleCloseModal,
+        productDetail,
+        selectedProductCd,
+        paginationNumbers,
+        handlePreviousPageGroup,
+        handleNextPageGroup,
+        filteredProducts,
+        getCategoryNameByNo,
+        searchTerm,
+        setSearchTerm,
+        handleTopCategoryChange,
+        fullTopCategories,
+        addFilteredMiddleCategories,
+        addFilteredLowCategories,
+        filteredEditMiddleCategories,
+        filteredEditLowCategories,
+        handleFilterTopCategoryChangeForEdit,
+        handleFilterMiddleCategoryChangeForEdit,
+        handleFilterLowCategoryChangeForEdit
+    };
+}
