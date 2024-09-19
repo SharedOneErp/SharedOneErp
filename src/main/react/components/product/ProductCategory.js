@@ -52,19 +52,6 @@ function ProductCategory() {
     } = useHooksList();
 
 
-    const [categorySearchText, setCategorySearchText] = useState(''); // 검색어
-    const debouncedCategorySearchText = useDebounce(categorySearchText, 300); // 딜레이 적용
-
-    // 검색어 변경
-    const handleCategorySearchTextChange = (event) => {
-        setCategorySearchText(event.target.value);
-    };
-
-    // 검색어 삭제 버튼 클릭 공통 함수
-    const handleSearchDel = (setSearch) => {
-        setSearch(''); // 공통적으로 상태를 ''로 설정
-    };
-
     // 대분류와 중분류의 열림/닫힘 상태를 저장하는 상태값
     const [collapsed, setCollapsed] = useState([]);
     const [collapsedTwo, setCollapsedTwo] = useState([]);
@@ -87,6 +74,23 @@ function ProductCategory() {
         }
     };
 
+    // 대분류 모두 접기/펼치기
+    const toggleAllCollapse = () => {
+        if (collapsed.length === category.filter(cat => cat.categoryLevel === 1).length) {
+            setCollapsed([]); // 모두 펼쳐졌다면 모두 접기
+        } else {
+            setCollapsed(category.filter(cat => cat.categoryLevel === 1).map(cat => cat.one)); // 모두 접기
+        }
+    };
+
+    // 중분류 모두 접기/펼치기
+    const toggleAllCollapseTwo = () => {
+        if (collapsedTwo.length === category.filter(cat => cat.categoryLevel === 2).length) {
+            setCollapsedTwo([]); // 모두 펼쳐졌다면 모두 접기
+        } else {
+            setCollapsedTwo(category.filter(cat => cat.categoryLevel === 2).map(cat => cat.two)); // 모두 접기
+        }
+    };
     return (
         <Layout currentMenu="productCategory"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
             <main className="main-content menu_category">
@@ -97,6 +101,13 @@ function ProductCategory() {
                 <div className="menu_content">
                     <div className="search_wrap">
                         <div className="left">
+                            {/* 대분류/중분류 모두 접기 버튼 */}
+                            <button className="box color_border" onClick={toggleAllCollapse}>
+                                {collapsed.length === category.filter(cat => cat.categoryLevel === 1).length ? '대분류 모두 펼치기' : '대분류 모두 접기'}
+                            </button>
+                            <button className="box color_border" onClick={toggleAllCollapseTwo}>
+                                {collapsedTwo.length === category.filter(cat => cat.categoryLevel === 2).length ? '중분류 모두 펼치기' : '중분류 모두 접기'}
+                            </button>
                         </div>
                         <div className="right">
                             <button className="box color" onClick={openModal}><i class="bi bi-pencil-square"></i> 편집하기</button>
