@@ -122,7 +122,7 @@ input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; borde
 .table_wrap table tr.tr_input { background-color: #e4f1f7a3; } 
 .table_wrap table th { font-weight: 500; } 
 .table_wrap table th,
-.table_wrap table td { padding: 8px; text-align: left; } 
+.table_wrap table td { padding: 12px 8px; text-align: left; } 
 .table_wrap table th { padding: 11px 8px; } 
 .table_wrap table td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
 .table_wrap table td b { font-weight: 500; color:555 } 

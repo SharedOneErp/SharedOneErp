@@ -34,16 +34,14 @@ function Price() {
     // 🔴 커스텀 훅을 통해 상태와 함수 불러오기
     const {
         priceList,               // 가격 리스트 상태 (고객사별 상품 가격 데이터를 담고 있는 배열)
+        
         isLoading,               // 로딩 상태 (데이터를 불러오는 중일 때 true로 설정)
-
         totalItems,              // 전체 항목 수 상태
         itemsPerPage,            // 페이지당 항목 수 (사용자가 선택한 한 페이지에 표시할 데이터 개수)
         handleItemsPerPageChange,// 페이지당 항목 수 변경 함수 (사용자가 페이지당 몇 개의 항목을 볼지 선택하는 함수)
-
         handlePage,         // 페이지 변경 함수 (사용자가 페이지를 이동할 때 호출하는 함수)
         totalPages,              // 총 페이지 수 (전체 데이터에서 페이지당 항목 수로 나눈 페이지 개수)
         currentPage,             // 현재 페이지 (사용자가 현재 보고 있는 페이지 번호)
-
         pageInputValue,          // 페이지 입력 필드의 값
         handlePageInputChange,   // 페이지 입력값 변경 함수 (입력된 페이지 번호를 변경하는 함수)
 
