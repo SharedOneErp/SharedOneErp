@@ -102,7 +102,7 @@ function Price() {
         modalMessage
     } = useHooksList();          // 커스텀 훅 사용
 
-    // 🔴 PriceRow 컴포넌트를 상위 컴포넌트 내부에 정의
+    // 🔴 등록/수정 행
     const PriceRow = ({ isEditMode, priceData, onSave, onCancel, handleInputChange }) => {
         return (
             <tr className='tr_input'>
@@ -382,7 +382,7 @@ function Price() {
                                 )}
                                 {/* 로딩 중일 때 로딩 이미지 표시 */}
                                 {isLoading ? (
-                                    <tr>
+                                    <tr className="tr_empty">
                                         <td colSpan="10"> {/* 로딩 애니메이션 중앙 배치 */}
                                             <div className="loading">
                                                 <span></span> {/* 첫 번째 원 */}
@@ -463,8 +463,8 @@ function Price() {
                                             )
                                         ))
                                     ) : (
-                                        <tr>
-                                            <td colSpan="10" className="tr_empty">
+                                        <tr className="tr_empty">
+                                            <td colSpan="10">
                                                 <div className="no_data"><i className="bi bi-exclamation-triangle"></i>조회된 결과가 없습니다.</div>
                                             </td>
                                         </tr>
