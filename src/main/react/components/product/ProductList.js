@@ -162,7 +162,7 @@ function ProductList() {
                                         value={selectedTopCategory}
                                         onChange={(e) => {
                                             handleInputChange(e);
-                                            handleMiddleCategoryChange(e); // 대분류 선택 시 중분류 고정
+                                            handleMiddleCategoryChange(e);
                                         }}
                                     >
                                         <option value="">대분류</option>
@@ -177,7 +177,7 @@ function ProductList() {
                                         value={selectedMiddleCategory}
                                         onChange={(e) => {
                                             handleInputChange(e);
-                                            handleMiddleCategoryChange(e); // 중분류 선택 시 대분류 고정
+                                            handleMiddleCategoryChange(e);
                                         }}
                                     >
                                         <option value="">중분류</option>
@@ -192,7 +192,7 @@ function ProductList() {
                                         value={selectedLowCategory}
                                         onChange={(e) => {
                                             handleInputChange(e);
-                                            handleLowCategoryChange(e); // 소분류 선택 시 중분류 및 대분류 고정
+                                            handleLowCategoryChange(e);
                                         }}
                                     >
                                         <option value="">소분류</option>
@@ -235,7 +235,7 @@ function ProductList() {
                                                 ))}
                                             </select>
                                         ) : (
-                                            product.topCategory
+                                            getCategoryNameByNo(product.topCategoryNo)
                                         )}
                                     </td>
                                     <td>
@@ -247,7 +247,7 @@ function ProductList() {
                                                 ))}
                                             </select>
                                         ) : (
-                                            product.middleCategory
+                                            getCategoryNameByNo(product.middleCategoryNo)
                                         )}
                                     </td>
                                     <td>
@@ -259,7 +259,7 @@ function ProductList() {
                                                 ))}
                                             </select>
                                         ) : (
-                                            product.lowCategory
+                                            getCategoryNameByNo(product.lowCategoryNo)
                                         )}
                                     </td>
                                     <td>{product.productInsertDate ? formatDate(product.productInsertDate) : '-'}</td>
