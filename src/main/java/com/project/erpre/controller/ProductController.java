@@ -54,7 +54,7 @@ public class ProductController {
         }
     }
 
-    // 상품 등록 API
+    // 3. 상품 등록 API
     @PostMapping("/add")
     public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO) {
         ProductDTO savedProduct = productService.saveOrUpdate(productDTO);

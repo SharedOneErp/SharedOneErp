@@ -40,12 +40,15 @@ public class ProductDTO {
 
     // 1. 전체 상품 목록 조회 생성자
     public ProductDTO(String productCd, String productNm, LocalDateTime productInsertDate, LocalDateTime productUpdateDate,
+                      Timestamp productDeleteDate, String ProductDeleteYn,
                       String lowCategory, String middleCategory, String topCategory,
                       Integer lowCategoryNo, Integer middleCategoryNo,Integer topCategoryNo) {
         this.productCd = productCd;
         this.productNm = productNm;
         this.productInsertDate = productInsertDate;
         this.productUpdateDate = productUpdateDate;
+        this.productDeleteDate = productDeleteDate;
+        this.productDeleteYn = ProductDeleteYn;
         this.lowCategory = lowCategory;
         this.middleCategory = middleCategory;
         this.topCategory = topCategory;
@@ -72,10 +75,11 @@ public class ProductDTO {
         this.lowCategory = lowCategory;
     }
 
-    public ProductDTO(String productCd, String productNm, Integer CategoryNo) {
+    // 3. 상품 등록 생성자
+    public ProductDTO(String productCd, String productNm, Integer categoryNo) {
         this.productCd = productCd;
         this.productNm = productNm;
-        this.categoryNo = CategoryNo;
+        this.categoryNo = categoryNo;
     }
 
 }

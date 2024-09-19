@@ -21,9 +21,6 @@ public interface ProductRepository extends JpaRepository<Product, String>, Produ
 
 
 
-
-
-
     @Query("SELECT p FROM Product p WHERE " +
             "(p.productCd LIKE %:productCd%) AND " +
             "(p.productNm LIKE %:productNm%) AND " +

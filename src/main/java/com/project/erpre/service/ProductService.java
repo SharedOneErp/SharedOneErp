@@ -56,23 +56,23 @@ public class ProductService {
         return productRepository.findProductDetailsByProductCd(productCd);
     }
 
+    // 3. 상품 등록
     public ProductDTO saveOrUpdate(ProductDTO productDTO) {
         Product product = productRepository.findById(productDTO.getProductCd())
                 .orElse(new Product());
 
-        // DTO 데이터를 엔티티에 설정
         product.setProductCd(productDTO.getProductCd());
         product.setProductNm(productDTO.getProductNm());
 
-        // InsertDate 설정: 신규 등록일 경우에만 설정
+        // 상품 등록일 - 항상 현재 시간으로 저장
         if (product.getProductInsertDate() == null) {
             product.setProductInsertDate(LocalDateTime.now());
         }
 
-        // UpdateDate 설정: 항상 현재 시간으로 업데이트
-        product.setProductUpdateDate(LocalDateTime.now());
+//        // UpdateDate 설정: 항상 현재 시간으로 업데이트
+//        product.setProductUpdateDate(LocalDateTime.now());
 
-        // Category 설정
+        // 소분류의 CategoryNo 저장
         if (productDTO.getCategoryNo() != null) {
             Category category = categoryRepository.findById(productDTO.getCategoryNo())
                     .orElseThrow(() -> new RuntimeException("해당 카테고리를 찾을 수 없습니다."));
@@ -154,7 +154,7 @@ public class ProductService {
         return ProductDTO.builder()
                 .productCd(product.getProductCd())
                 .productNm(product.getProductNm())
-                .categoryNm(product.getCategory().getCategoryNm())
+                .categoryNo(product.getCategory().getCategoryNo())
                 .productInsertDate(product.getProductInsertDate())
                 .productUpdateDate(product.getProductUpdateDate())
                 .productDeleteYn(product.getProductDeleteYn())
