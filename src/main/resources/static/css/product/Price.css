@@ -20,3 +20,6 @@
 .menu_price .table_wrap table td:nth-child(9) { width: 140px; /* 등록/수정/삭제일시 */ } 
 .menu_price .table_wrap table th:nth-child(10),
 .menu_price .table_wrap table td:nth-child(10) { width: 110px; /* 액션 */ } 
+/* padding 조절 */
+.menu_price .table_wrap table th,
+.menu_price .table_wrap table td { padding: 12px 8px; text-align: left; } 
