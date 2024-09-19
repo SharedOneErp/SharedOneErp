@@ -24,10 +24,9 @@ function CategoryModal({
   return (
     <div className='modal-overlay'>
       <div className='modal-content'>
-        <h2>카테고리 등록222222</h2>
-        <button className='close-button' onClick={closeModal}>X</button>
 
         <div className='category-form'>
+          <button className='close-button' onClick={closeModal}>X</button>
           {/* 대분류 */}
           <div className='category-column'>
             <h4>대분류</h4>
