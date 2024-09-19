@@ -56,6 +56,10 @@ public class CategoryService {
 
     //카테고리 저장
     public Category saveCategory(CategoryDTO categoryDTO) {
+        List<Category> existCategory = categoryRepository.findByCategoryNm(categoryDTO.getCategoryNm());
+        if (!existCategory.isEmpty()){
+            throw new IllegalArgumentException(categoryDTO.getCategoryNm() + "은 이미 존재하는 카테고리 명입니다." );
+        }
         logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
         // DTO -> Entity 변환
         Category category = new Category();

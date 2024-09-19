@@ -199,7 +199,7 @@ export const useHooksList = () => {
               setSelectedLowCategory(null);
             }
           } else {
-            alert('카테고리 삭제에 실패했습니다.');
+            alert('하위 카테고리가 남아 있으므로 삭제할 수 없습니다.');
           }
         })
         .catch(error => console.error('카테고리 삭제 실패:', error));
@@ -256,30 +256,38 @@ export const useHooksList = () => {
   }
 
 
-  //대분류 추가 버튼
+  //카테고리 등록 버튼
   const handleAddButton = (categoryLevel) => {
 
     let categoryName = ''; //변경필요 때문 let사용
     let parentCategoryNo = null;
 
     if (categoryLevel === 1) {
-      if (!insertTop) {
-        alert('대분류 값을 입력하세요');
+      if (!insertTop.trim()) {
+        alert('대분류 값을 입력하세요.')
         return;
       }
       categoryName = insertTop;
 
     } else if (categoryLevel === 2) {
-      if (!insertMid) {
-        alert('중분류 값을 입력하세요');
+      if (!selectedTopCategory) {
+        alert('상위 카테고리를 먼저 선택하세요.')
+        return;
+      }
+      if (!insertMid.trim()) {
+        alert('중분류 값을 입력하세요.')
         return;
       }
       categoryName = insertMid;
       parentCategoryNo = selectedTopCategory;
 
     } else if (categoryLevel == 3) {
-      if (!insertLow) {
-        alert('소분류 값을 입력하세요');
+      if (!selectedMidCategory) {
+        alert('상위 카테고리를 먼저 선택하세요.')
+        return;
+      }
+      if (!insertLow.trim()) {
+        alert('소분류 값을 입력하세요.')
         return;
       }
       categoryName = insertLow;
@@ -297,22 +305,32 @@ export const useHooksList = () => {
         parentCategoryNo: parentCategoryNo
       }),
     })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(error => {
+            throw new Error(error.message);
+          });
+        }
+        return response.json();
+      })
       .then(data => {
         //카테고리레벨에 따른 리스트 업데이트
         if (categoryLevel === 1) {
+          
           setGetTopCategory(prevCategory => [...prevCategory, data]);
           setInsertedTopList([...insertedTopList, data]);
           setSelectedTopCategory(data.categoryNo);
           setInsertTop('');
           alert('대분류 카테고리가 추가되었습니다.')
         } else if (categoryLevel === 2) {
+          
           setGetMidCategory(prevCategory => [...prevCategory, data]);
           setInsertedMidList([...insertedMidList, data]);
           setSelectedMidCategory(data.categoryNo);
           setInsertMid('');
           alert('중분류 카테고리가 추가되었습니다.')
         } else if (categoryLevel === 3) {
+
           setGetLowCategory(prevCategory => [...prevCategory, data]);
           setInsertedLowList([...insertedLowList, data]);
           setSelectedLowCategory(data.categoryNo);
@@ -320,7 +338,10 @@ export const useHooksList = () => {
           alert('소분류 카테고리가 추가되었습니다.')
         }
       })
-      .catch(error => console.error('카테고리 추가 실패:', error));
+      .catch(error => {
+        alert(error.message);
+        console.error('카테고리 추가 실패:', error);
+      });
 
 
   };
