@@ -7,7 +7,7 @@ const Toast = () => {
     const [toasts, setToasts] = useState([]); // 여러 개의 토스트 관리
 
     // showToast 함수를 useCallback으로 정의하여 토스트 추가
-    const showToast = useCallback((message, duration = 3000) => {
+    const showToast = useCallback((message, duration = 2000) => {
         // 중복 메시지 여부 확인
         const isDuplicate = toasts.some(toast => toast.message === message);
         //if (isDuplicate) return; // 메시지가 이미 있으면 추가하지 않음
