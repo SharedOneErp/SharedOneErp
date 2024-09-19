@@ -31,6 +31,7 @@ public class ProductService {
     public Map<String, Object> getAllProductsAndCategories(int page, int size) {
         // 상품 목록 가져오기
         List<ProductDTO> products = productRepository.findAllProducts(page, size);
+        System.out.println("상품 개수:" + products.size());
 
         long totalItems = productRepository.count();
 
@@ -82,13 +83,6 @@ public class ProductService {
         Product savedProduct = productRepository.save(product);
         return convertToDTO(savedProduct);
     }
-
-
-
-//    // 전체 상품 목록 조회
-//    public Page<ProductDTO> getAllProducts(Pageable pageable) {
-//        return productRepository.getAllProducts(pageable);
-//    }
 
     // 선택한 상품 삭제
     @Transactional

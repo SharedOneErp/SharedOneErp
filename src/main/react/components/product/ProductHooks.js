@@ -24,6 +24,9 @@ export const useHooksList = () => {
     const [fullMiddleCategories, setFullMiddleCategories] = useState([]);
     const [fullLowCategories, setFullLowCategories] = useState([]);
 
+    // 검색 상태
+    const [searchTerm, setSearchTerm] = useState('');
+
     // 카테고리 (필터) state
     const [filterTopCategory, setFilterTopCategory] = useState('');
     const [filterMiddleCategory, setFilterMiddleCategory] = useState('');
@@ -73,6 +76,7 @@ export const useHooksList = () => {
                 },
             })
             .then((response) => {
+                console.log(response.data.products);
                 const productsWithCategoryNames = response.data.products.map(product => ({
                     ...product,
                     topCategory: product.topCategoryNo,
@@ -92,7 +96,7 @@ export const useHooksList = () => {
 
     useEffect(() => {
         filterProducts();
-    }, [products, filterTopCategory, filterMiddleCategory, filterLowCategory]);
+    }, [products, filterTopCategory, filterMiddleCategory, filterLowCategory, searchTerm]);
 
     // 상품 상세 데이터 (모달)
     const [productDetail, setProductDetail] = useState([]);
@@ -119,16 +123,22 @@ export const useHooksList = () => {
     const filterProducts = () => {
         let filtered = products;
 
+        // 카테고리 필터링
         if (filterTopCategory) {
             filtered = filtered.filter(product => String(product.topCategoryNo) === String(filterTopCategory));
         }
-
         if (filterMiddleCategory) {
             filtered = filtered.filter(product => String(product.middleCategoryNo) === String(filterMiddleCategory));
         }
-
         if (filterLowCategory) {
             filtered = filtered.filter(product => String(product.lowCategoryNo) === String(filterLowCategory));
+        }
+
+        // 검색어 필터링 (상품명 또는 상품번호)
+        if (searchTerm) {
+            filtered = filtered.filter(product =>
+                product.productNm.includes(searchTerm) || product.productCd.includes(searchTerm)
+            );
         }
 
         setFilteredProducts(filtered);
@@ -319,7 +329,6 @@ export const useHooksList = () => {
     // 중분류 변경시
     const handleFilterMiddleCategoryChange = (e) => {
         const selectedMiddle = e.target.value;
-        console.log('선택된 중분류:', selectedMiddle);
         setFilterMiddleCategory(selectedMiddle);
         setFilterLowCategory('');
         setCurrentPage(1);
@@ -369,10 +378,13 @@ export const useHooksList = () => {
 
     // 상품 목록에서 카테고리 이름 표시
     const getCategoryNameByNo = (categoryNo) => {
+        if (!categoryNo) {
+            return '-';  // 분류가 없는 경우 '-' 출력
+        }
         const category = [...topCategories, ...fullMiddleCategories, ...fullLowCategories].find(
             cat => String(cat.categoryNo) === String(categoryNo)
         );
-        return category ? category.categoryNm : '';
+        return category ? category.categoryNm : '-';
     };
 
 
@@ -531,5 +543,7 @@ export const useHooksList = () => {
         handleNextPageGroup,
         filteredProducts,
         getCategoryNameByNo,
+        searchTerm,
+        setSearchTerm,
     };
 };

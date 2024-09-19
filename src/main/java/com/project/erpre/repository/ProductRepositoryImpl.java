@@ -28,21 +28,26 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     // 1. 전체 상품 목록 조회 + 페이징
     @Override
     public List<ProductDTO> findAllProducts(int page, int size) {
+        QCategory middleCategory = new QCategory("middleCategory");
+        QCategory topCategory = new QCategory("torCategory");
+
         return queryFactory
-                .select(Projections.constructor(ProductDTO.class,
+                .select(Projections.fields(ProductDTO.class, // constructor -> fields로 null 값 허용하도록 수정
                         product.productCd,
                         product.productNm,
                         product.productInsertDate,
                         product.productUpdateDate,
-                        category.categoryNm,
-                        category.parentCategory.categoryNm,
-                        category.parentCategory.parentCategory.categoryNm,
-                        category.categoryNo,
-                        category.parentCategory.categoryNo,
-                        category.parentCategory.parentCategory.categoryNo
+                        category.categoryNm.as("lowCategory"),
+                        middleCategory.categoryNm.as("middleCategory"),
+                        topCategory.categoryNm.as("topCategory"),
+                        category.categoryNo.as("lowCategoryNo"),
+                        middleCategory.categoryNo.as("middleCategoryNo"),
+                        topCategory.categoryNo.as("topCategoryNo")
                 ))
                 .from(product)
                 .leftJoin(product.category, category)
+                .leftJoin(category.parentCategory, middleCategory)
+                .leftJoin(middleCategory.parentCategory, topCategory)
                 .orderBy(product.productCd.asc())
                 .offset((long) page * size)
                 .limit(size)
@@ -52,8 +57,11 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     // 2. 상품 상세정보 조회 (최근 납품내역 5건 포함)
     @Override
     public List<ProductDTO> findProductDetailsByProductCd(String productCd) {
+        QCategory middleCategory = new QCategory("middleCategory");
+        QCategory topCategory = new QCategory("topCategory");
+
         return queryFactory
-                .select(Projections.constructor(ProductDTO.class, // 데이터베이스 쿼리 결과를 Java 클래스로 변환
+                .select(Projections.fields(ProductDTO.class,
                         product.productCd,
                         product.productNm,
                         product.productInsertDate,
@@ -63,12 +71,14 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                         orderDetail.orderDDeliveryRequestDate,
                         orderDetail.orderDQty,
                         orderDetail.orderDTotalPrice,
-                        category.categoryNm,
-                        category.parentCategory.categoryNm,
-                        category.parentCategory.parentCategory.categoryNm
+                        category.categoryNm.as("lowCategory"),
+                        middleCategory.categoryNm.as("middleCategory"),
+                        topCategory.categoryNm.as("topCategory")
                 ))
                 .from(product)
                 .leftJoin(product.category, category)
+                .leftJoin(category.parentCategory, middleCategory)
+                .leftJoin(middleCategory.parentCategory, topCategory)
                 .leftJoin(product.orderDetails, orderDetail)
                 .leftJoin(orderDetail.order, order)
                 .leftJoin(order.employee, employee)
