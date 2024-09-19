@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,53 +41,52 @@ public class CategoryService {
                 .build();
     }
 
-    //전체 카테고리
+    // 전체 카테고리🟡
     public List<Category> getAllCategory() {
-        //정렬
+        // 정렬
         Sort sort = Sort.by(Sort.Order.asc("categoryLevel"),
-                            Sort.Order.asc("parentCategoryNo"),
-                            Sort.Order.asc("categoryNo"));
+                Sort.Order.asc("parentCategoryNo"),
+                Sort.Order.asc("categoryNo"));
         return categoryRepository.findAll(sort);
     }
 
-    //특정 카테고리
+    // 특정 카테고리
     public Optional<Category> getCategoryById(Integer categoryNo) {
         return categoryRepository.findById(categoryNo);
     }
 
-    //카테고리 저장
+    // 카테고리 저장
     public Category saveCategory(CategoryDTO categoryDTO) {
         List<Category> existCategory = categoryRepository.findByCategoryNm(categoryDTO.getCategoryNm());
-        if (!existCategory.isEmpty()){
-            throw new IllegalArgumentException(categoryDTO.getCategoryNm() + "은 이미 존재하는 카테고리 명입니다." );
+        if (!existCategory.isEmpty()) {
+            throw new IllegalArgumentException(categoryDTO.getCategoryNm() + "은 이미 존재하는 카테고리 명입니다.");
         }
         logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
         // DTO -> Entity 변환
         Category category = new Category();
-        category.setCategoryLevel(categoryDTO.getCategoryLevel() );
-        category.setCategoryNm(categoryDTO.getCategoryNm() );
-        category.setParentCategoryNo(categoryDTO.getParentCategoryNo() );
+        category.setCategoryLevel(categoryDTO.getCategoryLevel());
+        category.setCategoryNm(categoryDTO.getCategoryNm());
+        category.setParentCategoryNo(categoryDTO.getParentCategoryNo());
 
-        logger.info("[CUSTOM_LOG] categoryDTO.getCategoryLevel() : " + categoryDTO.getCategoryLevel() );
-        logger.info("[CUSTOM_LOG] categoryDTO.getCategoryNm() : " + categoryDTO.getCategoryNm() );
-        logger.info("[CUSTOM_LOG] categoryDTO.getParentCategoryNo() : " + categoryDTO.getParentCategoryNo() );
+        logger.info("[CUSTOM_LOG] categoryDTO.getCategoryLevel() : " + categoryDTO.getCategoryLevel());
+        logger.info("[CUSTOM_LOG] categoryDTO.getCategoryNm() : " + categoryDTO.getCategoryNm());
+        logger.info("[CUSTOM_LOG] categoryDTO.getParentCategoryNo() : " + categoryDTO.getParentCategoryNo());
         logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
-
-//        // 삽입 날짜 설정 (새로 삽입할 때만)
-//        category.setCategoryInsertDate(new Timestamp(System.currentTimeMillis()));
+        // // 삽입 날짜 설정 (새로 삽입할 때만)
+        // category.setCategoryInsertDate(new Timestamp(System.currentTimeMillis()));
 
         // 엔터티 저장
         return categoryRepository.save(category);
     }
 
-    //카테고리 수정
+    // 카테고리 수정
     public Category updateCategory(Integer categoryNo, CategoryDTO categoryDTO) {
         logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
         logger.info("[CUSTOM_LOG] CategoryService > updateCategory");
 
-        Optional<Category> existingCategoryOptional = categoryRepository.findById(categoryNo); //수정을 위한 기존의 카테고리 엔티티 조회
-        if (!existingCategoryOptional.isPresent() ) {
+        Optional<Category> existingCategoryOptional = categoryRepository.findById(categoryNo); // 수정을 위한 기존의 카테고리 엔티티 조회
+        if (!existingCategoryOptional.isPresent()) {
             throw new IllegalArgumentException("해당 카테고리가 존재하지 않습니다"); // 조회한 카테고리가 존재하지 않음을 명시해줌
         }
 
@@ -95,23 +95,26 @@ public class CategoryService {
 
         // DTO -> Entity 변환
         Category existingCategory = existingCategoryOptional.get();
-        existingCategory.setCategoryLevel(categoryDTO.getCategoryLevel() );
-        existingCategory.setCategoryNm(categoryDTO.getCategoryNm() );
-        existingCategory.setParentCategoryNo(categoryDTO.getParentCategoryNo() );
-        logger.info("[CUSTOM_LOG] categoryDTO.getCategoryLevel() : " + categoryDTO.getCategoryLevel() );
-        logger.info("[CUSTOM_LOG] categoryDTO.getCategoryNm() : " + categoryDTO.getCategoryNm() );
-        logger.info("[CUSTOM_LOG] categoryDTO.getParentCategoryNo() : " + categoryDTO.getParentCategoryNo() );
+        existingCategory.setCategoryLevel(categoryDTO.getCategoryLevel());
+        existingCategory.setCategoryNm(categoryDTO.getCategoryNm());
+        existingCategory.setParentCategoryNo(categoryDTO.getParentCategoryNo());
+        logger.info("[CUSTOM_LOG] categoryDTO.getCategoryLevel() : " + categoryDTO.getCategoryLevel());
+        logger.info("[CUSTOM_LOG] categoryDTO.getCategoryNm() : " + categoryDTO.getCategoryNm());
+        logger.info("[CUSTOM_LOG] categoryDTO.getParentCategoryNo() : " + categoryDTO.getParentCategoryNo());
         logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
         return categoryRepository.save(existingCategory);
     }
 
-
-    //카테고리 삭제
+    // 카테고리 삭제
     public void deleteById(Integer categoryNo) {
-        categoryRepository.deleteById(categoryNo);
+        Category category = categoryRepository.findById(categoryNo).orElse(null);
+        if (category != null) {
+            category.setCategoryDeleteYn("Y");
+            category.setCategoryDeleteDate(new Timestamp(System.currentTimeMillis()));
+            categoryRepository.save(category);
+        }
     }
-
 
     public List<Category> getTopCategory() {
         return categoryRepository.findTopCategory();
