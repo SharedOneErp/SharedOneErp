@@ -40,6 +40,12 @@ th { border: 1px solid #e3e3e3; } */
 /* 🔴 개별 css 지정 */
  /* 체크박스 */ 
 /* .menu_category .table_wrap table th:nth-child(1),
-.menu_category .table_wrap table td:nth-child(1) { width: 35px; }  */
+.menu_category .table_wrap table td:nth-child(1) { width: 35px; } */
 /* 검색어 */ 
 .menu_category .search_box .box { width: 250px; } 
+
+.menu_category .table_wrap table tr.level-one { background-color: #e4f1f7a3; } 
+.menu_category .table_wrap table tr.level-two { } 
+.menu_category .table_wrap table tr.level-three { } 
+.menu_category .table_wrap table tr { cursor: pointer; } 
+.menu_category .table_wrap table tr td .level_title i { margin-left: 5px; } 

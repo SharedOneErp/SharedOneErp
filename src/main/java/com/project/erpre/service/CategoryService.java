@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
@@ -41,7 +42,22 @@ public class CategoryService {
                 .build();
     }
 
-    // 전체 카테고리🟡
+    //전체 카테고리
+    public List<CategoryDTO> getAllCategoryPaths() {
+        List<Object[]> result = categoryRepository.findCategoryPathsAsObjects();
+        return result.stream().map(obj -> new CategoryDTO(
+                (Integer) obj[0], // one
+                (Integer) obj[1], // two
+                (Integer) obj[2], // three
+                (Integer) obj[3], // category_no
+                (Integer) obj[4], // level
+                (String) obj[5],  // 카테고리경로
+                (Timestamp) obj[6], // category_insert_date
+                (Timestamp) obj[7] // category_update_date
+        )).collect(Collectors.toList());
+    }
+
+    //전체 카테고리
     public List<Category> getAllCategory() {
         // 정렬
         Sort sort = Sort.by(Sort.Order.asc("categoryLevel"),

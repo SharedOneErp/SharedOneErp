@@ -19,7 +19,14 @@ public class CategoryController {
     @Autowired
     public CategoryService categoryService;
 
-    //전체 카테고리🟡
+
+    //전체 카테고리 경로
+    @GetMapping("/allPaths")
+    public List<CategoryDTO> getAllCategoryPaths() {
+        return categoryService.getAllCategoryPaths();
+    }
+
+    //전체 카테고리
     @GetMapping("/all")
     public List<Category> getAllCategory() {
         return categoryService.getAllCategory();
@@ -42,7 +49,6 @@ public class CategoryController {
     public Category updateCategory(@PathVariable Integer categoryNo, @RequestBody CategoryDTO categoryDTO ) {
         categoryDTO.setCategoryNo(categoryNo);
         return categoryService.updateCategory(categoryNo, categoryDTO);
-
     }
 
     //카테고리 삭제

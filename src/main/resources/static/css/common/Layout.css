@@ -42,9 +42,7 @@ button.box { cursor: pointer; }
 button.box.icon.edit:hover, button.box.icon.edit:focus, button.box.icon.edit:active { border-color:#007CC1; color:#007CC1; background-color: #e4f1f7a3; } 
 /* button.box.icon.del { border-color: #e0000080; color: #e0000099; } */
 button.box.icon.del:hover, button.box.icon.del:focus, button.box.icon.del:active { border-color: #c8000070; color: #e00000bb; background-color: #e0000008; } 
-button.box.icon.restore:hover, button.box.icon.restore:focus, button.box.icon.restore:active { border-color: #04a73f57;
-  color: #04a73fbb;
-  background-color: #04a73f08; } 
+button.box.icon.restore:hover, button.box.icon.restore:focus, button.box.icon.restore:active { border-color: #04a73f57; color: #04a73fbb; background-color: #04a73f08; } 
 button.box:hover { background-color: #fcfcfc; border: 1px solid rgb(36 42 48 / 20%); } 
 button.box:active, button.box:focus { background-color: #f7f7f7; border: 1px solid rgb(165 165 165 / 20%); box-shadow: 0 0 2px 1px #b9b9b947; } 
 button.box:disabled { background-color: #ddd; cursor: not-allowed; } 
@@ -124,7 +122,7 @@ input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; borde
 .table_wrap table thead { flex: 0 0 auto; position: sticky; top: 0; background-color: #fafafa; border-bottom: 1px solid #ddd; color: #555; font-weight: 500; z-index: 1; } 
 .table_wrap table tbody { flex: 1 1 auto; font-size: 15px; } 
 .table_wrap table tr { display: table; width: 100%; table-layout: fixed; } 
-.table_wrap table tbody tr:hover { background-color: #f7f7f7; } 
+.table_wrap table:not(.not_hover) tbody tr:not(.tr_empty):hover { background-color: #f7f7f7; } 
 .table_wrap table tbody tr.selected_row,
 .table_wrap table tr.tr_input { background-color: #e4f1f7a3; } 
 .table_wrap table th { font-weight: 500; } 
@@ -154,6 +152,7 @@ input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; borde
 .pagination-container .pagination { display: flex; justify-content: center; align-items: center; gap: 5px; } 
 .pagination-container .pagination .box { font-size:14px; } 
 .pagination-container .pagination .box.icon { padding: 8px 9.25px; border-color: white; } 
+.pagination-container .pagination .box.icon:hover { border: 1px solid rgb(36 42 48 / 20%); } 
 .pagination-container .pagination .box.icon i { margin: 0; } 
 .pagination-container .pagination .box.active { background-color: #007CC1; border-color: #007CC1; color: white; } 
 /* 항목 개수 선택/페이지 번호 입력 (양 사이드) */
@@ -172,9 +171,8 @@ input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; borde
 .modal_container .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 23px; font-weight: 600; } 
 .modal_container .search_wrap { display: flex; gap: 10px; } 
 .modal_container .search_wrap select,
-.modal_container .search_wrap input { padding: 8px; border: 1px solid #ccc; background-color: #fff; font-size: 14px; } 
-.modal_container .table_wrap table tbody tr:hover { cursor: pointer; } 
-.modal_container .btn_close { background: none; border: none; color: #333; font-size: 20px; cursor: pointer; line-height: 1; transition: color 0.3s; border-radius: 50%; padding: 0 1px; } 
+.modal_container .search_wrap input { font-size: 15px; } 
+.modal_container .btn_close { background: none; border: none; color: #333; font-size: 20px; cursor: pointer; line-height: 1; transition: all 0.3s; border-radius: 50%; padding: 4px 4px; } 
 .modal_container .btn_close:hover { color: #007CC1; background-color: #e4f1f7a3; } 
 .modal_container .btn_close:focus { outline: none; } 
 /* confirm 모달 */
