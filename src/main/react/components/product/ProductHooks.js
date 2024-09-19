@@ -47,7 +47,7 @@ export const useHooksList = () => {
     // 3. Update
 
     // [1] 상품 state
-    const [editMode, setEditMode] = useState(null);
+    const [isEditMode, setIsEditMode] = useState(null);
     const [editableProduct, setEditableProduct] = useState({
         productCd: '',
         productNm: '',
@@ -258,18 +258,24 @@ export const useHooksList = () => {
     // 입력 필드의 변경을 처리하는 함수
     const handleInputChange = (e) => {
         const {name, value} = e.target;
-        if (editMode) {
+        if (isEditMode) {
             // 수정 모드
-            setEditableProduct({...editableProduct, [name]: value});
+            setEditableProduct((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
         } else if (isAdding) {
-            // 추가 모드
-            setNewProductData({...newProductData, [name]: value});
+            // 등록 모드
+            setNewProductData((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
         }
     };
 
     // 상품 수정
     const handleEditClick = (product) => {
-        setEditMode(product.productCd);
+        setIsEditMode(product.productCd);
         setEditableProduct({
             productCd: product.productCd,
             productNm: product.productNm,
@@ -329,7 +335,7 @@ export const useHooksList = () => {
                     })
                     .catch((error) => console.error('상품 목록 갱신 실패', error));
 
-                setEditMode(null);
+                setIsEditMode(null);
                 setEditableProduct({});
             })
             .catch(error => console.error('업데이트 실패:', error));
@@ -337,7 +343,7 @@ export const useHooksList = () => {
 
     // 수정 모드 취소 시 원래 상태로 돌아가도록 하는 함수
     const handleCancelEdit = () => {
-        setEditMode(null); // 수정 모드 종료
+        setIsEditMode(null); // 수정 모드 종료
         setEditableProduct({}); // 수정된 데이터 초기화
     };
 
@@ -515,6 +521,7 @@ export const useHooksList = () => {
     const handleLowCategoryChange = (e) => {
         const selectedLow = e.target.value;
         setSelectedLowCategory(selectedLow);
+
         setNewProductData(prevData => ({
             ...prevData,
             categoryNo: selectedLow !== '' ? Number(selectedLow) : null  // 소분류 선택시 categoryNo 설정
@@ -620,7 +627,7 @@ export const useHooksList = () => {
         handleAddNewProduct,
         handleInputChange,
         handleCancelAdd,
-        editMode,
+        isEditMode,
         editableProduct,
         handleEditClick,
         handleConfirmClick,
