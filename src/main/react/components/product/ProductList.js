@@ -317,7 +317,8 @@ function ProductList() {
                                                 <button className="product-edit-button"
                                                         onClick={() => handleEditClick(product)}>수정
                                                 </button>
-                                                <button className="filter-button" onClick={handleDeleteSelected}>삭제
+                                                <button className="filter-button"
+                                                        onClick={() => handleDeleteSelected(product.productCd)}>삭제
                                                 </button>
                                             </>
                                         )}
@@ -369,7 +370,7 @@ function ProductList() {
                         </button>
                     </div>
                     <div className="button-container">
-                        <button className="filter-button" onClick={handleDeleteSelected}>삭제</button>
+                        <button className="filter-button" onClick={() => handleDeleteSelected()}>삭제</button>
                     </div>
                 </div>
                 {isModalOpen && (

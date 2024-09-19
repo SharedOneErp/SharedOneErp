@@ -16,9 +16,16 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String>, ProductRepositoryCustom {
 
-    // 선택한 상품 삭제
-    void deleteByProductCdIn(List<String> productCds);
+    // 1. 삭제할 상품을 찾아오는 메서드
+    List<Product> findByProductCdIn(List<String> productCds);
 
+    @Query("SELECT p FROM Product p WHERE p.productDeleteYn = 'N'")
+    // 2. 삭제 상태가 "N"인 상품을 찾아오는 메서드
+    List<Product> findAllActiveProducts();
+
+    @Query("SELECT p FROM Product p WHERE p.productDeleteYn = 'Y'")
+    // 3. 삭제 상태가 "Y"인 상품을 찾아오는 메서드
+    List<Product> findAllDeleteProducts();
 
 
     @Query("SELECT p FROM Product p WHERE " +

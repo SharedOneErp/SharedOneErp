@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,6 @@ public class ProductService {
 
     @Autowired
     private CategoryRepository categoryRepository;
-
 
     // 1. 전체 상품 목록 조회 + 페이징 + 카테고리 조회 결합
     public Map<String, Object> getAllProductsAndCategories(int page, int size) {
@@ -86,14 +86,21 @@ public class ProductService {
         return convertToDTO(savedProduct);
     }
 
-    // 선택한 상품 삭제
+    // 4. 선택한 상품 삭제
     @Transactional
-    public List<Product> deleteProducts(List<String> productCds) {
-        if (productCds == null || productCds.isEmpty()) {
-            throw new IllegalArgumentException("상품 코드 목록이 비어 있습니다.");
+    public void deleteProducts(List<String> productCds) {
+        List<Product> products = productRepository.findByProductCdIn(productCds);
+
+        if (products.isEmpty()) {
+            throw new RuntimeException("삭제할 상품이 없습니다.");
         }
-        productRepository.deleteByProductCdIn(productCds);
-        return productRepository.findAll();
+
+        for (Product product : products) {
+            product.setProductDeleteYn("Y");
+            product.setProductDeleteDate(Timestamp.valueOf(LocalDateTime.now()));
+        }
+
+        productRepository.saveAll(products);
     }
 
     // 대분류 조회
@@ -101,21 +108,21 @@ public class ProductService {
         return categoryRepository.findTopCategory();
     }
 
-    // 중분류 조회
-    public List<Category> getMiddleCategory(Integer topCategoryId) {
-        if (topCategoryId == null) {
-            return categoryRepository.findMiddleCategory(0); // 전체 중분류 조회
-        }
-        return categoryRepository.findMiddleCategory(topCategoryId);
-    }
+//    // 중분류 조회
+//    public List<Category> getMiddleCategory(Integer topCategoryId) {
+//        if (topCategoryId == null) {
+//            return categoryRepository.findMiddleCategory(0); // 전체 중분류 조회
+//        }
+//        return categoryRepository.findMiddleCategory(topCategoryId);
+//    }
 
-    // 소분류 조회
-    public List<Category> getLowCategory(Integer topCategoryId, Integer middleCategoryId) {
-        if (topCategoryId == null || middleCategoryId == null) {
-            return categoryRepository.findAll(); // 전체 소분류 조회
-        }
-        return categoryRepository.findLowCategoryByTopAndMiddleCategory(topCategoryId, middleCategoryId);
-    }
+//    // 소분류 조회
+//    public List<Category> getLowCategory(Integer topCategoryId, Integer middleCategoryId) {
+//        if (topCategoryId == null || middleCategoryId == null) {
+//            return categoryRepository.findAll(); // 전체 소분류 조회
+//        }
+//        return categoryRepository.findLowCategoryByTopAndMiddleCategory(topCategoryId, middleCategoryId);
+//    }
 
 
     public List<Product> searchProducts(String productCd, String productNm, Integer topCategory, Integer middleCategory, Integer lowCategory) {
@@ -131,25 +138,25 @@ public class ProductService {
 
     // 주로 쓰기 작업(저장, 수정, 삭제 작업)이나 비즈니스 로직 처리에 사용
     // DTO -> 엔티티 변환 메서드
-    private Product convertToEntity(ProductDTO productDTO) {
-        Product product = new Product();
-        product.setProductCd(productDTO.getProductCd());
-        product.setProductNm(productDTO.getProductNm());
-        product.setProductInsertDate(productDTO.getProductInsertDate());
-        product.setProductUpdateDate(productDTO.getProductUpdateDate());
-        product.setProductDeleteYn(productDTO.getProductDeleteYn());
-        product.setProductDeleteDate(productDTO.getProductDeleteDate());
-
-        // Category 조회 및 설정
-        Integer categoryNo = productDTO.getCategoryNo();
-        if (categoryNo != null) {
-            Category category = categoryRepository.findById(categoryNo)
-                    .orElseThrow(() -> new RuntimeException("해당 카테고리를 찾을 수 없습니다."));
-            product.setCategory(category);
-        }
-
-        return product;
-    }
+//    private Product convertToEntity(ProductDTO productDTO) {
+//        Product product = new Product();
+//        product.setProductCd(productDTO.getProductCd());
+//        product.setProductNm(productDTO.getProductNm());
+//        product.setProductInsertDate(productDTO.getProductInsertDate());
+//        product.setProductUpdateDate(productDTO.getProductUpdateDate());
+//        product.setProductDeleteYn(productDTO.getProductDeleteYn());
+//        product.setProductDeleteDate(productDTO.getProductDeleteDate());
+//
+//        // Category 조회 및 설정
+//        Integer categoryNo = productDTO.getCategoryNo();
+//        if (categoryNo != null) {
+//            Category category = categoryRepository.findById(categoryNo)
+//                    .orElseThrow(() -> new RuntimeException("해당 카테고리를 찾을 수 없습니다."));
+//            product.setCategory(category);
+//        }
+//
+//        return product;
+//    }
 
     // 엔티티 -> DTO 변환 메서드
     public static ProductDTO convertToDTO(Product product) {
