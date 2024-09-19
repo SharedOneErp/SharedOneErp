@@ -7,6 +7,7 @@ import '../../../resources/static/css/hr/EmployeeList.css';
 import axios from 'axios';
 import {formatDate} from '../../util/dateUtils'
 import {add,format} from 'date-fns';
+import { useDebounce } from '../common/useDebounce';
 
 function EmployeeList() {
     const [employees, setEmployees] = useState([]);
@@ -14,6 +15,13 @@ function EmployeeList() {
     const [totalPages, setTotalPages] = useState(0);
     const [selectAll, setSelectAll] = useState(false);
     const [selectedEmployees, setSelectedEmployees] = useState([]);
+
+    //검색한 직원을 배열로
+    const [filteredEmployees, setFilteredEmployees] = useState([]);
+    // const debouncedFilteredEmployees = useDebounce(filteredEmployees,1000);
+    //검색
+    const [searchEmployee, setSearchEmployee] = useState('');
+    const debouncedSearchEmployee = useDebounce(searchEmployee,300);
 
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     //모달 관련(기본은 안보이게) 
@@ -25,6 +33,16 @@ function EmployeeList() {
         pageEmployeesN(0);
     }, []);
 
+    //검색된 직원만 화면에 나오게끔
+    useEffect ( () => {
+        if (debouncedSearchEmployee === '') {
+            setFilteredEmployees(employees);
+        } else {
+            const filtered = employees.filter(employee => employee.employeeName.includes(debouncedSearchEmployee));
+            setFilteredEmployees(filtered);
+        }
+    }, [debouncedSearchEmployee, employees])
+        
     //등록기능
     const [newEmployee, setNewEmployee] = useState({
         employeeId: '',
@@ -100,6 +118,7 @@ function EmployeeList() {
         }
     };
 
+    //페이지바뀔때
     const PageChange = (newPage) => {
         if (newPage >= 0 && newPage < totalPages) {
             setPage(newPage);
@@ -137,18 +156,23 @@ function EmployeeList() {
         console.log('삭제할 직원 id : ', selectedId) // 아이디 잘찍히나 확인
     };
 
-    ////////////// 모달 ///////
+    ////////////// 모달 ///////////
 
     //정보수정모달열기
-    const openModifyModal = () => {
-        const selectedIndex = selectedEmployees.findIndex(selected => selected);
-        if (selectedIndex === -1) {
-            alert('수정할 직원을 선택해주세요.');
-            return;
-        }
+    const openModifyModal = (employee) => {
+        // const selectedIndex = selectedEmployees.findIndex(selected => selected);
+        // if (selectedIndex === -1) {
+        //     alert('수정할 직원을 선택해주세요.');
+        //     return;
+        // }
 
-        const employeeToModify = employees[selectedIndex];
-        setSelectedEmployee(employeeToModify);
+        // const employeeToModify = employees[selectedIndex];
+//        if(!employee) {
+//            console.error('선택된 직원정보가 없습니다');
+//            return;
+//        }
+//        console.log(employee)
+        setSelectedEmployee(employee);
         setShowModifyModal(true);
     };
 
@@ -175,7 +199,7 @@ function EmployeeList() {
             });
     };
 
-    // 선택된 직원의 필드 수정
+    // 선택된 직원의 정보 수정
     const handleEmployeeChange = (field, value) => {
         setSelectedEmployee(prevEmployee => ({
             ...prevEmployee,
@@ -183,7 +207,7 @@ function EmployeeList() {
         }));
     };
 
-    //수정모달에서 삭제
+    //수정모달에서 삭제(논리적)
     const handleDelete = () => {
         if (selectedEmployee) {
             axios.put(`/api/deleteEmployee/${selectedEmployee.employeeId}`)
@@ -246,7 +270,7 @@ function EmployeeList() {
             });
     };
 
-    //유효성검사(등록,수정 전부다 동일)
+    //유효성검사(등록,수정 전부다 이걸로씀)
     const validateEmployeeData = (employeeData) => {
         const phoneRegex = /^\d{3}-\d{4}-\d{4}$/; // 000-0000-0000 형식
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // xxx@xxx.xxx 형식
@@ -285,6 +309,7 @@ function EmployeeList() {
                 <button className="filter-button" onClick={() => pageEmployeesN(0)}>재직자만 보기</button>
                 <button className="filter-button" onClick={() => pageEmployeesY(0)}>퇴직자만 보기</button>
             </div>
+            <input type="text" placeholder="검색할 직원의 이름을 입력해주세요" value={searchEmployee} onChange={(e) => setSearchEmployee(e.target.value)} />
 
             <table className="employee-table">
                 <thead>
@@ -303,25 +328,24 @@ function EmployeeList() {
                     </tr>
                 </thead>
                 <tbody>
-                    {employees.length > 0 ? (
-                        employees.map((employee,index) => (
+                    {(searchEmployee ? filteredEmployees : employees).length > 0 ? (
+                        (searchEmployee ? filteredEmployees : employees).map((employee, index) => (
                             <tr key={employee.employeeId}>
-                                <td><input type="checkbox" checked={selectedEmployees[index] || false} onChange={() => handleSelect(index)}/></td>
+                                <td><input type="checkbox" checked={selectedEmployees[index] || false} onChange={() => handleSelect(index)} /></td>
                                 <td>{employee.employeeId}</td>
                                 <td>{employee.employeeName}</td>
                                 <td>{employee.employeeTel}</td>
-                                {/*<td>{employee.employeeEmail}</td>*/}
                                 <td>{employee.employeeRole}</td>
                                 <td>{formatDate(employee.employeeInsertDate)}</td>
-                                <td>{employee.employeeUpdateDate ? format(employee.employeeUpdateDate,'yyyy-MM-dd HH:mm') : '-'}</td>
+                                <td>{employee.employeeUpdateDate ? format(employee.employeeUpdateDate, 'yyyy-MM-dd HH:mm') : '-'}</td>
                                 <td>{employee.employeeDeleteYn}</td>
-                                <td>{employee.employeeDeleteDate ? format(employee.employeeDeleteDate,'yyyy-MM-dd HH:mm') : '-'}</td>
-                                <td><button className='modifyModal-btn' onClick={openModifyModal}>수정하기</button></td>
+                                <td>{employee.employeeDeleteDate ? format(employee.employeeDeleteDate, 'yyyy-MM-dd HH:mm') : '-'}</td>
+                                <td><button className='modifyModal-btn' onClick={() => openModifyModal(employee)}>수정하기</button></td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="10">직원이 없네요. 회사가 망했나봐요 ㅋ</td>
+                            <td colSpan="10">검색한 직원이 없습니다.</td>
                         </tr>
                     )}
                 </tbody>
