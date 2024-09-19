@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import {BrowserRouter, Routes, Route, useSearchParams} from "react-router-dom";
 import Layout from "../../layout/Layout";
 import '../../../resources/static/css/product/ProductList.css'; // 개별 CSS 파일 임포트
+import '../../../resources/static/css/common/Layout.css';
 import {useHooksList} from "./ProductHooks"; // 상품 관리에 필요한 상태 및 로직을 처리하는 훅
 import {formatDate} from '../../util/dateUtils';
 import ProductDetailModal from './ProductDetailModal';
@@ -70,7 +71,9 @@ function ProductList() {
         filteredEditLowCategories,
         handleFilterTopCategoryChangeForEdit,
         handleFilterMiddleCategoryChangeForEdit,
-        handleFilterLowCategoryChangeForEdit
+        handleFilterLowCategoryChangeForEdit,
+        handleStatusChange,
+        selectedStatus,
     } = useHooksList(); // 커스텀 훅 사용
 
     return (
@@ -145,6 +148,33 @@ function ProductList() {
                                 <option value={100}>100</option>
                             </select>
                         </label>
+                        <div className="radio_box">
+                            <span>상태</span>
+                            <input
+                                type="radio"
+                                id="all"
+                                name="status"
+                                checked={selectedStatus === "all"}
+                                onChange={handleStatusChange}
+                            />
+                            <label htmlFor="all">전체</label>
+                            <input
+                                type="radio"
+                                id="active"
+                                name="status"
+                                checked={selectedStatus === "active"}
+                                onChange={handleStatusChange}
+                            />
+                            <label htmlFor="active">정상</label>
+                            <input
+                                type="radio"
+                                id="deleted"
+                                name="status"
+                                checked={selectedStatus === "deleted"}
+                                onChange={handleStatusChange}
+                            />
+                            <label htmlFor="deleted">삭제</label>
+                        </div>
                     </div>
 
                     <table className="approval-list">

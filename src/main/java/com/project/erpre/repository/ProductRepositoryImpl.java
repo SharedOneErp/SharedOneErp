@@ -25,9 +25,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 
-    // 1. 전체 상품 목록 조회 + 페이징
+    // 1. 전체 상품 목록 조회 + 페이징 + 상태 필터링
     @Override
-    public List<ProductDTO> findAllProducts(int page, int size) {
+    public List<ProductDTO> findAllProducts(int page, int size, String status) {
         QCategory middleCategory = new QCategory("middleCategory");
         QCategory topCategory = new QCategory("torCategory");
 
@@ -50,6 +50,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .leftJoin(product.category, category)
                 .leftJoin(category.parentCategory, middleCategory)
                 .leftJoin(middleCategory.parentCategory, topCategory)
+                .where(
+                        status.equals("all") ? null : product.productDeleteYn.eq(status.equals("active") ? "N" : "Y")
+                )
                 .orderBy(product.productCd.asc())
                 .offset((long) page * size)
                 .limit(size)

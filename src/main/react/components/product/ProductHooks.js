@@ -83,6 +83,8 @@ export const useHooksList = () => {
         setIsModalOpen(false);
     };
 
+    const [selectedStatus, setSelectedStatus] = useState("active"); // 상태
+
     // useEffect (productList)
     useEffect(() => {
         axios
@@ -93,6 +95,7 @@ export const useHooksList = () => {
                     topCategoryNo: filterTopCategory || null, // 대분류 필터
                     middleCategoryNo: filterMiddleCategory || null, // 중분류 필터
                     lowCategoryNo: filterLowCategory || null, // 소분류 필터
+                    status: selectedStatus,
                 },
             })
             .then((response) => {
@@ -111,8 +114,8 @@ export const useHooksList = () => {
                 setFullLowCategories(response.data.lowCategories || []);
             })
             .catch((error) => console.error('전체 상품 목록 조회 실패', error));
-
-    }, [currentPage, itemsPerPage, filterTopCategory, filterMiddleCategory, filterLowCategory]);
+        console.log(selectedStatus);
+    }, [currentPage, itemsPerPage, filterTopCategory, filterMiddleCategory, filterLowCategory, selectedStatus]);
 
     useEffect(() => {
         filterProducts();
@@ -207,6 +210,7 @@ export const useHooksList = () => {
                         topCategoryNo: filterTopCategory || null,
                         middleCategoryNo: filterMiddleCategory || null,
                         lowCategoryNo: filterLowCategory || null,
+                        status: selectedStatus,
                     },
                 })
                     .then((response) => {
@@ -310,6 +314,7 @@ export const useHooksList = () => {
                         topCategoryNo: filterTopCategory || null,
                         middleCategoryNo: filterMiddleCategory || null,
                         lowCategoryNo: filterLowCategory || null,
+                        status: selectedStatus,
                     },
                 })
                     .then((response) => {
@@ -342,12 +347,6 @@ export const useHooksList = () => {
             alert('삭제할 상품을 선택해주세요.');
             return;
         }
-
-        // if(!selectedProducts.productDeleteDate.empty()) {
-        //    alert('이미 삭제된 상품을 선택하셨습니다.');
-        //    return;
-        // }
-
         if (!window.confirm('정말 삭제하시겠습니까?')) {
             return;
         }
@@ -378,6 +377,7 @@ export const useHooksList = () => {
                 topCategoryNo: filterTopCategory || null,
                 middleCategoryNo: filterMiddleCategory || null,
                 lowCategoryNo: filterLowCategory || null,
+                status: selectedStatus,
             },
         })
             .then((response) => {
@@ -391,7 +391,13 @@ export const useHooksList = () => {
                 setFilteredProducts(productsWithCategoryNames);
                 setTotalItems(response.data.totalItems || 0);
             })
-            .catch((error) => console.error('상품 목록 갱신 실패', error));
+            .catch((error) => console.error('상품 목록 조회 실패', error));
+    };
+
+    // 🟢 상태 변경
+    const handleStatusChange = (event) => {
+        setSelectedStatus(event.target.id);
+        setCurrentPage(1);
     };
 
     useEffect(() => {
@@ -401,26 +407,6 @@ export const useHooksList = () => {
             setLowCategories(fullLowCategories);
         }
     }, [filterTopCategory, fullMiddleCategories, fullLowCategories]);
-
-    // // 카테고리 번호로 이름 찾기
-    // const categoryNoToNameMap = useMemo(() => {
-    //     const map = {};
-    //     [...topCategories, ...fullMiddleCategories, ...fullLowCategories].forEach(category => {
-    //         map[String(category.categoryNo)] = category.categoryNm;
-    //     });
-    //     return map;
-    // }, [topCategories, fullMiddleCategories, fullLowCategories]);
-    //
-    // // 카테고리 이름으로 번호 찾기
-    // const categoryNameToNoMap = useMemo(() => {
-    //     const map = {};
-    //     [...topCategories, ...fullMiddleCategories, ...fullLowCategories].forEach(category => {
-    //         map[category.categoryNm] = String(category.categoryNo);
-    //     });
-    //     return map;
-    // }, [topCategories, fullMiddleCategories, fullLowCategories]);
-
-    // 카테고리 필터링 (검색)
 
     // 필터링된 중분류 목록
     const filteredMiddleCategories = useMemo(() => {
@@ -465,9 +451,6 @@ export const useHooksList = () => {
 
         if (selectedMiddleCategory) {
             const relatedTopCategoryNo = selectedMiddleCategory.parentCategoryNo;
-
-            // // 대분류 자동 설정
-            // setFilterTopCategory(relatedTopCategoryNo);
         }
 
     };
@@ -482,20 +465,6 @@ export const useHooksList = () => {
         const selectedLowCategory = fullLowCategories.find(
             cat => String(cat.categoryNo) === String(selectedLow)
         );
-
-        // if (selectedLowCategory) {
-        //     const relatedMiddle = String(selectedLowCategory.parentCategoryNo);
-        //     setFilterMiddleCategory(relatedMiddle);
-        //
-        //     const selectedMiddleCategory = fullMiddleCategories.find(
-        //         cat => String(cat.categoryNo) === relatedMiddle
-        //     );
-        //
-        //     if (selectedMiddleCategory) {
-        //         const relatedTop = String(selectedMiddleCategory.parentCategoryNo);
-        //         setFilterTopCategory(relatedTop);
-        //     }
-        // }
     };
 
     // 상품 목록에서 카테고리 이름 표시
@@ -605,6 +574,7 @@ export const useHooksList = () => {
     };
 
 
+
     // 페이지 변경
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -700,6 +670,8 @@ export const useHooksList = () => {
         filteredEditLowCategories,
         handleFilterTopCategoryChangeForEdit,
         handleFilterMiddleCategoryChangeForEdit,
-        handleFilterLowCategoryChangeForEdit
+        handleFilterLowCategoryChangeForEdit,
+        handleStatusChange,
+        selectedStatus,
     };
 }
