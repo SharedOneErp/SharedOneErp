@@ -99,7 +99,7 @@ function ProductCategory() {
                         <div className="left">
                         </div>
                         <div className="right">
-                            <button className="box color" onClick={openModal}><i className="bi bi-pencil-square"></i> 편집하기</button>
+                            <button className="box color" onClick={openModal}><i class="bi bi-pencil-square"></i> 편집하기</button>
                         </div>
                     </div>
                     <div className="table_wrap" style={{ marginBottom: '15px' }}>

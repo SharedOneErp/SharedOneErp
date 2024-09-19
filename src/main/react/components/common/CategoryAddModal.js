@@ -30,10 +30,8 @@ function CategoryModal({
           {/* 대분류 */}
           <div className='category-column'>
             <h4>대분류</h4>
-            <div className='input-button'>
-              <input type='text' placeholder='대분류 검색' className='input-field' />
-              <button className='search-button'>검색</button>
-            </div>
+            <br />
+            <hr />
             <br />
 
             <div className='list-form'>
@@ -77,10 +75,8 @@ function CategoryModal({
           {/* 중분류 */}
           <div className='category-column'>
             <h4>중분류</h4>
-            <div className='input-button'>
-              <input type='text' placeholder='중분류 검색' className='input-field' />
-              <button className='search-button'>검색</button>
-            </div>
+            <br />
+            <hr />
             <br />
 
             <div className='list-form' style={{ position: 'relative' }}>
@@ -124,10 +120,8 @@ function CategoryModal({
           {/* 소분류 */}
           <div className='category-column'>
             <h4>소분류</h4>
-            <div className='input-button'>
-              <input type='text' placeholder='소분류 검색' className='input-field' />
-              <button className='search-button'>검색</button>
-            </div>
+            <br />
+            <hr />
             <br />
 
             <div className='list-form' style={{ position: 'relative' }}>
