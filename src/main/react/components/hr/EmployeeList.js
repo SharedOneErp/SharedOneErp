@@ -11,10 +11,11 @@ import { useDebounce } from '../common/useDebounce';
 
 function EmployeeList() {
     const [employees, setEmployees] = useState([]);
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [selectAll, setSelectAll] = useState(false);
     const [selectedEmployees, setSelectedEmployees] = useState([]);
+    const [currentView, setCurrentView] = useState('employeesN');
 
     //검색한 직원을 배열로
     const [filteredEmployees, setFilteredEmployees] = useState([]);
@@ -30,7 +31,7 @@ function EmployeeList() {
 
     //초기화면은 재직자만
     useEffect(() => {
-        pageEmployeesN(0);
+        pageEmployeesN(1);
     }, []);
 
     //검색된 직원만 화면에 나오게끔
@@ -120,15 +121,21 @@ function EmployeeList() {
 
     //페이지바뀔때
     const PageChange = (newPage) => {
-        if (newPage >= 0 && newPage < totalPages) {
+        if (newPage >= 1 && newPage <= totalPages) {
             setPage(newPage);
-            pageEmployees(newPage);
+            if (currentView === 'employeesN') {
+                pageEmployeesN(newPage);  // 재직자만 보기
+            } else if (currentView === 'employeesY') {
+                pageEmployeesY(newPage);  // 퇴직자만 보기
+            } else if (currentView === 'allEmployees') {
+                pageAllEmployees(newPage);  // 전체 직원 보기
+            }
         }
     };
 
     // 퇴직자 포함한 전체 직원 조회 시 페이징 처리
     const PageChangeAllEmployees = (newPage) => {
-        if (newPage >= 0 && newPage < totalPages) {
+        if (newPage >= 1 && newPage <= totalPages) {
             setPage(newPage);
             pageAllEmployees(newPage);  // 퇴직자 포함한 조회로 페이지 변경
         }
@@ -329,9 +336,9 @@ function EmployeeList() {
                                     </button>
                                 )}
                             </div>
-                            <button className="box" onClick={() => pageAllEmployees(0)}>퇴직자포함한 직원보기</button>
-                            <button className="box" onClick={() => pageEmployeesN(0)}>재직자만 보기</button>
-                            <button className="box" onClick={() => pageEmployeesY(0)}>퇴직자만 보기</button>
+                            <button className="box" onClick={() => { setCurrentView('allEmployees'); setPage(1); pageAllEmployees(1); }}>퇴직자포함한 직원보기</button>
+                            <button className="box" onClick={() => { setCurrentView('employeesN'); setPage(1); pageEmployeesN(1); }}>재직자만 보기</button>
+                            <button className="box" onClick={() => { setCurrentView('employeesY'); setPage(1); pageEmployeesY(1); }}>퇴직자만 보기</button>
                         </div>
                         <div className="right">
                             <button className="box color" onClick={openInsertModal}><i className="bi bi-plus-circle"></i> 등록하기</button>
@@ -400,7 +407,7 @@ function EmployeeList() {
                             )}
 
                             {/* 페이지 번호 블록 */}
-                            {Array.from({ length: Math.min(5, totalPages) }, (_, index) => {
+                             {Array.from({ length: Math.min(5, totalPages) }, (_, index) => {
                                 const startPage = Math.floor((page - 1) / 5) * 5 + 1;
                                 const currentPage = startPage + index; // page 대신 currentPage로 변경
                                 return (
@@ -415,6 +422,8 @@ function EmployeeList() {
                                     )
                                 );
                             })}
+
+
 
                             {/* '다음' 버튼 */}
                             {page < totalPages && (
