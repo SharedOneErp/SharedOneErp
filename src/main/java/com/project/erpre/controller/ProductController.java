@@ -1,9 +1,9 @@
 package com.project.erpre.controller;
 
-import com.project.erpre.model.Product;
 import com.project.erpre.model.ProductDTO;
 import com.project.erpre.service.CategoryService;
 import com.project.erpre.service.ProductService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +32,26 @@ public class ProductController {
     ) {
         try {
             Map<String, Object> result = productService.getAllProductsAndCategories(page - 1, size, status);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    // 0920 예원 추가 (상품코드, 상품명, 대분류, 중분류, 소분류, 상태별 상품목록 페이징 적용하여 가져오기)
+    @GetMapping("/productsFilter")
+    public ResponseEntity<Page<ProductDTO>> getProductsFilter(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Integer topCategoryNo,  // 대분류 필터
+            @RequestParam(required = false) Integer middleCategoryNo,  // 중분류 필터
+            @RequestParam(required = false) Integer lowCategoryNo,  // 소분류 필터
+            @RequestParam(defaultValue = "all", required = false) String status,
+            @RequestParam(required = false) String productCd,  // 상품 코드 필터
+            @RequestParam(required = false) String productNm   // 상품명 필터
+    ) {
+        try {
+            Page<ProductDTO> result = productService.getProductsFilter(page - 1, size, status, topCategoryNo, middleCategoryNo, lowCategoryNo, productCd, productNm);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

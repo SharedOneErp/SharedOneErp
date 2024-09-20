@@ -17,18 +17,24 @@ function Price() {
     // 🔴 고객사검색, 상품 검색
     const [isCustomerModalOpen, setCustomerModalOpen] = useState(false);
     const [isProductModalOpen, setProductModalOpen] = useState(false);
-    const [selectedCustomer, setSelectedCustomer] = useState('고객사 선택');
-    const [selectedProduct, setSelectedProduct] = useState('상품 선택');
+    const [selectedCustomer, setSelectedCustomer] = useState({ customerName: '고객사 선택', customerNo: '' });
+    const [selectedProduct, setSelectedProduct] = useState({ productNm: '상품 선택', productCd: '' });
 
-    // 고객사 선택 시 모달을 닫고 버튼에 값 설정
+    // 🔴 고객사 선택 시 모달을 닫고 버튼에 값 설정
     const handleCustomerSelect = (customer) => {
-        setSelectedCustomer(customer.customerName);
+        setSelectedCustomer({
+            customerName: customer.customerName, // 선택한 고객 이름
+            customerNo: customer.customerNo      // 선택한 고객 번호
+        });
         setCustomerModalOpen(false);
     };
 
-    // 상품 선택 시 모달을 닫고 버튼에 값 설정
+    // 🔴 상품 선택 시 모달을 닫고 버튼에 값 설정
     const handleProductSelect = (product) => {
-        setSelectedProduct(product.productNm);
+        setSelectedProduct({
+            productNm: product.productNm,  // 선택된 상품 이름
+            productCd: product.productCd   // 선택된 상품 코드
+        });
         setProductModalOpen(false);
     };
 
@@ -113,14 +119,14 @@ function Price() {
                     <button
                         className="box btn_search wp100"
                         onClick={() => setCustomerModalOpen(true)}>
-                        {selectedCustomer}
+                        {selectedCustomer.customerName}  {/* 선택된 고객사 이름 표시 */}
                         <i className="bi bi-search"></i>
                     </button>
-                    {/* hidden input 필드 */}
+                    {/* hidden input 필드에 고객 번호 저장 */}
                     <input
                         type="hidden"
                         name="selectedCustomerNo"
-                        value={selectedCustomer ? selectedCustomer.customerNo : ''}
+                        value={selectedCustomer.customerNo}
                     />
                 </td>
                 <td>
@@ -128,14 +134,14 @@ function Price() {
                     <button
                         className="box btn_search wp100"
                         onClick={() => setProductModalOpen(true)}>
-                        {selectedProduct}
+                        {selectedProduct.productNm}  {/* 선택된 상품 이름 표시 */}
                         <i className="bi bi-search"></i>
                     </button>
-                    {/* hidden input 필드 */}
+                    {/* hidden input 필드에 상품 코드 저장 */}
                     <input
                         type="hidden"
                         name="selectedProductCd"
-                        value={selectedProduct ? selectedProduct.ProductCd : ''}
+                        value={selectedProduct.productCd}
                     />
                 </td>
                 <td>
@@ -191,7 +197,7 @@ function Price() {
         );
     };
 
-    // 🔴 UI 및 상태에 따라 렌더링
+    // 🟡 UI 및 상태에 따라 렌더링
     return (
         <Layout currentMenu="productPrice">
             <main className="main-content menu_price">

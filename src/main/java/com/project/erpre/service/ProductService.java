@@ -4,6 +4,9 @@ import com.project.erpre.model.Product;
 import com.project.erpre.model.ProductDTO;
 import com.project.erpre.repository.CategoryRepository;
 import com.project.erpre.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +56,13 @@ public class ProductService {
         return result;
     }
 
+    // 0920 예원 추가 (상품코드, 상품명, 대분류, 중분류, 소분류, 상태별 상품목록 페이징 적용하여 가져오기)
+    public Page<ProductDTO> getProductsFilter(int page, int size, String status,
+                                              Integer topCategoryNo, Integer middleCategoryNo, Integer lowCategoryNo,
+                                              String productCd, String productNm) {
+        Pageable pageable = PageRequest.of(page, size);  // 페이지네이션 정보 생성
+        return productRepository.findProductsFilter(pageable, status, topCategoryNo, middleCategoryNo, lowCategoryNo, productCd, productNm);
+    }
 
     // 2. 상품 상세 조회 (최근 납품내역 5건 포함)
     public List<ProductDTO> getProductDetailsByProductCd(String productCd) {

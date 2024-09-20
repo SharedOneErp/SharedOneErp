@@ -63,7 +63,7 @@ export const useHooksList = () => {
     // 모달 메시지 상태
     const [modalMessage, setModalMessage] = useState(''); // 모달에 표시할 메시지 상태
 
-    // fetchData
+    // 🔴 fetchData
     const fetchData = async () => {
         setLoading(true);
         const MIN_LOADING_TIME = 300;
