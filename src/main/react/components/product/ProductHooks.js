@@ -91,8 +91,8 @@ export const useProductHooks = () => {
         axios
             .get('/api/products/productList', {
                 params: {
-                    page: currentPage,
-                    size: itemsPerPage,
+                    page: currentPage || null,
+                    size: itemsPerPage || null,
                     topCategoryNo: filterTopCategory || null, // 대분류 필터
                     middleCategoryNo: filterMiddleCategory || null, // 중분류 필터
                     lowCategoryNo: filterLowCategory || null, // 소분류 필터
@@ -262,7 +262,8 @@ export const useProductHooks = () => {
     // 입력 필드의 변경을 처리하는 함수
     const handleInputChange = (e) => {
         const {name, value} = e.target;
-        if (isEditMode) {
+
+       if (isEditMode) {
             // 수정 모드
             setEditableProduct((prev) => ({
                 ...prev,
@@ -276,6 +277,13 @@ export const useProductHooks = () => {
             }));
         }
     };
+
+    // 페이지 입력 필드의 변경을 처리하는 함수
+    const handlePageInputChange = (e) => {
+        const value = e.target.value;
+        const page = !isNaN(value) && value > 0 ? Number(value) : 1;
+        setCurrentPage(page);
+    }
 
     // 상품 수정
     const handleEditClick = (product) => {
@@ -615,13 +623,16 @@ export const useProductHooks = () => {
 
     // 페이지 변경
     const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
+        const newPage = Math.min(pageNumber, totalPages);
+        setCurrentPage(newPage);
     };
 
     // 페이지당 항목 수 변경
     const handleItemsPerPageChange = (e) => {
-        setItemsPerPage(parseInt(e.target.value));
-        setCurrentPage(1); // 페이지당 항목 수를 변경하면 첫 페이지로 이동
+        const value = e.target.value;
+        const newItemsPerPage = !isNaN(value) && value > 0 ? parseInt(value) : 0;  // 0이 기본값으로 설정됨
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1);
     };
 
     // 총 페이지 수 계산
@@ -632,6 +643,10 @@ export const useProductHooks = () => {
         const currentPageGroup = Math.floor((currentPage - 1) / maxPagesToShow);
         const startPage = currentPageGroup * maxPagesToShow + 1;
         const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+
+        if (totalPages === 0) {
+            return [];
+        }
 
         return [...Array(endPage - startPage + 1)].map((_, i) => startPage + i);
     }, [currentPage, totalPages]);
@@ -714,5 +729,6 @@ export const useProductHooks = () => {
         selectedStatus,
         isLoading,
         handleRestore,
+        handlePageInputChange,
     };
 }

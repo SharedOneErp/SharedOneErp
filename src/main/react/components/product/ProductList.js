@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
-import {BrowserRouter, Routes, Route, useSearchParams} from "react-router-dom";
+import {BrowserRouter} from "react-router-dom";
 import Layout from "../../layout/Layout";
 import '../../../resources/static/css/product/ProductList.css'; // 개별 CSS 파일 임포트
 import '../../../resources/static/css/common/Layout.css';
 import {useProductHooks} from "./ProductHooks"; // 상품 관리에 필요한 상태 및 로직을 처리하는 훅
 import {formatDate} from '../../util/dateUtils';
 import ProductDetailModal from './ProductDetailModal';
-import PropTypes from "prop-types";
+import Pagination from '../common/Pagination';
 
 
 function ProductList() {
@@ -78,6 +78,7 @@ function ProductList() {
         isLoading,
         handleUpdateDeleteYn,
         handleRestore,
+        handlePageInputChange,
     } = useProductHooks(); // 커스텀 훅 사용
 
     // 🔴 ProductRow 컴포넌트를 상위 컴포넌트 내부에 정의
@@ -203,8 +204,9 @@ function ProductList() {
 
 
     return (
-        <Layout currentMenu="productList">
-            <main className="main-content menu_price">
+        <Layout
+            currentMenu="productList">
+            <main className="main-content menu_product">
                 <div className="menu_title">
                     <div className="sub_title">상품 관리</div>
                     <div className="main_title">전체 상품 목록</div>
@@ -427,7 +429,7 @@ function ProductList() {
                                                     ) : (
                                                         <>
                                                             <button className="box icon edit"
-                                                                    onClick={() => handleOpenModal(product.productCd)}>상세
+                                                                    onClick={() => handleOpenModal(product.productCd)}>납품내역
                                                             </button>
                                                             <button className="box icon deit"
                                                                     onClick={() => handleEditClick(product)}>
@@ -458,58 +460,23 @@ function ProductList() {
                         </table>
                     </div>
 
-                    {/* 페이지네이션 컴포넌트 사용 */}
-                    <div className="pagination">
-                        <button
-                            onClick={() => setCurrentPage(1)}
-                            disabled={currentPage === 1}
-                        >
-                            {"<<"}
-                        </button>
-                        <button
-                            onClick={handlePreviousPageGroup}
-                            disabled={paginationNumbers[0] === 1}
-                        >
-                            {"<"}
-                        </button>
-
-                        {paginationNumbers.map((page) => (
-                            <button
-                                key={page}
-                                onClick={() => handlePageChange(page)}
-                                className={currentPage === page ? 'active' : ''}
-                            >
-                                {page}
-                            </button>
-                        ))}
-
-                        <button
-                            onClick={handleNextPageGroup}
-                            disabled={paginationNumbers[paginationNumbers.length - 1] === totalPages}
-                        >
-                            {">"}
-                        </button>
-                        <button
-                            onClick={() => setCurrentPage(totalPages)}
-                            disabled={currentPage === totalPages}
-                        >
-                            {">>"}
-                        </button>
-                    </div>
-                    <div className="button-container">
-                        <button className="filter-button" onClick={() => handleDeleteSelected()}>삭제</button>
-                    </div>
-
-                    <label>
-                        <p>전체 {totalItems}건 페이지 당:</p>
-                        <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
-                            <option value={10}>10</option>
-                            <option value={20}>20</option>
-                            <option value={50}>50</option>
-                            <option value={100}>100</option>
-                        </select>
-                    </label>
+                    {/* 페이지네이션 컴포넌트*/}
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        itemsPerPage={itemsPerPage}
+                        totalItems={totalItems}
+                        isLoading={isLoading}
+                        pageInputValue={currentPage}
+                        handlePage={handlePageChange}
+                        handleItemsPerPageChange={handleItemsPerPageChange}
+                        handlePageInputChange={handlePageInputChange}
+                        handleDeleteSelected={handleDeleteSelected}
+                        selectedItems={selectedProducts}
+                        showFilters={true}
+                    />
                 </div>
+                {/* 납품 내역 모달 */}
                 {isModalOpen && (
                     <ProductDetailModal
                         productCd={selectedProductCd}
