@@ -64,7 +64,7 @@ function CustomerSearchModal({ onClose, onCustomerSelect }) {
     // 🟢 모달 렌더링
     return (
         <div className="modal_overlay">
-            <div className="modal_container">
+            <div className="modal_container search">
                 <div className="header">
                     <div>고객사 검색</div>
                     <button className="btn_close" onClick={onClose}><i className="bi bi-x-lg"></i></button> {/* 모달 닫기 버튼 */}
@@ -114,8 +114,8 @@ function CustomerSearchModal({ onClose, onCustomerSelect }) {
                                     </tr>
                                 ))
                             ) : (
-                                <tr>
-                                    <td colSpan="4" className="tr_empty">
+                                <tr className="tr_empty">
+                                    <td colSpan="4">
                                         <div className="no_data">조회된 결과가 없습니다.</div>
                                     </td>
                                 </tr>

@@ -149,6 +149,9 @@ input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; borde
  }
 .table_wrap .no_data { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center; font-size: 18px; color: #999; font-weight: 500; } 
 .table_wrap .no_data i { margin-right: 5px; margin-top: 2px; } 
+/* 모달 속 table */
+.modal_container.search .table_wrap table { min-height: 473px; } 
+.modal_container.search .table_wrap table tbody tr:hover { cursor: pointer; } 
 /* 🟢 페이지네이션 */
 .pagination-container { height: 60px; display: flex; justify-content: space-between; align-items: center; } 
 /* 중앙의 페이지네이션 버튼 */
@@ -162,6 +165,8 @@ input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; borde
 .pagination-container .pagination-sub input.box { max-width: 75px; } 
 .pagination-container .pagination-sub label { font-weight: 400; font-size: 14px; margin: 0 0 0 5px; color: #444; } 
 .pagination-container .pagination-sub label b { font-weight: 700; color: #007CC1; } 
+/* 모달 속 페이지네이션 */
+.modal_container.search .pagination-container { justify-content: space-around; align-items: flex-end; height: 50px; } 
 /* 🟣 토스트 메시지(짧고 간결한 알림을 일정 시간 동안 화면에 표시) */
 .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; } 
 .toast { background-color: #333; color: white; padding: 10px 20px; border-radius: 5px; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); opacity: 0.9; } 
@@ -174,7 +179,7 @@ input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; borde
 .modal_container .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 23px; font-weight: 600; } 
 .modal_container .search_wrap { display: flex; gap: 10px; } 
 .modal_container .search_wrap select,
-.modal_container .search_wrap input { font-size: 15px; } 
+.modal_container .search_wrap input { font-size: 15px; margin: 1px; } 
 .modal_container .btn_close { background: none; border: none; color: #333; font-size: 20px; cursor: pointer; line-height: 1; transition: all 0.3s; border-radius: 50%; padding: 4px 4px; } 
 .modal_container .btn_close:hover { color: #007CC1; background-color: #e4f1f7a3; } 
 .modal_container .btn_close:focus { outline: none; } 
