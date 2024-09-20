@@ -112,6 +112,9 @@ public class EmployeeController {
     //모달에서 신규직원 등록
     @PostMapping("/registerEmployee")
     public ResponseEntity<String> registerEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        if (employeeService.existsByEmployeeId(employeeDTO.getEmployeeId())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 아이디입니다.");
+        }
         employeeService.registerEmployee(employeeDTO);
         return ResponseEntity.ok("직원이 성공적으로 등록되었습니다.");
     }
@@ -128,5 +131,12 @@ public class EmployeeController {
     public ResponseEntity<String> deleteEmployee(@PathVariable String employeeId) {
         employeeService.deleteLogicalEmployee(employeeId);
         return ResponseEntity.ok("직원이 논리적으로 삭제되었습니다.");
+    }
+
+    // 중복ID체크
+    @GetMapping("/checkEmployeeId")
+    public ResponseEntity<Boolean> checkEmployeeId(@RequestParam String employeeId) {
+        boolean exists = employeeService.existsByEmployeeId(employeeId);
+        return ResponseEntity.ok(exists);
     }
 }
