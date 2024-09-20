@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴포넌트를 DOM에 렌더링
 import '../../../resources/static/css/common/Layout.css';
 import '../../../resources/static/css/common/Login.css'; // 개별 CSS 스타일 적용
@@ -8,8 +8,29 @@ function Login() {
     const [pw, setPw] = useState('');
     const [error, setError] = useState('');
 
+    useEffect(() => {
+        const loadRecaptchaScript = () => {
+            const script = document.createElement('script');
+            script.src = 'https://www.google.com/recaptcha/api.js';
+            script.async = true;
+            script.defer = true;
+            script.onload = () => {
+                console.log('reCAPTCHA script loaded');
+            };
+            document.body.appendChild(script);
+        };
+
+        loadRecaptchaScript();
+    }, []);
+
     const handleLogin = async (e) => {
         e.preventDefault(); // 폼 제출 방지
+
+        const captchaToken = window.grecaptcha.getResponse(); // CAPTCHA 토큰 가져오기
+        if (!captchaToken) {
+            setError('CAPTCHA를 풀어야 합니다.');
+            return;
+        }
 
         try {
             console.log('Attempting login with:', { employeeId: id, employeePw: pw }); // 디버깅용 로그
@@ -74,6 +95,8 @@ function Login() {
                     </div>
 
                     {error && <p className="error-message">{error}</p>}
+
+                    <div className="g-recaptcha" data-sitekey="6LdC_EkqAAAAAE6kT_S6sCKilJGJuljygUCmr1he"></div>
 
                     <button type="submit" className="login-btn">로그인</button>
                 </form>
