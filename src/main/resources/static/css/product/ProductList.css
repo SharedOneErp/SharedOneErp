@@ -9,7 +9,7 @@
 .menu_product .table_wrap table th:nth-child(4),
 .menu_product .table_wrap table td:nth-child(4) { width: 17%; /* 중분류 */ }
 .menu_product .table_wrap table th:nth-child(5),
-.menu_product.table_wrap table td:nth-child(5) { width: 10%; /* 소분류 */ }
+.menu_product. table_wrap table td:nth-child(5) { width: 10%; /* 소분류 */ }
 .menu_product .table_wrap table th:nth-child(6),
 .menu_product .table_wrap table td:nth-child(6) { width: 21%; /* 등록일시 */ }
 .menu_product .table_wrap table th:nth-child(7),
