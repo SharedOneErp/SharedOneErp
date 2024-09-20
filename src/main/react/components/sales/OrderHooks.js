@@ -493,14 +493,13 @@ export const useHooksList = () => {
 
             console.log("Clean Products: ", cleanProducts);
 
-            // customerNo와 employeeId를 실제 값을 가져와야 합니다.
             const customerNo = document.querySelector('input[name="customerNo"]').value.trim();
             const employeeId = document.querySelector('.employee-id').textContent.trim();
 
             const orderData = {
                 orderNo: orderNo,
-                customer: { customerNo: customerNo }, // 실제 customerNo로 설정
-                employee: { employeeId: employeeId }, // 실제 employeeId로 설정
+                customer: { customerNo: customerNo },
+                employee: { employeeId: employeeId },
                 orderHTotalPrice: totalAmount,
                 orderHStatus: "ing",
                 orderHUpdateDate: new Date().toISOString(),
@@ -530,18 +529,16 @@ export const useHooksList = () => {
 
             // 4. 주문 상세 정보 업데이트
             for (let product of cleanProducts) {
+                const orderDetailData = {
+                    orderNo: updatedOrderNo,
+                    productCd: product.productCd,
+                    orderDPrice: product.orderDPrice,
+                    orderDQty: product.orderDQty,
+                    orderDTotalPrice: product.orderDTotalPrice,
+                    orderDDeliveryRequestDate: product.orderDDeliveryRequestDate,
+                };
+
                 if (product.orderNo) {
-                    const orderDetailData = {
-                        orderNo: updatedOrderNo,
-                        productCd: product.productCd,
-                        orderDPrice: product.orderDPrice,
-                        orderDQty: product.orderDQty,
-                        orderDTotalPrice: product.orderDTotalPrice,
-                        orderDDeliveryRequestDate: product.orderDDeliveryRequestDate,
-                    };
-
-                    console.log("Order Detail Data:", JSON.stringify(orderDetailData));
-
                     const detailResponse = await fetch(`/api/orderDetails/${product.orderNo}`, {
                         method: 'PUT',
                         headers: {
@@ -555,7 +552,19 @@ export const useHooksList = () => {
                         throw new Error(`상세 주문 처리 중 오류 발생: ${errorText}`);
                     }
                 } else {
-                    throw new Error(`detailId가 정의되지 않았습니다.`);
+                    // 주문 상세 항목 추가 로직
+                    const detailResponse = await fetch(`/api/orderDetails`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(orderDetailData),
+                    });
+
+                    if (!detailResponse.ok) {
+                        const errorText = await detailResponse.text();
+                        throw new Error(`상세 주문 추가 중 오류 발생: ${errorText}`);
+                    }
                 }
             }
 
@@ -567,6 +576,7 @@ export const useHooksList = () => {
             alert("주문 수정 중 오류가 발생했습니다. 다시 확인해주세요");
         }
     };
+
 
     const handleCustomerSelect = (selectedCustomer) => {
         console.log('Selected customer:', selectedCustomer);

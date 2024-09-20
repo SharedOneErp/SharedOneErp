@@ -146,5 +146,25 @@ public class OrderService {
     public Order updateOrder(Order order) {
         return orderRepository.save(order);
     }
+    public OrderDetail addOrderDetail(Integer orderNo, OrderDetailDTO orderDetailDTO) {
+        // 주문이 존재하는지 확인
+        Order existingOrder = orderRepository.findById(orderNo)
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
+
+        // DTO를 엔티티로 변환
+        OrderDetail orderDetail = new OrderDetailService().convertToEntity(orderDetailDTO);
+        orderDetail.setOrder(existingOrder); // 주문 설정
+        return orderDetailRepository.save(orderDetail);
+    }
+    public void deleteOrderDetail(Integer orderNo, Integer detailId) {
+        // 주문이 존재하는지 확인
+        Order existingOrder = orderRepository.findById(orderNo)
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
+
+        // 상세 항목을 삭제
+        orderDetailRepository.deleteById(detailId);
+    }
+
+
 
 }

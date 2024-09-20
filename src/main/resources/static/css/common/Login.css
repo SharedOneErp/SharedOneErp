@@ -15,4 +15,8 @@ h1 { color: #003399; font-size: 1.5rem; margin-bottom: 20px; font-weight: 600; }
 .login-footer { margin-top: 20px; font-size: 0.85rem; } 
 .login-footer a { color: #003399; text-decoration: none; margin: 0 5px; } 
 .login-footer a:hover { text-decoration: underline; } 
-.login-footer p { margin-top: 13px; color: #777; font-size: 0.75rem; font-weight: 500; } 
+.login-footer p { margin-top: 13px; color: #777; font-size: 0.75rem; font-weight: 500; }
+.recaptcha-container {
+ display: flex;
+ justify-content: center;
+}
