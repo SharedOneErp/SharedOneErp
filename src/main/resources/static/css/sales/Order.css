@@ -1,5 +1,5 @@
 
-.menu_order .box { padding: 5px 12px; } 
+.menu_order .box { padding: 5px 12px; margin-left: 5px;}
 .orderDetail-title h3 { font-size: 18px; font-weight: bold; color: #333333; letter-spacing: -0.1px; padding-bottom: 16px; border-bottom: 1px solid #999999; margin: 26px 0 0; position: relative; } 
 .order-detail-container { padding: 20px; } 
 .form-row { display: flex; flex-wrap: wrap; gap: 15px; } 
@@ -26,8 +26,7 @@
 .orderDetail-edit { background-color: #007CC1; } 
 .orderDetail-close { background-color: gray; } 
 .order-buttons { display: flex; justify-content: center; margin-bottom: 20px; } 
-.order-buttons > button { padding: 5px; border-radius: 5px; color: white; text-align: center; border: none; background-color: #007CC1; margin: 0 5px; } 
-.order-buttons .close-btn { background-color: gray; } 
+.order-buttons .close-btn { background-color: gray; }
 .search-button { margin-left: 5px; } 
 .orderHtotal-price { margin-left: 10px; font-weight: bold; } 
 /* 페이지네이션 */
