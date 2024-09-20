@@ -278,7 +278,9 @@ function OrderList() {
     const handleSelectAll = (event) => {
         const isChecked = event.target.checked;
         if (isChecked) {
-            const newSelectedOrders = new Set(filteredOrders.map(order => order.orderNo));
+            const newSelectedOrders = new Set(filteredOrders
+                .filter(order=>order.orderHStatus ==='ing')
+                .map(order => order.orderNo));
             setSelectedOrders(newSelectedOrders);
         } else {
             setSelectedOrders(new Set());
@@ -507,6 +509,7 @@ function OrderList() {
                                                                 type="checkbox"
                                                                 checked={selectedOrders.has(order.orderNo)}
                                                                 onChange={() => handleCheckboxChange(order.orderNo)}
+                                                                disabled={order.orderHStatus !== 'ing'} // ing가 아닐때는 비활성
                                                             />
                                                         ) : (
                                                             <input

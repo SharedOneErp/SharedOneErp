@@ -5,7 +5,92 @@ import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를
 import { useHooksList } from './OrderHooks'; // 상태 및 로직을 처리하는 훅
 import '../../../resources/static/css/sales/Order.css';
 
+
+
 function Order() {
+
+    const [role, setRole] = useState('');
+    const [isApproved, setIsApproved] = useState(false);
+    const [isDenied, setIsDenied] = useState(false);
+
+    const fetchEmployee = async () => {
+        try {
+            const response = await fetch('/api/employee', {
+                credentials: "include", // 세션 포함
+            });
+            if (response.ok) {
+                const data = await response.json();
+                return data;
+            } else {
+                console.error('사용자 정보를 가져오는 데 실패했습니다.');
+                return null;
+            }
+        } catch (error) {
+            console.error('사용자 정보를 가져오는 중 오류 발생:', error);
+            return null;
+        }
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const empData = await fetchEmployee();
+                if (empData) {
+                    setRole(empData.employeeRole);
+                }
+            } catch (err) {
+                alert('해당 페이지에 접근 권한이 없습니다.');
+                window.location.href = '/main';
+            } finally {
+            }
+        };
+        fetchData();
+    }, []);
+
+
+    const updateOrderStatus = async (orderNo, status, message) => {
+
+        const userConfirmed = confirm(message);
+        if (!userConfirmed) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/order/updateStatus/${orderNo}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ orderHStatus: status }),
+            });
+            if (response.ok) {
+                alert('주문 상태가 업데이트되었습니다.');
+            } else {
+                throw new Error('주문 상태 업데이트 실패');
+            }
+        } catch (error) {
+            alert('주문 상태를 업데이트하는 중 오류 발생');
+        }
+    };
+
+    const handleApproveOrder = async () => {
+        try {
+            await updateOrderStatus(orderNo, 'approved', '해당 주문을 승인하시겠습니까? 이 결정은 되돌릴 수 없습니다.');
+            setIsApproved(true); // 승인 상태로 변경
+        } catch (error) {
+            alert('주문 승인 중 오류 발생');
+        }
+    };
+
+    const handleDeniedOrder = async () => {
+        try {
+            await updateOrderStatus(orderNo, 'denied', '해당 주문을 반려하시겠습니까? 이 결정은 되돌릴 수 없습니다.');
+            setIsDenied(true); // 반려 상태로 변경
+        } catch (error) {
+            alert('주문 반려 중 오류 발생');
+        }
+    };
+
 
     // 🔴 커스텀 훅을 통해 상태와 함수 불러오기
     const {
@@ -84,6 +169,8 @@ function Order() {
         editProductRow,
         displayItemEdit,
     } = useHooksList();
+
+
 
     return (
         <Layout currentMenu="order">
@@ -310,9 +397,19 @@ function Order() {
                     </div>
                     <div className="order-buttons">
                         {isCreateMode && <button className="box color" onClick={handleSubmit}><i className="bi bi-floppy"></i> 주문 등록</button>}
-                        {isEditMode && <button className="box color" onClick={() => handleEdit(orderNo)}><i className="bi bi-floppy"></i> 주문 수정</button>}
-                        {isDetailView &&
-                            <button className="box color" onClick={() => window.location.href = `/order?no=${orderNo}&mode=edit`}>수정</button>}
+                        {isEditMode && role !=='admin' &&(<button className="box color" onClick={() => handleEdit(orderNo)}><i className="bi bi-floppy"></i> 주문 수정</button>)}
+                        {isDetailView && role === 'admin' && !isApproved && !isDenied && (
+                            <>
+                                <button className="box color" onClick={handleApproveOrder}>
+                                    결재승인
+                                </button>
+                                <button className="box" onClick={handleDeniedOrder}>
+                                    반려요청
+                                </button>
+                            </>
+                        )}
+                        {isDetailView && role !== 'admin' &&(
+                            <button className="box color" onClick={() => window.location.href = `/order?no=${orderNo}&mode=edit`}>수정</button>)}
                     </div>
                 </div>
             </main>
