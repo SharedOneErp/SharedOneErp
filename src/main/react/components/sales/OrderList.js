@@ -107,12 +107,12 @@ function OrderList() {
         }
     }, [searchParams])
 
-    useEffect(() => {
-        if (itsAssignedMode) {
-            setSelectedStatus('결재중');
-            applyFilter('결재중');
-        }
-    }, [itsAssignedMode]);
+    // useEffect(() => {
+    //     if (itsAssignedMode) {
+    //         setSelectedStatus('결재중');
+    //         applyFilter('결재중');
+    //     }
+    // }, [itsAssignedMode]);
 
 
 
@@ -344,15 +344,11 @@ function OrderList() {
     };
 
     return (
-        <Layout currentMenu={itsAssignedMode && role === 'admin' ? 'orderRegisterApproval' : 'orderList'}>
+        <Layout currentMenu='orderList'>
             <main className="main-content menu_order_list">
                 <div className="menu_title">
                     <div className="sub_title">영업 관리</div>
-                    <div className="main_title">{itsAssignedMode && role === 'admin'
-                        ? '주문 등록 승인'
-                        : role === 'admin'
-                            ? '전체 주문 목록'
-                            : '담당 주문 목록'}</div>
+                    <div className="main_title">{role === 'admin' ? '전체 주문 목록' : '담당 주문 목록'}</div>
                 </div>
                 <div className="menu_content">
                     <div className="search_wrap">
@@ -383,20 +379,7 @@ function OrderList() {
                             <div className="radio_box">
                                 <span>상태</span>
                                 {/* 'itsAssignedMode'가 참일 때는 '결재중' 라디오 버튼만 보이도록 설정 */}
-                                {itsAssignedMode ? (
-                                    <>
-                                        <input
-                                            type="radio"
-                                            id="pending"
-                                            name="status"
-                                            value="결재중"
-                                            checked={selectedStatus === '결재중'}
-                                            onChange={handleStatusChange}
-                                        />
-                                        <label htmlFor="pending">결재중</label>
-                                    </>
-                                ) : (
-                                    <>
+
 
                                         <input
                                             type="radio"
@@ -437,8 +420,8 @@ function OrderList() {
                                             onChange={handleStatusChange}
                                         />
                                         <label htmlFor="rejected">반려</label>
-                                    </>
-                                )}
+
+
                             </div>
 
 

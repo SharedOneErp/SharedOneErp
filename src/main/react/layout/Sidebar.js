@@ -94,14 +94,11 @@ function Sidebar({ currentMenu }) {
                             <a href="#" onClick={() => handleSubMenuClick('order', '/order')}>주문 등록</a>
                         </li>
                         <li className={currentMenu === 'orderList' ? 'active' : ''}>
-                            <a href="#" onClick={() => handleSubMenuClick('orderList', '/orderList')}>주문 목록</a>
+                            <a href="#"
+                               onClick={() => handleSubMenuClick('orderList', role === 'admin' ? '/orderList?mode=Assigned' : '/orderList')}>
+                                주문 목록
+                            </a>
                         </li>
-                        {employee && role === 'admin' && (
-                            <li className={currentMenu === 'orderRegisterApproval' ? 'active' : ''}>
-                                <a href="#"
-                                   onClick={() => handleSubMenuClick('orderRegisterApproval', '/orderList?mode=Assigned')}>주문 등록 승인</a>
-                            </li>
-                        )}
                         <li className={currentMenu === 'orderReport' ? 'active' : ''}>
                             <a href="#" onClick={() => handleSubMenuClick('orderReport', '/orderReport')}>영업 현황 보고서</a>
                         </li>
