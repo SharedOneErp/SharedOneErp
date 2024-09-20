@@ -106,28 +106,28 @@ public class ProductService {
         productRepository.saveAll(products);
     }
 
+    // 5. 선택한 상품 복원
+    @Transactional
+    public void restoreProducts(List<String> productCd) {
+        List<Product> products = productRepository.findByProductCdIn(productCd);
+
+        if (products.isEmpty()) {
+            throw new RuntimeException("복원할 상품이 없습니다.");
+        }
+
+        for (Product product : products) {
+            product.setProductDeleteYn("N");
+            product.setProductDeleteDate(null);
+
+            productRepository.saveAll(products);
+        }
+
+    }
 
     // 대분류 조회
     public List<Category> getTopCategory() {
         return categoryRepository.findTopCategory();
     }
-
-//    // 중분류 조회
-//    public List<Category> getMiddleCategory(Integer topCategoryId) {
-//        if (topCategoryId == null) {
-//            return categoryRepository.findMiddleCategory(0); // 전체 중분류 조회
-//        }
-//        return categoryRepository.findMiddleCategory(topCategoryId);
-//    }
-
-//    // 소분류 조회
-//    public List<Category> getLowCategory(Integer topCategoryId, Integer middleCategoryId) {
-//        if (topCategoryId == null || middleCategoryId == null) {
-//            return categoryRepository.findAll(); // 전체 소분류 조회
-//        }
-//        return categoryRepository.findLowCategoryByTopAndMiddleCategory(topCategoryId, middleCategoryId);
-//    }
-
 
     public List<Product> searchProducts(String productCd, String productNm, Integer topCategory, Integer middleCategory, Integer lowCategory) {
         // 포괄적인 쿼리 메서드를 사용하여 모든 검색 조건을 처리합니다.

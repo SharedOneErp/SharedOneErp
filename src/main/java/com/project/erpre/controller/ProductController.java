@@ -79,4 +79,16 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    // 6. 선택한 상품 복원 API
+    @PutMapping("/restore")
+    public ResponseEntity<Void> restoreProducts(@RequestBody List<String> productCds) {
+        try {
+            productService.restoreProducts(productCds);
+            return ResponseEntity.ok().build();
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
+
