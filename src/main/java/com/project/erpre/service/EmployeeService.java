@@ -57,19 +57,19 @@ public class EmployeeService {
 
     //재직자만
     public Page<Employee> getPageEmployees(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page -1 , size);
         return employeeRepository.findByEmployeeDeleteYn("N", pageable);
     }
 
     //퇴직자까지
     public Page<Employee> getAllPageEmployees(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page-1, size);
         return employeeRepository.findAll(pageable); // 필터 없이 전체 조회
     }
 
     //퇴직자조회
     public Page<Employee> getPageEmployeesY(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page-1, size);
         return employeeRepository.findByEmployeeDeleteYn("Y", pageable);
     }
 

@@ -78,7 +78,7 @@ public class EmployeeController {
     //페이징해서 재직중인 직원 목록 보여주기
     @GetMapping("/employeeList")
     public ResponseEntity<Page<Employee>> getAllEmployees(
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size) {
         Page<Employee> employeePage = employeeService.getPageEmployees(page, size);
         return ResponseEntity.ok(employeePage);
@@ -87,7 +87,7 @@ public class EmployeeController {
     //페이징해서 퇴직자만
     @GetMapping("/employeeListY")
     public ResponseEntity<Page<Employee>> getAllEmployeesY(
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size) {
         Page<Employee> employeePage = employeeService.getPageEmployeesY(page, size);
         return ResponseEntity.ok(employeePage);
@@ -103,7 +103,7 @@ public class EmployeeController {
     //퇴직자까지 보기(전체직원보기)
     @GetMapping("/allEmployees")
     public ResponseEntity<Page<Employee>> getAllEmployeesWithResigned(
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size) {
         Page<Employee> employeePage = employeeService.getAllPageEmployees(page, size);
         return ResponseEntity.ok(employeePage);
