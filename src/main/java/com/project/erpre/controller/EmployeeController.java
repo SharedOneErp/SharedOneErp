@@ -30,6 +30,10 @@ public class EmployeeController {
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest, HttpSession session) {
         String employeeId = loginRequest.get("employeeId");
         String employeePw = loginRequest.get("employeePw");
+
+        // 리캡차 응답을 받지만 검증하지 않음
+        String recaptchaResponse = loginRequest.get("recaptchaResponse");
+        // 아이디와 비밀번호 검증
         Employee employee = employeeRepository.findByEmployeeIdAndEmployeePw(employeeId, employeePw).orElse(null);
 
         if (employee != null) {
