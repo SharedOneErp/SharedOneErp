@@ -249,32 +249,49 @@ function EmployeeList() {
         setShowInsertModal(false);
     };
 
-    //직원등록
+    //직원등록(버튼누를시 중복검사)
     const InsertSubmit = () => {
 
+        if (newEmployee.employeeRole === '') {
+            alert('권한을 선택해주세요.');
+            return;
+        }
+        
         if (!validateEmployeeData(newEmployee)) {
             return;
         }
 
-
-        axios.post('/api/registerEmployee', newEmployee)
+        axios.get('/api/checkEmployeeId', { params: { employeeId: newEmployee.employeeId } })
             .then(response => {
-                alert('직원 등록이 완료되었습니다.');
-                closeInsertModal();
-                setNewEmployee({
-                    employeeId: '',
-                    employeePw: '',
-                    employeeName: '',
-                    employeeEmail: '',
-                    employeeTel: '',
-                    employeeRole: ''
+            if (response.data) {
+
+                alert('이미 존재하는 아이디입니다.');
+            } else {
+
+                axios.post('/api/registerEmployee', newEmployee)
+                    .then(response => {
+                    alert('직원 등록이 완료되었습니다.');
+                    closeInsertModal();
+                    setNewEmployee({
+                        employeeId: '',
+                        employeePw: '',
+                        employeeName: '',
+                        employeeEmail: '',
+                        employeeTel: '',
+                        employeeRole: ''
+                    });
+                    pageEmployeesN(1); // 첫 페이지로 갱신
+                })
+                    .catch(error => {
+                    console.error('발생한 에러 : ', error);
+                    alert('직원 등록 중 에러발생');
                 });
-                pageEmployeesN(0);
-            })
+            }
+        })
             .catch(error => {
-                console.error('발생한 에러 : ', error);
-                alert('직원 등록 중 에러발생');
-            });
+            console.error('ID 중복 체크 중 에러 발생:', error);
+            alert('ID 중복 체크 중 에러가 발생했습니다.');
+        });
     };
 
     //유효성검사(등록,수정 전부다 이걸로씀)
@@ -293,10 +310,10 @@ function EmployeeList() {
             return false;
         }
 
-        if (!allowedRoles.includes(employeeData.employeeRole.toLowerCase())) {
-            alert('권한은 admin, staff, manager 중 하나를 입력해주세요.');
-            return false;
-        }
+//        if (!allowedRoles.includes(employeeData.employeeRole.toLowerCase())) {
+//            alert('권한은 admin, staff, manager 중 하나를 입력해주세요.');
+//            return false;
+//        }
 
 
         return true;
@@ -488,12 +505,15 @@ function EmployeeList() {
                                         value={selectedEmployee.employeeTel}
                                         onChange={(e) => handleEmployeeChange('employeeTel', e.target.value)}
                                     /></td>
-                                    <td><input
-                                        type='text'
-                                        placeholder='권한을 입력해주세요'
+                                    <td><select
                                         value={selectedEmployee.employeeRole}
                                         onChange={(e) => handleEmployeeChange('employeeRole', e.target.value)}
-                                    /></td>
+                                        >
+
+                                        <option value="admin">admin</option>
+                                        <option value="staff">staff</option>
+                                        <option value="manager">manager</option>
+                                    </select></td>
                                 </tr>
                             </tbody>
                             <tfoot>
@@ -547,12 +567,15 @@ function EmployeeList() {
                                     value={newEmployee.employeeTel}
                                     onChange={(e) => setNewEmployee({ ...newEmployee, employeeTel: e.target.value })}
                                 />
-                                <input
-                                    type='text'
-                                    placeholder='권한을 입력해주세요'
-                                    value={newEmployee.employeeRole}
-                                    onChange={(e) => setNewEmployee({ ...newEmployee, employeeRole: e.target.value })}
-                                />
+                                <select
+                                value={newEmployee.employeeRole}
+                                onChange={(e) => setNewEmployee({ ...newEmployee, employeeRole: e.target.value })}
+                                >
+                                <option value="">권한을 선택해주세요</option>
+                                <option value="admin">admin</option>
+                                <option value="staff">staff</option>
+                                <option value="manager">manager</option>
+                                </select>
                                 <hr />
                                 <button className='submit-button' onClick={InsertSubmit}>등록</button>
                             </div>

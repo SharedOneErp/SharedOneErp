@@ -30,4 +30,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, String> {
 
     List<Employee> findByEmployeeDeleteYn(String employeeDeleteYn); //N인것만
 
+    boolean existsByEmployeeId(String employeeId); //삭제 된 것도 포함해서 중복ID 가입 불가
 }

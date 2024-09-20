@@ -129,4 +129,9 @@ public class EmployeeService {
             employeeRepository.save(employee);  // 논리적 삭제 저장
         }
     }
+
+    // 중복 ID체크
+    public boolean existsByEmployeeId(String employeeId) {
+        return employeeRepository.existsById(employeeId);
+    }
 }
