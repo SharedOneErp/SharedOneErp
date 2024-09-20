@@ -99,7 +99,7 @@ function Order() {
                                 {orderNo && (
                                     <div className="form-group">
                                         <label>주문번호</label>
-                                        <input type="text" className="box" value={orderNo} readOnly className="readonly" />
+                                        <input type="text" value={orderNo} readOnly className="box readonly" />
                                     </div>
                                 )}
 
