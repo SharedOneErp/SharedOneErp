@@ -166,5 +166,43 @@ public class OrderController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    // 주문 상세 항목 추가
+    @PostMapping("/{orderNo}/details")
+    public ResponseEntity<?> addOrderDetail(@PathVariable Integer orderNo, @RequestBody OrderDetailDTO orderDetailDTO) {
+        try {
+            // 주문이 존재하는지 확인
+            Order existingOrder = orderService.getOrderById(orderNo);
+            if (existingOrder == null) {
+                return new ResponseEntity<>("주문을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
+            }
+
+            // 주문 상세 항목 추가
+            OrderDetail addedDetail = orderService.addOrderDetail(orderNo, orderDetailDTO);
+            return new ResponseEntity<>(addedDetail, HttpStatus.CREATED);
+        } catch (Exception e) {
+            logger.error("주문 상세 항목 추가 중 오류 발생: ", e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // 주문 상세 항목 삭제
+    @DeleteMapping("/{orderNo}/details/{detailId}")
+    public ResponseEntity<?> deleteOrderDetail(@PathVariable Integer orderNo, @PathVariable Integer detailId) {
+        try {
+            // 주문이 존재하는지 확인
+            Order existingOrder = orderService.getOrderById(orderNo);
+            if (existingOrder == null) {
+                return new ResponseEntity<>("주문을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
+            }
+
+            // 주문 상세 항목 삭제
+            orderService.deleteOrderDetail(orderNo, detailId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 성공적으로 삭제되었음을 나타냄
+        } catch (Exception e) {
+            logger.error("주문 상세 항목 삭제 중 오류 발생: ", e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }

@@ -96,9 +96,10 @@ function Login() {
 
                     {error && <p className="error-message">{error}</p>}
 
-                    <div className="g-recaptcha" data-sitekey="6LdC_EkqAAAAAE6kT_S6sCKilJGJuljygUCmr1he"></div>
-
-                    <button type="submit" className="login-btn">로그인</button>
+                    <div className="recaptcha-container">
+                        <div className="g-recaptcha" data-sitekey="6LdC_EkqAAAAAE6kT_S6sCKilJGJuljygUCmr1he"></div>
+                    </div>
+                        <button type="submit" className="login-btn">로그인</button>
                 </form>
                 <div className="login-footer">
                     <a href="#">비밀번호 초기화</a> | <a href="#">2단계 인증 안내</a>

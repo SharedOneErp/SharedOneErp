@@ -104,6 +104,11 @@ public class OrderDetailService {
 
         return orderDetailRepository.save(existingOrderDetail);
     }
+    public OrderDetail createOrderDetail(OrderDetailDTO orderDetailDTO) {
+        OrderDetail orderDetail = convertToEntity(orderDetailDTO);
+        return orderDetailRepository.save(orderDetail);
+    }
+
 
 
 }
