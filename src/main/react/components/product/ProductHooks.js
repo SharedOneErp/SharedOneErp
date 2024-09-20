@@ -2,7 +2,7 @@ import {useEffect, useMemo, useState} from "react";
 import {formatDate} from '../../util/dateUtils';
 import axios from 'axios';
 
-export const useHooksList = () => {
+export const useProductHooks = () => {
 
     // 1. Read
 
@@ -66,6 +66,7 @@ export const useHooksList = () => {
 
     // 5. 모달 state
 
+    const [isLoading, setLoading] = useState(true); // 로딩 상태 관리
 
     // 모달 상태
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -112,8 +113,11 @@ export const useHooksList = () => {
                 setFullTopCategories(response.data.topCategories || []);
                 setFullMiddleCategories(response.data.middleCategories || []);
                 setFullLowCategories(response.data.lowCategories || []);
+
+                setLoading(false);
             })
             .catch((error) => console.error('전체 상품 목록 조회 실패', error));
+        setLoading(false);
     }, [currentPage, itemsPerPage, filterTopCategory, filterMiddleCategory, filterLowCategory, selectedStatus]);
 
     useEffect(() => {
@@ -166,7 +170,7 @@ export const useHooksList = () => {
         setFilteredProducts(filtered);
     };
 
-    // 상품 개별선택
+    // 상품 개별 선택
     const handleSelectProduct = (productCd) => {
         setSelectedProducts(prevSelected => {
             if (prevSelected.includes(productCd)) {
@@ -347,6 +351,7 @@ export const useHooksList = () => {
         setEditableProduct({}); // 수정된 데이터 초기화
     };
 
+    // 상품 삭제 함수
     const handleDeleteSelected = (productCd = null) => {
         if (!productCd && selectedProducts.length === 0) {
             alert('삭제할 상품을 선택해주세요.');
@@ -374,6 +379,34 @@ export const useHooksList = () => {
             });
     };
 
+    const handleRestore = (productCd = null) => {
+
+        if (!productCd && selectedProducts.length === 0) {
+            alert('복원할 상품을 선택해주세요.');
+            return;
+        }
+
+        if (!window.confirm(('정말 복원하시겠습니까?'))) {
+            return;
+        }
+
+        const productsToRestore = productCd ? [productCd] : selectedProducts;
+
+        axios.put('/api/products/restore', productsToRestore, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                alert('상품이 복원되었습니다.');
+                fetchProducts();
+                setSelectedProducts([]);
+            })
+            .catch(error => {
+                console.error('상품 복원 실패', error)
+            })
+    }
+
     const fetchProducts = () => {
         axios.get('/api/products/productList', {
             params: {
@@ -391,6 +424,7 @@ export const useHooksList = () => {
                     topCategory: product.topCategoryNo,
                     middleCategory: product.middleCategoryNo,
                     lowCategory: product.lowCategoryNo,
+                    productDeleteYn: product.productDeleteDate ? 'Y' : 'N',
                 }));
                 setProducts(productsWithCategoryNames);
                 setFilteredProducts(productsWithCategoryNames);
@@ -579,8 +613,6 @@ export const useHooksList = () => {
         }));
     };
 
-
-
     // 페이지 변경
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -615,6 +647,7 @@ export const useHooksList = () => {
             setCurrentPage(paginationNumbers[paginationNumbers.length - 1] + 1);
         }
     };
+
 
     return {
         products,
@@ -679,5 +712,7 @@ export const useHooksList = () => {
         handleFilterLowCategoryChangeForEdit,
         handleStatusChange,
         selectedStatus,
+        isLoading,
+        handleRestore,
     };
 }

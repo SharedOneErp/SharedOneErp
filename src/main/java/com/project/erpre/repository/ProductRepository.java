@@ -16,10 +16,10 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String>, ProductRepositoryCustom {
 
-    // 1. 삭제할 상품을 찾아오는 메서드
+    // 1. 품번으로 상품을 찾아오는 메서드
     List<Product> findByProductCdIn(List<String> productCds);
 
-    // 2. 상태별로 상품수 구하는 메서드
+    // 2. 상태에 따른 상품 수를 구하는 메서드
     @Query("SELECT COUNT(p) FROM Product p WHERE p.productDeleteYn = :status")
     long countByStatus(@Param("status") String status);
 

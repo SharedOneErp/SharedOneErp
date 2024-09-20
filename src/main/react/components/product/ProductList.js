@@ -4,7 +4,7 @@ import {BrowserRouter, Routes, Route, useSearchParams} from "react-router-dom";
 import Layout from "../../layout/Layout";
 import '../../../resources/static/css/product/ProductList.css'; // 개별 CSS 파일 임포트
 import '../../../resources/static/css/common/Layout.css';
-import {useHooksList} from "./ProductHooks"; // 상품 관리에 필요한 상태 및 로직을 처리하는 훅
+import {useProductHooks} from "./ProductHooks"; // 상품 관리에 필요한 상태 및 로직을 처리하는 훅
 import {formatDate} from '../../util/dateUtils';
 import ProductDetailModal from './ProductDetailModal';
 import PropTypes from "prop-types";
@@ -75,13 +75,32 @@ function ProductList() {
         handleFilterLowCategoryChangeForEdit,
         handleStatusChange,
         selectedStatus,
-    } = useHooksList(); // 커스텀 훅 사용
+        isLoading,
+        handleUpdateDeleteYn,
+        handleRestore,
+    } = useProductHooks(); // 커스텀 훅 사용
 
     // 🔴 ProductRow 컴포넌트를 상위 컴포넌트 내부에 정의
-    const ProductRow = ({isEditMode, productData, topCategory, topCategories, midCategory, midCategories, lowCategory, lowCategories, handleInputChange,  onTopChange, onMidChange, onLowChange, onSave, onCancel}) => {
+    const ProductRow = ({
+                            isEditMode,
+                            productData,
+                            topCategory,
+                            topCategories,
+                            midCategory,
+                            midCategories,
+                            lowCategory,
+                            lowCategories,
+                            handleInputChange,
+                            onTopChange,
+                            onMidChange,
+                            onLowChange,
+                            onSave,
+                            onCancel
+                        }) => {
         return (
             <tr className='tr_input'>
-                <td>-</td>{/* 체크박스 칸 */}
+                <td>-</td>
+                {/* 체크박스 칸 */}
                 <td>
                     {/* 품번 */}
                     <input
@@ -106,11 +125,11 @@ function ProductList() {
                 </td>
                 <td>
                     <select className="box wp100"
-                        name="topCategory"
-                        value={topCategory}
-                        onChange={(e) => {
-                            onTopChange(e);
-                        }}
+                            name="topCategory"
+                            value={topCategory}
+                            onChange={(e) => {
+                                onTopChange(e);
+                            }}
                     >
                         <option value="">대분류 선택</option>
                         {topCategories.map((category, index) => (
@@ -123,12 +142,12 @@ function ProductList() {
                 </td>
                 <td>
                     <select className="box wp100"
-                        name="midCategory"
-                        value={midCategory}
-                        onChange={(e) => {
-                            onMidChange(e);
-                        }}
-                        disabled={!topCategory}
+                            name="midCategory"
+                            value={midCategory}
+                            onChange={(e) => {
+                                onMidChange(e);
+                            }}
+                            disabled={!topCategory}
                     >
                         <option value="">중분류 선택</option>
                         {midCategories.map((category, index) => (
@@ -141,12 +160,12 @@ function ProductList() {
                 </td>
                 <td>
                     <select className="box wp100"
-                        name="lowCategory"
-                        value={lowCategory}
-                        onChange={(e) => {
-                            onLowChange(e);
-                        }}
-                        disabled={!midCategory}
+                            name="lowCategory"
+                            value={lowCategory}
+                            onChange={(e) => {
+                                onLowChange(e);
+                            }}
+                            disabled={!midCategory}
                     >
                         <option value="">소분류 선택</option>
                         {lowCategories.map((category, index) => (
@@ -157,9 +176,12 @@ function ProductList() {
                         ))}
                     </select>
                 </td>
-                <td>-</td>{/* 등록일시 */}
-                <td>-</td>{/* 수정일시 */}
-                <td>-</td>{/* 삭제일시 */}
+                <td>-</td>
+                {/* 등록일시 */}
+                <td>-</td>
+                {/* 수정일시 */}
+                <td>-</td>
+                {/* 삭제일시 */}
                 <td>
                     <div className='btn_group'>
                         {isEditMode ? (
@@ -167,7 +189,6 @@ function ProductList() {
                                 <button className="box small color_border" onClick={onSave}>수정</button>
                                 <button className="box small" onClick={onCancel}>취소</button>
                             </>
-                            // handleConfirmClick, handleCancelEdit
                         ) : (
                             <>
                                 <button className="box small color_borde" onClick={onSave}>추가</button>
@@ -329,154 +350,156 @@ function ProductList() {
                                     onCancel={handleCancelAdd}
                                 />
                             )}
-
-                            {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
+                            {/* 로딩 중일 때 로딩 이미지 표시 */}
+                            {isLoading ? (
+                                <tr className="tr_empty">
+                                    <td colSpan="10"> {/* 로딩 애니메이션 중앙 배치 */}
+                                        <div className="loading">
+                                            <span></span> {/* 첫 번째 원 */}
+                                            <span></span> {/* 두 번째 원 */}
+                                            <span></span> {/* 세 번째 원 */}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
                                 filteredProducts.map((product, index) => (
-                                    <tr key={product.productCd}
-                                        className={`${selectedProducts.includes(product.productCd) ? 'selected' : ''} ${isEditMode === product.productCd ? 'edit-mode-active' : ''}`}>
-                                        <td><input type="checkbox"
-                                                   onChange={() => handleSelectProduct(product.productCd)}
-                                                   checked={selectedProducts.includes(product.productCd)}/></td>
-                                        <td>{product.productCd}</td>
-                                        <td>
-                                            {isEditMode === product.productCd ? (
-                                                <input type="text" name="productNm" value={editableProduct.productNm}
-                                                       onChange={handleInputChange}/>
-                                            ) : (
-                                                product.productNm
-                                            )}
-                                        </td>
-                                        <td>
-                                            {isEditMode === product.productCd ? (
-                                                <select
-                                                    name="topCategoryNo"
-                                                    value={editableProduct.topCategoryNo || ''}
-                                                    onChange={handleFilterTopCategoryChangeForEdit}
-                                                >
-                                                    <option value="">대분류</option>
-                                                    {fullTopCategories.map((category, index) => (
-                                                        <option key={index}
-                                                                value={category.categoryNo}>{category.categoryNm}</option>
-                                                    ))}
-                                                </select>
-                                            ) : (
-                                                product.topCategoryNo ? getCategoryNameByNo(product.topCategoryNo) : '-'
-                                            )}
-                                        </td>
-                                        <td>
-                                            {isEditMode === product.productCd ? (
-                                                <select
-                                                    name="middleCategoryNo"
-                                                    value={editableProduct.middleCategoryNo || ''}
-                                                    onChange={handleFilterMiddleCategoryChangeForEdit}
-                                                    disabled={!editableProduct.topCategoryNo}
-                                                >
-                                                    <option value="">중분류</option>
-                                                    {filteredEditMiddleCategories.map((category, index) => (
-                                                        <option key={index}
-                                                                value={category.categoryNo}>{category.categoryNm}</option>
-                                                    ))}
-                                                </select>
-
-                                            ) : (
-                                                product.middleCategoryNo ? getCategoryNameByNo(product.middleCategoryNo) : '-'
-                                            )}
-                                        </td>
-                                        <td>
-                                            {isEditMode === product.productCd ? (
-                                                <select
-                                                    name="lowCategoryNo"
-                                                    value={editableProduct.lowCategoryNo || ''}
-                                                    onChange={handleFilterLowCategoryChangeForEdit}
-                                                    disabled={!editableProduct.middleCategoryNo}
-                                                >
-                                                    <option value="">소분류</option>
-                                                    {filteredEditLowCategories.map((category, index) => (
-                                                        <option key={index}
-                                                                value={category.categoryNo}>{category.categoryNm}</option>
-                                                    ))}
-                                                </select>
-
-                                            ) : (
-                                                product.lowCategoryNo ? getCategoryNameByNo(product.lowCategoryNo) : '-'
-                                            )}
-                                        </td>
-                                        <td>{product.productInsertDate ? formatDate(product.productInsertDate) : '-'}</td>
-                                        <td>{product.productUpdateDate ? formatDate(product.productUpdateDate) : '-'}</td>
-                                        <td>{product.productDeleteDate ? formatDate(product.productDeleteDate) : '-'}</td>
-                                        <td>
-                                            {isEditMode === product.productCd ? (
-                                                <>
-                                                    <button className="product-confirm-button"
-                                                            onClick={handleConfirmClick}>확인
-                                                    </button>
-                                                    <button className="filter-button" onClick={handleCancelEdit}>취소
-                                                    </button>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <button className="product-edit-button"
-                                                            onClick={() => handleOpenModal(product.productCd)}>상세
-                                                    </button>
-                                                    <button className="product-edit-button"
-                                                            onClick={() => handleEditClick(product)}>수정
-                                                    </button>
-                                                    <button className="filter-button"
-                                                            onClick={() => handleDeleteSelected(product.productCd)}>삭제
-                                                    </button>
-                                                </>
-                                            )}
-                                        </td>
-                                    </tr>
+                                    isEditMode === product.productCd ? (
+                                        <ProductRow
+                                            key={product.productCd}
+                                            isEditMode={true}
+                                            productData={editableProduct}
+                                            topCategory={editableProduct.topCategoryNo || ''}
+                                            topCategories={fullTopCategories}
+                                            midCategory={editableProduct.middleCategoryNo || ''}
+                                            midCategories={filteredEditMiddleCategories}
+                                            lowCategory={editableProduct.lowCategoryNo || ''}
+                                            lowCategories={filteredEditLowCategories}
+                                            handleInputChange={handleInputChange}
+                                            onTopChange={handleFilterTopCategoryChangeForEdit}
+                                            onMidChange={handleFilterMiddleCategoryChangeForEdit}
+                                            onLowChange={handleFilterLowCategoryChangeForEdit}
+                                            onSave={handleConfirmClick}
+                                            onCancel={handleCancelEdit}
+                                        />
+                                    ) : (
+                                        // 기본 모드
+                                        <tr
+                                            key={product.productCd}
+                                            className={
+                                                `${selectedProducts.includes(product.productCd)
+                                                    ? 'selected'
+                                                    : ''}`
+                                            }
+                                        >
+                                            <td>
+                                                <label className="chkbox_label">
+                                                    {/* 삭제된 상태가 아닌 경우에만 체크박스 표시 */}
+                                                    {product.productDeleteYn !== 'Y' && (
+                                                        <>
+                                                            <input
+                                                                type="checkbox"
+                                                                className="chkbox"
+                                                                checked={selectedProducts.includes(product.productCd)}
+                                                                onChange={() => handleSelectProduct(product.productCd)}
+                                                            />
+                                                            <i className="chkbox_icon">
+                                                                <i className="bi bi-check-lg"></i>
+                                                            </i>
+                                                        </>
+                                                    )}
+                                                </label>
+                                            </td>
+                                            <td>{product.productCd}</td>
+                                            <td>{product.productNm}</td>
+                                            <td>{product.topCategoryNo ? getCategoryNameByNo(product.topCategoryNo) : '-'}</td>
+                                            <td>{product.middleCategoryNo ? getCategoryNameByNo(product.middleCategoryNo) : '-'}</td>
+                                            <td>{product.lowCategoryNo ? getCategoryNameByNo(product.lowCategoryNo) : '-'}</td>
+                                            <td>{product.productInsertDate ? formatDate(product.productInsertDate) : '-'}</td>
+                                            <td>{product.productUpdateDate ? formatDate(product.productUpdateDate) : '-'}</td>
+                                            <td>{product.productDeleteDate ? formatDate(product.productDeleteDate) : '-'}</td>
+                                            <td>
+                                                <div className='btn_group'>
+                                                    {product.productDeleteYn === 'Y' ? (
+                                                        <button className="box icon restore"
+                                                                onClick={() => handleRestore(product.productCd)}>
+                                                            <i className="bi bi-arrow-clockwise"></i>{/* 복원 */}
+                                                        </button>
+                                                    ) : (
+                                                        <>
+                                                            <button className="box icon edit"
+                                                                    onClick={() => handleOpenModal(product.productCd)}>상세
+                                                            </button>
+                                                            <button className="box icon deit"
+                                                                    onClick={() => handleEditClick(product)}>
+                                                                <i className="bi bi-pencil-square"></i>{/* 수정 */}
+                                                            </button>
+                                                            <button className="box icon deit"
+                                                                    onClick={() => handleDeleteSelected(product.productCd)}>
+                                                                <i className="bi bi-trash"></i>{/* 삭제 */}
+                                                            </button>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
                                 ))
                             ) : (
-                                <tr>
-                                    <td colSpan={10}>상품이 없습니다.</td>
+                                <tr className="tr_empty">
+                                    <td colSpan="10">
+                                        <div className="no_data"><i className="bi bi-exclamation-triangle"></i>조회된 결과가
+                                            없습니다.
+                                        </div>
+                                    </td>
                                 </tr>
+
                             )}
                             </tbody>
                         </table>
-                        <div className="pagination">
-                            <button
-                                onClick={() => setCurrentPage(1)}
-                                disabled={currentPage === 1}
-                            >
-                                {"<<"}
-                            </button>
-                            <button
-                                onClick={handlePreviousPageGroup}
-                                disabled={paginationNumbers[0] === 1}
-                            >
-                                {"<"}
-                            </button>
-
-                            {paginationNumbers.map((page) => (
-                                <button
-                                    key={page}
-                                    onClick={() => handlePageChange(page)}
-                                    className={currentPage === page ? 'active' : ''}
-                                >
-                                    {page}
-                                </button>
-                            ))}
-
-                            <button
-                                onClick={handleNextPageGroup}
-                                disabled={paginationNumbers[paginationNumbers.length - 1] === totalPages}
-                            >
-                                {">"}
-                            </button>
-                            <button
-                                onClick={() => setCurrentPage(totalPages)}
-                                disabled={currentPage === totalPages}
-                            >
-                                {">>"}
-                            </button>
-                        </div>
-                        <div className="button-container">
-                            <button className="filter-button" onClick={() => handleDeleteSelected()}>삭제</button>
-                        </div>
                     </div>
+
+                    {/* 페이지네이션 컴포넌트 사용 */}
+                    <div className="pagination">
+                        <button
+                            onClick={() => setCurrentPage(1)}
+                            disabled={currentPage === 1}
+                        >
+                            {"<<"}
+                        </button>
+                        <button
+                            onClick={handlePreviousPageGroup}
+                            disabled={paginationNumbers[0] === 1}
+                        >
+                            {"<"}
+                        </button>
+
+                        {paginationNumbers.map((page) => (
+                            <button
+                                key={page}
+                                onClick={() => handlePageChange(page)}
+                                className={currentPage === page ? 'active' : ''}
+                            >
+                                {page}
+                            </button>
+                        ))}
+
+                        <button
+                            onClick={handleNextPageGroup}
+                            disabled={paginationNumbers[paginationNumbers.length - 1] === totalPages}
+                        >
+                            {">"}
+                        </button>
+                        <button
+                            onClick={() => setCurrentPage(totalPages)}
+                            disabled={currentPage === totalPages}
+                        >
+                            {">>"}
+                        </button>
+                    </div>
+                    <div className="button-container">
+                        <button className="filter-button" onClick={() => handleDeleteSelected()}>삭제</button>
+                    </div>
+
                     <label>
                         <p>전체 {totalItems}건 페이지 당:</p>
                         <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
