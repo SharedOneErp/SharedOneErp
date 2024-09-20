@@ -215,7 +215,7 @@ function ProductList() {
                     <div className="search_wrap">
                         <div className="left">
                             {/* 1️⃣ 카테고리 */}
-                            <select className="approval-select" value={filterTopCategory}
+                            <select className="box" value={filterTopCategory}
                                     onChange={handleFilterTopCategoryChange}>
                                 <option value="">대분류</option>
                                 {topCategories
@@ -225,7 +225,7 @@ function ProductList() {
                                         </option>
                                     ))}
                             </select>
-                            <select className="approval-select" value={filterMiddleCategory}
+                            <select className="box" value={filterMiddleCategory}
                                     onChange={handleFilterMiddleCategoryChange}
                                     disabled={!filterTopCategory}>
                                 <option value="">중분류</option>
@@ -236,7 +236,7 @@ function ProductList() {
                                         </option>
                                     ))}
                             </select>
-                            <select className="approval-select" value={filterLowCategory}
+                            <select className="box" value={filterLowCategory}
                                     onChange={handleFilterLowCategoryChange}
                                     disabled={!filterMiddleCategory}>
                                 <option value="">소분류</option>
