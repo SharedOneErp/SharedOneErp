@@ -80,7 +80,9 @@ function Order() {
         handleMiddleChange,    // 중분류 카테고리 변경 처리 함수
         categories,            // 카테고리 데이터 (대분류, 중분류, 소분류)
 
-        displayItems
+        displayItems,
+        editProductRow,
+        displayItemEdit,
     } = useHooksList();
 
     return (
@@ -306,9 +308,9 @@ function Order() {
                             <span></span>
                         )}
                     </div>
-                    <div class="order-buttons">
-                        {isCreateMode && <button className="box color" onClick={handleSubmit}><i class="bi bi-floppy"></i> 주문 등록</button>}
-                        {isEditMode && <button className="box color" onClick={() => handleEdit(orderNo)}><i class="bi bi-floppy"></i> 주문 수정</button>}
+                    <div className="order-buttons">
+                        {isCreateMode && <button className="box color" onClick={handleSubmit}><i className="bi bi-floppy"></i> 주문 등록</button>}
+                        {isEditMode && <button className="box color" onClick={() => handleEdit(orderNo)}><i className="bi bi-floppy"></i> 주문 수정</button>}
                         {isDetailView &&
                             <button className="box color" onClick={() => window.location.href = `/order?no=${orderNo}&mode=edit`}>수정</button>}
                     </div>

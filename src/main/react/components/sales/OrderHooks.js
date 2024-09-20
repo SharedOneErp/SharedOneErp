@@ -676,7 +676,9 @@ export const useHooksList = () => {
         handleMiddleChange,    // 중분류 카테고리 변경 처리 함수
         categories,            // 카테고리 데이터 (대분류, 중분류, 소분류)
 
-        displayItems
+        displayItems,
+        editProductRow,
+        displayItemEdit,
     };
 
 };
