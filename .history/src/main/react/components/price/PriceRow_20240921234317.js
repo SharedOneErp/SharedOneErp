@@ -37,6 +37,30 @@ const PriceRow = ({
         clearErrors('priceCustomer'); // 입력값이 변경되면 오류 메시지 제거
     };
 
+    // 고객사 선택 시
+    const handleCustomerSelect = (customer) => {
+        setSelectedCustomer(customer);
+        setValue('selectedCustomerNo', customer.customerNo); // 고객 번호를 react-hook-form의 필드에 설정
+        alert(customer.customerNo);
+        if (customer.customerNo) { // 고객 번호가 존재할 때만 오류 제거
+            alert(1);
+            clearErrors('selectedCustomerNo');
+        } else {
+            alert(2);
+        }
+        setCustomerModalOpen(false); // 모달 닫기
+    };
+
+    // 상품 선택 시
+    const handleProductSelect = (product) => {
+        setSelectedProduct(product);
+        setValue('selectedProductCd', product.productCd); // 상품 코드를 react-hook-form의 필드에 설정
+        if (product.productCd) { // 상품 코드가 존재할 때만 오류 제거
+            clearErrors('selectedProductCd');
+        }
+        setProductModalOpen(false); // 모달 닫기
+    };
+
     // 저장 버튼 클릭 시 실행되는 함수
     const onSubmit = async (data) => {
         data.priceCustomer = data.priceCustomer.replace(/,/g, ''); // 콤마 제거한 실제 값을 저장

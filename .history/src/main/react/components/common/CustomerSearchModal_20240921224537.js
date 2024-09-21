@@ -66,12 +66,6 @@ function CustomerSearchModal({ onClose, onCustomerSelect }) {
         if (e.target.className === 'modal_overlay') {
             onClose();
         }
-
-    };
-    // 🟢 검색된 고객사를 클릭
-    const handleCustomerClick = (customer) => {
-        onCustomerSelect(customer); // 부모 컴포넌트에서 전달된 함수 호출
-        onClose(); // 모달 닫기
     };
 
     // 🟣 모달 렌더링
@@ -119,7 +113,7 @@ function CustomerSearchModal({ onClose, onCustomerSelect }) {
                             {customerSearchResults.length > 0 ? (
                                 /* 검색된 고객사 목록을 출력 */
                                 paginatedCustomerSearchResults.map((result) => (
-                                    <tr key={result.customerNo} onClick={() => handleCustomerClick(result)}>
+                                    <tr key={result.customerNo} onClick={() => onCustomerSelect(result)}>
                                         <td>{result.customerName || '-'}</td> {/* 고객사 이름 */}
                                         <td>{result.customerAddr || '-'}</td> {/* 고객사 주소 */}
                                         <td>{result.customerTel || '-'}</td> {/* 고객사 연락처 */}

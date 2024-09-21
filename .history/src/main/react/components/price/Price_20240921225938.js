@@ -305,7 +305,7 @@ function Price() {
                                     />
                                 )}
 
-                                {/* 로딩 중일 때 로딩 이미지 표시 */}
+                                {/* 로딩 중일 때 로딩 이미지 표시2 */}
                                 {isLoading ? (
                                     <tr className="tr_empty">
                                         <td colSpan="10"> {/* 로딩 애니메이션 중앙 배치 */}

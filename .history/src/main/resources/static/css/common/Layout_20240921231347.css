@@ -95,7 +95,10 @@ button.box.icon.hover_text.cancel:hover i::after { content: '취소'; }
 .radio_box input[type="radio"] { display: none; } 
 .radio_box label { font-size: 16px; font-weight: 500; color: #555; padding: 5px 7px; border-radius: 5px; cursor: pointer; transition: all 0.3s; } 
 .radio_box label:hover { background-color: #e4f1f7a3; } 
-.radio_box input[type="radio"]:checked + label { border-color: #007CC1; color: #007CC1; background-color: #e4f1f7a3; cursor: default; } 
+.radio_box input[type="radio"]:checked + label { border-color: #007CC1; color: #007CC1; background-color: #e4f1f7a3; } 
+/* 달력 선택(date) */
+input[type="date"].date { cursor: pointer; } 
+input[type="date"].date:hover { background-color: #fcfcfc; border: 1px solid rgb(36 42 48 / 20%); } 
 /* 상태 선택(checkbox) */
 .checkbox_box input[type="checkbox"] { display: none; } 
 .checkbox_box label { align-items: center; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); display: inline-flex; font-size: 16px; padding: 8px 12px 8px 8px; color: #666; cursor: pointer; } 

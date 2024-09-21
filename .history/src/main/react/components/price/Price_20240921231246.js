@@ -138,6 +138,7 @@ function Price() {
                                     type="date"
                                     max="9999-12-31"
                                     value={targetDate || ''}
+                                    onClick={(e) => e.target.showPicker()} // 무조건 달력 열기
                                     onChange={(e) => handleTargetDateChange(e.target.value)}
                                 />
                                 {/* 날짜 삭제 버튼 */}
@@ -196,6 +197,7 @@ function Price() {
                                     type="date"
                                     max="9999-12-31"
                                     value={startDate || ''}
+                                    onClick={(e) => e.target.showPicker()} // 무조건 달력 열기
                                     onChange={(e) => handleStartDateChange(e.target.value)}
                                 />
                                 {/* 날짜 삭제 버튼 */}
@@ -214,6 +216,7 @@ function Price() {
                                     type="date"
                                     max="9999-12-31"
                                     value={endDate || ''}
+                                    onClick={(e) => e.target.showPicker()} // 무조건 달력 열기
                                     onChange={(e) => handleEndDateChange(e.target.value)}
                                 />
                                 {/* 날짜 삭제 버튼 */}

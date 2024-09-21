@@ -37,6 +37,26 @@ const PriceRow = ({
         clearErrors('priceCustomer'); // 입력값이 변경되면 오류 메시지 제거
     };
 
+    // 고객사 선택 시
+    const handleCustomerSelect = (customer) => {
+        setSelectedCustomer(customer);
+        setValue('selectedCustomerNo', customer.customerNo); // 고객 번호를 react-hook-form의 필드에 설정
+        if (customer.customerNo) { // 고객 번호가 존재할 때만 오류 제거
+            clearErrors('selectedCustomerNo');
+        }
+        setCustomerModalOpen(false); // 모달 닫기
+    };
+
+    // 상품 선택 시
+    const handleProductSelect = (product) => {
+        setSelectedProduct(product);
+        setValue('selectedProductCd', product.productCd); // 상품 코드를 react-hook-form의 필드에 설정
+        if (product.productCd) { // 상품 코드가 존재할 때만 오류 제거
+            clearErrors('selectedProductCd');
+        }
+        setProductModalOpen(false); // 모달 닫기
+    };
+
     // 저장 버튼 클릭 시 실행되는 함수
     const onSubmit = async (data) => {
         data.priceCustomer = data.priceCustomer.replace(/,/g, ''); // 콤마 제거한 실제 값을 저장
@@ -148,21 +168,25 @@ const PriceRow = ({
             <td className="vat">
                 <div className='period_box'>
                     <input
+                        id="priceStartDate"
                         type="date"
                         max="9999-12-31"
-                        className={`box ${errors.priceStartDate ? 'field_error' : ''}`}
+                        className={`date box ${errors.priceStartDate ? 'field_error' : ''}`}
                         placeholder="시작일"
-                        {...register('priceStartDate', { validate: validatePeriod })} // 적용기간 유효성 검사
-                        onChange={() => clearErrors(['priceStartDate', 'priceEndDate'])} // 시작일 입력 시 오류 제거
+                        {...register('priceStartDate', { validate: validatePeriod })}
+                        onClick={(e) => e.target.showPicker()} // 무조건 달력 열기
+                        onChange={() => clearErrors(['priceStartDate', 'priceEndDate'])}
                     />
                     ~
                     <input
+                        id="priceEndDate"
                         type="date"
                         max="9999-12-31"
-                        className={`box ${errors.priceEndDate ? 'field_error' : ''}`}
+                        className={`date box ${errors.priceEndDate ? 'field_error' : ''}`}
                         placeholder="종료일"
-                        {...register('priceEndDate', { validate: validatePeriod })} // 적용기간 유효성 검사
-                        onChange={() => clearErrors(['priceStartDate', 'priceEndDate'])} // 종료일 입력 시 오류 제거
+                        {...register('priceEndDate', { validate: validatePeriod })}
+                        onClick={(e) => e.target.showPicker()} // 무조건 달력 열기
+                        onChange={() => clearErrors(['priceStartDate', 'priceEndDate'])}
                     />
                 </div>
                 {errors.priceStartDate || errors.priceEndDate ? (

@@ -37,6 +37,26 @@ const PriceRow = ({
         clearErrors('priceCustomer'); // 입력값이 변경되면 오류 메시지 제거
     };
 
+    // 고객사 선택 시
+    const handleCustomerSelect = (customer) => {
+        setSelectedCustomer(customer);
+        setValue('selectedCustomerNo', customer.customerNo); // 고객 번호를 react-hook-form의 필드에 설정
+        if (customer.customerNo) { // 고객 번호가 존재할 때만 오류 제거
+            clearErrors('selectedCustomerNo');
+        }
+        setCustomerModalOpen(false); // 모달 닫기
+    };
+
+    // 상품 선택 시
+    const handleProductSelect = (product) => {
+        setSelectedProduct(product);
+        setValue('selectedProductCd', product.productCd); // 상품 코드를 react-hook-form의 필드에 설정
+        if (product.productCd) { // 상품 코드가 존재할 때만 오류 제거
+            clearErrors('selectedProductCd');
+        }
+        setProductModalOpen(false); // 모달 닫기
+    };
+
     // 저장 버튼 클릭 시 실행되는 함수
     const onSubmit = async (data) => {
         data.priceCustomer = data.priceCustomer.replace(/,/g, ''); // 콤마 제거한 실제 값을 저장
@@ -149,7 +169,6 @@ const PriceRow = ({
                 <div className='period_box'>
                     <input
                         type="date"
-                        max="9999-12-31"
                         className={`box ${errors.priceStartDate ? 'field_error' : ''}`}
                         placeholder="시작일"
                         {...register('priceStartDate', { validate: validatePeriod })} // 적용기간 유효성 검사
@@ -158,13 +177,13 @@ const PriceRow = ({
                     ~
                     <input
                         type="date"
-                        max="9999-12-31"
                         className={`box ${errors.priceEndDate ? 'field_error' : ''}`}
                         placeholder="종료일"
                         {...register('priceEndDate', { validate: validatePeriod })} // 적용기간 유효성 검사
                         onChange={() => clearErrors(['priceStartDate', 'priceEndDate'])} // 종료일 입력 시 오류 제거
                     />
                 </div>
+                {/* 시작일 또는 종료일 에러 메시지 하나만 표시 */}
                 {errors.priceStartDate || errors.priceEndDate ? (
                     <p className="field_error_msg"><i className="bi bi-exclamation-circle-fill"></i>시작일과 종료일을 모두 입력해주세요</p>
                 ) : null}
