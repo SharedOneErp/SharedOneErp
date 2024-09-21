@@ -3,6 +3,7 @@ const webpack = require('webpack');
 
 // 경로 변수 정의
 const salesPath = './components/sales/';
+const pricePath = './components/price/';
 const productPath = './components/product/';
 const customerPath = './components/customer/';
 const hrPath = './components/hr/';
@@ -20,7 +21,7 @@ module.exports = {
 
         // Product 관련 엔트리 포인트
         productList: `${productPath}ProductList.js`, // 상품 목록
-        productPrice: `${productPath}Price.js`, // 고객사별 상품 가격 관리(목록/등록/수정)
+        productPrice: `${pricePath}Price.js`, // 고객사별 상품 가격 관리(목록/등록/수정)
         productCategory: `${productPath}ProductCategory.js`, // 상품 카테고리 관리(목록/등록/수정)
 
         // Customer 관련 엔트리 포인트

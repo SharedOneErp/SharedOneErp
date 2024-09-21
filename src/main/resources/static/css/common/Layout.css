@@ -124,7 +124,7 @@ input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; borde
 .table_wrap table thead { flex: 0 0 auto; position: sticky; top: 0; background-color: #fafafa; border-bottom: 1px solid #ddd; color: #555; font-weight: 500; z-index: 1; } 
 .table_wrap table tbody { flex: 1 1 auto; font-size: 15px; } 
 .table_wrap table tr { display: table; width: 100%; table-layout: fixed; } 
-.table_wrap table tr:not(.tr_empty) { border-bottom: 1px solid #f1f1f1; } 
+.table_wrap table tbody tr:not(.tr_empty) { border-bottom: 1px solid #f1f1f1; } 
 .table_wrap table:not(.not_hover) tbody tr:not(.tr_empty):hover { background-color: #f7f7f7; } 
 .table_wrap table tbody tr.selected_row,
 .table_wrap table tr.tr_input { background-color: #e4f1f7a3; } 
@@ -150,8 +150,9 @@ input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; borde
 .table_wrap .no_data { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center; font-size: 18px; color: #999; font-weight: 500; } 
 .table_wrap .no_data i { margin-right: 5px; margin-top: 2px; } 
 /* 모달 속 table */
-.modal_container.search .table_wrap table { min-height: 473px; } 
+.modal_container.search .table_wrap table { min-height: 472px; } 
 .modal_container.search .table_wrap table tbody tr:hover { cursor: pointer; } 
+.modal_container.search .table_wrap table tbody tr:nth-child(10) { border: none; } 
 /* 🟢 페이지네이션 */
 .pagination-container { height: 60px; display: flex; justify-content: space-between; align-items: center; } 
 /* 중앙의 페이지네이션 버튼 */

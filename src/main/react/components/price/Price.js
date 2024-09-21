@@ -1,15 +1,16 @@
-// src/main/react/components/product/Price.js
-import React, { useState, useEffect } from 'react';
+// src/main/react/components/price/Price.js
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route, useSearchParams } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import Layout from "../../layout/Layout";
 import '../../../resources/static/css/product/Price.css'; // 개별 CSS 파일 임포트
-import { useHooksList } from './PriceHooks'; // 가격 관리에 필요한 상태 및 로직을 처리하는 훅
-import { add, format } from 'date-fns';
+import { format } from 'date-fns';
 import CustomerSearchModal from '../common/CustomerSearchModal'; // 고객사 검색 모달 임포트
 import ProductSearchModal from '../common/ProductSearchModal'; // 상품 검색 모달 임포트
 import Pagination from '../common/Pagination'; // 페이지네이션 컴포넌트 임포트
 import ConfirmModal from '../common/ConfirmModal'; // 사용자 정의 모달 컴포넌트
+import { useHooksList } from './PriceHooks'; // 가격 관리에 필요한 상태 및 로직을 처리하는 훅
+import PriceRow from './PriceRow'; // 분리한 PriceRow 컴포넌트 임포트
 
 // 컴포넌트(고객사별 상품 가격 관리)
 function Price() {
@@ -107,95 +108,6 @@ function Price() {
         handleConfirmAction,
         modalMessage
     } = useHooksList();          // 커스텀 훅 사용
-
-    // 🔴 등록/수정 행
-    const PriceRow = ({ isEditMode, priceData, onSave, onCancel, handleInputChange }) => {
-        return (
-            <tr className='tr_input'>
-                <td>-</td> {/* 체크박스 칸 */}
-                <td>-</td> {/* 번호 */}
-                <td>
-                    {/* 고객사 검색 버튼 */}
-                    <button
-                        className="box btn_search wp100"
-                        onClick={() => setCustomerModalOpen(true)}>
-                        {selectedCustomer.customerName}  {/* 선택된 고객사 이름 표시 */}
-                        <i className="bi bi-search"></i>
-                    </button>
-                    {/* hidden input 필드에 고객 번호 저장 */}
-                    <input
-                        type="hidden"
-                        name="selectedCustomerNo"
-                        value={selectedCustomer.customerNo}
-                    />
-                </td>
-                <td>
-                    {/* 상품 검색 버튼 */}
-                    <button
-                        className="box btn_search wp100"
-                        onClick={() => setProductModalOpen(true)}>
-                        {selectedProduct.productNm}  {/* 선택된 상품 이름 표시 */}
-                        <i className="bi bi-search"></i>
-                    </button>
-                    {/* hidden input 필드에 상품 코드 저장 */}
-                    <input
-                        type="hidden"
-                        name="selectedProductCd"
-                        value={selectedProduct.productCd}
-                    />
-                </td>
-                <td>
-                    <input
-                        type="number"
-                        className="box wp100"
-                        placeholder="가격 입력"
-                        value={priceData.priceCustomer}
-                        name="priceCustomer"
-                        onChange={handleInputChange}
-                    />
-                </td>
-                <td>
-                    <div className='period_box'>
-                        <input
-                            type="date"
-                            className="box"
-                            placeholder="시작일"
-                            value={priceData.priceStartDate || ''}
-                            name="priceStartDate"
-                            onChange={handleInputChange}
-                        />
-                        ~
-                        <input
-                            type="date"
-                            className="box"
-                            placeholder="종료일"
-                            value={priceData.priceEndDate || ''}
-                            name="priceEndDate"
-                            onChange={handleInputChange}
-                        />
-                    </div>
-                </td>
-                <td>-</td> {/* 등록일시 */}
-                <td>-</td> {/* 수정일시 */}
-                <td>-</td> {/* 삭제일시 */}
-                <td>
-                    <div className='btn_group'>
-                        {isEditMode ? (
-                            <>
-                                <button className="box small color_border" onClick={onSave}>수정</button>
-                                <button className="box small" onClick={onCancel}>취소</button>
-                            </>
-                        ) : (
-                            <>
-                                <button className="box small color_border" onClick={onSave}>추가</button>
-                                <button className="box small" onClick={onCancel}>취소</button>
-                            </>
-                        )}
-                    </div>
-                </td>
-            </tr>
-        );
-    };
 
     // 🟡 UI 및 상태에 따라 렌더링
     return (
@@ -379,13 +291,18 @@ function Price() {
                                 {/* 추가 상태일 때 새로운 입력 행 추가 */}
                                 {isAdding && (
                                     <PriceRow
-                                        isEditMode={false} // 등록 모드🔴
-                                        priceData={newPriceData} // 새로운 데이터
-                                        onSave={handleAddSave} // 저장 함수
-                                        onCancel={handleAddCancel} // 취소 함수
-                                        handleInputChange={handleInputChange} // 입력값 변경 함수
+                                        isEditMode={false} // 등록 모드
+                                        priceData={newPriceData}
+                                        selectedCustomer={selectedCustomer}
+                                        selectedProduct={selectedProduct}
+                                        handleInputChange={handleInputChange}
+                                        onSave={handleAddSave}
+                                        onCancel={handleAddCancel}
+                                        setCustomerModalOpen={setCustomerModalOpen}
+                                        setProductModalOpen={setProductModalOpen}
                                     />
                                 )}
+
                                 {/* 로딩 중일 때 로딩 이미지 표시 */}
                                 {isLoading ? (
                                     <tr className="tr_empty">
@@ -403,11 +320,15 @@ function Price() {
                                             editingId === m_price.priceNo ? (
                                                 <PriceRow
                                                     key={m_price.priceNo}
-                                                    isEditMode={true} // 수정 모드🔴
-                                                    priceData={editedPriceData} // 수정 중인 데이터
-                                                    onSave={handleSaveEdit} // 수정 저장 함수
-                                                    onCancel={handleCancelEdit} // 수정 취소 함수
-                                                    handleInputChange={handleInputChange} // 입력값 변경 함수
+                                                    isEditMode={true} // 수정 모드
+                                                    priceData={editedPriceData}
+                                                    selectedCustomer={selectedCustomer}
+                                                    selectedProduct={selectedProduct}
+                                                    handleInputChange={handleInputChange}
+                                                    onSave={handleSaveEdit}
+                                                    onCancel={handleCancelEdit}
+                                                    setCustomerModalOpen={setCustomerModalOpen}
+                                                    setProductModalOpen={setProductModalOpen}
                                                 />
                                             ) : (
                                                 // 수정 모드가 아닐 경우 기존 데이터를 보여줌
