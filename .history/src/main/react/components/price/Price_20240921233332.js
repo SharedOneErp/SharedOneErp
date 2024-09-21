@@ -23,20 +23,26 @@ function Price() {
 
     // 🔴 고객사 선택 시 모달을 닫고 버튼에 값 설정
     const handleCustomerSelect = (customer) => {
-        setSelectedCustomer({
-            customerName: customer.customerName, // 선택한 고객 이름
-            customerNo: customer.customerNo      // 선택한 고객 번호
-        });
-        setCustomerModalOpen(false);
+        setSelectedCustomer(customer);
+        setValue('selectedCustomerNo', customer.customerNo); // 고객 번호를 react-hook-form의 필드에 설정
+        alert(customer.customerNo);
+        if (customer.customerNo) { // 고객 번호가 존재할 때만 오류 제거
+            alert(1);
+            clearErrors('selectedCustomerNo');
+        } else {
+            alert(2);
+        }
+        setCustomerModalOpen(false); // 모달 닫기
     };
-1
+
     // 🔴 상품 선택 시 모달을 닫고 버튼에 값 설정
     const handleProductSelect = (product) => {
-        setSelectedProduct({
-            productNm: product.productNm,  // 선택된 상품 이름
-            productCd: product.productCd   // 선택된 상품 코드
-        });
-        setProductModalOpen(false);
+        setSelectedProduct(product);
+        setValue('selectedProductCd', product.productCd); // 상품 코드를 react-hook-form의 필드에 설정
+        if (product.productCd) { // 상품 코드가 존재할 때만 오류 제거
+            clearErrors('selectedProductCd');
+        }
+        setProductModalOpen(false); // 모달 닫기
     };
 
     // 🔴 커스텀 훅을 통해 상태와 함수 불러오기

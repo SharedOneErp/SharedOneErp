@@ -45,11 +45,6 @@ select.box { padding: 7px 12px; cursor: pointer; }
 .select_box.selected select { border-color: #007CC1; color:#007CC1 } 
 /* 버튼 */
 button.box { cursor: pointer; } 
-button.box:not([disabled]):not(.field_error):hover { background-color: #fcfcfc; border: 1px solid rgb(36 42 48 / 20%); } 
-button.box.color_border:not([disabled]):hover { background-color: #007CC1; border-color: #007CC1; color: white; } 
-button.box:active { background-color: #f7f7f7; border: 1px solid rgb(165 165 165 / 20%); box-shadow: 0 0 2px 1px #b9b9b947; } 
-button.box:disabled { cursor: default; background-color: #eaeaea; border-color: #eaeaea; color: #999; } 
-button.box.btn_search i { margin-left: 5px; } 
 button.box.icon { background-color: transparent; border: 1px solid transparent; } 
 button.box.icon.hover_text:hover i { display: inline-flex; } 
 button.box.icon.hover_text:hover i::after { opacity: 1; font-size: 14px; font-style: normal; margin-left: 3px; color: #007CC1; } 
@@ -62,6 +57,11 @@ button.box.icon.hover_text.restore:hover i::after { content: '복원'; color: #0
 button.box.icon.hover_text.edit_done:hover i::after { content: '수정완료'; } 
 button.box.icon.hover_text.write_done:hover i::after { content: '작성완료'; } 
 button.box.icon.hover_text.cancel:hover i::after { content: '취소'; } 
+button.box:not([disabled]):not(.field_error):hover { background-color: #fcfcfc; border: 1px solid rgb(36 42 48 / 20%); } 
+button.box.color_border:not([disabled]):hover { background-color: #007CC1; border-color: #007CC1; color: white; } 
+button.box:active { background-color: #f7f7f7; border: 1px solid rgb(165 165 165 / 20%); box-shadow: 0 0 2px 1px #b9b9b947; } 
+button.box:disabled { cursor: default; background-color: #eaeaea; border-color: #eaeaea; color: #999; } 
+button.box.btn_search i { margin-left: 5px; } 
 /* 검색어 입력(i) */
 .search_box { position:relative; align-items: center; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); display: inline-flex; font-size: 14px; padding-left: 12px; color: #666; } 
 .search_box.has_text { border-color: #007CC1; padding-left:0px; } 
@@ -94,8 +94,7 @@ button.box.icon.hover_text.cancel:hover i::after { content: '취소'; }
 .radio_box span { margin-right: 10px; } 
 .radio_box input[type="radio"] { display: none; } 
 .radio_box label { font-size: 16px; font-weight: 500; color: #555; padding: 5px 7px; border-radius: 5px; cursor: pointer; transition: all 0.3s; } 
-.radio_box label:hover { background-color: #e4f1f7a3; } 
-.radio_box input[type="radio"]:checked + label { border-color: #007CC1; color: #007CC1; background-color: #e4f1f7a3; cursor: default; } 
+.radio_box input[type="radio"]:checked + label { border-color: #007CC1; color: #007CC1; background-color: #e4f1f7a3; } 
 /* 상태 선택(checkbox) */
 .checkbox_box input[type="checkbox"] { display: none; } 
 .checkbox_box label { align-items: center; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); display: inline-flex; font-size: 16px; padding: 8px 12px 8px 8px; color: #666; cursor: pointer; } 

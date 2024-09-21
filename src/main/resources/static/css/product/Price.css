@@ -19,7 +19,12 @@
 .menu_price .table_wrap table th:nth-child(9),
 .menu_price .table_wrap table td:nth-child(9) { width: 140px; /* 등록/수정/삭제일시 */ } 
 .menu_price .table_wrap table th:nth-child(10),
-.menu_price .table_wrap table td:nth-child(10) { width: 110px; /* 액션 */ } 
+.menu_price .table_wrap table td:nth-child(10) { width: 130px; /* 액션 */ } 
 /* padding 조절 */
 .menu_price .table_wrap table th,
 .menu_price .table_wrap table td { padding: 12px 8px; text-align: left; } 
+/* 등록/수정 행 */
+.menu_price .table_wrap table tr.tr_input td { padding: 14px 8px; } 
+.menu_price .table_wrap table tr.tr_input td .box { font-size: 15px; padding: 5px 8px; } 
+/* 가격 */
+.menu_price .table_wrap table tr.tr_input td .box.price { width: 80%; margin-right: 2px; text-align: right; } 

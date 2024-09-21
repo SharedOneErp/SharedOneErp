@@ -23,20 +23,14 @@ function Price() {
 
     // 🔴 고객사 선택 시 모달을 닫고 버튼에 값 설정
     const handleCustomerSelect = (customer) => {
-        setSelectedCustomer({
-            customerName: customer.customerName, // 선택한 고객 이름
-            customerNo: customer.customerNo      // 선택한 고객 번호
-        });
-        setCustomerModalOpen(false);
+        setSelectedCustomer(customer);
+        setCustomerModalOpen(false); // 모달 닫기
     };
-1
+    1
     // 🔴 상품 선택 시 모달을 닫고 버튼에 값 설정
     const handleProductSelect = (product) => {
-        setSelectedProduct({
-            productNm: product.productNm,  // 선택된 상품 이름
-            productCd: product.productCd   // 선택된 상품 코드
-        });
-        setProductModalOpen(false);
+        setSelectedProduct(product);
+        setProductModalOpen(false); // 모달 닫기
     };
 
     // 🔴 커스텀 훅을 통해 상태와 함수 불러오기
