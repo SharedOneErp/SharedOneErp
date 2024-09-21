@@ -4,11 +4,39 @@ import { BrowserRouter } from "react-router-dom"; // 리액트 라우팅 관련 
 import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
 import '../../../resources/static/css/sales/OrderReport.css'; // 개별 CSS 스타일 적용
 import axios from 'axios';
+import {Bar} from 'react-chartjs-2'; //차트 사용
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend,} from 'chart.js'; //차트 사용
 
-
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend); //chartjs에서 쓰는 요소들을 ㅁ등록
+// X축, Y축, 막대차트, 차트제목, 차트에서 데이터를 설명하는 팝업(?) 박스, 범례(작은 설명?)
 
 function OrderReport() {
    
+    const data = {
+        labels: ['24년 7월', '24년 8월', '24년 9월'],  // x축에 표시될 값 (월별)
+        datasets: [
+            {
+                label: '주문 현황',  // 막대 이름
+                data: [50, 100, 75],   // y축에 표시될 값 (각 월별 주문 건수) ,, 서버에서 받아와야
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',  // 막대 색상
+                borderColor: 'rgba(75, 192, 192, 1)',        // 막대 테두리 색상
+                borderWidth: 1                              // 막대 테두리 두께
+            },
+        ],
+    };
+    
+    const options = {
+        responsive: true,  // 반응형 설정
+        plugins: {
+            legend: {
+                position: 'top',  // 범례 위치
+            },
+            title: {
+                display: true,
+                text: '최근 3개월 주문현황',  // 차트 제목
+            },
+        },
+    };
 
 
     return (
@@ -20,7 +48,7 @@ function OrderReport() {
                 </div>
                 <div className="menu_content">
                     <div className="middle-container">
-                        여기엔 그래프, y축은 건수, x축은 월별,디폴트는 최근 3개월
+                        <Bar data={data} options={options} />
                     </div>
 
                     <div>
