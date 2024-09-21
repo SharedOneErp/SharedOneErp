@@ -1,5 +1,5 @@
-// src/main/react/components/product/PriceHooks.js
-import { useState, useEffect, useRef } from 'react';
+// src/main/react/components/price/PriceHooks.js
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { formatDate } from '../../util/dateUtils';
 import { format } from 'date-fns';
