@@ -3,9 +3,33 @@
 /* search */ 
 .menu_category .search_box .box { width: 250px; } 
 /* table */
-.menu_category .table_wrap table tr.level-one { background-color: #e4f1f7a3; } 
-.menu_category .table_wrap table tr { cursor: pointer; } 
-.menu_category .table_wrap table tr td .level_title i { margin-left: 5px; } 
+.menu_category .table_wrap table tr.level-three { background-color: #fafafa; } 
+.menu_category .table_wrap table tr.level-three td { padding:10px 8px; } 
+.menu_category .table_wrap table td { padding: 5px 8px; } 
+.menu_category .table_wrap table th:nth-child(1),
+.menu_category .table_wrap table td:nth-child(1) { width: 105px; text-align: center; /* 카테고리 레벨 */ } 
+.menu_category .table_wrap table th:nth-child(2),
+.menu_category .table_wrap table td:nth-child(2) { padding-left: 20px; /* 카테고리 이름 */ } 
+.menu_category .table_wrap table th:nth-child(3),
+.menu_category .table_wrap table td:nth-child(3),
+.menu_category .table_wrap table th:nth-child(4),
+.menu_category .table_wrap table td:nth-child(4) { width: 200px; /* 등록/수정일시 */ } 
+/* 분류 라벨 */
+.menu_category .table_wrap table .label_level { display: inline-block; padding: 2px 6px; border-radius: 4px; color: #fff; font-size: 12px; font-weight: bold; } 
+.menu_category .table_wrap table .label_level.level-1 { background-color: #f0f8ff; color: #00008b; padding: 5px 10px; border-radius: 4px; } 
+.menu_category .table_wrap table .label_level.level-2 { background-color: #e3fad7; color: #0e7933; padding: 5px 10px; border-radius: 4px; } 
+.menu_category .table_wrap table .label_level.level-3 { background-color: #fff1cd; color: #87591a; padding: 5px 10px; border-radius: 4px; } 
+/* 들여쓰기 적용 */
+.menu_category .table_wrap table .indent { display: flex; align-items: center; } 
+.menu_category .table_wrap table .indent.level-2 { margin-left: 20px; } 
+.menu_category .table_wrap table .indent.level-3 { margin-left: 60px; } 
+/* 카테고리 토글 */
+.menu_category .table_wrap table .category_toggle { display: inline-flex; align-items: center; cursor: pointer; padding: 7px 10px; border-radius: 10px; } 
+.menu_category .table_wrap table .category_toggle i { font-size: 12px; margin-right: 5px; } 
+.menu_category .table_wrap table .category_toggle i.bi-caret-down-fill { color: #dadada; } 
+.menu_category .table_wrap table .category_toggle i.bi-caret-right-fill { color: #222; } 
+.menu_category .table_wrap table .category_toggle:hover { background-color: #f8f8f8; } 
+
 
 /* 🔴 모달 */
 .modal_container.cate_modal { width: auto; } 

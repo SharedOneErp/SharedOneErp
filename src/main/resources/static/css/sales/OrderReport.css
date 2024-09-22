@@ -1,34 +1,3 @@
-.menu_order_report .box:not(button) { min-width: 140px; margin-right: 5px; } 
-table,
-th,
-td { border: 1px solid #dddddd; padding: 8px; } 
-.middle-container { padding: 10px; } 
-.search-container { height: 50px; padding: 10px; margin-top: 15px; } 
-.approval-select { height: 32px; width: 10%; font-size: 15px; border: 1px solid #dddddd; } 
-.search-box { height: 32px; width: 65%; font-size: 13px; margin-left: 7px; border: 1px solid #dddddd; } 
-.search-button { background-color: #007CC1; color: white; border: none; padding: 5px 10px; font-size: 12px; cursor: pointer; border-radius: 4px; outline: none; margin-left: 15px; } 
-.search-button:hover { background-color: #014178; } 
-.select-category { display: flex; align-items: center; gap: 50px; padding: 5px 5px 5px 10px; justify-content: flex-start; } 
-.category-box { flex: 1; height: 25px; min-width: 130px; border: 1px solid #dddddd; } 
-.category-search { height: 30px; border: 1px solid #dddddd; } 
-.select-category select { margin-left: 7px; } 
-.select-category input { margin-left: 7px; } 
-.search-button2 { background-color: #007CC1; color: white; border: none; padding: 5px 10px; font-size: 12px; cursor: pointer; border-radius: 4px; outline: none; margin-left: 15px; } 
-.search-button2:hover { background-color: #014178; } 
-.date-container { display: flex; align-items: center; gap: 35px; padding: 10px 5px 5px 10px; } 
-.date-select { height: 25px; min-width: 20px; border: 1px solid #dddddd; } 
-.date-form { display: flex; gap: 5px; } 
-.date-input { height: 25px; border: 1px solid #dddddd; } 
-.table-container { margin-top: 54px; padding: 21px; } 
-.report-table { width: 100%; text-align: left; } 
-.report-table tbody { border-bottom: 2px solid #0058A3; } 
-.report-table th { background-color: #f2f2f2; } 
-.approval-page { display: flex; justify-content: center; margin-top: 13px; } 
-.approval-page button { padding: 5px; font-size: 16px; margin-left: 7px; } 
-.graph-form { padding: 18px; } 
-.graph-select { height: 25px; min-width: 20px; border: 1px solid #dddddd; } 
-.search-button3 { background-color: #007CC1; color: white; border: none; padding: 5px 10px; font-size: 12px; cursor: pointer; border-radius: 4px; outline: none; margin-left: 15px; } 
-.search-button3:hover { background-color: #014178; } 
-.excel-print { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; } 
-.search-button4 { background-color: #007CC1; color: white; border: none; padding: 5px 10px; font-size: 12px; cursor: pointer; border-radius: 4px; outline: none; margin-left: 5px; } 
-.search-button4:hover { background-color: #014178; } 
+/* src/main/resources/static/css/sales/OrderReport.css */
+.menu_order_report { padding-bottom: 20px; } 
+.menu_order_report .table_wrap { align-items: center; justify-content: center; } 

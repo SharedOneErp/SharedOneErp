@@ -28,7 +28,8 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
             "    FROM \n" +
             "        m_category\n" +
             "    WHERE \n" +
-            "        parent_category_no IS NULL\n" +
+            "        category_delete_yn = 'N'\n" +
+            "        AND parent_category_no IS NULL\n" +
             "\n" +
             "    UNION ALL\n" +
             "\n" +
