@@ -66,11 +66,11 @@ function CustomerSearchModal({ onClose, onCustomerSelect }) {
         if (e.target.className === 'modal_overlay') {
             onClose();
         }
-
     };
+    
     // 🟢 검색된 고객사를 클릭
     const handleCustomerClick = (customer) => {
-        onCustomerSelect(customer); // 부모 컴포넌트에서 전달된 함수 호출
+        onCustomerSelect(customer); // 부모 컴포넌트에서 전달된 함수 호출 (handleCustomerSelect)
         onClose(); // 모달 닫기
     };
 

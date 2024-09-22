@@ -23,13 +23,14 @@ function Price() {
 
     // 🔴 고객사 선택 시 모달을 닫고 버튼에 값 설정
     const handleCustomerSelect = (customer) => {
+        console.log("🔴 customer.customerName : "+customer.customerName);
         setSelectedCustomer({
             customerName: customer.customerName, // 선택한 고객 이름
             customerNo: customer.customerNo      // 선택한 고객 번호
         });
         setCustomerModalOpen(false);
     };
-1
+    1
     // 🔴 상품 선택 시 모달을 닫고 버튼에 값 설정
     const handleProductSelect = (product) => {
         setSelectedProduct({
@@ -269,6 +270,7 @@ function Price() {
                                             <input
                                                 type="checkbox" className="chkbox"
                                                 onChange={handleSelectAllChange}
+                                                disabled={isAdding || !!editingId}
                                             />
                                             <i className="chkbox_icon">
                                                 <i className="bi bi-check-lg"></i>
@@ -333,6 +335,11 @@ function Price() {
                                                     setProductModalOpen={setProductModalOpen}
                                                     setSelectedCustomer={setSelectedCustomer}
                                                     setSelectedProduct={setSelectedProduct}
+                                                    currentPage={currentPage}
+                                                    itemsPerPage={itemsPerPage}
+                                                    index={index}
+                                                    priceInsertDate={m_price.priceInsertDate}
+                                                    priceUpdateDate={m_price.priceUpdateDate}
                                                 />
                                             ) : (
                                                 // 수정 모드가 아닐 경우 기존 데이터를 보여줌
@@ -353,6 +360,7 @@ function Price() {
                                                                         className="chkbox"
                                                                         checked={selectedItems.includes(m_price.priceNo)}
                                                                         onChange={() => handleCheckboxChange(m_price.priceNo)}
+                                                                        disabled={isAdding || !!editingId}
                                                                     />
                                                                     <i className="chkbox_icon">
                                                                         <i className="bi bi-check-lg"></i>
@@ -365,7 +373,7 @@ function Price() {
                                                     <td>{m_price.customerName}</td>
                                                     <td>
                                                         <p>{m_price.productNm}</p>
-                                                        <p style={{ fontSize: '14px', color: '#999', marginTop: '2px' }}>{m_price.categoryNm}</p>
+                                                        <p style={{ fontSize: '14px', color: '#999', marginTop: '2px' }}>{m_price.categoryPath}</p>
                                                     </td>
                                                     <td><b>{m_price.priceCustomer.toLocaleString()}</b>원</td>
                                                     <td>{`${format(m_price.priceStartDate, 'yyyy-MM-dd')} ~ ${format(m_price.priceEndDate, 'yyyy-MM-dd')}`}</td>

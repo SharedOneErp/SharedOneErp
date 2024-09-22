@@ -39,35 +39,35 @@ input::placeholder { color: #888; }
 .box:not(.icon) i { margin-right: 5px; } 
 .box.color { background-color: #007CC1; border-color: #007CC1; color: white; } 
 .box.color_border { border-color:#007CC1; color:#007CC1 } 
+.box.color_border.red { border-color:#ff0b00b3; color:#f50b00 } 
 /* select */
 select.box { padding: 7px 12px; cursor: pointer; } 
 .select_box { position:relative; } 
-.select_box.selected select { border-color: #007CC1; color:#007CC1 } 
+.select_box.selected select { border-color: #007CC1; } 
 /* 버튼 */
 button.box { cursor: pointer; } 
-button.box:not([disabled]):not(.field_error):hover { background-color: #fcfcfc; border: 1px solid rgb(36 42 48 / 20%); } 
-button.box.color_border:not([disabled]):hover { background-color: #007CC1; border-color: #007CC1; color: white; } 
-button.box:active { background-color: #f7f7f7; border: 1px solid rgb(165 165 165 / 20%); box-shadow: 0 0 2px 1px #b9b9b947; } 
+button.box:not([disabled]):not(.field_error):not(.color_border):hover { background-color: #fcfcfc; border: 1px solid rgb(36 42 48 / 20%); } 
+button.box:not(.color):not(.color_border):active { background-color: #f7f7f7; border: 1px solid rgb(165 165 165 / 20%); box-shadow: 0 0 2px 1px #b9b9b947; } 
 button.box:disabled { cursor: default; background-color: #eaeaea; border-color: #eaeaea; color: #999; } 
 button.box.btn_search i { margin-left: 5px; } 
 button.box.icon { background-color: transparent; border: 1px solid transparent; } 
 button.box.icon.hover_text:hover i { display: inline-flex; } 
 button.box.icon.hover_text:hover i::after { opacity: 1; font-size: 14px; font-style: normal; margin-left: 3px; color: #007CC1; } 
-button.box.icon.edit:hover, button.box.icon.edit:active { border-color:#007CC1; color:#007CC1; background-color: #e4f1f7a3; } 
+button.box.icon.edit:hover, button.box.icon.edit:active { border-color:#007CC1 !important; color:#007CC1; background-color: #e4f1f7a3 !important; } 
 button.box.icon.hover_text.edit:hover i::after { content: '수정'; color: #007CC1; } 
-button.box.icon.del:hover, button.box.icon.del:active { border-color: #c8000070; color: #e00000bb; background-color: #e0000008; } 
+button.box.icon.del:hover, button.box.icon.del:active { border-color: #c8000070 !important; color: #e00000bb; background-color: #e0000008 !important; } 
 button.box.icon.hover_text.del:hover i::after { content: '삭제'; color: #e00000bb; } 
-button.box.icon.restore:hover, button.box.icon.restore:active { border-color: #04a73f57; color: #04a73fbb; background-color: #04a73f08; } 
+button.box.icon.restore:hover, button.box.icon.restore:active { border-color: #04a73f57 !important; color: #04a73fbb; background-color: #04a73f08 !important; } 
 button.box.icon.hover_text.restore:hover i::after { content: '복원'; color: #04a73fbb; } 
 button.box.icon.hover_text.edit_done:hover i::after { content: '수정완료'; } 
 button.box.icon.hover_text.write_done:hover i::after { content: '작성완료'; } 
 button.box.icon.hover_text.cancel:hover i::after { content: '취소'; } 
 /* 검색어 입력(i) */
 .search_box { position:relative; align-items: center; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); display: inline-flex; font-size: 14px; padding-left: 12px; color: #666; } 
-.search_box.has_text { border-color: #007CC1; padding-left:0px; } 
+.search_box.has_text { border-color: #007CC1; padding-left:0px; padding-right: 26px; } 
 .search_box.has_text input { color: #555; } 
-.search_box.has_text i.bi-search { display: none; } 
-.search_box.has_text i, .search_box.has_text button { color: #007CC1; } 
+.search_box.has_text i { display: none; } 
+.search_box.has_text button { color: #007CC1; } 
 .search_box .box { border: none; padding-right: 30px; width: 174px; } 
 /* 플로팅 라벨 스타일 */
 .label_floating { position: absolute; top: calc(50% - 1px); left: 38px; color: #888; font-size: 16px; font-weight: 500; pointer-events: none; transform: translateY(-50%); transition: 0.2s ease all; } 
@@ -101,11 +101,10 @@ button.box.icon.hover_text.cancel:hover i::after { content: '취소'; }
 .checkbox_box label { align-items: center; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); display: inline-flex; font-size: 16px; padding: 8px 12px 8px 8px; color: #666; cursor: pointer; } 
 .checkbox_box label i { margin-right: 3px; } 
 .checkbox_box input[type="checkbox"]:checked + label { border-color: #007CC1; color: #007CC1; font-weight: 500; } 
-/* 컬러 버튼 */
-button.box.color:not(.active):not([disabled]):hover, button.box.color:not(.active):active { background-color: #06689f; border-color: #06689f; } 
-button.box.color_border:not(.active):not([disabled]):hover, button.box.color_border:not(.active):acitve { background-color: #e4f1f7a3; border-color:#007CC1; } 
-button.box.color_border.red { border-color:#f50b00; color:#f50b00 } 
-button.box.color_border.red:not(.active):not([disabled]):hover, button.box.color_border.red:not(.active):active { background-color: #e0000008; border-color:#f50b00; } 
+/* 컬러 버튼 hover */
+button.box.color:not(.active):not([disabled]):hover, button.box.color:not(.active):not([disabled]):active { background-color: #06689f; border-color: #06689f; } 
+button.box.color_border:not(.active):not([disabled]):hover, button.box.color_border:not(.active):not([disabled]):active { background-color: #007cc117; } 
+button.box.color_border.red:not(.active):not([disabled]):hover, button.box.color_border.red:not(.active):not([disabled]):active { background-color: #f50b001c; } 
 /* 기간 입력 */
 .period_box { display: inline-flex; gap: 3px; align-items: center; } 
 /* 체크박스 */
@@ -114,9 +113,12 @@ input[type="checkbox"].chkbox { display: none; }
 .chkbox_icon { display: inline-block; width: 16px; height: 16px; border: 1px solid #888; border-radius: 4px; background-color: white; position: relative; cursor: pointer; } 
 .chkbox_icon:hover { background-color: #f7f7f7; } 
 .chkbox_icon .bi-check-lg { display: none; } 
-input[type="checkbox"]:checked + .chkbox_icon .bi-check-lg { display: block; color: white; font-size: 14px; position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); } 
-input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; border-color: #199be3; } 
+input[type="checkbox"]:not([disabled]):checked + .chkbox_icon .bi-check-lg { display: block; color: white; font-size: 14px; position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); } 
+input[type="checkbox"]:not([disabled]):checked + .chkbox_icon { background-color: #199be3; border-color: #199be3; } 
+input[type="checkbox"]:disabled + .chkbox_icon { border: 1px solid #cfcfcf; background-color: #f6f6f6; cursor: default; } 
+input[type="checkbox"]:disabled + .chkbox_icon .bi-check-lg { color: #f6f6f6; } 
 /* 폼 유효성 검사 시 에러 박스 */
+.field_ok { border-color: #007CC1; } 
 .field_error { border-color :#f90000f7; } 
 .field_error_msg { color: #f90000f7; font-weight: 500; font-size: 13px; margin: 2px 0 0 2px; } 
 .field_error_msg i { margin-right: 3px; } 
@@ -145,7 +147,7 @@ input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; borde
 .table_wrap table tbody { flex: 1 1 auto; font-size: 15px; } 
 .table_wrap table tr { display: table; width: 100%; table-layout: fixed; } 
 .table_wrap table tbody tr:not(.tr_empty) { border-bottom: 1px solid #f1f1f1; } 
-.table_wrap table:not(.not_hover) tbody tr:not(.tr_empty):not(.tr_input):hover { background-color: #f7f7f7; } 
+.table_wrap table:not(.not_hover) tbody tr:not(.tr_empty):not(.tr_input):not(.selected_row):hover { background-color: #f7f7f7; } 
 .table_wrap table tbody tr.selected_row,
 .table_wrap table tr.tr_input { background-color: #e4f1f7a3; } 
 .table_wrap table th { font-weight: 500; } 
@@ -187,9 +189,9 @@ input[type="checkbox"]:checked + .chkbox_icon { background-color: #199be3; borde
 /* 모달 속 페이지네이션 */
 .modal_container.search .pagination-container { justify-content: space-around; align-items: flex-end; height: 50px; } 
 /* 🟣 토스트 메시지(짧고 간결한 알림을 일정 시간 동안 화면에 표시) */
-.toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; } 
-.toast { background-color: #333; color: white; padding: 10px 20px; border-radius: 5px; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); opacity: 0.9; } 
-.toast i { margin-right: 2px; } 
+.toast-container { position: fixed; top: 25px; left: 50%; transform: translateX(-50%); z-index: 1000; } 
+.toast { background-color: #000; color: white; padding: 12px 25px; border-radius: 5px; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); font-size: 17px; } 
+.toast i { color: #10ae77; margin-right: 5px; } 
 /* 🟣 툴팁 메시지(특정 요소에 마우스를 올리거나 포커스할 때 추가적인 정보 표시) - 라이브러리 설치 */
 .react-tooltip { z-index: 10; padding: 5px 10px !important; border-radius: 6px !important; } 
 /* 🟣 모달 */

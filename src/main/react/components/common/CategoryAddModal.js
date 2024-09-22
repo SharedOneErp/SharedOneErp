@@ -21,149 +21,162 @@ function CategoryModal({
   handleTopHover,
   closeModal,
 }) {
+
+  // 🟢 모달 배경 클릭 시 창 닫기
+  const handleBackgroundClick = (e) => {
+    if (e.target.className === 'modal_overlay') {
+      closeModal();
+    }
+  };
+
   return (
-    <div className='modal-overlay'>
-      <div className='modal-content'>
-
-        <div className='category-form'>
-          <button className='close-button' onClick={closeModal}>X</button>
+    <div className="modal_overlay" onClick={handleBackgroundClick}>
+      <div className="modal_container cate_modal">
+        <div className="header">
+          <div>상품 카테고리 편집</div>
+          <button className="btn_close" onClick={closeModal}><i className="bi bi-x-lg"></i></button> {/* 모달 닫기 버튼 */}
+        </div>
+        <div className='edit_wrap'>
           {/* 대분류 */}
-          <div className='category-column'>
-            <h4>대분류</h4>
-            <br />
-            <hr />
-            <br />
-
-            <div className='list-form'>
-              <ul className='category-list'>
-                {getTopCategory.map((category) => (
-                  <li key={category.categoryNo}
-                    onClick={() => {
-                      handleTopClick(category.categoryNo);
-                      handleTopHover(category.categoryNo);
+          <div className='level_wrap'>
+            <h4>대분류
+              {getTopCategory.length > 0 && (
+                <span className="list_cnt">({getTopCategory.length})</span>
+              )}
+            </h4>
+            <div className='content_wrap'>
+              <div className='list_wrap'>
+                <ul className='list'>
+                  {getTopCategory.map((category) => (
+                    <li key={category.categoryNo}
+                      onClick={() => {
+                        handleTopClick(category.categoryNo);
+                        handleTopHover(category.categoryNo);
+                      }}
+                      className={selectedTopCategory === category.categoryNo ? 'selected' : ''}
+                    >
+                      <span>{category.categoryNm}</span>
+                      <i className="bi bi-chevron-right"></i>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className='input-wrap'>
+                <div className={`search_box ${insertTop ? 'has_text' : ''}`}>
+                  <label className="label_floating">Enter키로 대분류 추가</label>
+                  <i class="bi bi-plus-lg"></i>
+                  <input
+                    type="text"
+                    className="box search"
+                    onChange={(e) => handleInsert(e, 1)}
+                    value={insertTop}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleAddButton(1);
+                      }
                     }}
-                    className={selectedTopCategory === category.categoryNo ? 'selected' : ''}
-                  >
-                    {category.categoryNm}
-                  </li>
-                ))}
-              </ul>
+                  />
+                </div>
+              </div>
             </div>
-
-            <div className='input-button'>
-              <input type='text'
-                placeholder='새 대분류 추가'
-                className='input-field'
-                onChange={(e) => handleInsert(e, 1)}
-                value={insertTop}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleAddButton(1);
-                  }
-                }}
-              />
-              <button type='submit' className='register-button' onClick={() => handleAddButton(1)}>등록</button>
-            </div>
-
-            <div>
-              <button type='submit' className='edit-button' onClick={handleEditButton}>수정</button>
-              <button type='submit' className='delete-button' onClick={handleDeleteButton}>삭제</button>
-            </div>
-
           </div>
-
           {/* 중분류 */}
-          <div className='category-column'>
-            <h4>중분류</h4>
-            <br />
-            <hr />
-            <br />
-
-            <div className='list-form' style={{ position: 'relative' }}>
-              {getMidCategory.length === 0 ? (
-                <p style={{ position: 'absolute', top: '6%', left: '25%' }}>중분류가없습니다</p>
-              ) : (
-                <ul className='category-list'>
-                  {getMidCategory.map((category) => (
-                    <li key={category.categoryNo}
-                      onClick={() => handleMidClick(category.categoryNo)}
-                      className={selectedMidCategory === category.categoryNo ? 'selected' : ''}
-                    >
-                      {category.categoryNm}
-                    </li>
-                  ))}
-                </ul>
+          <div className='level_wrap'>
+            <h4>중분류
+              {getMidCategory.length > 0 && (
+                <span className="list_cnt">({getMidCategory.length})</span>
               )}
-            </div>
-
-            <div className='input-button'>
-              <input type='text'
-                placeholder='새 중분류 추가'
-                className='input-field'
-                onChange={(e) => handleInsert(e, 2)}
-                value={insertMid}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleAddButton(2);
-                  }
-                }}
-              />
-              <button type='submit' className='register-button' onClick={() => handleAddButton(2)}>등록</button>
-            </div>
-
-            <div>
-              <button type='submit' className='edit-button' onClick={handleEditButton}>수정</button>
-              <button type='submit' className='delete-button' onClick={handleDeleteButton}>삭제</button>
+            </h4>
+            <div className='content_wrap'>
+              <div className='list_wrap' style={{ position: 'relative' }}>
+                {getMidCategory.length === 0 ? (
+                  <p className='empty_wrap'><i class="bi bi-exclamation-circle"></i>데이터가 없습니다.</p>
+                ) : (
+                  <ul className='list'>
+                    {getMidCategory.map((category) => (
+                      <li key={category.categoryNo}
+                        onClick={() => handleMidClick(category.categoryNo)}
+                        className={selectedMidCategory === category.categoryNo ? 'selected' : ''}
+                      >
+                        <span>{category.categoryNm}</span>
+                        <i className="bi bi-chevron-right"></i>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <div className='input-wrap'>
+                <div className={`search_box ${insertMid ? 'has_text' : ''}`}>
+                  <label className="label_floating">Enter키로 중분류 추가</label>
+                  <i class="bi bi-plus-lg"></i>
+                  <input
+                    type="text"
+                    className="box search"
+                    onChange={(e) => handleInsert(e, 2)}
+                    value={insertMid}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleAddButton(2);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-
           {/* 소분류 */}
-          <div className='category-column'>
-            <h4>소분류</h4>
-            <br />
-            <hr />
-            <br />
-
-            <div className='list-form' style={{ position: 'relative' }}>
-              {getLowCategory.length === 0 ? (
-                <p style={{ position: 'absolute', top: '6%', left: '25%' }}>소분류가없습니다</p>
-              ) : (
-                <ul className='category-list'>
-                  {getLowCategory.map((category) => (
-                    <li key={category.categoryNo}
-                      onClick={() => handleLowClick(category.categoryNo)}
-                      className={selectedLowCategory === category.categoryNo ? 'selected' : ''}
-                    >
-                      {category.categoryNm}
-                    </li>
-                  ))}
-                </ul>
+          <div className='level_wrap'>
+            <h4>소분류
+              {getLowCategory.length > 0 && (
+                <span className="list_cnt">({getLowCategory.length})</span>
               )}
-            </div>
-
-            <div className='input-button'>
-              <input type='text'
-                placeholder='새 소분류 추가'
-                className='input-field'
-                onChange={(e) => handleInsert(e, 3)}
-                value={insertLow}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleAddButton(3);
-                  }
-                }}
-              />
-              <button type='submit' className='register-button' onClick={() => handleAddButton(3)}>등록</button>
-            </div>
-
-            <div>
-              <button type='submit' className='edit-button' onClick={handleEditButton}>수정</button>
-              <button type='submit' className='delete-button' onClick={handleDeleteButton}>삭제</button>
+            </h4>
+            <div className='content_wrap'>
+              <div className='list_wrap' style={{ position: 'relative' }}>
+                {getLowCategory.length === 0 ? (
+                  <p className='empty_wrap'><i class="bi bi-exclamation-circle"></i>데이터가 없습니다.</p>
+                ) : (
+                  <ul className='list'>
+                    {getLowCategory.map((category) => (
+                      <li key={category.categoryNo}
+                        onClick={() => handleLowClick(category.categoryNo)}
+                        className={selectedLowCategory === category.categoryNo ? 'selected' : ''}
+                      >
+                        <span>{category.categoryNm}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              {/* 소분류 input은 중분류가 선택된 경우에만 렌더링 */}
+              {selectedMidCategory && (
+                <div className='input-wrap'>
+                  <div className={`search_box ${insertLow ? 'has_text' : ''}`}>
+                    <label className="label_floating">Enter키로 소분류 추가</label>
+                    <i class="bi bi-plus-lg"></i>
+                    <input
+                      type="text"
+                      className="box search"
+                      onChange={(e) => handleInsert(e, 3)}
+                      value={insertLow}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleAddButton(3);
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
+        <div className='btn_wrap'>
+          <button type='submit' className='box color_border edit' onClick={handleEditButton}>수정</button>
+          <button type='submit' className='box color_border del red' onClick={handleDeleteButton}>삭제</button>
+        </div>
       </div>
-    </div>
+    </div >
   );
 }
 

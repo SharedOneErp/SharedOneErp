@@ -48,6 +48,7 @@ public class PriceService {
         dto.setCustomerName(price.getCustomer().getCustomerName()); // 고객 이름 설정
         dto.setProductNm(price.getProduct().getProductNm()); // 제품 이름 설정
         dto.setCategoryNm(price.getProduct().getCategory().getCategoryNm()); // 카테고리 이름 설정
+        dto.setCategoryPath(price.getProduct().getCategory().getCategoryPath()); // 전체 경로 설정
 
         return dto;
     }

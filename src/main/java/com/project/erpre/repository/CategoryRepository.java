@@ -64,7 +64,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
     Category findByCategoryNo(Integer categoryNo);
 
     //대분류
-    @Query("select c from Category c where c.categoryLevel = 1 and c.categoryDeleteYn = 'N' ")
+    @Query("select c from Category c where c.categoryLevel = 1 and c.categoryDeleteYn = 'N' order by c.categoryNm asc")
     List<Category> findTopCategory ();
 
     //중분류
@@ -73,7 +73,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
             " where c1.categoryLevel = 1" +
             " and c2.categoryLevel = 2" +
             " and (:topCategoryNo IS NULL OR c1.categoryNo = :topCategoryNo)" +
-            " and c2.categoryDeleteYn = 'N'")
+            " and c2.categoryDeleteYn = 'N' order by c2.categoryNm asc")
     List<Category> findMiddleCategory(@Param("topCategoryNo") Integer topCategoryNo);
 
     //소분류
@@ -109,7 +109,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
             "WHERE c1.categoryNm = :topCategory " +
             "AND c2.categoryNm = :middleCategory " +
             "AND c3.categoryNm = :lowCategory " +
-            "AND c3.categoryDeleteYn = 'N' ")
+            " and c3.categoryDeleteYn = 'N' order by c3.categoryNm asc")
     Category findCategoryByNames(@Param("topCategory") String topCategory,
                                  @Param("middleCategory") String middleCategory,
                                  @Param("lowCategory") String lowCategory);

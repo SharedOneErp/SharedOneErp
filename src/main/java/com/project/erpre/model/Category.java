@@ -60,4 +60,16 @@ public class Category {
     @OneToMany(mappedBy = "parentCategory")
     @JsonIgnore
     private List<Category> subCategories;
+
+    public String getCategoryPath() {
+        StringBuilder path = new StringBuilder(this.categoryNm);
+        Category parent = this.parentCategory;
+
+        while (parent != null) {
+            path.insert(0, parent.getCategoryNm() + " > "); // 상위 카테고리를 앞에 추가
+            parent = parent.getParentCategory();
+        }
+
+        return path.toString();
+    }
 }

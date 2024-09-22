@@ -2,7 +2,6 @@ package com.project.erpre.model;
 
 import lombok.*;
 
-import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.sql.Date;
@@ -34,4 +33,5 @@ public class PriceDTO {
     private String customerName;  // 고객 이름 (m_customer 테이블에서 가져온 값)
     private String productNm;  // 제품 이름 (m_product 테이블에서 가져온 값)
     private String categoryNm;  // 카테고리 이름 (m_category 테이블에서 가져온 값)
+    private String categoryPath;  // 카테고리 경로 (m_category 테이블에서 가져온 값)
 }
