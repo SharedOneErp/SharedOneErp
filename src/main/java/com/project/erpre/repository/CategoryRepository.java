@@ -49,6 +49,8 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
             "        m_category c\n" +
             "    INNER JOIN \n" +
             "        CategoryTree ct ON c.parent_category_no = ct.category_no\n" +
+            "    WHERE \n" +
+            "        c.category_delete_yn = 'N'\n" +
             ")\n" +
             "SELECT one, two, three, category_no, category_level, paths, category_insert_date, category_update_date\n" +
             "FROM CategoryTree\n" +
