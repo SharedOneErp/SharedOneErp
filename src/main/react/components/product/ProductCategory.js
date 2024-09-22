@@ -103,10 +103,10 @@ function ProductCategory() {
                         <div className="left">
                             {/* 대분류/중분류 모두 접기 버튼 */}
                             <button className="box color_border" onClick={toggleAllCollapse}>
-                                {collapsed.length === category.filter(cat => cat.categoryLevel === 1).length ? '대분류 모두 펼치기' : '대분류 모두 접기'}
+                                {collapsed.length === 0 ? '대분류 모두 접기' : '대분류 모두 펼치기'}
                             </button>
                             <button className="box color_border" onClick={toggleAllCollapseTwo}>
-                                {collapsedTwo.length === category.filter(cat => cat.categoryLevel === 2).length ? '중분류 모두 펼치기' : '중분류 모두 접기'}
+                                {collapsedTwo.length === 0 ? '중분류 모두 접기' : '중분류 모두 펼치기'}
                             </button>
                         </div>
                         <div className="right">
@@ -130,59 +130,50 @@ function ProductCategory() {
 
                                     return (
                                         <React.Fragment key={category.categoryNo}>
-                                            {/* 대분류인 경우 클릭 이벤트 추가 */}
+                                            {/* 대분류 */}
                                             {category.categoryLevel === 1 && (
-                                                <tr
-                                                    id={`categoryNo_${category.categoryNo}`}
-                                                    className={`level-one one-${category.one}`}
-                                                    onClick={() => toggleCollapse(category.one)}
-                                                >
+                                                <tr id={`categoryNo_${category.categoryNo}`} className={`level-one one-${category.one}`}>
                                                     <td>
-                                                        <span className='level_title'>
-                                                            대분류
-                                                            {/* 대분류 접기/펼치기 아이콘 */}
-                                                            <i className={`bi ${collapsed.includes(category.one) ? 'bi-caret-down-fill' : 'bi-caret-up-fill'}`}></i>
-                                                        </span>
+                                                        <span className="label_level level-1">대분류</span>
                                                     </td>
                                                     <td>
-                                                        {firstPath}
+                                                        <div className="category_toggle" onClick={() => toggleCollapse(category.one)}>
+                                                            <i className={`bi ${collapsed.includes(category.one) ? 'bi-caret-right-fill' : 'bi-caret-down-fill'}`}></i>
+                                                            <span className="category-name">{firstPath}</span>
+                                                        </div>
                                                     </td>
                                                     <td>{formatDate(category.categoryInsertDate)}</td>
                                                     <td>{category.categoryUpdateDate ? formatDate(category.categoryUpdateDate) : '-'}</td>
                                                 </tr>
                                             )}
-
-                                            {/* 중분류는 대분류가 열려 있을 때만 표시하고 중분류 접기 기능 추가 */}
+                                            {/* 중분류 */}
                                             {!collapsed.includes(category.one) && category.categoryLevel === 2 && (
-                                                <tr
-                                                    id={`categoryNo_${category.categoryNo}`}
-                                                    className={`level-two one-${category.one} two-${category.two}`}
-                                                    onClick={() => toggleCollapseTwo(category.two)}
-                                                >
+                                                <tr id={`categoryNo_${category.categoryNo}`} className={`level-two one-${category.one} two-${category.two}`}>
                                                     <td>
-                                                        <span className='level_title'>
-                                                            중분류
-                                                            {/* 중분류 접기/펼치기 아이콘 */}
-                                                            <i className={`bi ${collapsedTwo.includes(category.two) ? 'bi-caret-down-fill' : 'bi-caret-up-fill'}`}></i>
-                                                        </span>
+                                                        <span className="label_level level-2">중분류</span>
                                                     </td>
                                                     <td>
-                                                        <span style={{ marginLeft: '30px' }}>{`${restPaths.join(' > ')}`}</span>
+                                                        <div className="indent level-2">
+                                                            <div className="category_toggle" onClick={() => toggleCollapseTwo(category.two)}>
+                                                                <i className={`bi ${collapsedTwo.includes(category.two) ? 'bi-caret-right-fill' : 'bi-caret-down-fill'}`}></i>
+                                                                <span className="category-name">{restPaths.join(' > ')}</span>
+                                                            </div>
+                                                        </div>
                                                     </td>
                                                     <td>{formatDate(category.categoryInsertDate)}</td>
                                                     <td>{category.categoryUpdateDate ? formatDate(category.categoryUpdateDate) : '-'}</td>
                                                 </tr>
                                             )}
-
-                                            {/* 소분류는 대분류와 중분류가 열려 있을 때만 표시 */}
+                                            {/* 소분류 */}
                                             {!collapsed.includes(category.one) && !collapsedTwo.includes(category.two) && category.categoryLevel === 3 && (
-                                                <tr
-                                                    id={`categoryNo_${category.categoryNo}`}
-                                                    className={`level-three one-${category.one} two-${category.two} three-${category.three || 'none'}`}
-                                                >
-                                                    <td>소분류</td>
+                                                <tr id={`categoryNo_${category.categoryNo}`} className={`level-three one-${category.one} two-${category.two} three-${category.three || 'none'}`}>
                                                     <td>
-                                                        <span style={{ marginLeft: '60px' }}>{`${restPaths[restPaths.length - 1]}`}</span> {/* 마지막 경로만 출력 */}
+                                                        <span className="label_level level-3">소분류</span>
+                                                    </td>
+                                                    <td>
+                                                        <div className="indent level-3">
+                                                            <span className="category-name">{restPaths[restPaths.length - 1]}</span>
+                                                        </div>
                                                     </td>
                                                     <td>{formatDate(category.categoryInsertDate)}</td>
                                                     <td>{category.categoryUpdateDate ? formatDate(category.categoryUpdateDate) : '-'}</td>

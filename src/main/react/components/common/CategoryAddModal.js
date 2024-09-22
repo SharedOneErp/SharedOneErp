@@ -133,7 +133,9 @@ function CategoryModal({
             </h4>
             <div className='content_wrap'>
               <div className='list_wrap' style={{ position: 'relative' }}>
-                {getLowCategory.length === 0 ? (
+                {!selectedMidCategory ? (
+                  <p className='empty_wrap'><i class="bi bi-exclamation-circle"></i>중분류를 선택해주세요.</p>
+                ) : getLowCategory.length === 0 ? (
                   <p className='empty_wrap'><i class="bi bi-exclamation-circle"></i>데이터가 없습니다.</p>
                 ) : (
                   <ul className='list'>

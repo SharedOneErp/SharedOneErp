@@ -90,7 +90,7 @@ button.box.icon.hover_text.cancel:hover i::after { content: '취소'; }
 .date_box label { font-size: 14px; } 
 .date_box input[type='date'] { border: none; margin: 0 7px 0 9px; font-family: "Pretendard", sans-serif; color: #555; font-size: 15px; font-weight: 500; outline: none; } 
 /* 상태 선택(radio) */
-.radio_box { align-items: center; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); display: inline-flex; font-size: 14px; padding:0 4px 0 12px; color: #666; } 
+.radio_box { align-items: center; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); display: inline-flex; font-size: 14px; padding:0 4px 0 12px; color: #666; height: 37px; gap: 2px; } 
 .radio_box span { margin-right: 10px; } 
 .radio_box input[type="radio"] { display: none; } 
 .radio_box label { font-size: 16px; font-weight: 500; color: #555; padding: 5px 7px; border-radius: 5px; cursor: pointer; transition: all 0.3s; } 
@@ -103,7 +103,7 @@ button.box.icon.hover_text.cancel:hover i::after { content: '취소'; }
 .checkbox_box input[type="checkbox"]:checked + label { border-color: #007CC1; color: #007CC1; font-weight: 500; } 
 /* 컬러 버튼 hover */
 button.box.color:not(.active):not([disabled]):hover, button.box.color:not(.active):not([disabled]):active { background-color: #06689f; border-color: #06689f; } 
-button.box.color_border:not(.active):not([disabled]):hover, button.box.color_border:not(.active):not([disabled]):active { background-color: #007cc117; } 
+button.box.color_border:not(.active):not([disabled]):hover, button.box.color_border:not(.active):not([disabled]):active { background-color: #007cc10a; } 
 button.box.color_border.red:not(.active):not([disabled]):hover, button.box.color_border.red:not(.active):not([disabled]):active { background-color: #f50b001c; } 
 /* 기간 입력 */
 .period_box { display: inline-flex; gap: 3px; align-items: center; } 
