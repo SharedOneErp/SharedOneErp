@@ -119,6 +119,8 @@ public class CategoryService {
         logger.info("[CUSTOM_LOG] categoryDTO.getParentCategoryNo() : " + categoryDTO.getParentCategoryNo());
         logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
+        existingCategory.setCategoryUpdateDate(new Timestamp(System.currentTimeMillis()));
+
         return categoryRepository.save(existingCategory);
     }
 
