@@ -39,8 +39,8 @@ export const useHooksList = () => {
     const [selectedItems, setSelectedItems] = useState([]);
     const [selectAll, setSelectAll] = useState(false); // 초기값을 false로 설정
 
-    const [sortField, setSortField] = useState(null); // 정렬 필드
-    const [sortOrder, setSortOrder] = useState('asc'); // 정렬 순서
+    const [sortField, setSortField] = useState('priceInsertDate'); // 정렬 필드(기본값 : 등록일시)
+    const [sortOrder, setSortOrder] = useState('desc'); // 정렬 순서(기본값 : 내림차순)
 
     const [isLoading, setLoading] = useState(true); // 로딩 상태 관리
 
@@ -63,7 +63,7 @@ export const useHooksList = () => {
     // 모달 메시지 상태
     const [modalMessage, setModalMessage] = useState(''); // 모달에 표시할 메시지 상태
 
-    // 🔴 fetchData
+    // 🔴🔴🔴 select
     const fetchData = async () => {
         setLoading(true);
         const MIN_LOADING_TIME = 300;
@@ -82,8 +82,8 @@ export const useHooksList = () => {
                     selectedStatus: selectedStatus || null,
                     page: currentPage > 0 ? currentPage : 1,
                     size: itemsPerPage > 0 ? itemsPerPage : 20,
-                    sort: sortField ? sortField : 'priceNo',
-                    order: sortOrder || 'asc',
+                    sort: sortField,
+                    order: sortOrder,
                 },
             });
 
@@ -107,6 +107,26 @@ export const useHooksList = () => {
             setSelectAll(false);
             setSelectedItems([]);
         }
+    };
+
+    // 🔴🔴🔴 update(del_yn - 삭제 또는 복원)
+    const updateDeleteYnList = async (priceList, successMessage, errorMessage) => {
+        try {
+            await axios.put('/api/price/updateDel', priceList);
+            await fetchData();
+            window.showToast(successMessage);
+        } catch (error) {
+            console.error(errorMessage, error);
+            window.showToast(errorMessage);
+        }
+    };
+
+    // 🔴 updateDeleteYnList로 연결
+    const updateDeleteYn = async (priceNo, deleteYn) => {
+        const priceList = [{ priceNo, priceDeleteYn: deleteYn }];
+        const successMessage = deleteYn === 'Y' ? '해당 항목이 삭제되었습니다.' : '해당 항목이 복원되었습니다.';
+        const errorMessage = `${deleteYn === 'Y' ? '삭제' : '복원'} 처리 중 오류가 발생했습니다.`;
+        await updateDeleteYnList(priceList, successMessage, errorMessage);
     };
 
     // 🟡 조건에 따른 가격 리스트 출력
@@ -350,23 +370,6 @@ export const useHooksList = () => {
         setEditedPriceData({});
     };
 
-    // 🟣 del_yn 업데이트 함수 (삭제 또는 복원)
-    const updateDeleteYn = async (priceNo, deleteYn) => {
-        try {
-            // 서버로 del_yn 업데이트 요청 전송
-            await axios.put('/api/price/updateDel', [{ priceNo, priceDeleteYn: deleteYn }]);
-
-            // 삭제 또는 복원 후 데이터 재조회
-            await fetchData();
-
-            // 성공 메시지 표시
-            window.showToast(deleteYn === 'Y' ? '해당 항목이 삭제되었습니다.' : '해당 항목이 복원되었습니다.');
-        } catch (error) {
-            console.error(`${deleteYn === 'Y' ? '삭제' : '복원'} 처리 중 오류 발생:`, error);
-            window.showToast(`${deleteYn === 'Y' ? '삭제' : '복원'} 처리 중 오류가 발생했습니다.`);
-        }
-    };
-
     // 🟣 삭제 버튼 클릭 (단일 삭제)
     const handleDelete = (priceNo) => {
         setConfirmedAction(() => async () => {
@@ -380,41 +383,37 @@ export const useHooksList = () => {
         openConfirmModal();
     };
 
+    // 🟣 선택 삭제 버튼 클릭 (del_yn 업데이트)
+    const handleDeleteSelected = () => {
+        setConfirmedAction(() => async () => {
+            try {
+                const priceList = selectedItems.map(item => ({
+                    priceNo: item,
+                    priceDeleteYn: 'Y'  // del_yn 값을 'Y'로 업데이트
+                }));
+
+                const successMessage = '선택된 항목들이 삭제 처리되었습니다.';
+                const errorMessage = '선택 항목 삭제 처리 중 오류가 발생했습니다.';
+
+                await updateDeleteYnList(priceList, successMessage, errorMessage);
+
+                // 상태 업데이트
+                setSelectedItems([]);
+            } catch (error) {
+                console.error("선택 항목 삭제 처리 중 오류 발생:", error);
+                window.showToast('선택 항목 삭제 처리 중 오류가 발생했습니다.');
+            }
+        });
+
+        // 모달 메시지를 설정
+        setModalMessage(`선택된 ${selectedItems.length}건을 삭제하시겠습니까?`);
+
+        // 모달 열기
+        openConfirmModal();
+    };
+
     // 🟣 복원 버튼 클릭
     const handleRestore = (priceNo) => updateDeleteYn(priceNo, 'N');
-
-    // 🟣 선택 삭제 버튼 클릭 (del_yn 업데이트)
-    const handleDeleteSelected = async () => {
-        try {
-            setConfirmedAction(() => async () => {
-                console.log('🟣 Selected Items:', selectedItems); // selectedItems 로그 찍기
-
-                const priceList = selectedItems.map(item => {
-                    console.log('🟣 Item:', item); // 각 item의 값 로그 찍기
-                    return {
-                        priceNo: item,
-                        priceDeleteYn: 'Y'  // del_yn 값을 'Y'로 업데이트
-                    };
-                });
-
-                await axios.put('/api/price/updateDel', priceList);
-
-                // 상태 업데이트 및 데이터 재조회
-                setSelectedItems([]);
-                await fetchData();
-                window.showToast('선택된 항목들이 삭제 처리되었습니다.');
-            });
-
-            // 모달 메시지를 설정
-            setModalMessage(`선택된 ${selectedItems.length}건을 삭제하시겠습니까?`);
-
-            // 모달 열기
-            openConfirmModal();
-        } catch (error) {
-            console.error("선택 항목 삭제 처리 중 오류 발생:", error);
-            window.showToast('선택 항목 삭제 처리 중 오류가 발생했습니다.');
-        }
-    };
 
     // 🟣 모달 열기
     const openConfirmModal = () => {
@@ -500,8 +499,12 @@ export const useHooksList = () => {
         openConfirmModal,
         closeConfirmModal,
         handleConfirmAction,
-        modalMessage
+        modalMessage,
 
+        sortField,
+        setSortField,
+        sortOrder,
+        setSortOrder,
     };
 
 };

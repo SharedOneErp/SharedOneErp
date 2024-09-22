@@ -1,30 +1,43 @@
 /* src/main/resources/static/css/product/Price.css */
 /* 🔴 개별 열 너비 지정 */
 .menu_price .table_wrap table th:nth-child(1),
-.menu_price .table_wrap table td:nth-child(1) { width: 35px; /* 체크박스 */ } 
+.menu_price .table_wrap table td:nth-child(1) { width: 45px; text-align: center; /* 체크박스 */ } 
 .menu_price .table_wrap table th:nth-child(2),
 .menu_price .table_wrap table td:nth-child(2) { width: 55px; /* 번호 */ } 
 .menu_price .table_wrap table th:nth-child(3),
 .menu_price .table_wrap table td:nth-child(3) { width: 12%; /* 고객사 */ } 
-.menu_price .table_wrap table th:nth-child(4),
-.menu_price .table_wrap table td:nth-child(4) { width: 17%; /* 상품 */ } 
+/* .menu_price .table_wrap table th:nth-child(4),
+.menu_price .table_wrap table td:nth-child(4) { width: 17%; 상품 } */
 .menu_price .table_wrap table th:nth-child(5),
 .menu_price .table_wrap table td:nth-child(5) { width: 10%; /* 가격 */ } 
-/* .menu_price .table_wrap table th:nth-child(6),
-.menu_price .table_wrap table td:nth-child(6) { width: 21%; 적용기간 } */
+.menu_price .table_wrap table th:nth-child(6),
+.menu_price .table_wrap table td:nth-child(6) { width: 145px; /* 적용시작일 */ } 
 .menu_price .table_wrap table th:nth-child(7),
-.menu_price .table_wrap table td:nth-child(7), 
+.menu_price .table_wrap table td:nth-child(7) { width: 195px; /* 적용종료일 */ } 
 .menu_price .table_wrap table th:nth-child(8),
 .menu_price .table_wrap table td:nth-child(8), 
 .menu_price .table_wrap table th:nth-child(9),
-.menu_price .table_wrap table td:nth-child(9) { width: 140px; /* 등록/수정/삭제일시 */ } 
+.menu_price .table_wrap table td:nth-child(9),
 .menu_price .table_wrap table th:nth-child(10),
-.menu_price .table_wrap table td:nth-child(10) { width: 130px; /* 액션 */ } 
-/* padding 조절 */
+.menu_price .table_wrap table td:nth-child(10) { width: 132px; /* 등록/수정/삭제일시 */ } 
+.menu_price .table_wrap table th:nth-child(11),
+.menu_price .table_wrap table td:nth-child(11) { width: 130px; /* 액션 */ } 
+/* 🔴 padding 조절 */
 .menu_price .table_wrap table th,
 .menu_price .table_wrap table td { padding: 12px 8px; text-align: left; } 
-/* 등록/수정 행 */
+/* 🔴 정렬 */
+.menu_price .table_wrap table th .order_wrap { display: inline-flex; gap: 2px; } 
+.menu_price .table_wrap table th .order_wrap .btn_order { font-size: 13px; border-radius: 3px; padding: 0 2px; transition: all 0.2s; color: #aaa; margin-left: 1px; } 
+.menu_price .table_wrap table th .order_wrap .btn_order:hover { background-color: #eaeaea; color: #111; } 
+.menu_price .table_wrap table th .order_wrap.active,
+.menu_price .table_wrap table th .order_wrap.active i { color: #007CC1; } 
+/* 🔴 삭제 된 데이터 라벨 */
+.menu_price .table_wrap table td .label_del { background-color: #ff191912; color: #ed0000; padding: 3px 4px; border-radius: 4px; font-size: 12px; } 
+/* 🔴 적용 시작/종료일 */
+.menu_price .table_wrap table tr td .date_wrap { display: inline-flex; align-items: center; } 
+.menu_price .table_wrap table tr td .date_wrap i { margin-right: 3px; color: #444; font-size: 13px; } 
+/* 🔴 등록/수정 행 */
 .menu_price .table_wrap table tr.tr_input td { padding: 14px 8px; } 
 .menu_price .table_wrap table tr.tr_input td .box { font-size: 15px; padding: 5px 8px; } 
-/* 가격 */
+/* 가격(우측 정렬) */
 .menu_price .table_wrap table tr.tr_input td .box.price { width: 80%; margin-right: 2px; text-align: right; } 

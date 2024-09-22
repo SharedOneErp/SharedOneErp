@@ -108,7 +108,7 @@ button.box.color_border.red:not(.active):not([disabled]):hover, button.box.color
 /* 기간 입력 */
 .period_box { display: inline-flex; gap: 3px; align-items: center; } 
 /* 체크박스 */
-label.chkbox_label { display: flex; margin-top: -1px; } 
+label.chkbox_label { display: flex; margin-top: -1px; justify-content: center; } 
 input[type="checkbox"].chkbox { display: none; } 
 .chkbox_icon { display: inline-block; width: 16px; height: 16px; border: 1px solid #888; border-radius: 4px; background-color: white; position: relative; cursor: pointer; } 
 .chkbox_icon:hover { background-color: #f7f7f7; } 

@@ -43,34 +43,7 @@ const PriceRow = ({
     const priceStartDate = watch('priceStartDate'); // 시작 날짜 필드를 감시
     const priceEndDate = watch('priceEndDate'); // 종료 날짜 필드를 감시
 
-    // 🟡 고객사 선택 시 처리
-    useEffect(() => {
-        console.log("🟡 selectedCustomer.customerNo + "+ selectedCustomer.customerNo);
-        setValue('selectedCustomerNo', selectedCustomer.customerNo, { shouldValidate: isSubmitted });
-    }, [selectedCustomer, setValue, isSubmitted]);
-
-    // 🟡 상품 선택 시 처리
-    useEffect(() => {
-        setValue('selectedProductCd', selectedProduct.productCd, { shouldValidate: isSubmitted });
-    }, [selectedProduct, setValue, isSubmitted]);
-
-    // 🟡 날짜 입력 시 유효성 검사 실행
-    useEffect(() => {
-        if (isSubmitted) {
-            trigger(['priceStartDate', 'priceEndDate']); // 두 필드의 유효성 검사 실행
-        }
-    }, [priceStartDate, priceEndDate, trigger, isSubmitted]);
-
-    // 🟢 가격 입력 시 처리
-    const handlePriceChange = (e) => {
-        let value = e.target.value.replace(/,/g, ''); // 콤마 제거
-        if (!isNaN(value) && parseInt(value, 10) >= 0) {
-            value = parseInt(value, 10).toLocaleString(); // 세 자리마다 콤마 추가
-        }
-        setValue('priceCustomer', value, { shouldValidate: isSubmitted }); // 값 업데이트 및 유효성 검사 실행
-    };
-
-    // 🟢 저장 버튼 클릭 시 실행되는 함수
+    // 🔴🔴🔴 insert(저장 버튼 클릭 시 실행)
     const onSubmit = async (data) => {
         data.priceCustomer = data.priceCustomer.replace(/,/g, ''); // 콤마 제거한 실제 값을 저장
 
@@ -101,6 +74,34 @@ const PriceRow = ({
         }
     };
 
+    // 🟡 고객사 선택 시 처리
+    useEffect(() => {
+        console.log("🟡 selectedCustomer.customerNo + " + selectedCustomer.customerNo);
+        setValue('selectedCustomerNo', selectedCustomer.customerNo, { shouldValidate: isSubmitted });
+    }, [selectedCustomer, setValue, isSubmitted]);
+
+    // 🟡 상품 선택 시 처리
+    useEffect(() => {
+        setValue('selectedProductCd', selectedProduct.productCd, { shouldValidate: isSubmitted });
+    }, [selectedProduct, setValue, isSubmitted]);
+
+    // 🟡 날짜 입력 시 유효성 검사 실행
+    useEffect(() => {
+        if (isSubmitted) {
+            trigger('priceStartDate');
+            trigger('priceEndDate');
+        }
+    }, [priceStartDate, priceEndDate, trigger, isSubmitted]);
+
+    // 🟢 가격 입력 시 처리
+    const handlePriceChange = (e) => {
+        let value = e.target.value.replace(/,/g, ''); // 콤마 제거
+        if (!isNaN(value) && parseInt(value, 10) >= 0) {
+            value = parseInt(value, 10).toLocaleString(); // 세 자리마다 콤마 추가
+        }
+        setValue('priceCustomer', value, { shouldValidate: isSubmitted }); // 값 업데이트 및 유효성 검사 실행
+    };
+
     // 🟢 적용기간 유효성 검사 (시작일과 종료일이 모두 입력되어야만 유효)
     const validatePeriod = () => {
         // 시작일과 종료일이 모두 입력되지 않으면 에러 반환
@@ -122,18 +123,6 @@ const PriceRow = ({
         if (fieldError) return 'field_error'; // 에러가 있을 때
         if (isEditMode && !fieldError) return 'field_ok'; // 수정 모드일 때는 에러가 없으면 'ok' 클래스 추가
         if (fieldValue !== undefined && fieldValue !== '') return 'field_ok'; // 값이 입력되면 'ok' 추가
-        return ''; // 아무 값도 없을 때
-    };
-
-    // 🟢 날짜 필드에 대한 클래스 적용 로직 (시작일과 종료일 모두 입력된 경우에만 'ok' 클래스 적용)
-    const getDateFieldClass = (fieldError, startDate, endDate, isEditMode) => {
-        if (isEditMode) {
-            if (fieldError) return 'field_error'; // 에러가 있을 때
-            if (startDate && endDate) return 'field_ok'; // 수정 모드에서 모두 입력된 경우 'ok'
-        } else {
-            if (fieldError && isSubmitted) return 'field_error'; // 제출 후 에러가 있을 때
-            if (startDate && endDate) return 'field_ok'; // 모두 입력되면 'ok'
-        }
         return ''; // 아무 값도 없을 때
     };
 
@@ -167,36 +156,37 @@ const PriceRow = ({
             <td className="vat">
                 {/* 고객사 검색 버튼 */}
                 <button
-                    className={`box btn_search wp100 ${getFieldClass(errors.selectedCustomerNo, priceData.customerNo)}`}
+                    className={`box btn_search wp100 ${getFieldClass(errors.selectedCustomerNo, selectedCustomer.customerNo)}`}
                     onClick={() => setCustomerModalOpen(true)}
                 >
-                    {priceData.customerName || '고객사 선택'} {/* 선택된 고객사 이름 표시 */}
+                    {selectedCustomer.customerName || '고객사 선택'} {/* 선택된 고객사 이름 표시 */}
                     <i className="bi bi-search"></i>
                 </button>
                 {/* hidden input 필드에 고객 번호 저장 */}
                 <input
                     type="hidden"
                     {...register('selectedCustomerNo', { required: '고객사를 선택해주세요' })}
-                    value={priceData.customerNo}
+                    value={selectedCustomer.customerNo}
                 />
                 {errors.selectedCustomerNo && (
                     <p className="field_error_msg"><i className="bi bi-exclamation-circle-fill"></i>{errors.selectedCustomerNo.message}</p>
                 )}
             </td>
+
             <td className="vat">
                 {/* 상품 검색 버튼 */}
                 <button
-                    className={`box btn_search wp100 ${getFieldClass(errors.selectedProductCd, priceData.productCd)}`}
+                    className={`box btn_search wp100 ${getFieldClass(errors.selectedProductCd, selectedProduct.productCd)}`}
                     onClick={() => setProductModalOpen(true)}
                 >
-                    {priceData.productNm || '상품 선택'}  {/* 선택된 상품 이름 표시 */}
+                    {selectedProduct.productNm || '상품 선택'}  {/* 선택된 상품 이름 표시 */}
                     <i className="bi bi-search"></i>
                 </button>
                 {/* hidden input 필드에 상품 코드 저장 */}
                 <input
                     type="hidden"
                     {...register('selectedProductCd', { required: '상품을 선택해주세요' })}
-                    value={priceData.productCd}
+                    value={selectedProduct.productCd}
                 />
                 {errors.selectedProductCd && (
                     <p className="field_error_msg"><i className="bi bi-exclamation-circle-fill"></i>{errors.selectedProductCd.message}</p>
@@ -222,28 +212,48 @@ const PriceRow = ({
                 )}
             </td>
             <td className="vat">
-                <div className='period_box'>
-                    <input
-                        type="date"
-                        max="9999-12-31"
-                        className={`box ${getDateFieldClass(errors.priceStartDate, priceStartDate, priceEndDate)}`}
-                        placeholder="시작일"
-                        {...register('priceStartDate', { validate: validatePeriod })}
-                    />
-                    ~
-                    <input
-                        type="date"
-                        max="9999-12-31"
-                        className={`box ${getDateFieldClass(errors.priceEndDate, priceStartDate, priceEndDate)}`}
-                        placeholder="종료일"
-                        {...register('priceEndDate', { validate: validatePeriod })}
-                    />
-                </div>
-                {(errors.priceStartDate || errors.priceEndDate) && isSubmitted ? (
+                <input
+                    type="date"
+                    max="9999-12-31"
+                    className={`box ${getFieldClass(errors.priceStartDate, priceStartDate, isEditMode)}`}
+                    placeholder="시작일"
+                    {...register('priceStartDate', {
+                        required: '시작일을 입력해주세요',
+                        validate: (value) => {
+                            if (priceEndDate && new Date(value) > new Date(priceEndDate)) {
+                                return '시작일은 종료일보다 이전이어야 합니다';
+                            }
+                            return true;
+                        },
+                    })}
+                />
+                {errors.priceStartDate && (
                     <p className="field_error_msg">
-                        <i className="bi bi-exclamation-circle-fill"></i>시작일과 종료일을 모두 입력해주세요
+                        <i className="bi bi-exclamation-circle-fill"></i>{errors.priceStartDate.message}
                     </p>
-                ) : null}
+                )}
+            </td>
+            <td className="vat">
+                <input
+                    type="date"
+                    max="9999-12-31"
+                    className={`box ${getFieldClass(errors.priceEndDate, priceEndDate, isEditMode)}`}
+                    placeholder="종료일"
+                    {...register('priceEndDate', {
+                        required: '종료일을 입력해주세요',
+                        validate: (value) => {
+                            if (priceStartDate && new Date(value) < new Date(priceStartDate)) {
+                                return '종료일은 시작일보다 이후여야 합니다';
+                            }
+                            return true;
+                        },
+                    })}
+                />
+                {errors.priceEndDate && (
+                    <p className="field_error_msg">
+                        <i className="bi bi-exclamation-circle-fill"></i>{errors.priceEndDate.message}
+                    </p>
+                )}
             </td>
             <td>
                 {isEditMode ? (priceInsertDate ? format(new Date(priceInsertDate), 'yy-MM-dd HH:mm') : '-') : '-'}
