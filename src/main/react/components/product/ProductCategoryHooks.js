@@ -316,14 +316,14 @@ export const useHooksList = () => {
       .then(data => {
         //카테고리레벨에 따른 리스트 업데이트
         if (categoryLevel === 1) {
-          
+
           setGetTopCategory(prevCategory => [...prevCategory, data]);
           setInsertedTopList([...insertedTopList, data]);
           setSelectedTopCategory(data.categoryNo);
           setInsertTop('');
           alert('대분류 카테고리가 추가되었습니다.')
         } else if (categoryLevel === 2) {
-          
+
           setGetMidCategory(prevCategory => [...prevCategory, data]);
           setInsertedMidList([...insertedMidList, data]);
           setSelectedMidCategory(data.categoryNo);
@@ -371,15 +371,14 @@ export const useHooksList = () => {
   // 대분류 li 선택했을 떄
   function handleTopClick(categoryNo) {
     if (selectedTopCategory === categoryNo) {
-      setSelectedTopCategory(null);
-      setSelectedMidCategory(null);
-      setSelectedLowCategory(null);
+      return;  // 같은 항목을 클릭하면 아무 동작도 하지 않음
     } else {
-      setSelectedTopCategory(categoryNo);
-      setSelectedMidCategory(null);
+      setSelectedTopCategory(categoryNo);  // 선택된 대분류만 상태에 반영
+      setSelectedMidCategory(null);  // 중분류와 소분류는 초기화
       setSelectedLowCategory(null);
     }
   }
+
   useEffect(() => {
     if (selectedTopCategory) {
       console.log("선택된 대분류 번호: " + selectedTopCategory);

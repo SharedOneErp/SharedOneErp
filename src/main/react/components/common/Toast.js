@@ -7,7 +7,7 @@ const Toast = () => {
     const [toasts, setToasts] = useState([]); // 여러 개의 토스트 관리
 
     // showToast 함수를 useCallback으로 정의하여 토스트 추가(useCallback : showToast 함수를 기억해 두고, toasts 배열이 바뀔 때에만 새로 만드는 역할)
-    const showToast = useCallback((message, duration = 2000) => {
+    const showToast = useCallback((message, duration = 5000) => { // 기본 : 5초동안 표시
         // 중복 메시지 여부 확인
         const isDuplicate = toasts.some(toast => toast.message === message);
         //if (isDuplicate) return; // 메시지가 이미 있으면 추가하지 않음
@@ -30,7 +30,7 @@ const Toast = () => {
         <div className="toast-container">
             {toasts.map((toast) => (
                 <div key={toast.id} className="toast">
-                    <i className="bi bi-check2-circle"></i> {toast.message}
+                    <i className="bi bi-check-circle-fill"></i> {toast.message}
                 </div>
             ))}
         </div>

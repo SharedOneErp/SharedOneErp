@@ -151,7 +151,11 @@ export const useHooksList = () => {
 
     // 🟡 모든 항목이 선택되었을 때 '전체 선택' 체크박스도 체크되도록
     useEffect(() => {
-        setSelectAll(selectedItems.length === priceList.length);
+        if (selectedItems.length === 0) {
+            setSelectAll(false); // 모든 항목이 해제되었을 때 전체 선택 체크박스 해제
+        } else {
+            setSelectAll(selectedItems.length === priceList.length); // 모든 항목이 선택되었을 때 전체 선택 체크박스 체크
+        }
     }, [selectedItems, priceList]);
 
     // 🟡 검색어가 디바운스된 후 fetchData 호출(고객사)
@@ -274,6 +278,7 @@ export const useHooksList = () => {
         setIsAdding(true);  // 추가 상태 활성화
         setEditingId(null); // 수정 상태 초기화
         setEditedPriceData({}); // 수정 중인 데이터 초기화
+        setSelectedItems([]); // 선택 상태 초기화
     };
 
     // 🟣 추가하기-저장 버튼 클릭
@@ -281,6 +286,7 @@ export const useHooksList = () => {
         window.showToast('저장되었습니다.');
         console.log('새 가격 정보 등록:', newPriceData);
         setIsAdding(false); // 추가 행 숨기기
+        fetchData(); // 데이터 재조회
     };
 
     // 🟣 추가하기-취소 버튼 클릭
@@ -292,6 +298,7 @@ export const useHooksList = () => {
     const handleEdit = (priceNo) => {
 
         setIsAdding(false); // 등록 상태 초기화
+        setSelectedItems([]); // 선택 상태 초기화
 
         // 수정할 데이터 찾기
         const priceDataToEdit = priceList.find((item) => item.priceNo === priceNo);
@@ -300,12 +307,47 @@ export const useHooksList = () => {
         setEditingId(priceNo);
         setEditedPriceData({
             customerName: priceDataToEdit.customerName,
+            customerNo: priceDataToEdit.customerNo,
             productNm: priceDataToEdit.productNm,
+            productCd: priceDataToEdit.productCd,
             categoryNm: priceDataToEdit.categoryNm,
             priceCustomer: priceDataToEdit.priceCustomer,
             priceStartDate: priceDataToEdit.priceStartDate,
             priceEndDate: priceDataToEdit.priceEndDate
         });
+    };
+
+    // 🟣 수정 완료 버튼 클릭
+    const handleSaveEdit = async () => {
+        // 수정할 데이터를 서버에 전송하거나 상태 업데이트
+        try {
+            // 서버로 데이터 전송 예시 (필요에 따라 수정)
+            // await axios.put(`/api/price/${editingId}`, editedPriceData);
+            window.showToast('수정되었습니다.');
+
+            // 상태 업데이트: priceList에서 수정된 데이터를 반영
+            setPriceList((prevList) =>
+                prevList.map((item) =>
+                    item.priceNo === editingId
+                        ? { ...item, ...editedPriceData }
+                        : item
+                )
+            );
+
+            // 수정 완료 후, editingId 초기화 및 editedPriceData 초기화
+            setEditingId(null);
+            setEditedPriceData({});
+            fetchData(); // 데이터 재조회
+        } catch (error) {
+            console.error("데이터 저장 중 오류 발생:", error);
+        }
+    };
+
+    // 🟣 수정 취소 버튼 클릭
+    const handleCancelEdit = () => {
+        // 수정 취소: editingId 및 수정 중인 데이터 초기화
+        setEditingId(null);
+        setEditedPriceData({});
     };
 
     // 🟣 del_yn 업데이트 함수 (삭제 또는 복원)
@@ -372,38 +414,6 @@ export const useHooksList = () => {
             console.error("선택 항목 삭제 처리 중 오류 발생:", error);
             window.showToast('선택 항목 삭제 처리 중 오류가 발생했습니다.');
         }
-    };
-
-    // 🟣 수정 완료 버튼 클릭
-    const handleSaveEdit = async () => {
-        // 수정할 데이터를 서버에 전송하거나 상태 업데이트
-        try {
-            // 서버로 데이터 전송 예시 (필요에 따라 수정)
-            // await axios.put(`/api/price/${editingId}`, editedPriceData);
-            window.showToast('수정되었습니다.');
-
-            // 상태 업데이트: priceList에서 수정된 데이터를 반영
-            setPriceList((prevList) =>
-                prevList.map((item) =>
-                    item.priceNo === editingId
-                        ? { ...item, ...editedPriceData }
-                        : item
-                )
-            );
-
-            // 수정 완료 후, editingId 초기화 및 editedPriceData 초기화
-            setEditingId(null);
-            setEditedPriceData({});
-        } catch (error) {
-            console.error("데이터 저장 중 오류 발생:", error);
-        }
-    };
-
-    // 🟣 수정 취소 버튼 클릭
-    const handleCancelEdit = () => {
-        // 수정 취소: editingId 및 수정 중인 데이터 초기화
-        setEditingId(null);
-        setEditedPriceData({});
     };
 
     // 🟣 모달 열기
