@@ -23,7 +23,7 @@ function Price() {
 
     // 🔴 고객사 선택 시 모달을 닫고 버튼에 값 설정
     const handleCustomerSelect = (customer) => {
-        console.log("🔴 customer.customerName : "+customer.customerName);
+        console.log("🔴 customer.customerName : " + customer.customerName);
         setSelectedCustomer({
             customerName: customer.customerName, // 선택한 고객 이름
             customerNo: customer.customerNo      // 선택한 고객 번호
@@ -38,6 +38,14 @@ function Price() {
             productCd: product.productCd   // 선택된 상품 코드
         });
         setProductModalOpen(false);
+    };
+
+    // 🔴 등록일시 정렬 함수
+    const handleSortClick = (field) => {
+        const newOrder = sortField === field ? (sortOrder === 'desc' ? 'asc' : 'desc') : 'asc'; // 정렬 필드가 현재 필드와 일치하면 토글, 일치하지 않으면 오름차순부터 시작
+        setSortField(field); // 정렬 필드 설정
+        setSortOrder(newOrder); // 새로운 정렬 순서 설정
+        fetchData(); // 데이터를 새로 불러옴
     };
 
     // 🔴 커스텀 훅을 통해 상태와 함수 불러오기
@@ -107,7 +115,12 @@ function Price() {
         openConfirmModal,
         closeConfirmModal,
         handleConfirmAction,
-        modalMessage
+        modalMessage,
+
+        sortField,
+        setSortField,
+        sortOrder,
+        setSortOrder,
     } = useHooksList();          // 커스텀 훅 사용
 
     // 🟡 UI 및 상태에 따라 렌더링
@@ -278,13 +291,70 @@ function Price() {
                                         </label>
                                     </th>
                                     <th>번호</th>
-                                    <th>고객사</th>
-                                    <th>상품</th>
-                                    <th>가격</th>
-                                    <th>적용기간</th>
-                                    <th>등록일시</th>
-                                    <th>수정일시</th>
-                                    <th>삭제일시</th>
+                                    <th>
+                                        <div className={`order_wrap ${sortField === 'customerName' ? 'active' : ''}`}>
+                                            <span>고객사</span>
+                                            <button className="btn_order" onClick={() => handleSortClick('customerName')}>
+                                                <i className={`bi ${sortField === 'customerName' ? (sortOrder === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div className={`order_wrap ${sortField === 'productNm' ? 'active' : ''}`}>
+                                            <span>상품</span>
+                                            <button className="btn_order" onClick={() => handleSortClick('productNm')}>
+                                                <i className={`bi ${sortField === 'productNm' ? (sortOrder === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div className={`order_wrap ${sortField === 'priceCustomer' ? 'active' : ''}`}>
+                                            <span>가격</span>
+                                            <button className="btn_order" onClick={() => handleSortClick('priceCustomer')}>
+                                                <i className={`bi ${sortField === 'priceCustomer' ? (sortOrder === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div className={`order_wrap ${sortField === 'priceStartDate' ? 'active' : ''}`}>
+                                            <span>적용시작일</span>
+                                            <button className="btn_order" onClick={() => handleSortClick('priceStartDate')}>
+                                                <i className={`bi ${sortField === 'priceStartDate' ? (sortOrder === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div className={`order_wrap ${sortField === 'priceEndDate' ? 'active' : ''}`}>
+                                            <span>적용종료일</span>
+                                            <button className="btn_order" onClick={() => handleSortClick('priceEndDate')}>
+                                                <i className={`bi ${sortField === 'priceEndDate' ? (sortOrder === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div className={`order_wrap ${sortField === 'priceInsertDate' ? 'active' : ''}`}>
+                                            <span>등록일시</span>
+                                            <button className="btn_order" onClick={() => handleSortClick('priceInsertDate')}>
+                                                <i className={`bi ${sortField === 'priceInsertDate' ? (sortOrder === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div className={`order_wrap ${sortField === 'priceUpdateDate' ? 'active' : ''}`}>
+                                            <span>수정일시</span>
+                                            <button className="btn_order" onClick={() => handleSortClick('priceUpdateDate')}>
+                                                <i className={`bi ${sortField === 'priceUpdateDate' ? (sortOrder === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div className={`order_wrap ${sortField === 'priceDeleteDate' ? 'active' : ''}`}>
+                                            <span>삭제일시</span>
+                                            <button className="btn_order" onClick={() => handleSortClick('priceDeleteDate')}>
+                                                <i className={`bi ${sortField === 'priceDeleteDate' ? (sortOrder === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                            </button>
+                                        </div>
+                                    </th>
                                     {/* 수정/삭제 버튼 */}
                                     <th></th>
                                 </tr>
@@ -351,23 +421,23 @@ function Price() {
                                                     }
                                                 >
                                                     <td>
-                                                        <label className="chkbox_label">
-                                                            {/* 삭제된 상태가 아닌 경우에만 체크박스 표시 */}
-                                                            {m_price.priceDeleteYn !== 'Y' && (
-                                                                <>
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        className="chkbox"
-                                                                        checked={selectedItems.includes(m_price.priceNo)}
-                                                                        onChange={() => handleCheckboxChange(m_price.priceNo)}
-                                                                        disabled={isAdding || !!editingId}
-                                                                    />
-                                                                    <i className="chkbox_icon">
-                                                                        <i className="bi bi-check-lg"></i>
-                                                                    </i>
-                                                                </>
-                                                            )}
-                                                        </label>
+                                                        {/* 삭제된 상태에 따라 조건부 렌더링 */}
+                                                        {m_price.priceDeleteYn !== 'Y' ? (
+                                                            <label className="chkbox_label">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="chkbox"
+                                                                    checked={selectedItems.includes(m_price.priceNo)}
+                                                                    onChange={() => handleCheckboxChange(m_price.priceNo)}
+                                                                    disabled={isAdding || !!editingId}
+                                                                />
+                                                                <i className="chkbox_icon">
+                                                                    <i className="bi bi-check-lg"></i>
+                                                                </i>
+                                                            </label>
+                                                        ) : (
+                                                            <span className="label_del">삭제</span>
+                                                        )}
                                                     </td>
                                                     <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                                     <td>{m_price.customerName}</td>
@@ -376,7 +446,8 @@ function Price() {
                                                         <p style={{ fontSize: '14px', color: '#999', marginTop: '2px' }}>{m_price.categoryPath}</p>
                                                     </td>
                                                     <td><b>{m_price.priceCustomer.toLocaleString()}</b>원</td>
-                                                    <td>{`${format(m_price.priceStartDate, 'yyyy-MM-dd')} ~ ${format(m_price.priceEndDate, 'yyyy-MM-dd')}`}</td>
+                                                    <td><div className='date_wrap'><i className="bi bi-calendar-check"></i>{format(m_price.priceStartDate, 'yyyy-MM-dd')}</div></td> {/* 적용시작일 */}
+                                                    <td><div className='date_wrap'><i className="bi bi-calendar-check"></i>{format(m_price.priceEndDate, 'yyyy-MM-dd')}</div></td>   {/* 적용종료일 */}
                                                     <td>{format(m_price.priceInsertDate, 'yy-MM-dd HH:mm')}</td>
                                                     <td>{m_price.priceUpdateDate ? format(m_price.priceUpdateDate, 'yy-MM-dd HH:mm') : '-'}</td>
                                                     <td>{m_price.priceDeleteDate ? format(m_price.priceDeleteDate, 'yy-MM-dd HH:mm') : '-'}</td>
