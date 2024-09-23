@@ -12,8 +12,7 @@ function Order() {
     const [role, setRole] = useState('');
     const [isApproved, setIsApproved] = useState(false);
     const [isDenied, setIsDenied] = useState(false);
-    const [order, setOrder] = useState({});  // 주문 정보를 상태로 관리
-    const [deletedDetailIds, setDeletedDetailIds] = useState([]);  // 삭제된 제품의 detailId 저장
+
 
     const fetchEmployee = async () => {
         try {
@@ -551,7 +550,6 @@ function Order() {
                                                 <th>상품코드</th>
                                                 <th>카테고리</th>
                                                 <th>상품명</th>
-                                                <th>가격</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -563,7 +561,6 @@ function Order() {
                                                     <td>{result.productCd}</td>
                                                     <td>{result.category.categoryNo}</td>
                                                     <td>{result.productNm}</td>
-                                                    <td>{result.price}</td>
                                                 </tr>
                                             ))}
                                         </tbody>

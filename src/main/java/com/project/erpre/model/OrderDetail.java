@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-@Builder // 빌더 패턴을 추가합니다.
+@Builder
 public class OrderDetail {
 
     @Id
@@ -53,11 +53,9 @@ public class OrderDetail {
     private LocalDateTime orderDUpdateDate;
 
     @Column(name = "order_d_delete_yn", nullable = false)
-    private String orderDDeleteYn;
+    private String orderDDeleteYn="N";
 
     @Column(name = "order_d_delete_date")
     private Timestamp orderDDeleteDate; // 삭제 일시
-
-
 
 }
