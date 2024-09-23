@@ -451,8 +451,8 @@ export const useHooksList = () => {
 
                 console.log("order_h_no : " + order_h_no);
 
-                // 제품별 상세 주문 정보를 서버에 전송
-                const detailPromises = products.map(async (product) => {
+                // 제품별 상세 주문 정보를 서버에 순차적으로 전송
+                for (const product of products) {
                     const orderDetailData = {
                         orderNo: order_h_no,
                         productCd: product.code,
@@ -477,7 +477,7 @@ export const useHooksList = () => {
                         const errorText = await detailResponse.text();
                         throw new Error(`상세 주문 처리 중 오류 발생: ${errorText}`);
                     }
-                });
+                }
 
                 await Promise.all(detailPromises);
 
@@ -609,12 +609,12 @@ export const useHooksList = () => {
     };
 
 
-// 제품 삭제 핸들러
+    // 제품 삭제 핸들러
     const handleDeleteProduct = (detailId) => {
         setDeletedDetailIds(prevState => [...prevState, detailId]); // 삭제할 제품 ID 추가
     };
 
-// 주문 업데이트 시 삭제된 제품 목록을 포함하여 전송
+    // 주문 업데이트 시 삭제된 제품 목록을 포함하여 전송
     const updateOrder = async () => {
         const userConfirmed = confirm('주문을 업데이트하시겠습니까?');
         if (!userConfirmed) return;
