@@ -19,9 +19,21 @@ public class OrderReportService {
     }
 
     // 반기별 주문 건수 집계
-    public List<Object[]> getOrdersByHalfYear(LocalDateTime startDate, LocalDateTime endDate) {
-        return orderReportRepository.countOrdersByHalfYear(startDate, endDate);
+    public List<Object[]> getOrdersByDynamicHalfYear(LocalDateTime startDate, LocalDateTime endDate) {
+        // 현재 날짜를 기준으로 시작/끝 달 계산
+        int currentMonth = LocalDateTime.now().getMonthValue();
+
+        int startMonth1 = currentMonth - 5;  // 첫 반기의 시작 달
+        int endMonth1 = currentMonth;        // 첫 반기의 끝 달
+
+        return orderReportRepository.countOrdersByDynamicHalfYear(
+                startMonth1,
+                endMonth1,
+                startDate,
+                endDate
+        );
     }
+
 
     // 연도별 주문 건수 집계
     public List<Object[]> getOrdersByYear(LocalDateTime startDate, LocalDateTime endDate) {

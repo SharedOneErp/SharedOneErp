@@ -48,7 +48,7 @@ public class OrderReportController {
 
     // 반기별 주문건수
     @GetMapping("/api/orderReport/halfYearlyOrders")
-    public List<Object[]> getHalfYearlyOrders(@RequestParam String startDate, @RequestParam String endDate) {
+    public List<Object[]> getDynamicHalfYearlyOrders(@RequestParam String startDate, @RequestParam String endDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         LocalDate start = LocalDate.parse(startDate, formatter);
@@ -57,8 +57,9 @@ public class OrderReportController {
         LocalDateTime startDateTime = start.atStartOfDay();
         LocalDateTime endDateTime = end.atTime(23, 59, 59);
 
-        return orderReportService.getOrdersByHalfYear(startDateTime, endDateTime);
+        return orderReportService.getOrdersByDynamicHalfYear(startDateTime, endDateTime);
     }
+
 
     // 연도별 주문건수
     @GetMapping("/api/orderReport/yearlyOrders")
