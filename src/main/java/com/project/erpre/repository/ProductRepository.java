@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, String>, ProductRepositoryCustom {
+public interface ProductRepository extends JpaRepository<Product, String>, ProductRepositoryCustom, QuerydslPredicateExecutor<Product> {
 
     // 1. 품번으로 상품을 찾아오는 메서드
     List<Product> findByProductCdIn(List<String> productCds);
