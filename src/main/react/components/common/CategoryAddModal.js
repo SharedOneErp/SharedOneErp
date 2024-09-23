@@ -20,17 +20,13 @@ function CategoryModal({
   handleLowClick,
   handleTopHover,
   closeModal,
+  handleBackgroundClick,
 }) {
 
-  // 🟢 모달 배경 클릭 시 창 닫기
-  const handleBackgroundClick = (e) => {
-    if (e.target.className === 'modal_overlay') {
-      closeModal();
-    }
-  };
+
 
   return (
-    <div className="modal_overlay" onClick={handleBackgroundClick}>
+    <div className="modal_overlay" onMouseDown={handleBackgroundClick}>
       <div className="modal_container cate_modal">
         <div className="header">
           <div>상품 카테고리 편집</div>
@@ -64,7 +60,7 @@ function CategoryModal({
               <div className='input-wrap'>
                 <div className={`search_box ${insertTop ? 'has_text' : ''}`}>
                   <label className="label_floating">Enter키로 대분류 추가</label>
-                  <i class="bi bi-plus-lg"></i>
+                  <i className="bi bi-plus-lg"></i>
                   <input
                     type="text"
                     className="box search"
@@ -90,7 +86,7 @@ function CategoryModal({
             <div className='content_wrap'>
               <div className='list_wrap' style={{ position: 'relative' }}>
                 {getMidCategory.length === 0 ? (
-                  <p className='empty_wrap'><i class="bi bi-exclamation-circle"></i>데이터가 없습니다.</p>
+                  <p className='empty_wrap'><i className="bi bi-exclamation-circle"></i>데이터가 없습니다.</p>
                 ) : (
                   <ul className='list'>
                     {getMidCategory.map((category) => (
@@ -108,7 +104,7 @@ function CategoryModal({
               <div className='input-wrap'>
                 <div className={`search_box ${insertMid ? 'has_text' : ''}`}>
                   <label className="label_floating">Enter키로 중분류 추가</label>
-                  <i class="bi bi-plus-lg"></i>
+                  <i className="bi bi-plus-lg"></i>
                   <input
                     type="text"
                     className="box search"
@@ -134,9 +130,9 @@ function CategoryModal({
             <div className='content_wrap'>
               <div className='list_wrap' style={{ position: 'relative' }}>
                 {!selectedMidCategory ? (
-                  <p className='empty_wrap'><i class="bi bi-exclamation-circle"></i>중분류를 선택해주세요.</p>
+                  <p className='empty_wrap'><i className="bi bi-exclamation-circle"></i>중분류를 선택해주세요.</p>
                 ) : getLowCategory.length === 0 ? (
-                  <p className='empty_wrap'><i class="bi bi-exclamation-circle"></i>데이터가 없습니다.</p>
+                  <p className='empty_wrap'><i className="bi bi-exclamation-circle"></i>데이터가 없습니다.</p>
                 ) : (
                   <ul className='list'>
                     {getLowCategory.map((category) => (
@@ -155,7 +151,7 @@ function CategoryModal({
                 <div className='input-wrap'>
                   <div className={`search_box ${insertLow ? 'has_text' : ''}`}>
                     <label className="label_floating">Enter키로 소분류 추가</label>
-                    <i class="bi bi-plus-lg"></i>
+                    <i className="bi bi-plus-lg"></i>
                     <input
                       type="text"
                       className="box search"

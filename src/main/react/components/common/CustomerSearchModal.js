@@ -76,7 +76,7 @@ function CustomerSearchModal({ onClose, onCustomerSelect }) {
 
     // 🟣 모달 렌더링
     return (
-        <div className="modal_overlay" onClick={handleBackgroundClick}>
+        <div className="modal_overlay" onMouseDown={handleBackgroundClick}>
             <div className="modal_container search">
                 <div className="header">
                     <div>고객사 검색</div>

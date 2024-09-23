@@ -110,10 +110,10 @@ export const useHooksList = () => {
         selectedCategory = getTopCategory.find(cate => cate.categoryNo === selectedTopCategory);
       }
 
-      const updateCategoryName = prompt("새로운 카테고리 명을 입력하세요", selectedCategory ? selectedCategory.categoryNm : "");
+      const updateCategoryName = prompt("새로운 카테고리 명을 입력하세요", selectedCategory ? selectedCategory.categoryNm : "");// 변경 예정
 
       if (!updateCategoryName) {
-        alert("수정할 카테고리 명을 입력해야 합니다.");
+        alert("수정이 취소되었습니다.");
         return;
       }
 
@@ -169,7 +169,7 @@ export const useHooksList = () => {
       } else if (selectedTopCategory) {
         selectedCategory = getTopCategory.find(cate => cate.categoryNo === selectedTopCategory);
       }
-      const checkDelete = window.confirm(`${selectedCategory.categoryNm} 카테고리를 삭제하시겠습니까?`);
+      const checkDelete = window.confirm(`"${selectedCategory.categoryNm}" 카테고리를 삭제하시겠습니까?`);
 
       if (!checkDelete) {
         return;
@@ -185,12 +185,15 @@ export const useHooksList = () => {
             if (selectedCategory.categoryLevel === 1) {
               const updatedCategory = getTopCategory.filter(cate => cate.categoryNo !== selectedCategory.categoryNo);
               setGetTopCategory(updatedCategory);
+              setGetMidCategory([]); // 대분류 삭제 시 중분류 비우기
+              setGetLowCategory([]);
               setSelectedTopCategory(null);
               setSelectedMidCategory(null);
               setSelectedLowCategory(null);
             } else if (selectedCategory.categoryLevel === 2) {
               const updatedCategory = getMidCategory.filter(cate => cate.categoryNo !== selectedCategory.categoryNo);
               setGetMidCategory(updatedCategory);
+              setGetLowCategory([]);
               setSelectedMidCategory(null);
               setSelectedLowCategory(null);
             } else if (selectedCategory.categoryLevel === 3) {
@@ -198,8 +201,6 @@ export const useHooksList = () => {
               setGetLowCategory(updatedCategories);
               setSelectedLowCategory(null);
             }
-          } else {
-            alert('하위 카테고리가 남아 있으므로 삭제할 수 없습니다.');
           }
         })
         .catch(error => console.error('카테고리 삭제 실패:', error));
@@ -436,6 +437,56 @@ export const useHooksList = () => {
   }
 
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // 대분류와 중분류의 열림/닫힘 상태를 저장하는 상태값
+  const [collapsed, setCollapsed] = useState([]);
+  const [collapsedTwo, setCollapsedTwo] = useState([]);
+
+  // 대분류 클릭 시 열림/닫힘 상태 토글
+  const toggleCollapse = (one) => {
+    if (collapsed.includes(one)) {
+      setCollapsed(collapsed.filter(item => item !== one));
+    } else {
+      setCollapsed([...collapsed, one]);
+    }
+  };
+
+  // 중분류 클릭 시 열림/닫힘 상태 토글
+  const toggleCollapseTwo = (two) => {
+    if (collapsedTwo.includes(two)) {
+      setCollapsedTwo(collapsedTwo.filter(item => item !== two));
+    } else {
+      setCollapsedTwo([...collapsedTwo, two]);
+    }
+  };
+
+  // 대분류 모두 접기/펼치기
+  const toggleAllCollapse = () => {
+    if (collapsed.length === category.filter(cat => cat.categoryLevel === 1).length) {
+      setCollapsed([]); // 모두 펼쳐졌다면 모두 접기
+    } else {
+      setCollapsed(category.filter(cat => cat.categoryLevel === 1).map(cat => cat.one)); // 모두 접기
+    }
+  };
+
+  // 중분류 모두 접기/펼치기
+  const toggleAllCollapseTwo = () => {
+    if (collapsedTwo.length === category.filter(cat => cat.categoryLevel === 2).length) {
+      setCollapsedTwo([]); // 모두 펼쳐졌다면 모두 접기
+    } else {
+      setCollapsedTwo(category.filter(cat => cat.categoryLevel === 2).map(cat => cat.two)); // 모두 접기
+    }
+  };
+
+  // 🟢 모달 배경 클릭 시 창 닫기
+  const handleBackgroundClick = (e) => {
+    if (e.target.className === 'modal_overlay') {
+      closeModal();
+    }
+  };
+
+
   return {
     category,
     categoryName,
@@ -457,6 +508,12 @@ export const useHooksList = () => {
     hoverTop,
     hoverMid,
     hoverLow,
+    collapsed,
+    collapsedTwo,
+    toggleCollapse,
+    toggleCollapseTwo,
+    toggleAllCollapse,
+    toggleAllCollapseTwo,
     handleEditButton,
     handleDeleteButton,
     handleAllSelectCategory,
@@ -472,6 +529,7 @@ export const useHooksList = () => {
     handleMidClick,
     handleLowClick,
     handleTopHover,
+    handleBackgroundClick,
   };
 
 };

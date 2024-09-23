@@ -1,5 +1,5 @@
 /* 공통 모달 스타일 */
-/* .modal-overlay { 
+.modal-overlay { 
 position: fixed; 
 top: 0; 
 left: 0; 
@@ -17,11 +17,25 @@ padding: 30px;
 border-radius: 12px; 
 box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
 max-width: 600px; width: 100%; 
-max-height: 90vh; overflow-y: auto; 
+height: 700px; overflow-y: auto; 
 position: relative; 
-animation: modalFadeIn 0.3s ease-out; } */
+animation: modalFadeIn 0.3s ease-out; }
 
-/* 공통 모달 스타일 */
+.close-button { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #555; transition: color 0.3s ease; }
+.close-button:hover { color: #007CC1;}
+
+/* 유효성 검사 에러 메시지*/
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+
+}
+.invalid {
+  border-color: red;
+}
+
+/* 확인 모달 스타일 */
 .confirm-modal-overlay {
   position: fixed;
   top: 0;
@@ -29,44 +43,58 @@ animation: modalFadeIn 0.3s ease-out; } */
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+  display: flex; /* Flexbox 사용하여 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  justify-content: center; /* 수평 중앙 정렬 */
+  z-index: 1000; /* 다른 요소보다 위에 표시 */
 }
-
-/* 확인 모달 콘텐츠 스타일 */
 .confirm-modal-content {
   background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
-  max-width: 600px; width: 100%; 
-  max-height: 90vh; overflow-y: auto; 
+  padding: 20px;
+  border-radius: 8px; /* 모서리 둥글게 */
+  max-width: 500px; /* 최대 너비 설정 */
+  width: 90%; /* 반응형 너비 */
+  max-height: 15vh; /* 최대 높이 설정 */
+  overflow-y: auto; /* 내용이 많을 경우 스크롤 */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* 그림자 추가 */
+  position: relative; /* 위치 조정 필요 시 사용 */
   text-align: center;
-  /* 애니메이션 제거 */
-  /* position: absolute; 와 transform 제거 */
+}
+.confirm-modal-content .modal-footer {
+ margin-top: 20px;
+ display: flex;
+ justify-content: center;
+}
+.confirm-modal-content .confirm-button,
+.confirm-modal-content .cancel-button {
+ margin: 0 10px;
+ padding: 10px 20px;
 }
 
-@keyframes modalFadeIn {
- from { opacity: 0; transform: translateY(-50px); }
- to { opacity: 1; transform: translateY(0); }
- }
-.close-button { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #555; transition: color 0.3s ease; }
-.close-button:hover { color: #007CC1; /* 포인트 컬러 */ }
+/* 모달 스크롤 바 */
+.confirm-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+.confirm-modal-content::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+.confirm-modal-content::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}
 
 /* 고객 등록 및 상세 모달 폼 */
 .register-form, .detail-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
 .form-group label { margin-bottom: 5px; font-weight: bold; font-size: 14px; color: #333; }
 .form-group input, .form-group select { padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; transition: border-color 0.3s ease; }
-.form-group input:focus, .form-group select:focus { border-color: #007CC1; /* 포인트 컬러 */ }
+.form-group input:focus, .form-group select:focus { border-color: #007CC1;}
 
 /* 버튼 스타일 */
 .modal-footer { display: flex; justify-content: flex-end; gap: 15px; margin-top: 20px; }
-.edit-button, .delete-button, .save-button { padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color 0.3s ease; }
+.edit-button, .delete-button, .save-button { padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 4%; transition: background-color 0.3s ease; }
 .edit-button, .save-button { background-color: #007CC1; color: white; }
-.edit-button:hover, .save-button:hover { background-color: #005fa3; /* 약간 어두운 포인트 컬러 */ }
+.edit-button:hover, .save-button:hover { background-color: #005fa3;}
 .delete-button { background-color: #ff4d4d; color: white; }
 .delete-button:hover { background-color: #d43d3d; }
 .deleteall-button { padding: 12px 20px; background-color: #ff4d4d; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-left: 10px; }
@@ -75,7 +103,7 @@ animation: modalFadeIn 0.3s ease-out; } */
 /* 등록 버튼 */
 .register-button { padding: 12px 20px; background-color: #007CC1; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-bottom: 20px; }
 .register-button:hover { background-color: #005fa3; }
-.submit-button { background-color: #007CC1; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; position: absolute; right: 20px; bottom: 20px; }
+.submit-button { background-color: #007CC1; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; position: absolute; right: 35px; bottom: 20px; }
 .submit-button:hover { background-color: #005fa3; }
 .allcustomer-button { background-color: #007CC1; color: white; padding: 12px 20px; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-left: 10px; }
 .allcustomer-button:hover { background-color: #005fa3; }
@@ -86,7 +114,7 @@ animation: modalFadeIn 0.3s ease-out; } */
 .customer-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
 .customer-table th, .customer-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
 .customer-table th { background-color: #f2f2f2; }
-.customer-table tr:hover { background-color: #f1f1f1; background-color: #ffdb0036; /* 이케아 노란색 */ }
+.customer-table tr:hover { background-color: #f1f1f1;}
 
 /* 검색 필터 */
 .filter-section { margin-bottom: 20px; }
@@ -95,59 +123,35 @@ animation: modalFadeIn 0.3s ease-out; } */
 .filter-section .search-button { background-color: #f2f2f2; margin-right: 10px; padding: 8px; border-radius: 5px; }
 .filter-button { background-color: #007CC1; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px; }
 .filter-button:hover { background-color: #005fa3; }
+
 /* 정렬 */
-th {
- cursor: pointer;
+th.sortable {
+  cursor: pointer;
+  position: relative;
+  text-align: center;
+  /*padding-right: 20px; 아이콘 공간 확보 */
+   /*user-select: none; 텍스트 선택 방지 */
+}
+th.sortable::after {
+  content: '▲';
+  position: absolute;
+  top: 33%;
+  /* transform: translateY(-50%); */
+  font-size: 12px;
+  color: #555;
+}
+th.sortable.sorted-desc::after {
+  content: '▼';
+  color: #555;
 }
 
-th.sorted-asc::after {
- content: "▲"; /* 기본 오름차순 화살표 표시 */
- font-size: 14px; /* 크기 조정 가능 */
- color: black; /* 화살표 색상 지정 */
+th.sortable:hover {
+  background-color: #f9f9f9;
 }
-
-th.sorted-desc::after {
- content: "▼"; /* 내림차순 화살표 표시 */
- font-size: 14px;
- color: black;
-}
-
-/* 체크박스와 상세내역 열에는 화살표 및 정렬 기능 제거 */
+/* 체크박스 및 상세내역 열에는 화살표 제거 */
 th:first-child::after,
 th:last-child::after {
- content: ""; /* 빈 문자열로 표시하여 화살표 제거 */
-}
-
-/* 확인 모달 스타일 */
-.confirm-modal-overlay {
- position: fixed;
- top: 0;
- left: 0;
- right: 0;
- bottom: 0;
- background: rgba(0, 0, 0, 0.5);
-}
-
-.confirm-modal-content {
- position: absolute;
- top: 50%;
- left: 50%;
- transform: translate(-50%, -50%);
- background: white;
- padding: 20px;
- text-align: center;
-}
-
-.confirm-modal-content .modal-footer {
- margin-top: 20px;
- display: flex;
- justify-content: center;
-}
-
-.confirm-modal-content .confirm-button,
-.confirm-modal-content .cancel-button {
- margin: 0 10px;
- padding: 10px 20px;
+  content: ""; 
 }
 
 /* 페이지네이션 */

@@ -29,12 +29,12 @@ function EmployeeList() {
     const [showModifyModal, setShowModifyModal] = useState(false);
     const [showInsertModal, setShowInsertModal] = useState(false);
 
-    //초기화면은 재직자만
+    // 🟡 초기화면은 재직자만
     useEffect(() => {
         pageEmployeesN(1);
     }, []);
 
-    //검색된 직원만 화면에 나오게끔
+    // 🟡 검색된 직원만 화면에 나오게끔
     useEffect(() => {
         if (debouncedSearchEmployee === '') {
             setFilteredEmployees(employees);
@@ -44,7 +44,7 @@ function EmployeeList() {
         }
     }, [debouncedSearchEmployee, employees])
 
-    //등록기능
+    // 등록기능
     const [newEmployee, setNewEmployee] = useState({
         employeeId: '',
         employeePw: '',
@@ -63,7 +63,7 @@ function EmployeeList() {
     //
     //    }; 조회버튼을 눌러야 조회,, 이제는 안씀
 
-    //재직자만
+    // 재직자만
     const pageEmployeesN = (page) => {
         axios.get(`/api/employeeList?page=${page}&size=20`)
             .then(response => {
@@ -189,6 +189,12 @@ function EmployeeList() {
         setSelectedEmployee(null);
     };
 
+    // 🟢 모달 배경 클릭 시 창 닫기(수정)
+    const handleModifyBackgroundClick = (e) => {
+        if (e.target.className === 'modal_overlay') {
+            closeModifyModal();
+        }
+    };
 
     // 수정된 직원 정보 저장 및 서버로 전송
     const handleModifySubmit = () => {
@@ -245,8 +251,16 @@ function EmployeeList() {
         setShowInsertModal(true);
     };
 
+    //등록모달 닫기
     const closeInsertModal = () => {
         setShowInsertModal(false);
+    };
+
+    // 🟢 모달 배경 클릭 시 창 닫기(등록)
+    const handleInsertBackgroundClick = (e) => {
+        if (e.target.className === 'modal_overlay') {
+            closeInsertModal();
+        }
     };
 
     //직원등록(버튼누를시 중복검사)
@@ -256,42 +270,42 @@ function EmployeeList() {
             alert('권한을 선택해주세요.');
             return;
         }
-        
+
         if (!validateEmployeeData(newEmployee)) {
             return;
         }
 
         axios.get('/api/checkEmployeeId', { params: { employeeId: newEmployee.employeeId } })
             .then(response => {
-            if (response.data) {
+                if (response.data) {
 
-                alert('이미 존재하는 아이디입니다.');
-            } else {
+                    alert('이미 존재하는 아이디입니다.');
+                } else {
 
-                axios.post('/api/registerEmployee', newEmployee)
-                    .then(response => {
-                    alert('직원 등록이 완료되었습니다.');
-                    closeInsertModal();
-                    setNewEmployee({
-                        employeeId: '',
-                        employeePw: '',
-                        employeeName: '',
-                        employeeEmail: '',
-                        employeeTel: '',
-                        employeeRole: ''
-                    });
-                    pageEmployeesN(1); // 첫 페이지로 갱신
-                })
-                    .catch(error => {
-                    console.error('발생한 에러 : ', error);
-                    alert('직원 등록 중 에러발생');
-                });
-            }
-        })
+                    axios.post('/api/registerEmployee', newEmployee)
+                        .then(response => {
+                            alert('직원 등록이 완료되었습니다.');
+                            closeInsertModal();
+                            setNewEmployee({
+                                employeeId: '',
+                                employeePw: '',
+                                employeeName: '',
+                                employeeEmail: '',
+                                employeeTel: '',
+                                employeeRole: ''
+                            });
+                            pageEmployeesN(1); // 첫 페이지로 갱신
+                        })
+                        .catch(error => {
+                            console.error('발생한 에러 : ', error);
+                            alert('직원 등록 중 에러발생');
+                        });
+                }
+            })
             .catch(error => {
-            console.error('ID 중복 체크 중 에러 발생:', error);
-            alert('ID 중복 체크 중 에러가 발생했습니다.');
-        });
+                console.error('ID 중복 체크 중 에러 발생:', error);
+                alert('ID 중복 체크 중 에러가 발생했습니다.');
+            });
     };
 
     //유효성검사(등록,수정 전부다 이걸로씀)
@@ -310,10 +324,10 @@ function EmployeeList() {
             return false;
         }
 
-//        if (!allowedRoles.includes(employeeData.employeeRole.toLowerCase())) {
-//            alert('권한은 admin, staff, manager 중 하나를 입력해주세요.');
-//            return false;
-//        }
+        //        if (!allowedRoles.includes(employeeData.employeeRole.toLowerCase())) {
+        //            alert('권한은 admin, staff, manager 중 하나를 입력해주세요.');
+        //            return false;
+        //        }
 
 
         return true;
@@ -324,6 +338,7 @@ function EmployeeList() {
         setSearch(''); // 공통적으로 상태를 ''로 설정
     };
 
+    // 🟣 렌더링
     return (
         <Layout currentMenu="employee"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
             <main className="main-content menu_employee">
@@ -424,7 +439,7 @@ function EmployeeList() {
                             )}
 
                             {/* 페이지 번호 블록 */}
-                             {Array.from({ length: Math.min(5, totalPages) }, (_, index) => {
+                            {Array.from({ length: Math.min(5, totalPages) }, (_, index) => {
                                 const startPage = Math.floor((page - 1) / 5) * 5 + 1;
                                 const currentPage = startPage + index; // page 대신 currentPage로 변경
                                 return (
@@ -439,8 +454,6 @@ function EmployeeList() {
                                     )
                                 );
                             })}
-
-
 
                             {/* '다음' 버튼 */}
                             {page < totalPages && (
@@ -463,121 +476,161 @@ function EmployeeList() {
             </main>
 
             {showModifyModal && (
-                <div className='modal-overlay'>
-                    <div className='modifyModal-content'>
-                        <h2>정보수정모달</h2>
-                        <button className='close-button' onClick={closeModifyModal}>X</button>
-                        <table>
-                            <thead className='modal-th'>
-                                <tr>
-                                    <th>아이디</th>
-                                    <th>비밀번호</th>
-                                    <th>이름</th>
-                                    <th>이메일</th>
-                                    <th>연락처</th>
-                                    <th>권한</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><span>{selectedEmployee.employeeId}</span></td>
-                                    <td><input
+                <div className="modal_overlay" onMouseDown={handleModifyBackgroundClick}>
+                    <div className='modal_container edit'>
+                        <div className="header">
+                            <div>직원 정보 수정</div>
+                            <button className="btn_close" onClick={closeModifyModal}><i className="bi bi-x-lg"></i></button> {/* 모달 닫기 버튼 */}
+                        </div>
+                        <div className="edit_wrap">
+                            <div className='edit_form'>
+                                <div className='field_wrap'>
+                                    <label>아이디</label>
+                                    <input
                                         type='text'
+                                        className='box'
+                                        value={selectedEmployee.employeeId}
+                                        disabled
+                                    />
+                                </div>
+                                <div className='field_wrap'>
+                                    <label>비밀번호</label>
+                                    <input
+                                        type='password'
+                                        className='box'
                                         placeholder='비밀번호를 입력해주세요'
                                         value={selectedEmployee.employeePw}
                                         onChange={(e) => handleEmployeeChange('employeePw', e.target.value)}
-                                    /></td>
-                                    <td><input
+                                    />
+                                </div>
+                                <div className='field_wrap'>
+                                    <label>이름</label>
+                                    <input
                                         type='text'
+                                        className='box'
                                         placeholder='이름을 입력해주세요'
                                         value={selectedEmployee.employeeName}
                                         onChange={(e) => handleEmployeeChange('employeeName', e.target.value)}
-                                    /></td>
-                                    <td><input
+                                    />
+                                </div>
+                                <div className='field_wrap'>
+                                    <label>이메일</label>
+                                    <input
                                         type='text'
+                                        className='box'
                                         placeholder='이메일을 입력해주세요'
                                         value={selectedEmployee.employeeEmail}
                                         onChange={(e) => handleEmployeeChange('employeeEmail', e.target.value)}
-                                    /></td>
-                                    <td><input
+                                    />
+                                </div>
+                                <div className='field_wrap'>
+                                    <label>연락처</label>
+                                    <input
                                         type='text'
+                                        className='box'
                                         placeholder='연락처를 입력해주세요'
                                         value={selectedEmployee.employeeTel}
                                         onChange={(e) => handleEmployeeChange('employeeTel', e.target.value)}
-                                    /></td>
-                                    <td><select
+                                    />
+                                </div>
+                                <div className='field_wrap'>
+                                    <label>권한</label>
+                                    <select
+                                        className='box'
                                         value={selectedEmployee.employeeRole}
                                         onChange={(e) => handleEmployeeChange('employeeRole', e.target.value)}
-                                        >
-
+                                    >
+                                        <option value="">권한을 선택해주세요</option>
                                         <option value="admin">admin</option>
                                         <option value="staff">staff</option>
                                         <option value="manager">manager</option>
-                                    </select></td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td><button className='submit-button' onClick={handleModifySubmit}>수정</button></td>
-                                    <td><button className='delete-button' onClick={handleDelete}>삭제</button></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="modal-actions">
+                                <button className="box blue" onClick={handleModifySubmit}>수정</button>
+                                <button className="box red" onClick={handleDelete}>삭제</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
 
             {showInsertModal && (
-                <div className='modal-overlay'>
-                    <div className='insertModal-content'>
-                        <h2>직원등록모달</h2>
-
-                        <div className='insert-form'>
-                            <button className='close-button' onClick={closeInsertModal}>X</button>
-                            <div className='insert-column'>
-
-                                <input
-                                    type='text'
-                                    placeholder='아이디를 입력해주세요'
-                                    value={newEmployee.employeeId}
-                                    onChange={(e) => setNewEmployee({ ...newEmployee, employeeId: e.target.value })}
-                                />
-                                <input
-                                    type='text'
-                                    placeholder='비밀번호를 입력해주세요'
-                                    value={newEmployee.employeePw}
-                                    onChange={(e) => setNewEmployee({ ...newEmployee, employeePw: e.target.value })}
-                                />
-                                <input
-                                    type='text'
-                                    placeholder='이름을 입력해주세요'
-                                    value={newEmployee.employeeName}
-                                    onChange={(e) => setNewEmployee({ ...newEmployee, employeeName: e.target.value })}
-                                />
-                                <input
-                                    type='text'
-                                    placeholder='이메일을 입력해주세요'
-                                    value={newEmployee.employeeEmail}
-                                    onChange={(e) => setNewEmployee({ ...newEmployee, employeeEmail: e.target.value })}
-                                />
-                                <input
-                                    type='text'
-                                    placeholder='연락처를 입력해주세요'
-                                    value={newEmployee.employeeTel}
-                                    onChange={(e) => setNewEmployee({ ...newEmployee, employeeTel: e.target.value })}
-                                />
-                                <select
-                                value={newEmployee.employeeRole}
-                                onChange={(e) => setNewEmployee({ ...newEmployee, employeeRole: e.target.value })}
-                                >
-                                <option value="">권한을 선택해주세요</option>
-                                <option value="admin">admin</option>
-                                <option value="staff">staff</option>
-                                <option value="manager">manager</option>
-                                </select>
-                                <hr />
-                                <button className='submit-button' onClick={InsertSubmit}>등록</button>
+                <div className="modal_overlay" onMouseDown={handleInsertBackgroundClick}>
+                    <div className='modal_container edit'>
+                        <div className="header">
+                            <div>직원 정보 등록</div>
+                            <button className="btn_close" onClick={closeInsertModal}><i className="bi bi-x-lg"></i></button> {/* 모달 닫기 버튼 */}
+                        </div>
+                        <div className="edit_wrap">
+                            <div className='edit_form'>
+                                <div className='field_wrap'>
+                                    <label>아이디</label>
+                                    <input
+                                        type='text'
+                                        className='box'
+                                        placeholder='아이디를 입력해주세요'
+                                        value={newEmployee.employeeId}
+                                        onChange={(e) => setNewEmployee({ ...newEmployee, employeeId: e.target.value })}
+                                    />
+                                </div>
+                                <div className='field_wrap'>
+                                    <label>비밀번호</label>
+                                    <input
+                                        type='password'
+                                        className='box'
+                                        placeholder='비밀번호를 입력해주세요'
+                                        value={newEmployee.employeePw}
+                                        onChange={(e) => setNewEmployee({ ...newEmployee, employeePw: e.target.value })}
+                                    />
+                                </div>
+                                <div className='field_wrap'>
+                                    <label>이름</label>
+                                    <input
+                                        type='text'
+                                        className='box'
+                                        placeholder='이름을 입력해주세요'
+                                        value={newEmployee.employeeName}
+                                        onChange={(e) => setNewEmployee({ ...newEmployee, employeeName: e.target.value })}
+                                    />
+                                </div>
+                                <div className='field_wrap'>
+                                    <label>이메일</label>
+                                    <input
+                                        type='text'
+                                        className='box'
+                                        placeholder='이메일을 입력해주세요'
+                                        value={newEmployee.employeeEmail}
+                                        onChange={(e) => setNewEmployee({ ...newEmployee, employeeEmail: e.target.value })}
+                                    />
+                                </div>
+                                <div className='field_wrap'>
+                                    <label>연락처</label>
+                                    <input
+                                        type='text'
+                                        className='box'
+                                        placeholder='연락처를 입력해주세요'
+                                        value={newEmployee.employeeTel}
+                                        onChange={(e) => setNewEmployee({ ...newEmployee, employeeTel: e.target.value })}
+                                    />
+                                </div>
+                                <div className='field_wrap'>
+                                    <label>권한</label>
+                                    <select
+                                        className='box'
+                                        value={newEmployee.employeeRole}
+                                        onChange={(e) => setNewEmployee({ ...newEmployee, employeeRole: e.target.value })}
+                                    >
+                                        <option value="">권한을 선택해주세요</option>
+                                        <option value="admin">admin</option>
+                                        <option value="staff">staff</option>
+                                        <option value="manager">manager</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="modal-actions">
+                                <button className="box blue" onClick={InsertSubmit}>등록</button>
                             </div>
                         </div>
                     </div>

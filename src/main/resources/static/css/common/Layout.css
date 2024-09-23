@@ -108,7 +108,7 @@ button.box.color_border.red:not(.active):not([disabled]):hover, button.box.color
 /* 기간 입력 */
 .period_box { display: inline-flex; gap: 3px; align-items: center; } 
 /* 체크박스 */
-label.chkbox_label { display: flex; margin-top: -1px; justify-content: center; } 
+label.chkbox_label { display: flex; margin-top: -1px; justify-content: center; width: 100%; } 
 input[type="checkbox"].chkbox { display: none; } 
 .chkbox_icon { display: inline-block; width: 16px; height: 16px; border: 1px solid #888; border-radius: 4px; background-color: white; position: relative; cursor: pointer; } 
 .chkbox_icon:hover { background-color: #f7f7f7; } 
@@ -209,6 +209,23 @@ input[type="checkbox"]:disabled + .chkbox_icon .bi-check-lg { color: #f6f6f6; }
 .modal_container .search_wrap input { font-size: 15px; margin: 1px; } 
 .modal_container .btn_close { background: none; border: none; outline: none; color: #333; font-size: 20px; cursor: pointer; line-height: 1; transition: all 0.3s; border-radius: 50%; padding: 4px 4px; } 
 .modal_container .btn_close:hover { color: #007CC1; background-color: #e4f1f7a3; } 
+/* 등록/수정 */
+.modal_container.edit { width: 400px; } 
+.modal_container.edit .edit_wrap .edit_form { display: flex; flex-direction: column; gap: 12px; } 
+.modal_container.edit .edit_wrap .edit_form .field_wrap { display: flex; flex-direction: column; gap: 2px; } 
+.modal_container.edit .edit_wrap .edit_form .field_wrap label { font-weight: 600; color: #666; margin-left: 2px; } 
+/* 모달 버튼 */
+.modal-actions { margin-top: 20px; display:flex; flex-direction: column; gap: 7px; } 
+.modal-actions button.box { width: 100%; justify-content: center; border:none; } 
+.modal-actions button.box.red { background-color: #ffeceb; color: #ff5e57; } 
+.modal-actions button.box.red:hover, .modal-actions button.box.red:active { background-color: #ffdcda !important; color: #ff0b00 !important; border:none !important; } 
+.modal-actions button.box.red:active { box-shadow: 0 0 2px 1px #ffd2d0; } 
+.modal-actions button.box.blue { background-color: #e4f1f78f; color: #015b8da1; } 
+.modal-actions button.box.blue:hover, .modal-actions button.box.blue:active { background-color: #d5ebf5 !important; color: #007CC1 !important; border:none !important; } 
+.modal-actions button.box.blue:active { box-shadow: 0 0 2px 1px #e4f1f7a3; } 
+.modal-actions button.box.gray { background-color: #eff0f3; color: #9a9ea8; } 
+.modal-actions button.box.gray:hover, .modal-actions button.box.gray:active { background-color: #eaeaea !important; color: #444 !important; border:none !important; } 
+.modal-actions button.box.gray:active { box-shadow: 0 0 2px 1px #dddddd; } 
 /* confirm 모달 */
 .modal_confirm { background: white; padding: 20px; border-radius: 8px; text-align: center; } 
 .modal_confirm .del_icon { margin-bottom: 10px; } 

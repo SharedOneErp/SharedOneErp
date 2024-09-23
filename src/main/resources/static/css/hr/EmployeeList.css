@@ -1,5 +1,3 @@
-.h1 { margin-bottom : 40px; } 
-
 /* 테이블 */
 .employee-table { width: 100%; border-collapse: collapse; margin-top: 20px; } 
 .employee-table th, .employee-table td { border: 1px solid #ddd; padding: 8px; text-align: left; } 
@@ -9,14 +7,3 @@
 
 .filter-button { background-color: #007CC1; color: white; padding: 6px 15px; margin: 5px; margin-right: 10px; border: none; cursor: pointer; border-radius: 5px; } 
 .filter-button:hover { background-color: #005a91; } 
-
-/* 페이지네이션 */
-/* .pagination { margin-top: 20px; text-align: center; } 
-.pagination button { padding: 5px 10px; margin: 0 5px; background-color: #007CC1; color: white; border: none; cursor: pointer; border-radius: 5px; } 
-.pagination button:disabled { background-color: #808080; }  */
-
-/* 모달 */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; } 
-.modal-th { color: white; } 
-.close-button { background-color: transparent; border: none; font-size: 24px; cursor: pointer; color: #e3e3e3; transition: color 0.3s ease; } 
-.insert-form { display: grid; background-color: white; justify-content: center; align-items: center; } 
