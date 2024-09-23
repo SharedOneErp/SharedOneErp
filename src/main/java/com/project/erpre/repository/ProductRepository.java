@@ -24,6 +24,9 @@ public interface ProductRepository extends JpaRepository<Product, String>, Produ
     @Query("SELECT COUNT(p) FROM Product p WHERE p.productDeleteYn = :status")
     long countByStatus(@Param("status") String status);
 
+    // 3. 상품 코드의 중복 여부를 확인하는 메서드
+    boolean existsByProductCd(String productCd);
+
 
 
 

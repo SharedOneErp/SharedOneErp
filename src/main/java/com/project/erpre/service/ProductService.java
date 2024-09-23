@@ -53,23 +53,25 @@ public class ProductService {
         return productRepository.findProductDetailsByProductCd(productCd);
     }
 
-    // 3. 상품 등록 및 수정
-    public ProductDTO saveOrUpdate(ProductDTO productDTO) {
-        Product product = productRepository.findById(productDTO.getProductCd())
-                .orElse(new Product());
+    // 3. 상품 등록
+    public ProductDTO addProduct(ProductDTO productDTO) {
 
+        // 상품 코드 중복 확인
+        boolean productCdExists = productRepository.existsByProductCd(productDTO.getProductCd());
+
+        if (productCdExists) {
+            throw new IllegalArgumentException("이미 존재하는 상품 코드입니다.");
+        }
+
+        // 새로운 상품 생성
+        Product product = new Product();
+
+        // 상품 정보 설정
         product.setProductCd(productDTO.getProductCd());
         product.setProductNm(productDTO.getProductNm());
 
-        // 상품 등록일시 - 항상 현재 시간으로 저장
-        if (product.getProductInsertDate() == null) {
-            product.setProductInsertDate(LocalDateTime.now());
-        }
-
-        // 상품 등록일시 존재하는 경우 현재 시간으로 수정일시 저장
-        if (product.getProductInsertDate() != null) {
-            product.setProductUpdateDate(LocalDateTime.now());
-        }
+        // 상품 등록일시 - 현재 시간으로 설정
+        product.setProductInsertDate(LocalDateTime.now());
 
         // 소분류 CategoryNo 저장
         if (productDTO.getCategoryNo() != null) {
@@ -83,7 +85,32 @@ public class ProductService {
         return convertToDTO(savedProduct);
     }
 
-    // 4. 선택한 상품 삭제
+    // 4. 상품 수정
+    public ProductDTO updateProduct(ProductDTO productDTO) {
+
+        // 기존 상품 가져오기
+        Product product = productRepository.findById(productDTO.getProductCd())
+                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
+
+        // 상품 정보 업데이트
+        product.setProductNm(productDTO.getProductNm());
+
+        // 수정일시 업데이트
+        product.setProductUpdateDate(LocalDateTime.now());
+
+        // 소분류 CategoryNo 저장
+        if (productDTO.getCategoryNo() != null) {
+            Category category = categoryRepository.findById(productDTO.getCategoryNo())
+                    .orElseThrow(() -> new RuntimeException("해당 카테고리를 찾을 수 없습니다."));
+            product.setCategory(category);
+        }
+
+        // 상품 저장
+        Product updatedProduct = productRepository.save(product);
+        return convertToDTO(updatedProduct);
+    }
+
+    // 5. 선택한 상품 삭제
     @Transactional
     public void deleteProducts(List<String> productCds) {
         List<Product> products = productRepository.findByProductCdIn(productCds);
@@ -100,7 +127,7 @@ public class ProductService {
         productRepository.saveAll(products);
     }
 
-    // 5. 선택한 상품 복원
+    // 6. 선택한 상품 복원
     @Transactional
     public void restoreProducts(List<String> productCd) {
         List<Product> products = productRepository.findByProductCdIn(productCd);

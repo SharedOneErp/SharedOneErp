@@ -8,12 +8,12 @@ import {useProductHooks} from "./ProductHooks"; // 상품 관리에 필요한 �
 import {formatDate} from '../../util/dateUtils';
 import ProductDetailModal from './ProductDetailModal';
 import Pagination from '../common/Pagination';
+import ProductRow from './ProductRow';
 
 
 function ProductList() {
 
     const {
-        products,
         selectedProducts,
         handleAllSelectProducts,
         handleSelectProduct,
@@ -40,11 +40,8 @@ function ProductList() {
         selectedLowCategory,
         selectedMiddleCategory,
         selectedTopCategory,
-        lowCategories,
-        middleCategories,
         topCategories,
         handleLowCategoryChange,
-        handleMiddleCategoryChange,
         currentPage,
         itemsPerPage,
         totalItems,
@@ -54,17 +51,10 @@ function ProductList() {
         isModalOpen,
         handleOpenModal,
         handleCloseModal,
-        productDetail,
         selectedProductCd,
-        paginationNumbers,
-        handlePreviousPageGroup,
-        handleNextPageGroup,
         filteredProducts,
-        setCurrentPage,
-        getCategoryNameByNo,
         searchTerm,
         setSearchTerm,
-        handleTopCategoryChange,
         addFilteredMiddleCategories,
         addFilteredLowCategories,
         fullTopCategories,
@@ -76,134 +66,15 @@ function ProductList() {
         handleStatusChange,
         selectedStatus,
         isLoading,
-        handleUpdateDeleteYn,
         handleRestore,
         handlePageInputChange,
         handleSort,
         sortColumn,
         sortDirection,
+        handleAddMiddleCategoryChange,
+        handleAddTopCategoryChange,
+        handlePageInputBlur,
     } = useProductHooks(); // 커스텀 훅 사용
-
-    // 🔴 ProductRow 컴포넌트를 상위 컴포넌트 내부에 정의
-    const ProductRow = ({
-                            isEditMode,
-                            productData,
-                            topCategory,
-                            topCategories,
-                            midCategory,
-                            midCategories,
-                            lowCategory,
-                            lowCategories,
-                            handleInputChange,
-                            onTopChange,
-                            onMidChange,
-                            onLowChange,
-                            onSave,
-                            onCancel
-                        }) => {
-        return (
-            <tr className='tr_input'>
-                <td>-</td>
-                {/* 체크박스 칸 */}
-                <td>
-                    {/* 품번 */}
-                    <input
-                        type="text"
-                        className="box wp100"
-                        placeholder="품번 입력"
-                        value={productData.productCd}
-                        name="productCd"
-                        onChange={handleInputChange}
-                    />
-                </td>
-                <td>
-                    {/* 상품명 */}
-                    <input
-                        type="text"
-                        className="box wp100"
-                        placeholder="상품명 입력"
-                        value={productData.productNm}
-                        name="productNm"
-                        onChange={handleInputChange}
-                    />
-                </td>
-                <td>
-                    <select className="box wp100"
-                            name="topCategory"
-                            value={topCategory}
-                            onChange={(e) => {
-                                onTopChange(e);
-                            }}
-                    >
-                        <option value="">대분류 선택</option>
-                        {topCategories.map((category, index) => (
-                            <option
-                                key={index}
-                                value={category.categoryNo}>{category.categoryNm}
-                            </option>
-                        ))}
-                    </select>
-                </td>
-                <td>
-                    <select className="box wp100"
-                            name="midCategory"
-                            value={midCategory}
-                            onChange={(e) => {
-                                onMidChange(e);
-                            }}
-                            disabled={!topCategory}
-                    >
-                        <option value="">중분류 선택</option>
-                        {midCategories.map((category, index) => (
-                            <option
-                                key={index}
-                                value={category.categoryNo}>{category.categoryNm}
-                            </option>
-                        ))}
-                    </select>
-                </td>
-                <td>
-                    <select className="box wp100"
-                            name="lowCategory"
-                            value={lowCategory}
-                            onChange={(e) => {
-                                onLowChange(e);
-                            }}
-                            disabled={!midCategory}
-                    >
-                        <option value="">소분류 선택</option>
-                        {lowCategories.map((category, index) => (
-                            <option
-                                key={index}
-                                value={category.categoryNo}>{category.categoryNm}
-                            </option>
-                        ))}
-                    </select>
-                </td>
-                <td>-</td>
-                {/* 등록일시 */}
-                <td>-</td>
-                {/* 수정일시 */}
-                <td>-</td>
-                {/* 삭제일시 */}
-                <td>
-                    <div className='btn_group'>
-                        {isEditMode ? (
-                            <>
-                                <button className="box small color_border" onClick={onSave}>수정</button>
-                                <button className="box small" onClick={onCancel}>취소</button>
-                            </>
-                        ) : (
-                            <>
-                                <button className="box small color_borde" onClick={onSave}>추가</button>
-                                <button className="box small" onClick={onCancel}>취소</button>
-                            </>
-                        )}
-                    </div>
-                </td>
-            </tr>
-        );
-    };
 
 
     return (
@@ -388,9 +259,9 @@ function ProductList() {
                                     lowCategory={selectedLowCategory}
                                     lowCategories={addFilteredLowCategories}
                                     handleInputChange={handleInputChange}
-                                    onTopChange={handleTopCategoryChange}
-                                    onMidChange={handleMiddleCategoryChange}
-                                    onLowChange={handleLowCategoryChange}
+                                    onTopChange={handleAddTopCategoryChange} // 대분류 선택 시 호출
+                                    onMidChange={handleAddMiddleCategoryChange} // 중분류 필터링
+                                    onLowChange={handleLowCategoryChange} // 소분류 필터링
                                     onSave={handleAddNewProduct}
                                     onCancel={handleCancelAdd}
                                 />
@@ -413,18 +284,18 @@ function ProductList() {
                                             key={product.productCd}
                                             isEditMode={true}
                                             productData={editableProduct}
-                                            topCategory={editableProduct.topCategoryNo || ''}
-                                            topCategories={fullTopCategories}
-                                            midCategory={editableProduct.middleCategoryNo || ''}
-                                            midCategories={filteredEditMiddleCategories}
-                                            lowCategory={editableProduct.lowCategoryNo || ''}
-                                            lowCategories={filteredEditLowCategories}
-                                            handleInputChange={handleInputChange}
-                                            onTopChange={handleFilterTopCategoryChangeForEdit}
-                                            onMidChange={handleFilterMiddleCategoryChangeForEdit}
-                                            onLowChange={handleFilterLowCategoryChangeForEdit}
-                                            onSave={handleConfirmClick}
-                                            onCancel={handleCancelEdit}
+                                            topCategory={editableProduct.topCategoryNo || ''} // 선택된 대분류
+                                            topCategories={fullTopCategories} // 대분류 목록
+                                            midCategory={editableProduct.middleCategoryNo || ''} // 선택된 중분류
+                                            midCategories={filteredEditMiddleCategories} // 중분류 목록
+                                            lowCategory={editableProduct.lowCategoryNo || ''} // 선택된 소분류
+                                            lowCategories={filteredEditLowCategories} // 소분류 목록
+                                            handleInputChange={handleInputChange} // 입력값 변경 처리
+                                            onTopChange={handleFilterTopCategoryChangeForEdit} // 대분류 변경
+                                            onMidChange={handleFilterMiddleCategoryChangeForEdit} // 중분류 변경
+                                            onLowChange={handleFilterLowCategoryChangeForEdit} // 소분류 변경
+                                            onSave={handleConfirmClick} // 저장
+                                            onCancel={handleCancelEdit} // 취소
                                         />
                                     ) : (
                                         // 기본 모드
@@ -456,9 +327,9 @@ function ProductList() {
                                             </td>
                                             <td>{product.productCd}</td>
                                             <td>{product.productNm}</td>
-                                            <td>{product.topCategoryNo ? getCategoryNameByNo(product.topCategoryNo) : '-'}</td>
-                                            <td>{product.middleCategoryNo ? getCategoryNameByNo(product.middleCategoryNo) : '-'}</td>
-                                            <td>{product.lowCategoryNo ? getCategoryNameByNo(product.lowCategoryNo) : '-'}</td>
+                                            <td>{product.topCategory ? product.topCategory : '-'}</td>
+                                            <td>{product.middleCategory ? product.middleCategory : '-'}</td>
+                                            <td>{product.lowCategory ? product.lowCategory : '-'}</td>
                                             <td>{product.productInsertDate ? formatDate(product.productInsertDate) : '-'}</td>
                                             <td>{product.productUpdateDate ? formatDate(product.productUpdateDate) : '-'}</td>
                                             <td>{product.productDeleteDate ? formatDate(product.productDeleteDate) : '-'}</td>
@@ -517,6 +388,8 @@ function ProductList() {
                         handleDeleteSelected={handleDeleteSelected}
                         selectedItems={selectedProducts}
                         showFilters={true}
+                        handlePageInputBlur={handlePageInputBlur}
+                        enablePageBlur={true}
                     />
                 </div>
                 {/* 납품 내역 모달 */}

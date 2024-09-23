@@ -86,14 +86,20 @@ public class ProductController {
     // 3. 상품 등록 API
     @PostMapping("/add")
     public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO) {
-        ProductDTO savedProduct = productService.saveOrUpdate(productDTO);
-        return ResponseEntity.ok(savedProduct);
+        try {
+            ProductDTO savedProduct = productService.addProduct(productDTO);
+            return ResponseEntity.ok(savedProduct);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     // 4. 상품 수정 API
     @PutMapping("/update")
     public ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductDTO productDTO) {
-        ProductDTO updatedProduct = productService.saveOrUpdate(productDTO);
+        ProductDTO updatedProduct = productService.updateProduct(productDTO);
         return ResponseEntity.ok(updatedProduct);
     }
 
