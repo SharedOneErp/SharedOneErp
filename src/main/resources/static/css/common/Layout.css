@@ -66,7 +66,7 @@ button.box.icon.hover_text.cancel:hover i::after { content: '취소'; }
 .search_box { position:relative; align-items: center; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); display: inline-flex; font-size: 14px; padding-left: 12px; color: #666; } 
 .search_box.has_text { border-color: #007CC1; padding-left:0px; padding-right: 26px; } 
 .search_box.has_text input { color: #555; } 
-.search_box.has_text i { display: none; } 
+.search_box.has_text i.bi-search { display: none; } 
 .search_box.has_text button { color: #007CC1; } 
 .search_box .box { border: none; padding-right: 30px; width: 174px; } 
 /* 플로팅 라벨 스타일 */
@@ -155,13 +155,15 @@ input[type="checkbox"]:disabled + .chkbox_icon .bi-check-lg { color: #f6f6f6; }
 .table_wrap table td { padding: 12px 8px; text-align: left; } 
 .table_wrap table th { padding: 11px 8px; } 
 .table_wrap table td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
-.table_wrap table td b { font-weight: 500; color:#555 }
+.table_wrap table td b { font-weight: 500; color:#555 } 
+/* 🔴 삭제 된 데이터 라벨 */
+.table_wrap table td .label_del { background-color: #ff191912; color: #ed0000; padding: 3px 4px; border-radius: 4px; font-size: 12px; } 
 /* 🔴 정렬 */
-.table_wrap table th .order_wrap { display: inline-flex; gap: 2px; }
-.table_wrap table th .order_wrap .btn_order { font-size: 13px; border-radius: 3px; padding: 0 2px; transition: all 0.2s; color: #aaa; margin-left: 1px; }
-.table_wrap table th .order_wrap .btn_order:hover { background-color: #eaeaea; color: #111; }
+.table_wrap table th .order_wrap { display: inline-flex; gap: 2px; } 
+.table_wrap table th .order_wrap .btn_order { font-size: 13px; border-radius: 3px; padding: 0 2px; transition: all 0.2s; color: #aaa; margin-left: 1px; } 
+.table_wrap table th .order_wrap .btn_order:hover { background-color: #eaeaea; color: #111; } 
 .table_wrap table th .order_wrap.active,
-.table_wrap table th .order_wrap.active i { color: #007CC1; }
+.table_wrap table th .order_wrap.active i { color: #007CC1; } 
 /* 수정, 취소 버튼 등 */
 .table_wrap .btn_group { display: flex; gap: 5px; justify-content: flex-end; } 
 /* 🟢 로딩 중, 데이터가 없을 때 */
@@ -213,7 +215,7 @@ input[type="checkbox"]:disabled + .chkbox_icon .bi-check-lg { color: #f6f6f6; }
 .modal_container.edit { width: 400px; } 
 .modal_container.edit .edit_wrap .edit_form { display: flex; flex-direction: column; gap: 12px; } 
 .modal_container.edit .edit_wrap .edit_form .field_wrap { display: flex; flex-direction: column; gap: 2px; } 
-.modal_container.edit .edit_wrap .edit_form .field_wrap label { font-weight: 600; color: #666; margin-left: 2px; } 
+.modal_container.edit .edit_wrap .edit_form .field_wrap label { font-weight: 500; color: #444; margin-left: 2px; font-size: 15px; } 
 /* 모달 버튼 */
 .modal-actions { margin-top: 20px; display:flex; flex-direction: column; gap: 7px; } 
 .modal-actions button.box { width: 100%; justify-content: center; border:none; } 
@@ -237,4 +239,4 @@ input[type="checkbox"]:disabled + .chkbox_icon .bi-check-lg { color: #f6f6f6; }
 .modal_confirm .modal-actions button.box.red:active { box-shadow: 0 0 2px 1px #ffd2d0; } 
 .modal_confirm .modal-actions button.box.gray { background-color: #eff0f3; color: #9a9ea8; } 
 .modal_confirm .modal-actions button.box.gray:hover, .modal_confirm .modal-actions button.box.gray:active { background-color: #eaeaea; color: #444; border:none; } 
-.modal_confirm .modal-actions button.box.gray:active { box-shadow: 0 0 2px 1px #dddddd; }
+.modal_confirm .modal-actions button.box.gray:active { box-shadow: 0 0 2px 1px #dddddd; } 

@@ -7,3 +7,25 @@
 
 .filter-button { background-color: #007CC1; color: white; padding: 6px 15px; margin: 5px; margin-right: 10px; border: none; cursor: pointer; border-radius: 5px; } 
 .filter-button:hover { background-color: #005a91; } 
+
+/* 🔴 개별 열 너비 지정 */
+.menu_employee .table_wrap table th:nth-child(1),
+.menu_employee .table_wrap table td:nth-child(1) { width: 45px; text-align: center; /* 체크박스 */ } 
+.menu_employee .table_wrap table th:nth-child(2),
+.menu_employee .table_wrap table td:nth-child(2) { width: 80px; /* 번호 */ } 
+/* .menu_employee .table_wrap table th:nth-child(3),
+.menu_employee .table_wrap table td:nth-child(3) { width: 12%; 직원 아이디 } */
+.menu_employee .table_wrap table th:nth-child(4),
+.menu_employee .table_wrap table td:nth-child(4) { width: 13%; /* 이름 */ } 
+.menu_employee .table_wrap table th:nth-child(5),
+.menu_employee .table_wrap table td:nth-child(5) { width: 13%; /* 연락처 */ } 
+.menu_employee .table_wrap table th:nth-child(6),
+.menu_employee .table_wrap table td:nth-child(6) { width: 13%; /* 권한 */ } 
+.menu_employee .table_wrap table th:nth-child(7),
+.menu_employee .table_wrap table td:nth-child(7), 
+.menu_employee .table_wrap table th:nth-child(8),
+.menu_employee .table_wrap table td:nth-child(8),
+.menu_employee .table_wrap table th:nth-child(9),
+.menu_employee .table_wrap table td:nth-child(9) { width: 165px; /* 등록/수정/삭제일시 */ } 
+.menu_employee .table_wrap table th:nth-child(10),
+.menu_employee .table_wrap table td:nth-child(10) { width: 100px; /* 액션 */ } 

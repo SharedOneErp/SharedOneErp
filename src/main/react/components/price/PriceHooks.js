@@ -338,29 +338,12 @@ export const useHooksList = () => {
     };
 
     // 🟣 수정 완료 버튼 클릭
-    const handleSaveEdit = async () => {
-        // 수정할 데이터를 서버에 전송하거나 상태 업데이트
-        try {
-            // 서버로 데이터 전송 예시 (필요에 따라 수정)
-            // await axios.put(`/api/price/${editingId}`, editedPriceData);
-            window.showToast('수정되었습니다.');
-
-            // 상태 업데이트: priceList에서 수정된 데이터를 반영
-            setPriceList((prevList) =>
-                prevList.map((item) =>
-                    item.priceNo === editingId
-                        ? { ...item, ...editedPriceData }
-                        : item
-                )
-            );
-
-            // 수정 완료 후, editingId 초기화 및 editedPriceData 초기화
-            setEditingId(null);
-            setEditedPriceData({});
-            fetchData(); // 데이터 재조회
-        } catch (error) {
-            console.error("데이터 저장 중 오류 발생:", error);
-        }
+    const handleSaveEdit = () => {
+        window.showToast('수정되었습니다.');
+        // 수정 완료 후, editingId 초기화 및 editedPriceData 초기화
+        setEditingId(null);
+        setEditedPriceData({});
+        fetchData(); // 데이터 재조회
     };
 
     // 🟣 수정 취소 버튼 클릭

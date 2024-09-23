@@ -28,14 +28,14 @@ public class PriceController {
     // 🟢 가격 정보 삽입
     @PostMapping("/insert")
     public List<PriceDTO> insertPrice(@RequestBody List<PriceDTO> priceDTOs) {
-        logger.info("🟢 Received PriceDTO List: {}", priceDTOs);  // priceDTOs 자체를 로그로 출력
+        logger.info("🟢 insertPrice : Received PriceDTO List: {}", priceDTOs);  // priceDTOs 자체를 로그로 출력
         return priceService.saveOrUpdate(priceDTOs);
     }
 
     // 🟢 가격 정보 수정
     @PutMapping("/update")
     public List<PriceDTO> updatePrice(@RequestBody List<PriceDTO> priceDTOs) {
-        logger.info("🟢 Received PriceDTO List: {}", priceDTOs);  // priceDTOs 자체를 로그로 출력
+        logger.info("🟢 updatePrice : Received PriceDTO List: {}", priceDTOs);  // priceDTOs 자체를 로그로 출력
         return priceService.saveOrUpdate(priceDTOs);
     }
 
