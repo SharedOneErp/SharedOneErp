@@ -113,7 +113,7 @@ export const useHooksList = () => {
       const updateCategoryName = prompt("새로운 카테고리 명을 입력하세요", selectedCategory ? selectedCategory.categoryNm : "");
 
       if (!updateCategoryName) {
-        alert("수정할 카테고리 명을 입력해야 합니다.");
+        alert("수정이 취소되었습니다.");
         return;
       }
 
@@ -185,12 +185,15 @@ export const useHooksList = () => {
             if (selectedCategory.categoryLevel === 1) {
               const updatedCategory = getTopCategory.filter(cate => cate.categoryNo !== selectedCategory.categoryNo);
               setGetTopCategory(updatedCategory);
+              setGetMidCategory([]); // 대분류 삭제 시 중분류 비우기
+              setGetLowCategory([]); 
               setSelectedTopCategory(null);
               setSelectedMidCategory(null);
               setSelectedLowCategory(null);
             } else if (selectedCategory.categoryLevel === 2) {
               const updatedCategory = getMidCategory.filter(cate => cate.categoryNo !== selectedCategory.categoryNo);
               setGetMidCategory(updatedCategory);
+              setGetLowCategory([]); 
               setSelectedMidCategory(null);
               setSelectedLowCategory(null);
             } else if (selectedCategory.categoryLevel === 3) {
@@ -198,9 +201,7 @@ export const useHooksList = () => {
               setGetLowCategory(updatedCategories);
               setSelectedLowCategory(null);
             }
-          } else {
-            alert('하위 카테고리가 남아 있으므로 삭제할 수 없습니다.');
-          }
+          } 
         })
         .catch(error => console.error('카테고리 삭제 실패:', error));
     } else {

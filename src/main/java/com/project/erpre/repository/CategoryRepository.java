@@ -59,10 +59,16 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
     List<Object[]> findCategoryPathsAsObjects();
 
     //카테고리 이름 조회
-    List<Category> findByCategoryNm(String categoryNm);
+    List<Category> findByCategoryNmAndCategoryDeleteYn(String categoryNm, String categoryDeleteYn);
 
     //카테고리 번호 조회
     Category findByCategoryNo(Integer categoryNo);
+
+    
+    //카테고리 하위 카테고리 조회(상위 카테고리삭제 시 하위 카테고리 삭제 위함)
+    List<Category> findByParentCategoryNo(Integer parentCategoryNo);
+
+
 
     //대분류
     @Query("select c from Category c where c.categoryLevel = 1 and c.categoryDeleteYn = 'N' order by c.categoryNm asc")

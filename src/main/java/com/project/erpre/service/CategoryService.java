@@ -73,9 +73,9 @@ public class CategoryService {
 
     // 카테고리 저장
     public Category saveCategory(CategoryDTO categoryDTO) {
-        List<Category> existCategory = categoryRepository.findByCategoryNm(categoryDTO.getCategoryNm());
+        List<Category> existCategory = categoryRepository.findByCategoryNmAndCategoryDeleteYn(categoryDTO.getCategoryNm(), "N");
         if (!existCategory.isEmpty()) {
-            throw new IllegalArgumentException(categoryDTO.getCategoryNm() + "은 이미 존재하는 카테고리 명입니다.");
+            throw new IllegalArgumentException('"' + categoryDTO.getCategoryNm() + '"' + " 카테고리는 이미 존재하는 이름입니다.");
         }
         logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
         // DTO -> Entity 변환
@@ -83,6 +83,7 @@ public class CategoryService {
         category.setCategoryLevel(categoryDTO.getCategoryLevel());
         category.setCategoryNm(categoryDTO.getCategoryNm());
         category.setParentCategoryNo(categoryDTO.getParentCategoryNo());
+        category.setCategoryDeleteYn("N");
 
         logger.info("[CUSTOM_LOG] categoryDTO.getCategoryLevel() : " + categoryDTO.getCategoryLevel());
         logger.info("[CUSTOM_LOG] categoryDTO.getCategoryNm() : " + categoryDTO.getCategoryNm());
@@ -130,7 +131,23 @@ public class CategoryService {
         if (category != null) {
             category.setCategoryDeleteYn("Y");
             category.setCategoryDeleteDate(new Timestamp(System.currentTimeMillis()));
+            deleteSubCategories(category);
             categoryRepository.save(category);
+        }
+    }
+
+    private void deleteSubCategories(Category parentCategory) {
+        // 중분류(하위 1단계) 카테고리 조회
+        List<Category> subCategories = categoryRepository.findByParentCategoryNo(parentCategory.getCategoryNo());
+    
+        for (Category subCategory : subCategories) {
+            // 중분류 삭제 처리
+            subCategory.setCategoryDeleteYn("Y");
+            subCategory.setCategoryDeleteDate(new Timestamp(System.currentTimeMillis()));
+            categoryRepository.save(subCategory);
+    
+            // 하위 카테고리가 있는 경우 재귀적으로 삭제 처리
+            deleteSubCategories(subCategory); // 재귀적으로 소분류까지 처리
         }
     }
 

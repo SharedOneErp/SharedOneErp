@@ -30,7 +30,7 @@ function CategoryModal({
   };
 
   return (
-    <div className="modal_overlay" onClick={handleBackgroundClick}>
+    <div className="modal_overlay" onMouseDown={handleBackgroundClick}>
       <div className="modal_container cate_modal">
         <div className="header">
           <div>상품 카테고리 편집</div>
