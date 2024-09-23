@@ -11,9 +11,9 @@
 .menu_price .table_wrap table th:nth-child(5),
 .menu_price .table_wrap table td:nth-child(5) { width: 10%; /* 가격 */ } 
 .menu_price .table_wrap table th:nth-child(6),
-.menu_price .table_wrap table td:nth-child(6) { width: 145px; /* 적용시작일 */ } 
+.menu_price .table_wrap table td:nth-child(6) { width: 150px; /* 적용시작일 */ } 
 .menu_price .table_wrap table th:nth-child(7),
-.menu_price .table_wrap table td:nth-child(7) { width: 195px; /* 적용종료일 */ } 
+.menu_price .table_wrap table td:nth-child(7) { width: 190px; /* 적용종료일 */ } 
 .menu_price .table_wrap table th:nth-child(8),
 .menu_price .table_wrap table td:nth-child(8), 
 .menu_price .table_wrap table th:nth-child(9),

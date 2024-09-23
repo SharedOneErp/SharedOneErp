@@ -166,7 +166,7 @@ function Price() {
                             </div>
                             {/* 3️⃣ 검색어 입력 */}
                             <div className={`search_box ${customerSearchText ? 'has_text' : ''}`}>
-                                <label className="label_floating">고객사</label>
+                                <label className="label_floating">고객사 입력</label>
                                 <i className="bi bi-search"></i>
                                 <input
                                     type="text"
@@ -185,7 +185,7 @@ function Price() {
                                 )}
                             </div>
                             <div className={`search_box ${productSearchText ? 'has_text' : ''}`}>
-                                <label className="label_floating">상품명, 상품코드</label>
+                                <label className="label_floating">상품명, 상품코드 입력</label>
                                 <i className="bi bi-search"></i>
                                 <input
                                     type="text"
