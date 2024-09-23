@@ -13,6 +13,21 @@ public class OrderReportService {
     @Autowired
     private OrderReportRepository orderReportRepository;
 
+    // 달별 주문 건수 집계
+    public List<Object[]> getOrdersByMonth(LocalDateTime startDate, LocalDateTime endDate) {
+        return orderReportRepository.countOrdersByMonth(startDate, endDate);
+    }
+
+    // 반기별 주문 건수 집계
+    public List<Object[]> getOrdersByHalfYear(LocalDateTime startDate, LocalDateTime endDate) {
+        return orderReportRepository.countOrdersByHalfYear(startDate, endDate);
+    }
+
+    // 연도별 주문 건수 집계
+    public List<Object[]> getOrdersByYear(LocalDateTime startDate, LocalDateTime endDate) {
+        return orderReportRepository.countOrdersByYear(startDate, endDate);
+    }
+            
     // 총 주문건수
     public Long getTotalOrders(LocalDateTime startDate, LocalDateTime endDate) {
         return orderReportRepository.countTotalOrders(startDate, endDate);
