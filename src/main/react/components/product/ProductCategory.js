@@ -34,6 +34,8 @@ function ProductCategory() {
         hoverTop,
         hoverMid,
         hoverLow,
+        collapsed,
+        collapsedTwo,
         handleEditButton,
         handleDeleteButton,
         handleAllSelectCategory,
@@ -49,48 +51,15 @@ function ProductCategory() {
         handleMidClick,
         handleLowClick,
         handleTopHover,
+        toggleCollapse,
+        toggleCollapseTwo,
+        toggleAllCollapse,
+        toggleAllCollapseTwo,
+        handleBackgroundClick,
     } = useHooksList();
 
 
-    // 대분류와 중분류의 열림/닫힘 상태를 저장하는 상태값
-    const [collapsed, setCollapsed] = useState([]);
-    const [collapsedTwo, setCollapsedTwo] = useState([]);
 
-    // 대분류 클릭 시 열림/닫힘 상태 토글
-    const toggleCollapse = (one) => {
-        if (collapsed.includes(one)) {
-            setCollapsed(collapsed.filter(item => item !== one));
-        } else {
-            setCollapsed([...collapsed, one]);
-        }
-    };
-
-    // 중분류 클릭 시 열림/닫힘 상태 토글
-    const toggleCollapseTwo = (two) => {
-        if (collapsedTwo.includes(two)) {
-            setCollapsedTwo(collapsedTwo.filter(item => item !== two));
-        } else {
-            setCollapsedTwo([...collapsedTwo, two]);
-        }
-    };
-
-    // 대분류 모두 접기/펼치기
-    const toggleAllCollapse = () => {
-        if (collapsed.length === category.filter(cat => cat.categoryLevel === 1).length) {
-            setCollapsed([]); // 모두 펼쳐졌다면 모두 접기
-        } else {
-            setCollapsed(category.filter(cat => cat.categoryLevel === 1).map(cat => cat.one)); // 모두 접기
-        }
-    };
-
-    // 중분류 모두 접기/펼치기
-    const toggleAllCollapseTwo = () => {
-        if (collapsedTwo.length === category.filter(cat => cat.categoryLevel === 2).length) {
-            setCollapsedTwo([]); // 모두 펼쳐졌다면 모두 접기
-        } else {
-            setCollapsedTwo(category.filter(cat => cat.categoryLevel === 2).map(cat => cat.two)); // 모두 접기
-        }
-    };
     return (
         <Layout currentMenu="productCategory"> {/* 레이아웃 컴포넌트, currentMenu는 현재 선택된 메뉴를 나타냄 */}
             <main className="main-content menu_category">
@@ -209,6 +178,7 @@ function ProductCategory() {
                         handleLowClick={handleLowClick}
                         handleTopHover={handleTopHover}
                         closeModal={closeModal}
+                        handleBackgroundClick={handleBackgroundClick}
                     />
                 )
             }
