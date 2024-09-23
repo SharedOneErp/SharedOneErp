@@ -350,7 +350,7 @@ function EmployeeList() {
                     <div className="search_wrap">
                         <div className="left">
                             <div className={`search_box ${searchEmployee ? 'has_text' : ''}`}>
-                                <label className={`label_floating ${searchEmployee ? 'active' : ''}`}>이름</label>
+                                <label className={`label_floating ${searchEmployee ? 'active' : ''}`}>이름 입력</label>
                                 <i className="bi bi-search"></i>
                                 <input
                                     type="text"
@@ -368,9 +368,36 @@ function EmployeeList() {
                                     </button>
                                 )}
                             </div>
-                            <button className="box" onClick={() => { setCurrentView('allEmployees'); setPage(1); pageAllEmployees(1); }}>퇴직자포함한 직원보기</button>
-                            <button className="box" onClick={() => { setCurrentView('employeesN'); setPage(1); pageEmployeesN(1); }}>재직자만 보기</button>
-                            <button className="box" onClick={() => { setCurrentView('employeesY'); setPage(1); pageEmployeesY(1); }}>퇴직자만 보기</button>
+                            <div className="radio_box">
+                                <span>상태</span>
+                                <input
+                                    type="radio"
+                                    id="all"
+                                    name="filterType"
+                                    value="allEmployees"
+                                    checked={currentView === 'allEmployees'}
+                                    onClick={() => { setCurrentView('allEmployees'); setPage(1); pageAllEmployees(1); }}
+                                />
+                                <label htmlFor="all">전체</label>
+                                <input
+                                    type="radio"
+                                    id="active"
+                                    name="filterType"
+                                    value="employeesN"
+                                    checked={currentView === 'employeesN'}
+                                    onClick={() => { setCurrentView('employeesN'); setPage(1); pageEmployeesN(1); }}
+                                />
+                                <label htmlFor="active">정상</label>
+                                <input
+                                    type="radio"
+                                    id="deleted"
+                                    name="filterType"
+                                    value="employeesY"
+                                    checked={currentView === 'employeesY'}
+                                    onClick={() => { setCurrentView('employeesY'); setPage(1); pageEmployeesY(1); }}
+                                />
+                                <label htmlFor="deleted">삭제</label>
+                            </div>
                         </div>
                         <div className="right">
                             <button className="box color" onClick={openInsertModal}><i className="bi bi-plus-circle"></i> 등록하기</button>
@@ -381,6 +408,7 @@ function EmployeeList() {
                             <thead>
                                 <tr>
                                     <th><input type="checkbox" checked={selectAll} onChange={handleSelectAll} /></th>
+                                    <th>번호</th>
                                     <th>직원아이디</th>
                                     <th>이름</th>
                                     <th>연락처</th>
@@ -388,25 +416,35 @@ function EmployeeList() {
                                     <th>권한</th>
                                     <th>등록일자</th>
                                     <th>수정일자</th>
-                                    <th>삭제여부</th>
                                     <th>삭제일자</th>
-                                    <th>상세정보수정</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {(searchEmployee ? filteredEmployees : employees).length > 0 ? (
                                     (searchEmployee ? filteredEmployees : employees).map((employee, index) => (
                                         <tr key={employee.employeeId}>
-                                            <td><input type="checkbox" checked={selectedEmployees[index] || false} onChange={() => handleSelect(index)} /></td>
+                                            <td>
+                                                {/* 삭제된 상태에 따라 조건부 렌더링 */}
+                                                {employee.employeeDeleteYn !== 'Y' ? (
+                                                    <input type="checkbox" checked={selectedEmployees[index] || false} onChange={() => handleSelect(index)} />
+                                                ) : (
+                                                    <span className="label_del">삭제</span>
+                                                )}
+                                            </td>
+                                            <td>{(page - 1) * 20 + index + 1}</td>
                                             <td>{employee.employeeId}</td>
                                             <td>{employee.employeeName}</td>
                                             <td>{employee.employeeTel}</td>
                                             <td>{employee.employeeRole}</td>
                                             <td>{formatDate(employee.employeeInsertDate)}</td>
                                             <td>{employee.employeeUpdateDate ? format(employee.employeeUpdateDate, 'yyyy-MM-dd HH:mm') : '-'}</td>
-                                            <td>{employee.employeeDeleteYn}</td>
                                             <td>{employee.employeeDeleteDate ? format(employee.employeeDeleteDate, 'yyyy-MM-dd HH:mm') : '-'}</td>
-                                            <td><button className='modifyModal-btn' onClick={() => openModifyModal(employee)}>수정하기</button></td>
+                                            <td>
+                                                <div class="btn_group">
+                                                    <button class="box small" onClick={() => openModifyModal(employee)}>수정하기</button>
+                                                </div>
+                                            </td>
                                         </tr>
                                     ))
                                 ) : (
