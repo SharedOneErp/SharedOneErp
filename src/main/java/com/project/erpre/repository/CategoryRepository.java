@@ -126,18 +126,6 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
                                  
 }
 /*
-//소분류에 대중분류 이름 포함 /(추후 수정)
-        "select c3.categoryNo as categoryNo3, c3.categoryNm as categoryNm3, c2.categoryNm as categoryNm2, c1.categoryNm as categoryNm1 from Category c3" +
-            " join Category c2 on c3.parentCategoryNo = c2.categoryNo" +
-            " join Category c1 on c2.parentCategoryNo = c1.categoryNo" +
-            " where c1.categoryLevel = 1" +
-            " and c2.categoryLevel = 2" +
-            " and c3.categoryLevel = 3" +
-            " and c1.categoryNo = :topCategoryNo" +
-            " and c2.categoryNo = :middleCategoryNo" +
-            " and c3.categoryDeleteYn = 'N' "
-*/ 
-
 
 // 240919 예원(주석 추가한 WITH RECURSIVE 쿼리 기록)
 /*
