@@ -155,7 +155,13 @@ input[type="checkbox"]:disabled + .chkbox_icon .bi-check-lg { color: #f6f6f6; }
 .table_wrap table td { padding: 12px 8px; text-align: left; } 
 .table_wrap table th { padding: 11px 8px; } 
 .table_wrap table td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
-.table_wrap table td b { font-weight: 500; color:555 } 
+.table_wrap table td b { font-weight: 500; color:#555 }
+/* 🔴 정렬 */
+.table_wrap table th .order_wrap { display: inline-flex; gap: 2px; }
+.table_wrap table th .order_wrap .btn_order { font-size: 13px; border-radius: 3px; padding: 0 2px; transition: all 0.2s; color: #aaa; margin-left: 1px; }
+.table_wrap table th .order_wrap .btn_order:hover { background-color: #eaeaea; color: #111; }
+.table_wrap table th .order_wrap.active,
+.table_wrap table th .order_wrap.active i { color: #007CC1; }
 /* 수정, 취소 버튼 등 */
 .table_wrap .btn_group { display: flex; gap: 5px; justify-content: flex-end; } 
 /* 🟢 로딩 중, 데이터가 없을 때 */
@@ -224,3 +230,11 @@ input[type="checkbox"]:disabled + .chkbox_icon .bi-check-lg { color: #f6f6f6; }
 .modal_confirm { background: white; padding: 20px; border-radius: 8px; text-align: center; } 
 .modal_confirm .del_icon { margin-bottom: 10px; } 
 .modal_confirm .del_icon i { font-size:40px; color: #ff7c76; } 
+.modal_confirm .modal-actions { margin-top: 20px; display:flex; flex-direction: column; gap: 7px; } 
+.modal_confirm .modal-actions button.box { width: 100%; justify-content: center; border:none; } 
+.modal_confirm .modal-actions button.box.red { background-color: #ffeceb; color: #ff5e57; } 
+.modal_confirm .modal-actions button.box.red:hover, .modal_confirm .modal-actions button.box.red:active { background-color: #ffdcda; color: #ff0b00; border:none; } 
+.modal_confirm .modal-actions button.box.red:active { box-shadow: 0 0 2px 1px #ffd2d0; } 
+.modal_confirm .modal-actions button.box.gray { background-color: #eff0f3; color: #9a9ea8; } 
+.modal_confirm .modal-actions button.box.gray:hover, .modal_confirm .modal-actions button.box.gray:active { background-color: #eaeaea; color: #444; border:none; } 
+.modal_confirm .modal-actions button.box.gray:active { box-shadow: 0 0 2px 1px #dddddd; }

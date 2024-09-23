@@ -79,6 +79,9 @@ function ProductList() {
         handleUpdateDeleteYn,
         handleRestore,
         handlePageInputChange,
+        handleSort,
+        sortColumn,
+        sortDirection,
     } = useProductHooks(); // 커스텀 훅 사용
 
     // 🔴 ProductRow 컴포넌트를 상위 컴포넌트 내부에 정의
@@ -320,14 +323,54 @@ function ProductList() {
                                         </i>
                                     </label>
                                 </th>
-                                <th>품번</th>
-                                <th>상품명</th>
-                                <th>대분류</th>
-                                <th>중분류</th>
-                                <th>소분류</th>
-                                <th>등록일시</th>
-                                <th>수정일시</th>
-                                <th>삭제일시</th>
+                                <th>
+                                    <span>품번</span>
+                                    <button className="btn-order" onClick={() => handleSort('productCd')}>
+                                        <i className={`bi ${sortColumn === 'productCd' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                    </button>
+                                </th>
+                                <th>
+                                    <span>상품명</span>
+                                    <button className="btn-order" onClick={() => handleSort('productNm')}>
+                                        <i className={`bi ${sortColumn === 'productNm' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                    </button>
+                                </th>
+                                <th>
+                                    <span>대분류</span>
+                                    <button className="btn-order" onClick={() => handleSort('topCategory')}>
+                                        <i className={`bi ${sortColumn === 'topCategory' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                    </button>
+                                </th>
+                                <th>
+                                    <span>중분류</span>
+                                    <button className="btn-order" onClick={() => handleSort('middleCategory')}>
+                                        <i className={`bi ${sortColumn === 'middleCategory' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                    </button>
+                                </th>
+                                <th>
+                                    <span>소분류</span>
+                                    <button className="btn-order" onClick={() => handleSort('lowCategory')}>
+                                        <i className={`bi ${sortColumn === 'lowCategory' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                    </button>
+                                </th>
+                                <th>
+                                    <span>등록일시</span>
+                                    <button className="btn-order" onClick={() => handleSort('productInsertDate')}>
+                                        <i className={`bi ${sortColumn === 'productInsertDate' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                    </button>
+                                </th>
+                                <th>
+                                    <span>수정일시</span>
+                                    <button className="btn-order" onClick={() => handleSort('productUpdateDate')}>
+                                        <i className={`bi ${sortColumn === 'productUpdateDate' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                    </button>
+                                </th>
+                                <th>
+                                    <span>삭제일시</span>
+                                    <button className="btn-order" onClick={() => handleSort('productDeleteDate')}>
+                                        <i className={`bi ${sortColumn === 'productDeleteDate' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                    </button>
+                                </th>
                                 {/* 수정/삭제 버튼 */}
                                 <th></th>
                             </tr>

@@ -25,12 +25,6 @@
 /* 🔴 padding 조절 */
 .menu_price .table_wrap table th,
 .menu_price .table_wrap table td { padding: 12px 8px; text-align: left; } 
-/* 🔴 정렬 */
-.menu_price .table_wrap table th .order_wrap { display: inline-flex; gap: 2px; } 
-.menu_price .table_wrap table th .order_wrap .btn_order { font-size: 13px; border-radius: 3px; padding: 0 2px; transition: all 0.2s; color: #aaa; margin-left: 1px; } 
-.menu_price .table_wrap table th .order_wrap .btn_order:hover { background-color: #eaeaea; color: #111; } 
-.menu_price .table_wrap table th .order_wrap.active,
-.menu_price .table_wrap table th .order_wrap.active i { color: #007CC1; } 
 /* 🔴 삭제 된 데이터 라벨 */
 .menu_price .table_wrap table td .label_del { background-color: #ff191912; color: #ed0000; padding: 3px 4px; border-radius: 4px; font-size: 12px; } 
 /* 🔴 적용 시작/종료일 */

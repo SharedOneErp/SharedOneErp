@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface ProductRepositoryCustom {
 
-    // 1. 전체 상품 목록 + 페이징 + 상태 조회
-    List<ProductDTO> findAllProducts(int page, int size, String status);
+    // 1. 상품 목록 조회 + 필터링 + 정렬 + 페이징
+    Page<ProductDTO> productsList(Pageable pageable, String status, Integer topCategoryNo, Integer middleCategoryNo, Integer lowCategoryNo, String productCd, String productNm, String sortColumn, String sortDirection);
 
     // 0920 예원 추가 (상품코드, 상품명, 대분류, 중분류, 소분류, 상태별 상품목록 페이징 적용하여 가져오기)
     Page<ProductDTO> findProductsFilter(Pageable pageable, String status,
@@ -19,4 +19,6 @@ public interface ProductRepositoryCustom {
     // 2. 상품 상세정보 조회 (최근 납품내역 5건 포함)
     List<ProductDTO> findProductDetailsByProductCd(String productCd);
 
+//    // 3. 특정 조건으로 상품 정렬
+//    Page<ProductDTO> sortProduct(int page, int size, String status, String sortColumn, String sortDirection);
 }

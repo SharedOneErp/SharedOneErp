@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,15 +24,22 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
-    // 1. 전체 상품 목록 조회 + 페이징 + 카테고리 조회 API
+    // 1. 상품 목록 조회 + 필터링 + 정렬 + 페이징 API
     @GetMapping("/productList")
-    public ResponseEntity<Map<String, Object>> getAllProductsAndCategories(
+    public ResponseEntity<Page<ProductDTO>> getProductsAndCategories(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "all",required = false) String status
+            @RequestParam(defaultValue = "all", required = false) String status,
+            @RequestParam(required = false) Integer topCategoryNo,
+            @RequestParam(required = false) Integer middleCategoryNo,
+            @RequestParam(required = false) Integer lowCategoryNo,
+            @RequestParam(required = false) String productCd,
+            @RequestParam(required = false) String productNm,
+            @RequestParam(required = false, defaultValue = "productCd") String sortColumn,
+            @RequestParam(required = false, defaultValue = "asc") String sortDirection
     ) {
         try {
-            Map<String, Object> result = productService.getAllProductsAndCategories(page - 1, size, status);
+            Page<ProductDTO> result = productService.getProductsList(page - 1, size, status, topCategoryNo, middleCategoryNo, lowCategoryNo, productCd, productNm, sortColumn, sortDirection);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -110,5 +118,20 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    // 7. 상품 정렬 API
+//    @GetMapping("/sort")
+//    public ResponseEntity<Map<String, Object>> getSortedProductList(
+//            @RequestParam String sortColumn,
+//            @RequestParam String sortDirection,
+//            @RequestParam(defaultValue = "1") int page,
+//            @RequestParam(defaultValue = "10") int size,
+//            @RequestParam(defaultValue = "all",required = false) String status) {
+//
+//        Map<String, Object> sortedProductsResponse = productService.getSortedProductList(page - 1, size, status, sortColumn, sortDirection);
+//
+//        return ResponseEntity.ok(sortedProductsResponse);
+//    }
+
 }
 

@@ -27,6 +27,10 @@ export const useProductHooks = () => {
     // [3] 검색 state
     const [searchTerm, setSearchTerm] = useState('');
 
+    // [4] 정렬 state
+    const [sortColumn, setSortColumn] = useState('productCd'); // 정렬할 컬럼
+    const [sortDirection, setSortDirection] = useState('asc'); // 정렬 방향
+
 
     // 2. Create
 
@@ -59,9 +63,10 @@ export const useProductHooks = () => {
 
 
     // 4. 페이지 state
+    const [totalPages, setTotalPages] = useState(0); // 총 페이지 수
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
-    const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지당 아이템 수
-    const [totalItems, setTotalItems] = useState(0); // 총 아이템 수
+    const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지 당 아이템 수
+    const [totalItems, setTotalItems] = useState(0); // 총 상품 수
 
 
     // 5. 모달 state
@@ -88,41 +93,177 @@ export const useProductHooks = () => {
 
     // useEffect (productList)
     useEffect(() => {
+        setLoading(true);
         axios
             .get('/api/products/productList', {
                 params: {
                     page: currentPage || null,
                     size: itemsPerPage || null,
-                    topCategoryNo: filterTopCategory || null, // 대분류 필터
-                    middleCategoryNo: filterMiddleCategory || null, // 중분류 필터
-                    lowCategoryNo: filterLowCategory || null, // 소분류 필터
+                    topCategoryNo: filterTopCategory || null,
+                    middleCategoryNo: filterMiddleCategory || null,
+                    lowCategoryNo: filterLowCategory || null,
                     status: selectedStatus,
+                    sortColumn,
+                    sortDirection,
                 },
             })
             .then((response) => {
-                const productsWithCategoryNames = response.data.products.map(product => ({
+                console.log('데이터:', response.data)
+
+                // 상품 데이터가 있을 경우에만 map 함수 호출
+                const productsWithCategoryNames = (response.data.content || []).map(product => ({
                     ...product,
                     topCategory: product.topCategoryNo,
                     middleCategory: product.middleCategoryNo,
                     lowCategory: product.lowCategoryNo,
                 }));
+
+                // 상품 목록 및 필터링된 상품 목록 업데이트
                 setProducts(productsWithCategoryNames);
                 setFilteredProducts(productsWithCategoryNames);
-                setTotalItems(response.data.totalItems || 0);
-                setTopCategories(response.data.topCategories || []);
-                setFullTopCategories(response.data.topCategories || []);
-                setFullMiddleCategories(response.data.middleCategories || []);
-                setFullLowCategories(response.data.lowCategories || []);
 
+                // // 카테고리 데이터 처리 (카테고리 데이터가 없을 경우 빈 배열로 처리)
+                // const uniqueTopCategories = Array.from(new Set((response.data.topCategories || []).map(cat => cat.categoryNm)));
+                // setTopCategories(uniqueTopCategories);
+                // setFullTopCategories(response.data.topCategories || []);
+                // setFullMiddleCategories(response.data.middleCategories || []);
+                // setFullLowCategories(response.data.lowCategories || []);
+
+                // 페이지 정보 업데이트
+                setTotalItems(response.data.totalItems || 0);
+                setTotalPages(response.data.totalPages || 0);
                 setLoading(false);
+
+
             })
-            .catch((error) => console.error('전체 상품 목록 조회 실패', error));
-        setLoading(false);
-    }, [currentPage, itemsPerPage, filterTopCategory, filterMiddleCategory, filterLowCategory, selectedStatus]);
+            .catch((error) => {
+                console.error('전체 상품 목록 조회 실패', error);
+                setLoading(false);
+            });
+    }, [sortColumn, sortDirection, currentPage, itemsPerPage, filterTopCategory, filterMiddleCategory, filterLowCategory, selectedStatus]);
+
+    // // 상품 목록 조회
+    // useEffect(() => {
+    //     setLoading(true);
+    //     axios
+    //         .get('/api/products/productList', {
+    //             params: {
+    //                 page: currentPage - 1,
+    //                 size: itemsPerPage,
+    //                 topCategoryNo: filterTopCategory || null,
+    //                 middleCategoryNo: filterMiddleCategory || null,
+    //                 lowCategoryNo: filterLowCategory || null,
+    //                 status: selectedStatus,
+    //                 sortColumn,
+    //                 sortDirection,
+    //             },
+    //         })
+    //         .then((response) => {
+    //             console.log(response.data)
+    //             const pageData = response.data;
+    //             setProducts(pageData.content || []);
+    //             setTotalItems(pageData.totalElements || 0);
+    //             setTotalPages(pageData.totalPages || 0);
+    //             setLoading(false);
+    //         })
+    //         .catch((error) => {
+    //             console.error('상품 목록 조회 실패', error);
+    //             setLoading(false);
+    //         });
+    // }, [sortColumn, sortDirection, currentPage, itemsPerPage, filterTopCategory, filterMiddleCategory, filterLowCategory, selectedStatus]);
 
     useEffect(() => {
         filterProducts();
     }, [products, filterTopCategory, filterMiddleCategory, filterLowCategory, searchTerm]);
+
+    // 카테고리 조회 useEffect
+    useEffect(() => {
+        setLoading(true);
+
+        // 대분류 API 호출
+        axios.get('/api/category/top')
+            .then((response) => {
+                setFullTopCategories(response.data);      // 전체 대분류 목록
+                setTopCategories(response.data);          // 대분류 필터 목록
+                console.log('대분류 데이터:', response.data);
+            })
+            .catch((error) => console.error('대분류 조회 실패', error));
+
+        // 대분류 선택 시 중분류 API 호출
+        if (filterTopCategory) {
+            axios.get(`/api/category/middle/${filterTopCategory}`)
+                .then((response) => {
+                    setMiddleCategories(response.data);  // 중분류 데이터 설정
+                    setFilterMiddleCategory('');        // 중분류 초기화
+                    console.log('중분류 조회:', response.data);
+                })
+                .catch((error) => console.error('중분류 조회 실패', error));
+        } else {
+            setMiddleCategories([]);  // 중분류 선택이 없을 경우 빈 배열로 초기화
+        }
+
+        setLoading(false);
+    }, [filterTopCategory]);
+
+    // 중분류 변경 시 소분류 API 호출
+    useEffect(() => {
+        if (filterTopCategory && filterMiddleCategory) {
+            axios.get(`/api/category/low/${filterMiddleCategory}/${filterTopCategory}/`)
+                .then((response) => {
+                    setLowCategories(response.data);  // 소분류 데이터 설정
+                    console.log('소분류 조회:', response.data);
+                })
+                .catch((error) => console.error('소분류 조회 실패', error));
+        } else {
+            setLowCategories([]);  // 소분류 선택이 없을 경우 빈 배열로 초기화
+        }
+    }, [filterMiddleCategory, filterTopCategory]);
+
+    // 대분류 변경
+    const handleFilterTopCategoryChange = (e) => {
+        setFilterTopCategory(e.target.value);
+        setFilterMiddleCategory('');
+        setFilterLowCategory('');
+        setCurrentPage(1);
+    };
+
+    // 중분류 변경
+    const handleFilterMiddleCategoryChange = (e) => {
+        setFilterMiddleCategory(e.target.value);
+        setFilterLowCategory('');
+        setCurrentPage(1);
+    };
+
+    // 소분류 변경
+    const handleFilterLowCategoryChange = (e) => {
+        setFilterLowCategory(e.target.value);
+        setCurrentPage(1);
+    };
+
+    // 상품 필터링 함수
+    const filterProducts = () => {
+        let filtered = products;
+
+        if (filterTopCategory) {
+            filtered = filtered.filter(product => product.topCategoryNo === parseInt(filterTopCategory));
+        }
+
+        if (filterMiddleCategory) {
+            filtered = filtered.filter(product => product.middleCategoryNo === parseInt(filterMiddleCategory));
+        }
+
+        if (filterLowCategory) {
+            filtered = filtered.filter(product => product.lowCategoryNo === parseInt(filterLowCategory));
+        }
+
+        setFilteredProducts(filtered);
+    };
+
+    // 필터링된 상품 목록 업데이트
+    useEffect(() => {
+        filterProducts();
+    }, [filterTopCategory, filterMiddleCategory, filterLowCategory, products]);
+
 
     // 상품 상세 데이터 (모달)
     const [productDetail, setProductDetail] = useState([]);
@@ -145,30 +286,120 @@ export const useProductHooks = () => {
         }
     };
 
-    // 필터링된 상품 목록 조회
-    const filterProducts = () => {
-        let filtered = products;
+    // // 필터링된 상품 목록 조회
+    // const filterProducts = () => {
+    //     let filtered = products;
+    //
+    //     // 카테고리 필터링
+    //     if (filterTopCategory) {
+    //         filtered = filtered.filter(product => String(product.topCategoryNo) === String(filterTopCategory));
+    //     }
+    //     if (filterMiddleCategory) {
+    //         filtered = filtered.filter(product => String(product.middleCategoryNo) === String(filterMiddleCategory));
+    //     }
+    //     if (filterLowCategory) {
+    //         filtered = filtered.filter(product => String(product.lowCategoryNo) === String(filterLowCategory));
+    //     }
+    //
+    //     // 검색어 필터링 (상품명 또는 상품번호)
+    //     if (searchTerm) {
+    //         filtered = filtered.filter(product =>
+    //             product.productNm.includes(searchTerm) || product.productCd.includes(searchTerm)
+    //         );
+    //     }
+    //
+    //     setFilteredProducts(filtered);
+    // };
 
-        // 카테고리 필터링
-        if (filterTopCategory) {
-            filtered = filtered.filter(product => String(product.topCategoryNo) === String(filterTopCategory));
-        }
-        if (filterMiddleCategory) {
-            filtered = filtered.filter(product => String(product.middleCategoryNo) === String(filterMiddleCategory));
-        }
-        if (filterLowCategory) {
-            filtered = filtered.filter(product => String(product.lowCategoryNo) === String(filterLowCategory));
+    // 정렬 함수
+    const handleSort = (column) => {
+        let mappedColumn = column;
+        switch(column){
+            case 'topCategory':
+                mappedColumn = 'topCategoryNo';
+                break;
+            case 'middleCategory':
+                mappedColumn = 'middleCategoryNo';
+                break;
+            case 'lowCategory':
+                mappedColumn = 'lowCategoryNo';
+                break;
+            // 필요에 따라 다른 컬럼도 매핑
+            default:
+                break;
         }
 
-        // 검색어 필터링 (상품명 또는 상품번호)
-        if (searchTerm) {
-            filtered = filtered.filter(product =>
-                product.productNm.includes(searchTerm) || product.productCd.includes(searchTerm)
-            );
+        if (sortColumn === mappedColumn) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortColumn(mappedColumn);
+            setSortDirection('asc');
         }
-
-        setFilteredProducts(filtered);
     };
+    //
+    // // 정렬된 데이터를 서버에서 가져오기
+    // useEffect(() => {
+    //     const fetchSortedProducts  = () => {
+    //         axios
+    //             .get('/api/products/sort', {
+    //                 params: {
+    //                     sortColumn,
+    //                     sortDirection,
+    //                     page: currentPage, // 페이지 번호
+    //                     size: itemsPerPage, // 페이지 당 아이템 수
+    //                 },
+    //             })
+    //             .then((response) => {
+    //                 console.log(`정렬 컬럼: ${sortColumn}, 방향: ${sortDirection}`);
+    //                 if (response.data && response.data.products) {
+    //                     const sortedProductsWithCategoryNames = response.data.products.map(product => ({
+    //                         ...product,
+    //                         topCategory: product.topCategory,
+    //                         middleCategory: product.middleCategory,
+    //                         lowCategory: product.lowCategory,
+    //                     }));
+    //
+    //                     console.log(sortedProductsWithCategoryNames);
+    //
+    //                     setFilteredProducts(sortedProductsWithCategoryNames);
+    //                     setTotalItems(response.data.totalItems || 0);
+    //                 } else {
+    //                     console.error('서버에서 상품 목록 받아오기 실패');
+    //                 }
+    //             })
+    //             .catch((error) => {
+    //                 console.error('정렬 상품 목록 조회 실패', error);
+    //             })
+    //             .finally(() => {
+    //                 setLoading(false);
+    //             });
+    //     };
+    //
+    //     if (sortColumn) {
+    //         fetchSortedProducts();
+    //     }
+    // }, [sortColumn, sortDirection, currentPage, itemsPerPage]);
+
+    // useEffect(() => {
+    //     let sortedProducts = [...filteredProducts]; // 필터링된 데이터 복사
+    //
+    //     if (sortColumn) {
+    //         sortedProducts.sort((a, b) => {
+    //             let aValue = a[sortColumn];
+    //             let bValue = b[sortColumn];
+    //
+    //             if (sortColumn.includes('Date')) {
+    //                 aValue =new Date(aValue);
+    //                 bValue = new Date(bValue);
+    //             }
+    //
+    //             if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+    //             if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+    //             return 0;
+    //         });
+    //     }
+    //     setFilteredProducts(sortedProducts); // 정렬된 데이터로 업데이트
+    // }, [sortColumn, sortDirection, filteredProducts]); // 정렬 관련 상태가 변경될 때마다 정렬 재적용
 
     // 상품 개별 선택
     const handleSelectProduct = (productCd) => {
@@ -217,7 +448,7 @@ export const useProductHooks = () => {
                     },
                 })
                     .then((response) => {
-                        const productsWithCategoryNames = response.data.products.map(product => ({
+                        const productsWithCategoryNames = response.data.content.map(product => ({
                             ...product,
                             topCategory: product.topCategoryNo,
                             middleCategory: product.middleCategoryNo,
@@ -335,7 +566,7 @@ export const useProductHooks = () => {
                     },
                 })
                     .then((response) => {
-                        const productsWithCategoryNames = response.data.products.map(product => ({
+                        const productsWithCategoryNames = response.data.content.map(product => ({
                             ...product,
                             topCategory: product.topCategoryNo,
                             middleCategory: product.middleCategoryNo,
@@ -427,7 +658,7 @@ export const useProductHooks = () => {
             },
         })
             .then((response) => {
-                const productsWithCategoryNames = response.data.products.map(product => ({
+                const productsWithCategoryNames = response.data.content.map(product => ({
                     ...product,
                     topCategory: product.topCategoryNo,
                     middleCategory: product.middleCategoryNo,
@@ -437,6 +668,7 @@ export const useProductHooks = () => {
                 setProducts(productsWithCategoryNames);
                 setFilteredProducts(productsWithCategoryNames);
                 setTotalItems(response.data.totalItems || 0);
+                setLoading(false);
             })
             .catch((error) => console.error('상품 목록 조회 실패', error));
     };
@@ -455,64 +687,59 @@ export const useProductHooks = () => {
         }
     }, [filterTopCategory, fullMiddleCategories, fullLowCategories]);
 
-    // 필터링된 중분류 목록
+    // 카테고리 필터링된 중분류 목록
     const filteredMiddleCategories = useMemo(() => {
         if (filterTopCategory) {
-            const parentCategoryNo = filterTopCategory;
-            return fullMiddleCategories.filter(cat => String(cat.parentCategoryNo) === String(parentCategoryNo));
+            return middleCategories.filter(cat => String(cat.parentCategoryNo) === String(filterTopCategory));
         }
-        return fullMiddleCategories;
-    }, [filterTopCategory, fullMiddleCategories]);
+        return middleCategories;
+    }, [filterTopCategory, middleCategories]);
 
-    // 필터링된 소분류 목록
+    // 카테고리 필터링된 소분류 목록
     const filteredLowCategories = useMemo(() => {
         if (filterMiddleCategory) {
-            const parentCategoryNo = filterMiddleCategory;
-            return fullLowCategories.filter(cat => String(cat.parentCategoryNo) === String(parentCategoryNo));
-        } else if (filterTopCategory) {
-            const parentCategoryNo = filterTopCategory;
-            const middleCategoriesUnderTop = fullMiddleCategories.filter(cat => String(cat.parentCategoryNo) === String(parentCategoryNo));
-            const middleCategoryNos = middleCategoriesUnderTop.map(cat => cat.categoryNo);
-            return fullLowCategories.filter(cat => middleCategoryNos.includes(cat.parentCategoryNo));
+            return lowCategories.filter(cat => String(cat.parentCategoryNo) === String(filterMiddleCategory));
         }
-        return fullLowCategories;
-    }, [filterTopCategory, filterMiddleCategory, fullLowCategories, fullMiddleCategories]);
+        return lowCategories;
+    }, [lowCategories, filterMiddleCategory]);
+
 
     // 대분류 변경시
-    const handleFilterTopCategoryChange = (e) => {
-        const selectedTop = e.target.value;
-        setFilterTopCategory(selectedTop);
-        setFilterMiddleCategory('');
-        setFilterLowCategory('');
-        setCurrentPage(1);
-    };
+    // const handleFilterTopCategoryChange = (e) => {
+    //     const selectedTop = e.target.value;
+    //     setFilterTopCategory(selectedTop);
+    //     setFilterMiddleCategory('');
+    //     setFilterLowCategory('');
+    //     setCurrentPage(1);
+    // };
 
     // 중분류 변경시
-    const handleFilterMiddleCategoryChange = (e) => {
-        const selectedMiddle = e.target.value;
-        setFilterMiddleCategory(selectedMiddle);
-        setFilterLowCategory('');
-        setCurrentPage(1);
+    // const handleFilterMiddleCategoryChange = (e) => {
+    //     const selectedMiddle = e.target.value;
+    //     setFilterMiddleCategory(selectedMiddle);
+    //     setFilterLowCategory('');
+    //     setCurrentPage(1);
+    //
+    //     const selectedMiddleCategory = fullMiddleCategories.find(cat => String(cat.categoryNo) === String(selectedMiddle));
+    //
+    //     if (selectedMiddleCategory) {
+    //         const relatedTopCategoryNo = selectedMiddleCategory.parentCategoryNo;
+    //     }
+    //
+    // };
 
-        const selectedMiddleCategory = fullMiddleCategories.find(cat => String(cat.categoryNo) === String(selectedMiddle));
 
-        if (selectedMiddleCategory) {
-            const relatedTopCategoryNo = selectedMiddleCategory.parentCategoryNo;
-        }
-
-    };
-
-    // 소분류 변경시
-    const handleFilterLowCategoryChange = (e) => {
-        const selectedLow = e.target.value;
-        setFilterLowCategory(selectedLow);
-        setCurrentPage(1);
-
-        // 중분류 및 대분류 자동 설정
-        const selectedLowCategory = fullLowCategories.find(
-            cat => String(cat.categoryNo) === String(selectedLow)
-        );
-    };
+    // // 소분류 변경시
+    // const handleFilterLowCategoryChange = (e) => {
+    //     const selectedLow = e.target.value;
+    //     setFilterLowCategory(selectedLow);
+    //     setCurrentPage(1);
+    //
+    //     // 중분류 및 대분류 자동 설정
+    //     const selectedLowCategory = fullLowCategories.find(
+    //         cat => String(cat.categoryNo) === String(selectedLow)
+    //     );
+    // };
 
     // 상품 목록에서 카테고리 이름 표시
     const getCategoryNameByNo = (categoryNo) => {
@@ -636,13 +863,15 @@ export const useProductHooks = () => {
     };
 
     // 총 페이지 수 계산
-    const totalPages = totalItems > 0 && itemsPerPage > 0 ? Math.ceil(totalItems / itemsPerPage) : 0;
+    // const totalPages = totalItems > 0 && itemsPerPage > 0 ? Math.ceil(totalItems / itemsPerPage) : 0;
 
     const paginationNumbers = useMemo(() => {
         const maxPagesToShow = 5;
-        const currentPageGroup = Math.floor((currentPage - 1) / maxPagesToShow);
-        const startPage = currentPageGroup * maxPagesToShow + 1;
-        const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+        const currentPageGroup = Math.floor((currentPage) / maxPagesToShow);
+        const startPage = currentPageGroup * maxPagesToShow + 1; // 시작 페이지
+        const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages); // 끝 페이지
+
+        console.log('시작 페이지:', startPage, '끝 페이지:', endPage, '전체 페이지:', totalPages);
 
         if (totalPages === 0) {
             return [];
@@ -651,9 +880,13 @@ export const useProductHooks = () => {
         return [...Array(endPage - startPage + 1)].map((_, i) => startPage + i);
     }, [currentPage, totalPages]);
 
+    useEffect(()  => {
+        console.log('페이지 넘버:', paginationNumbers);
+    }, [paginationNumbers]);
+
     const handlePreviousPageGroup = () => {
         if (currentPage > 1) {
-            setCurrentPage(Math.max(1, paginationNumbers[0] - 1));
+            setCurrentPage(Math.max(1, paginationNumbers[0]));
         }
     };
 
@@ -730,5 +963,8 @@ export const useProductHooks = () => {
         isLoading,
         handleRestore,
         handlePageInputChange,
+        handleSort,
+        sortColumn,
+        sortDirection,
     };
 }

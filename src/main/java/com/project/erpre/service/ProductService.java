@@ -4,6 +4,9 @@ import com.project.erpre.model.Product;
 import com.project.erpre.model.ProductDTO;
 import com.project.erpre.repository.CategoryRepository;
 import com.project.erpre.repository.ProductRepository;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,40 +23,21 @@ import java.util.Map;
 @Service
 public class ProductService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
+
     @Autowired
     private ProductRepository productRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
 
-    // 1. 전체 상품 목록 조회 + 페이징 + 카테고리 조회 + 상품 상태 결합
-    public Map<String, Object> getAllProductsAndCategories(int page, int size, String status) {
 
-        // 상태별 상품 목록 가져오기
-        List<ProductDTO> products = productRepository.findAllProducts(page, size, status);
-
-        // 상태에 따른 상품 수 계산
-        long totalItems;
-        if (status.equals("all")) {
-            totalItems = productRepository.count();  // 전체 상품 수
-        } else {
-            totalItems = productRepository.countByStatus(status.equals("active") ? "N" : "Y");  // 상태별 상품 수
-        }
-
-        // 모든 카테고리 목록 가져오기
-        List<Category> topCategories = categoryRepository.findTopCategory();
-        List<Category> middleCategories = categoryRepository.findMiddleCategory(null);
-        List<Category> lowCategories = categoryRepository.findLowCategoryByTopAndMiddleCategory(null, null);
-
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("products", products);
-        result.put("totalItems", totalItems);
-        result.put("topCategories", topCategories);
-        result.put("middleCategories", middleCategories);
-        result.put("lowCategories", lowCategories);
-
-        return result;
+    // 1. 상품 목록 조회 + 필터링 + 정렬 + 페이징
+    public Page<ProductDTO> getProductsList(int page, int size, String status,
+                                            Integer topCategoryNo, Integer middleCategoryNo, Integer lowCategoryNo,
+                                            String productCd, String productNm, String sortColumn, String sortDirection) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productRepository.productsList(pageable, status, topCategoryNo, middleCategoryNo, lowCategoryNo, productCd, productNm, sortColumn, sortDirection);
     }
 
     // 0920 예원 추가 (상품코드, 상품명, 대분류, 중분류, 소분류, 상태별 상품목록 페이징 적용하여 가져오기)
@@ -133,6 +117,19 @@ public class ProductService {
         }
 
     }
+
+    // 6. 특정 조건으로 상품 정렬
+//    public Map<String, Object> getSortedProductList(int page, int size, String status, String sortColumn, String sortDirection) {
+//        Page<ProductDTO> sortedProducts = productRepository.sortProduct(page, size, status, sortColumn, sortDirection); // Page<ProductDTO>로 반환
+//
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("products", sortedProducts.getContent());
+//        response.put("totalItems", sortedProducts.getTotalElements());
+//        response.put("totalPages", sortedProducts.getTotalPages());
+//        response.put("currentPage", sortedProducts.getNumber() + 1);
+//
+//        return response;
+//    }
 
     // 대분류 조회
     public List<Category> getTopCategory() {
