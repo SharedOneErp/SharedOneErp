@@ -292,18 +292,18 @@ function Price() {
                                     </th>
                                     <th>번호</th>
                                     <th>
-                                        <div className={`order_wrap ${sortField === 'customerName' ? 'active' : ''}`}>
+                                        <div className={`order_wrap ${sortField === 'customer.customerName' ? 'active' : ''}`}>
                                             <span>고객사</span>
-                                            <button className="btn_order" onClick={() => handleSortClick('customerName')}>
-                                                <i className={`bi ${sortField === 'customerName' ? (sortOrder === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                            <button className="btn_order" onClick={() => handleSortClick('customer.customerName')}>
+                                                <i className={`bi ${sortField === 'customer.customerName' ? (sortOrder === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
                                             </button>
                                         </div>
                                     </th>
                                     <th>
-                                        <div className={`order_wrap ${sortField === 'productNm' ? 'active' : ''}`}>
+                                        <div className={`order_wrap ${sortField === 'product.productNm' ? 'active' : ''}`}>
                                             <span>상품</span>
-                                            <button className="btn_order" onClick={() => handleSortClick('productNm')}>
-                                                <i className={`bi ${sortField === 'productNm' ? (sortOrder === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                            <button className="btn_order" onClick={() => handleSortClick('product.productNm')}>
+                                                <i className={`bi ${sortField === 'product.productNm' ? (sortOrder === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
                                             </button>
                                         </div>
                                     </th>

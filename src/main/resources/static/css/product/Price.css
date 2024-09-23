@@ -34,8 +34,8 @@
 /* 🔴 삭제 된 데이터 라벨 */
 .menu_price .table_wrap table td .label_del { background-color: #ff191912; color: #ed0000; padding: 3px 4px; border-radius: 4px; font-size: 12px; } 
 /* 🔴 적용 시작/종료일 */
-.menu_price .table_wrap table tr td .date_wrap { display: inline-flex; align-items: center; } 
-.menu_price .table_wrap table tr td .date_wrap i { margin-right: 3px; color: #444; font-size: 13px; } 
+.menu_price .table_wrap table tr td .date_wrap { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 5px; background-color: #ecf5f9; } 
+.menu_price .table_wrap table tr td .date_wrap i { margin-right: 4px; font-size: 13px; color: #005585; } 
 /* 🔴 등록/수정 행 */
 .menu_price .table_wrap table tr.tr_input td { padding: 14px 8px; } 
 .menu_price .table_wrap table tr.tr_input td .box { font-size: 15px; padding: 5px 8px; } 

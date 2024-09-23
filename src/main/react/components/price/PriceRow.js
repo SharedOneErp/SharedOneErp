@@ -221,7 +221,7 @@ const PriceRow = ({
                         required: '시작일을 입력해주세요',
                         validate: (value) => {
                             if (priceEndDate && new Date(value) > new Date(priceEndDate)) {
-                                return '시작일은 종료일보다 이전이어야 합니다';
+                                return '종료일보다 늦습니다.';
                             }
                             return true;
                         },
@@ -243,7 +243,7 @@ const PriceRow = ({
                         required: '종료일을 입력해주세요',
                         validate: (value) => {
                             if (priceStartDate && new Date(value) < new Date(priceStartDate)) {
-                                return '종료일은 시작일보다 이후여야 합니다';
+                                return '시작일보다 빠릅니다.';
                             }
                             return true;
                         },
