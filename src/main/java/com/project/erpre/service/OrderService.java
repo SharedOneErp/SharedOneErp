@@ -127,7 +127,7 @@ public class OrderService {
         Order existingOrder = orderRepository.findById(orderNo)
                 .orElseThrow(() -> new RuntimeException("주문 정보를 찾을 수 없습니다."));
 
-        // 필요한 필드만 업데이트
+        // 고객 및 직원 정보 업데이트 (기존 로직 유지)
         existingOrder.setCustomer(customerRepository.findById(orderDTO.getCustomer().getCustomerNo()).orElse(null));
         existingOrder.setEmployee(employeeRepository.findById(orderDTO.getEmployee().getEmployeeId()).orElse(null));
         existingOrder.setOrderHTotalPrice(orderDTO.getOrderHTotalPrice());
@@ -135,8 +135,24 @@ public class OrderService {
         existingOrder.setOrderHUpdateDate(LocalDateTime.now());
         existingOrder.setOrderHDeleteYn(orderDTO.getOrderHDeleteYn());
 
+        // 주문 상세 업데이트 (기존 로직 유지)
+        for (OrderDetailDTO detailDTO : orderDTO.getOrderDetails()) {
+            OrderDetail existingDetail = orderDetailRepository.findById(detailDTO.getOrderNo())
+                    .orElseThrow(() -> new RuntimeException("주문 상세를 찾을 수 없습니다."));
+            existingDetail.setOrderDDeliveryRequestDate(detailDTO.getOrderDDeliveryRequestDate());
+            orderDetailRepository.save(existingDetail);
+        }
+
+        // 삭제할 주문 상세 처리
+        if (orderDTO.getDeletedDetailIds() != null) {
+            for (Integer detailId : orderDTO.getDeletedDetailIds()) {
+                orderDetailRepository.deleteById(detailId);
+            }
+        }
+
         return orderRepository.save(existingOrder);
     }
+
 
     // 주문 삭제
     public void deleteOrder(Integer orderNo) {

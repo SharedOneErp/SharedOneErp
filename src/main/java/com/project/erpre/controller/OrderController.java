@@ -112,6 +112,7 @@ public class OrderController {
     @PutMapping("/{orderNo}")
     public ResponseEntity<?> updateOrder(@PathVariable Integer orderNo, @RequestBody OrderDTO orderDTO) {
         try {
+            // 주문 업데이트 서비스 호출
             Order updatedOrder = orderService.updateOrder(orderNo, orderDTO);
             return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
         } catch (Exception e) {

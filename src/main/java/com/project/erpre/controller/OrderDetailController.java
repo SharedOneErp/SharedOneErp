@@ -49,6 +49,21 @@ public class OrderDetailController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @DeleteMapping("/api/orderDetails/{id}")
+    public ResponseEntity<?> deleteOrderDetail(@PathVariable Integer id) {
+        try {
+            boolean isDeleted = orderDetailService.deleteOrderDetail(id);
+            if (isDeleted) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 삭제 성공
+            } else {
+                return new ResponseEntity<>("삭제할 항목이 없습니다.", HttpStatus.NOT_FOUND); // 항목 없음
+            }
+        } catch (Exception e) {
+            logger.error("주문 상세 삭제 중 오류 발생: ", e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 
 

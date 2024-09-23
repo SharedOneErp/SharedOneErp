@@ -59,7 +59,7 @@ public class Order {
     private Timestamp orderHDeleteDate; // 삭제 일시
 
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<OrderDetail> orderDetails;
     // 주문과 상품 간의 관계
 
@@ -73,6 +73,12 @@ public class Order {
                 .filter(od -> od.getProduct() != null) // getProduct()가 null인지 확인
                 .map(od -> od.getProduct().getProductNm())
                 .collect(Collectors.toList());
+    }
+
+    public void recalculateTotalPrice() {
+        this.orderHTotalPrice = orderDetails.stream()
+                .map(OrderDetail::getOrderDTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 }

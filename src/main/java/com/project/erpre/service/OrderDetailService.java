@@ -1,5 +1,6 @@
 package com.project.erpre.service;
 
+import com.project.erpre.model.Order;
 import com.project.erpre.model.OrderDetail;
 import com.project.erpre.model.OrderDetailDTO;
 import com.project.erpre.model.Product;
@@ -84,9 +85,22 @@ public class OrderDetailService {
     }
 
     // 주문 상세 삭제
-    public void deleteOrderDetail(Integer id) {
-        orderDetailRepository.deleteById(id);
+    public boolean deleteOrderDetail(Integer id) {
+        OrderDetail orderDetail = orderDetailRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("주문 상세 정보를 찾을 수 없습니다."));
+
+        // 주문 상세 삭제
+        orderDetailRepository.delete(orderDetail);
+
+        // 주문 총 금액 재계산
+        Order order = orderDetail.getOrder();
+        order.recalculateTotalPrice(); // 재계산 메서드 호출
+        orderRepository.save(order); // 업데이트된 주문 저장
+
+        return true; // 삭제 성공
     }
+
+
 
     public OrderDetail updateOrderDetail(Integer id, OrderDetailDTO orderDetailDTO) {
         OrderDetail existingOrderDetail = orderDetailRepository.findById(id)
@@ -105,10 +119,23 @@ public class OrderDetailService {
         return orderDetailRepository.save(existingOrderDetail);
     }
     public OrderDetail createOrderDetail(OrderDetailDTO orderDetailDTO) {
+        // 유효성 검사 추가
+        if (orderDetailDTO.getProductCd() == null) {
+            throw new IllegalArgumentException("제품 코드가 필요합니다.");
+        }
+
         OrderDetail orderDetail = convertToEntity(orderDetailDTO);
         return orderDetailRepository.save(orderDetail);
     }
 
+    public List<OrderDetail> getOrderDetailsByOrderNo(Integer orderNo) {
+        // 주문이 존재하는지 확인
+        Order existingOrder = orderRepository.findById(orderNo)
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
+
+        // 해당 주문의 상세 정보를 조회
+        return orderDetailRepository.findByOrderOrderNo(orderNo);
+    }
 
 
 }
