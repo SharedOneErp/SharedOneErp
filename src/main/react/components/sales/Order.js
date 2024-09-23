@@ -12,6 +12,8 @@ function Order() {
     const [role, setRole] = useState('');
     const [isApproved, setIsApproved] = useState(false);
     const [isDenied, setIsDenied] = useState(false);
+    const [order, setOrder] = useState({});  // 주문 정보를 상태로 관리
+    const [deletedDetailIds, setDeletedDetailIds] = useState([]);  // 삭제된 제품의 detailId 저장
 
     const fetchEmployee = async () => {
         try {
@@ -101,6 +103,7 @@ function Order() {
 
         // 주문 번호 관련 상태
         orderNo,       // 현재 주문 번호
+
 
         // 주문 관련 데이터 및 상태
         products,           // 상품 리스트
@@ -363,8 +366,10 @@ function Order() {
                                             <td style={{ width: '100px' }}>
                                                 <button className="box icon del" onClick={() => {
                                                     if (isCreateMode) {
+                                                        console.log("createmode")
                                                         removeProductRow(index);
                                                     } else if (isEditMode) {
+                                                        console.log("editmode")
                                                         removeProducteditRow(index);
                                                     }
                                                 }}>
@@ -397,7 +402,8 @@ function Order() {
                     </div>
                     <div className="order-buttons">
                         {isCreateMode && <button className="box color" onClick={handleSubmit}><i className="bi bi-floppy"></i> 주문 등록</button>}
-                        {isEditMode && role !=='admin' &&(<button className="box color" onClick={() => handleEdit(orderNo)}><i className="bi bi-floppy"></i> 주문 수정</button>)}
+                        {/*추 후 배포시에는 role!=='admin'으로 변경할 것*/}
+                        {isEditMode && role ==='admin' &&(<button className="box color" onClick={() => handleEdit(orderNo)}><i className="bi bi-floppy"></i> 주문 수정</button>)}
                         {isDetailView && role === 'admin' && !isApproved && !isDenied && (
                             <>
                                 <button className="box color" onClick={handleApproveOrder}>
@@ -408,7 +414,8 @@ function Order() {
                                 </button>
                             </>
                         )}
-                        {isDetailView && role !== 'admin' &&(
+                        {/*추 후 배포시에는 role!=='admin'으로 변경할 것*/}
+                        {isDetailView && role === 'admin' &&(
                             <button className="box color" onClick={() => window.location.href = `/order?no=${orderNo}&mode=edit`}>수정</button>)}
                     </div>
                 </div>
