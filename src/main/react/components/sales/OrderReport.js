@@ -55,20 +55,19 @@ function OrderReport() {
                 labels.push(`${year}년 ${month}월`);
             }
         } else if (period === "3halfYears") {
-            // 현재 날짜 기준으로 6개월 단위의 반기 계산
-            for (let i = 0; i < 3; i++) {
-                let startMonth = new Date(today.getFullYear(), today.getMonth() - i * 6, 1);
-                let endMonth = new Date(startMonth);
-                endMonth.setMonth(endMonth.getMonth() + 5); // 6개월 후
+              for (let i = 2; i >= 0; i--) {  // 2부터 0까지 역순으로 반복
+                  let endMonth = new Date(today.getFullYear(), today.getMonth() - i * 6, 1);
+                  let startMonth = new Date(endMonth);
+                  startMonth.setMonth(startMonth.getMonth() - 5);  // 6개월 전
 
-                const startYear = startMonth.getFullYear();
-                const endYear = endMonth.getFullYear();
-                const startMonthNum = startMonth.getMonth() + 1; // 시작 월
-                const endMonthNum = endMonth.getMonth() + 1; // 종료 월
+                  const startYear = startMonth.getFullYear();
+                  const endYear = endMonth.getFullYear();
+                  const startMonthNum = startMonth.getMonth() + 1;
+                  const endMonthNum = endMonth.getMonth() + 1;
 
-                // 반기 구간 라벨 생성
-                labels.push(`${startYear}년 ${startMonthNum}월 ~ ${endYear}년 ${endMonthNum}월`);
-            }
+                  // 새로운 반기 구간 라벨을 배열의 뒤에 추가 (최신 반기가 X축의 오른쪽으로 가도록)
+                  labels.push(`${startYear}년 ${startMonthNum}월 ~ ${endYear}년 ${endMonthNum}월`);
+              }
 
         } else if (period === "3years") {
             for (let i = 2; i >= 0; i--) {
@@ -102,14 +101,14 @@ function OrderReport() {
                 console.log("API 응답:", response.data);  // 응답 데이터 구조 확인
                 console.log("응답 데이터 타입:", typeof response.data); // 응답 데이터 타입 확인
 
-                let processedData = []; 
+                let processedData = [];
                 const currentMonth = new Date().getMonth() + 1;  // 현재 월 (1부터 시작)
                 const currentYear = new Date().getFullYear(); // 현재 연도  
 
                 if (period === "3months") {
                     // 최근 3개월 데이터를 처리
                     processedData = [0, 0, 0]; // 초기값
-    
+
                     response.data.forEach(([month, count]) => {
                         const monthDiff = currentMonth - month;  // 현재 월과 응답 월의 차이 계산
                         if (monthDiff === 2) {
