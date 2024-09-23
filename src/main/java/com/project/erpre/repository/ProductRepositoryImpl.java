@@ -57,11 +57,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         // 상품 코드/상품명 조건
         if (productCd != null && !productCd.isEmpty()) {
-            builder.and(product.productCd.containsIgnoreCase(productCd));
+            builder.and(product.productCd.containsIgnoreCase(productCd).or(product.productNm.containsIgnoreCase(productNm)));
         }
-        if (productNm != null && !productNm.isEmpty()) {
-            builder.and(product.productNm.containsIgnoreCase(productNm));
-        }
+
 
         // 쿼리 실행
         List<ProductDTO> results = queryFactory.select(Projections.fields(ProductDTO.class,
