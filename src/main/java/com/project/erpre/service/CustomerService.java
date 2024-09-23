@@ -74,7 +74,8 @@ public class CustomerService {
     // 고객 등록
     public Customer insertCustomer(Customer customer) {
         customer.setCustomerDeleteYn("N"); // 기본값 N
-        return customerRepository.save(customer);
+        customer.setCustomerInsertDate(new Timestamp(System.currentTimeMillis())); //등록일시 기록
+        return customerRepository.save(customer); //등록 여부 저장
     }
 
     // 고객 정보 수정
@@ -98,8 +99,8 @@ public class CustomerService {
             existingCustomer.setCustomerEtaxInvoiceYn(updatedCustomer.getCustomerEtaxInvoiceYn());
             existingCustomer.setCustomerTransactionStartDate(updatedCustomer.getCustomerTransactionStartDate());
             existingCustomer.setCustomerTransactionEndDate(updatedCustomer.getCustomerTransactionEndDate());
-            // customerUpdateDate는 DB에서 자동으로 설정됨
 
+            existingCustomer.setCustomerUpdateDate(new Timestamp(System.currentTimeMillis())); //수정 일시 기록
             return customerRepository.save(existingCustomer); // 수정 후 저장
         } else {
             throw new RuntimeException("Customer not found with customerNo: " + customerNo);

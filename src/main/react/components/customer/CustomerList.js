@@ -28,6 +28,15 @@ function CustomerRegisterModal({show, onClose, onSave, customerData}) {
     //모달 알림창 2번 뜨는거 방지
     const [showConfirmModal, setShowConfirmModal] = useState(false);
 
+    // 에러 메시지 상태
+    const [errors, setErrors] = useState({
+        customerName: '',
+        customerBusinessRegNo: '',
+        customerTel: '',
+        customerManagerTel: '',
+        customerManagerEmail: ''
+    });
+
     //모달이 열릴 때마다 폼 초기화
     useEffect(() => {
         if (show) {
@@ -52,6 +61,14 @@ function CustomerRegisterModal({show, onClose, onSave, customerData}) {
                     customerTransactionEndDate: ''
                 });
             }
+            // 에러 메시지 초기화
+            setErrors({
+                customerName: '',
+                customerBusinessRegNo: '',
+                customerTel: '',
+                customerManagerTel: '',
+                customerManagerEmail: ''
+            });
         }
     }, [show, customerData]);    
 
@@ -66,24 +83,64 @@ function CustomerRegisterModal({show, onClose, onSave, customerData}) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        //유효성 검증
+        const businessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
+        const telRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        let valid = true;
+        let newErrors = {
+            customerName: '',
+            customerBusinessRegNo: '',
+            customerTel: '',
+            customerManagerTel: '',
+            customerManagerEmail: ''
+        };
+
         //필수 필드 값 검증
-        if (!form.customerName) {
-            alert('고객사 이름은 필수 입력 항목입니다.');
+        if (!form.customerName.trim()) {
+            newErrors.customerName = '고객사 이름은 필수 입력 항목입니다.';
+            valid = false;
+        }
+        if (!form.customerBusinessRegNo.trim()) {
+            newErrors.customerBusinessRegNo = '사업자 등록번호는 필수 입력 항목입니다.';
+            valid = false;
+        }
+        //유효성 검사
+        if (!businessRegNoRegex.test(form.customerBusinessRegNo)) {
+            newErrors.customerBusinessRegNo = '사업자 등록번호 형식이 올바르지 않습니다. 예: 123-45-67890';
+            valid = false;
+        }
+        if (form.customerTel && !telRegex.test(form.customerTel)) {
+            newErrors.customerTel = '고객사 연락처 형식이 올바르지 않습니다. 예: 010-1234-5678';
+            valid = false;
+        }
+        if (form.customerManagerTel && !telRegex.test(form.customerManagerTel)) {
+            newErrors.customerManagerTel = '담당자 연락처 형식이 올바르지 않습니다. 예: 010-1234-5678';
+            valid = false;
+        }
+        if (form.customerManagerEmail && !emailRegex.test(form.customerManagerEmail)) {
+            newErrors.customerManagerEmail = '담당자 이메일 형식이 올바르지 않습니다. 예: abc@example.com';
+            valid = false;
+        }
+
+        // 에러 상태 업데이트
+        setErrors(newErrors);
+
+        // 유효성 검사 실패 시 저장 중단
+        if (!valid) {
             return;
         }
-        if (!form.customerBusinessRegNo) {
-            alert('사업자 등록번호는 필수 입력 항목입니다.');
-            return;
-        }
-        // 등록 확인 모달 표시
+        
+        //모든 검증을 통과하면 등록 확인 모달 표시
         setShowConfirmModal(true);
     };
 
     // 실제 저장 함수
     const handleConfirmSave = () => {
-        onSave(form);
-        onClose();
-        setShowConfirmModal(false);
+        onSave(form); //상위 컴포넌트로 저장된 데이터 전달
+        onClose(); // 상세 모달 닫기
+        setShowConfirmModal(false); // 등록 확인 모달 닫기
     };
 
     if (!show) return null; // 모달 표시 여부 체크
@@ -97,92 +154,140 @@ function CustomerRegisterModal({show, onClose, onSave, customerData}) {
                     <div className="register-form">
                         <div className="left-column">
                             <div className="form-group">
-                                <label>고객사 이름(*)</label>
-                                <input type="text" name="customerName" value={form.customerName || ''}
-                                       onChange={handleInputChange}/>
+                                <label>고객사 이름(*필수값)</label>
+                                <input 
+                                    type="text" 
+                                    name="customerName" 
+                                    value={form.customerName || ''}
+                                    onChange={handleInputChange}/>
                             </div>
                             <div className="form-group">
-                                <label>고객사 연락처</label>
-                                <input type="text" name="customerTel" value={form.customerTel || ''}
-                                       onChange={handleInputChange}/>
+                                <label>사업자 등록번호(*필수값)</label>
+                                <input 
+                                    type="text" 
+                                    name="customerBusinessRegNo" 
+                                    value={form.customerBusinessRegNo || ''}
+                                    onChange={handleInputChange}
+                                    className={errors.customerBusinessRegNo ? 'invalid' : ''}/>
+                                    {errors.customerBusinessRegNo && (
+                                    <span className="error-message">{errors.customerBusinessRegNo}</span>)}
                             </div>
                             <div className="form-group">
                                 <label>대표자명</label>
-                                <input type="text" name="customerRepresentativeName"
-                                       value={form.customerRepresentativeName || ''}
-                                       onChange={handleInputChange}/>
-                            </div>
-                            <div className="form-group">
-                                <label>사업자 등록번호(*)</label>
-                                <input type="text" name="customerBusinessRegNo" value={form.customerBusinessRegNo || ''}
-                                       onChange={handleInputChange}/>
+                                <input 
+                                    type="text" 
+                                    name="customerRepresentativeName"
+                                    value={form.customerRepresentativeName || ''}
+                                    onChange={handleInputChange}/>
                             </div>
                             <div className="form-group">
                                 <label>사업장 주소</label>
-                                <input type="text" name="customerAddr" value={form.customerAddr || ''}
-                                       onChange={handleInputChange}/>
+                                <input 
+                                    type="text" 
+                                    name="customerAddr" 
+                                    value={form.customerAddr || ''}
+                                    onChange={handleInputChange}/>
+                            </div>
+                            <div className="form-group">
+                                <label>고객사 연락처</label>
+                                <input 
+                                    type="text" 
+                                    name="customerTel" 
+                                    value={form.customerTel || ''}
+                                    onChange={handleInputChange}
+                                    className={errors.customerTel ? 'invalid' : ''}/>
+                                    {errors.customerTel && (
+                                    <span className="error-message">{errors.customerTel}</span>)}
                             </div>
                             <div className="form-group">
                                 <label>팩스번호</label>
-                                <input type="text" name="customerFaxNo" value={form.customerFaxNo || ''}
-                                       onChange={handleInputChange}/>
+                                <input 
+                                    type="text" 
+                                    name="customerFaxNo" 
+                                    value={form.customerFaxNo || ''}
+                                    onChange={handleInputChange}/>
                             </div>
                             <div className="form-group">
-                                <label>담당자명</label>
-                                <input type="text" name="customerManagerName" value={form.customerManagerName || ''}
-                                       onChange={handleInputChange}/>
-                            </div>
-                            <div className="form-group">
-                                <label>담당자 이메일</label>
-                                <input type="email" name="customerManagerEmail" value={form.customerManagerEmail || ''}
-                                       onChange={handleInputChange}/>
-                            </div>
-                            <div className="form-group">
-                                <label>담당자 연락처</label>
-                                <input type="text" name="customerManagerTel" value={form.customerManagerTel || ''}
-                                       onChange={handleInputChange}/>
-                            </div>
-                            <div className="form-group">
-                                <label>국가코드</label>
-                                <select name="customerCountryCode" value={form.customerCountryCode || ''}
-                                        onChange={handleInputChange}>
-                                    <option value="KR">한국 (+82)</option>
-                                    <option value="US">미국 (+1)</option>
-                                    <option value="JP">일본 (+81)</option>
-                                    <option value="CN">중국 (+86)</option>
+                                <label>거래처분류</label>
+                                <select 
+                                    name="customerType" 
+                                    value={form.customerType || ''}
+                                    onChange={handleInputChange}>
+                                        <option value="01">01. 고객기업</option>
+                                        <option value="02">02. 협력기업</option>
+                                        <option value="03">03. 본사기업</option>
+                                        <option value="04">04. 기타기업</option>
                                 </select>
                             </div>
                         </div>
                         <div className="right-column">
                             <div className="form-group">
-                                <label>거래처분류</label>
-                                <select name="customerType" value={form.customerType || ''}
-                                        onChange={handleInputChange}>
-                                    <option value="01">01. 고객기업</option>
-                                    <option value="02">02. 협력기업</option>
-                                    <option value="03">03. 본사기업</option>
-                                    <option value="04">04. 기타기업</option>
+                                <label>담당자명</label>
+                                <input 
+                                    type="text" 
+                                    name="customerManagerName" 
+                                    value={form.customerManagerName || ''}
+                                    onChange={handleInputChange}/>
+                            </div>
+                             <div className="form-group">
+                                <label>담당자 연락처</label>
+                                <input 
+                                    type="text" 
+                                    name="customerManagerTel" 
+                                    value={form.customerManagerTel || ''}
+                                    onChange={handleInputChange}
+                                    className={errors.customerManagerTel ? 'invalid' : ''}/>
+                                    {errors.customerManagerTel && (
+                                    <span className="error-message">{errors.customerManagerTel}</span>)}
+                            </div>
+                            <div className="form-group">
+                                <label>담당자 이메일</label>
+                                <input 
+                                    type="email" 
+                                    name="customerManagerEmail" 
+                                    value={form.customerManagerEmail || ''}
+                                    onChange={handleInputChange}
+                                    className={errors.customerManagerEmail ? 'invalid' : ''}/>
+                                    {errors.customerManagerEmail && (
+                                    <span className="error-message">{errors.customerManagerEmail}</span>)}
+                            </div>
+                            <div className="form-group">
+                                <label>국가코드</label>
+                                <select 
+                                    name="customerCountryCode" 
+                                    value={form.customerCountryCode || ''}
+                                    onChange={handleInputChange}>
+                                        <option value="KR">한국 (+82)</option>
+                                        <option value="US">미국 (+1)</option>
+                                        <option value="JP">일본 (+81)</option>
+                                        <option value="CN">중국 (+86)</option>
                                 </select>
                             </div>
                             <div className="form-group">
                                 <label>전자세금계산서 여부</label>
-                                <select name="customerEtaxInvoiceYn" value={form.customerEtaxInvoiceYn || ''}
-                                        onChange={handleInputChange}>
-                                    <option value="Y">Y</option>
-                                    <option value="N">N</option>
+                                <select 
+                                    name="customerEtaxInvoiceYn" 
+                                    value={form.customerEtaxInvoiceYn || ''}
+                                    onChange={handleInputChange}>
+                                        <option value="Y">Y</option>
+                                        <option value="N">N</option>
                                 </select>
                             </div>
                             <div className="form-group">
                                 <label>거래 시작일</label>
-                                <input type="date" name="customerTransactionStartDate"
-                                       value={form.customerTransactionStartDate || ''}
-                                       onChange={handleInputChange}/>
+                                <input 
+                                    type="date" 
+                                    name="customerTransactionStartDate"
+                                    value={form.customerTransactionStartDate || ''}
+                                    onChange={handleInputChange}/>
                             </div>
                             <div className="form-group">
                                 <label>거래 종료일</label>
-                                <input type="date" name="customerTransactionEndDate"
-                                       value={form.customerTransactionEndDate || ''}
-                                       onChange={handleInputChange}/>
+                                <input 
+                                    type="date" 
+                                    name="customerTransactionEndDate"
+                                    value={form.customerTransactionEndDate || ''}
+                                    onChange={handleInputChange}/>
                             </div>
                         </div>
                     </div>
@@ -207,47 +312,121 @@ function CustomerDetailModal({show, onClose, customer, onSave, onDelete}) {
 
     const [isEditMode, setIsEditMode] = useState(false); // 편집 모드 여부
     const [editableCustomer, setEditableCustomer] = useState(customer || {}); // 편집 가능한 고객 데이터
-    const [showEditConfirmModal, setShowEditConfirmModal] = useState(false);
-    const [showSaveConfirmModal, setShowSaveConfirmModal] = useState(false);
+    const [showEditConfirmModal, setShowEditConfirmModal] = useState(false); // 수정 확인 모달 표시 여부
+    const [showSaveConfirmModal, setShowSaveConfirmModal] = useState(false); // 저장 확인 모달 표시 여부
+    const [errors, setErrors] = useState({ //에러 메시지
+        customerName: '',
+        customerBusinessRegNo: '',
+        customerTel: '',
+        customerManagerTel: '',
+        customerManagerEmail: ''
+    });
 
-    //모달이 열릴 때마다 편집 모드 초기화
+    // 모달이 열릴 때마다 편집 모드 초기화 및 고객 데이터 설정
     useEffect(() => {
-        if (show) {
-            setIsEditMode(false); // 편집 모드 초기화
-            setEditableCustomer(customer || {});
-        }
-    }, [show, customer]);    
+    if (show) {
+        setIsEditMode(false); // 편집 모드 초기화
+        setEditableCustomer(customer || {}); // 기존 고객 데이터 설정
+        setErrors({
+            customerName: '',
+            customerBusinessRegNo: '',
+            customerTel: '',
+            customerManagerTel: '',
+            customerManagerEmail: ''
+        }); // 에러 메시지 초기화
+    }
+    }, [show, customer]);
 
     // 편집 모드 토글 함수
     const toggleEditMode = () => {
-        if (isEditMode) return;
-        //수정 확인 모달 표시
-        setShowEditConfirmModal(true);
+        if (isEditMode) return; //편집 모드일 경우 동작X
+        setShowEditConfirmModal(true); //수정 확인 모달 표시
     };
 
-    // 수정 확인 모달에서 확인을 누르면
+    // 수정 확인 모달에서 확인을 누르면 편집 모드 활성화
     const handleConfirmEdit = () => {
-        setIsEditMode(true);
-        setShowEditConfirmModal(false);
+        setIsEditMode(true); //편집 모드 활성화
+        setShowEditConfirmModal(false); //수정 확인 모달 닫기
     };
 
-    // 저장 처리 함수
-    const handleSave = () => {
-        // 저장 확인 모달 표시
-        setShowSaveConfirmModal(true);
-    };
-
-    // 저장 확인 모달에서 확인을 누르면
-    const handleConfirmSave = () => {
-        onSave(editableCustomer);
-        onClose();
-        setShowSaveConfirmModal(false);
-    };
-
-    // 입력 값 변경 시 상태 업데이트
+    // 입력 값 변경 시 상태 업데이트 함수
     const handleChange = (e) => {
         const { name, value } = e.target;
         setEditableCustomer((prev) => ({ ...prev, [name]: value }));
+    };
+
+    // 저장 처리 함수 : 저장 확인 모달 표시
+    const handleSave = () => {
+        setShowSaveConfirmModal(true); //저장 확인 모달 표시
+    };
+
+    // 저장 확인 모달에서 확인을 누르면 실제 저장 동작 수행
+    const handleConfirmSave = () => {
+        
+        //필수 필드 값 검증
+        if (!editableCustomer.customerName) {
+            alert('고객사 이름은 필수 입력 항목입니다.');
+            return;
+        }
+        if (!editableCustomer.customerBusinessRegNo) {
+            alert('사업자 등록번호는 필수 입력 항목입니다.');
+            return;
+        }
+
+        //유효성 검증
+        const businessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
+        const telRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        let valid = true;
+        let newErrors = {
+            customerName: '',
+            customerBusinessRegNo: '',
+            customerTel: '',
+            customerManagerTel: '',
+            customerManagerEmail: ''
+        };
+
+        //필수 값 검증
+        if (!editableCustomer.customerName.trim()) {
+            newErrors.customerName = '고객사 이름은 필수 입력 항목입니다.';
+            valid = false;
+        }
+        if (!editableCustomer.customerBusinessRegNo.trim()) {
+            newErrors.customerBusinessRegNo = '사업자 등록번호는 필수 입력 항목입니다.';
+            valid = false;
+        }
+
+        //유효성 검증
+        if (!businessRegNoRegex.test(editableCustomer.customerBusinessRegNo)) {
+            newErrors.customerBusinessRegNo = '사업자 등록번호 형식이 올바르지 않습니다. 예: 123-45-67890';
+            valid = false;
+        }
+        if (editableCustomer.customerTel && !telRegex.test(editableCustomer.customerTel)) {
+            newErrors.customerTel = '고객사 연락처 형식이 올바르지 않습니다. 예: 010-1234-5678';
+            valid = false;
+        }
+        if (editableCustomer.customerManagerTel && !telRegex.test(editableCustomer.customerManagerTel)) {
+            newErrors.customerManagerTel = '담당자 연락처 형식이 올바르지 않습니다. 예: 010-1234-5678';
+            valid = false;
+        }
+        if (editableCustomer.customerManagerEmail && !emailRegex.test(editableCustomer.customerManagerEmail)) {
+            newErrors.customerManagerEmail = '담당자 이메일 형식이 올바르지 않습니다. 예: abc@example.com';
+            valid = false;
+        }
+
+         // 에러 상태 업데이트
+         setErrors(newErrors);
+
+         // 유효성 검사 실패 시 저장 중단
+         if (!valid) {
+             return;
+         }
+
+         // 모든 검증을 통과하면 저장 동작 수행
+        onSave(editableCustomer); // 상위 컴포넌트로 저장된 데이터 전달
+        onClose(); //상세 모달 닫기
+        setShowSaveConfirmModal(false); //저장 확인 모달 닫기
     };
 
     if (!show || !customer) return null; // 모달 표시 여부 체크
@@ -258,136 +437,160 @@ function CustomerDetailModal({show, onClose, customer, onSave, onDelete}) {
                 <button className="close-button" onClick={onClose}>X</button>
                 <h2>고객 상세 정보</h2>
                 <div className="detail-form">
-                    <div className="form-group">
-                        <label>고객사 이름</label>
-                        <input type="text" name="customerName" value={editableCustomer.customerName || ''}
-                               onChange={handleChange} readOnly={!isEditMode}/>
-                    </div>
-                    <div className="form-group">
-                        <label>고객사 연락처</label>
-                        <input type="text" name="customerTel" value={editableCustomer.customerTel || ''}
-                               onChange={handleChange} readOnly={!isEditMode}/>
-                    </div>
-                    <div className="form-group">
-                        <label>대표자명</label>
-                        <input
-                            type="text"
-                            name="customerRepresentativeName"
-                            value={editableCustomer.customerRepresentativeName || ''}
-                            onChange={handleChange}
-                            readOnly={!isEditMode}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>사업자 등록번호</label>
-                        <input
-                            type="text"
-                            name="customerBusinessRegNo"
-                            value={editableCustomer.customerBusinessRegNo || ''}
-                            onChange={handleChange}
-                            readOnly={!isEditMode}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>사업장 주소</label>
-                        <input
-                            type="text"
-                            name="customerAddr"
-                            value={editableCustomer.customerAddr || ''}
-                            onChange={handleChange}
-                            readOnly={!isEditMode}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>팩스 번호</label>
-                        <input
-                            type="text"
-                            name="customerFaxNo"
-                            value={editableCustomer.customerFaxNo || ''}
-                            onChange={handleChange}
-                            readOnly={!isEditMode}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>고객사 담당자명</label>
-                        <input
-                            type="text"
-                            name="customerManagerName"
-                            value={editableCustomer.customerManagerName || ''}
-                            onChange={handleChange}
-                            readOnly={!isEditMode}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>고객사 담당자 이메일</label>
-                        <input
-                            type="text"
-                            name="customerManagerEmail"
-                            value={editableCustomer.customerManagerEmail || ''}
-                            onChange={handleChange}
-                            readOnly={!isEditMode}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>고객사 담당자 연락처</label>
-                        <input
-                            type="text"
-                            name="customerManagerTel"
-                            value={editableCustomer.customerManagerTel || ''}
-                            onChange={handleChange}
-                            readOnly={!isEditMode}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>국가 코드</label>
-                        <select name="customerCountryCode" value={editableCustomer.customerCountryCode || ''}
-                                onChange={handleChange} disabled={!isEditMode}>
-                            <option value="KR">한국 (+82)</option>
-                            <option value="US">미국 (+1)</option>
-                            <option value="JP">일본 (+81)</option>
-                            <option value="CN">중국 (+86)</option>
-                        </select>
-                    </div>
-                    <div className="form-group">
-                        <label>거래처분류</label>
-                        <select name="customerType" value={editableCustomer.customerType || ''} onChange={handleChange}
-                                disabled={!isEditMode}>
-                            <option value="01">01. 고객기업</option>
-                            <option value="02">02. 협력기업</option>
-                            <option value="03">03. 본사기업</option>
-                            <option value="04">04. 기타기업</option>
-                        </select>
-                    </div>
-                    <div className="form-group">
-                        <label>전자세금계산서 여부</label>
-                        <select name="customerEtaxInvoiceYn" value={editableCustomer.customerEtaxInvoiceYn || ''}
+                    <div className="left-column">
+                        <div className="form-group">
+                            <label>고객사 이름(*필수값)</label>
+                            <input 
+                                type="text" 
+                                name="customerName" 
+                                value={editableCustomer.customerName || ''}
+                                onChange={handleChange} 
+                                readOnly={!isEditMode}
+                                className={errors.customerName ? 'invalid' : ''}/>
+                                {errors.customerName && (
+                                <span className="error-message">{errors.customerName}</span>)}
+                        </div>
+                        <div className="form-group">
+                            <label>사업자 등록번호(*필수값)</label>
+                            <input
+                                type="text"
+                                name="customerBusinessRegNo"
+                                value={editableCustomer.customerBusinessRegNo || ''}
                                 onChange={handleChange}
-                                disabled={!isEditMode}>
-                            <option value="Y">Y</option>
-                            <option value="N">N</option>
-                        </select>
+                                readOnly={!isEditMode}
+                                className={errors.customerBusinessRegNo ? 'invalid' : ''} />
+                                {errors.customerBusinessRegNo && (
+                                <span className="error-message">{errors.customerBusinessRegNo}</span>)}
+                        </div>
+                        <div className="form-group">
+                            <label>대표자명</label>
+                            <input
+                                type="text"
+                                name="customerRepresentativeName"
+                                value={editableCustomer.customerRepresentativeName || ''}
+                                onChange={handleChange}
+                                readOnly={!isEditMode}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>사업장 주소</label>
+                            <input
+                                type="text"
+                                name="customerAddr"
+                                value={editableCustomer.customerAddr || ''}
+                                onChange={handleChange}
+                                readOnly={!isEditMode}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>고객사 연락처</label>
+                            <input 
+                                type="text" 
+                                name="customerTel" 
+                                value={editableCustomer.customerTel || ''}
+                                onChange={handleChange} 
+                                readOnly={!isEditMode}
+                                className={errors.customerTel ? 'invalid' : ''}/>
+                                {errors.customerTel && (
+                                <span className="error-message">{errors.customerTel}</span>)}
+                        </div>
+                        <div className="form-group">
+                            <label>팩스 번호</label>
+                            <input
+                                type="text"
+                                name="customerFaxNo"
+                                value={editableCustomer.customerFaxNo || ''}
+                                onChange={handleChange}
+                                readOnly={!isEditMode}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>거래처분류</label>
+                            <select name="customerType" value={editableCustomer.customerType || ''} onChange={handleChange}
+                                    disabled={!isEditMode}>
+                                <option value="01">01. 고객기업</option>
+                                <option value="02">02. 협력기업</option>
+                                <option value="03">03. 본사기업</option>
+                                <option value="04">04. 기타기업</option>
+                            </select>
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <label>거래 시작일</label>
-                        <input type="date" name="customerTransactionStartDate"
-                               value={editableCustomer.customerTransactionStartDate || ''} onChange={handleChange}
-                               readOnly={!isEditMode}/>
-                    </div>
-                    <div className="form-group">
-                        <label>거래 종료일</label>
-                        <input type="date" name="customerTransactionEndDate"
-                               value={editableCustomer.customerTransactionEndDate || ''} onChange={handleChange}
-                               readOnly={!isEditMode}/>
+                    <div className="right-column">
+                        <div className="form-group">
+                            <label>담당자명</label>
+                            <input
+                                type="text"
+                                name="customerManagerName"
+                                value={editableCustomer.customerManagerName || ''}
+                                onChange={handleChange}
+                                readOnly={!isEditMode}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>담당자 연락처</label>
+                            <input
+                                type="text"
+                                name="customerManagerTel"
+                                value={editableCustomer.customerManagerTel || ''}
+                                onChange={handleChange}
+                                readOnly={!isEditMode}
+                                className={errors.customerManagerTel ? 'invalid' : ''}/>
+                                {errors.customerManagerTel && (
+                                <span className="error-message">{errors.customerManagerTel}</span>)}
+                        </div>
+                        <div className="form-group">
+                            <label>담당자 이메일</label>
+                            <input
+                                type="text"
+                                name="customerManagerEmail"
+                                value={editableCustomer.customerManagerEmail || ''}
+                                onChange={handleChange}
+                                readOnly={!isEditMode}
+                                className={errors.customerManagerEmail ? 'invalid' : ''}/>
+                                {errors.customerManagerEmail && (
+                                <span className="error-message">{errors.customerManagerEmail}</span> )}
+                        </div>
+                        <div className="form-group">
+                            <label>국가 코드</label>
+                            <select name="customerCountryCode" value={editableCustomer.customerCountryCode || ''}
+                                    onChange={handleChange} disabled={!isEditMode}>
+                                <option value="KR">한국 (+82)</option>
+                                <option value="US">미국 (+1)</option>
+                                <option value="JP">일본 (+81)</option>
+                                <option value="CN">중국 (+86)</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>전자세금계산서 여부</label>
+                            <select name="customerEtaxInvoiceYn" value={editableCustomer.customerEtaxInvoiceYn || ''}
+                                    onChange={handleChange}
+                                    disabled={!isEditMode}>
+                                <option value="Y">Y</option>
+                                <option value="N">N</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>거래 시작일</label>
+                            <input type="date" name="customerTransactionStartDate"
+                                value={editableCustomer.customerTransactionStartDate || ''} onChange={handleChange}
+                                readOnly={!isEditMode}/>
+                        </div>
+                        <div className="form-group">
+                            <label>거래 종료일</label>
+                            <input type="date" name="customerTransactionEndDate"
+                                value={editableCustomer.customerTransactionEndDate || ''} onChange={handleChange}
+                                readOnly={!isEditMode}/>
+                        </div>
                     </div>
                 </div>
-                <div className="modal-footer">
-                    {isEditMode ? (
-                        <button className="save-button" onClick={handleSave}>저장</button>
-                    ) : (
-                        <button className="edit-button" onClick={toggleEditMode}>수정</button>
-                    )}
-                    <button className="delete-button" onClick={onDelete}>삭제</button>
-                </div>
+            <div className="modal-footer">
+                {isEditMode ? (
+                    <button className="save-button" onClick={handleSave}>저장</button>
+                ) : (
+                    <button className="edit-button" onClick={toggleEditMode}>수정</button>
+                )}
+                <button className="delete-button" onClick={onDelete}>삭제</button>
+            </div>
 
                 {/* 수정 확인 모달 */}
                 {showEditConfirmModal && (
@@ -451,8 +654,7 @@ function CustomerList() {
     const [customers, setCustomers] = useState([]); // 전체 고객 리스트
     const [filterType, setFilterType] = useState('active'); //전체고객사, 삭제된 고객사 구분
 
-    const [displayedCustomers, setDisplayedCustomers] = useState([]); // 화면에 표시할 고객 리스트
-    const [sortColumn, setSortColumn] = useState('null'); // 기본적으로 정렬 열을 null로 설정
+    const [sortColumn, setSortColumn] = useState('customerName'); // 기본적으로 정렬 열 customerName 설정
     const [sortOrder, setSortOrder] = useState('asc'); // 기본 정렬은 오름차순
 
     const fetchData = () => {
@@ -690,7 +892,7 @@ function CustomerList() {
                             </button>
                         </div>
                     </div>
-                    <div className="table_wrap">
+                    <div className="table_wrap"> 
                         <table>
                             <thead>
                             <tr>
@@ -701,30 +903,49 @@ function CustomerList() {
                                         onChange={(e) => setSelectedCustomers(e.target.checked ? filteredCustomers.map(c => c.customerNo) : [])}
                                     />
                                 </th>
-                                <th onClick={() => sortCustomers('customerNo')}>No</th>
-                                <th onClick={() => sortCustomers('customerName')}
-                                    className={sortColumn === 'customerName' ? (sortOrder === 'asc' ? '▲' : '▼') : '▲'}>고객명
+                                <th>No</th>
+                                <th
+                                onClick={() => sortCustomers('customerName')}
+                                className={`sortable ${sortColumn === 'customerName' && sortOrder === 'desc' ? 'sorted-desc' : ''}`}
+                                >
+                                    고객명
                                 </th>
-                                <th onClick={() => sortCustomers('customerBusinessRegNo')}
-                                    className={sortColumn === 'customerBusinessRegNo' ? (sortOrder === 'asc' ? '▲' : '▼') : '▲'}>사업자
-                                    등록번호
+                                <th
+                                    onClick={() => sortCustomers('customerBusinessRegNo')}
+                                    className={`sortable ${sortColumn === 'customerBusinessRegNo' && sortOrder === 'desc' ? 'sorted-desc' : ''}`}
+                                >
+                                    사업자 등록번호
                                 </th>
-                                <th onClick={() => sortCustomers('customerCountryCode')}
-                                    className={sortColumn === 'customerCountryCode' ? (sortOrder === 'asc' ? '▲' : '▼') : '▲'}>국가코드
+                                <th
+                                    onClick={() => sortCustomers('customerCountryCode')}
+                                    className={`sortable ${sortColumn === 'customerCountryCode' && sortOrder === 'desc' ? 'sorted-desc' : ''}`}
+                                >
+                                    국가코드
                                 </th>
-                                <th onClick={() => sortCustomers('customerManagerName')}
-                                    className={sortColumn === 'customerManagerName' ? (sortOrder === 'asc' ? '▲' : '▼') : '▲'}>담당자명
+                                <th
+                                    onClick={() => sortCustomers('customerManagerName')}
+                                    className={`sortable ${sortColumn === 'customerManagerName' && sortOrder === 'desc' ? 'sorted-desc' : ''}`}
+                                >
+                                    담당자명
                                 </th>
-                                <th onClick={() => sortCustomers('customerInsertDate')}
-                                    className={sortColumn === 'customerInsertDate' ? (sortOrder === 'asc' ? '▲' : '▼') : '▲'}>등록일시
+                                <th
+                                    onClick={() => sortCustomers('customerInsertDate')}
+                                    className={`sortable ${sortColumn === 'customerInsertDate' && sortOrder === 'desc' ? 'sorted-desc' : ''}`}
+                                >
+                                    등록일시
                                 </th>
-                                <th onClick={() => sortCustomers('customerUpdateDate')}
-                                    className={sortColumn === 'customerUpdateDate' ? (sortOrder === 'asc' ? '▲' : '▼') : '▲'}>수정일시
+                                <th
+                                    onClick={() => sortCustomers('customerUpdateDate')}
+                                    className={`sortable ${sortColumn === 'customerUpdateDate' && sortOrder === 'desc' ? 'sorted-desc' : ''}`}
+                                >
+                                    수정일시
                                 </th>
-                                <th onClick={() => sortCustomers('customerDeleteDate')}
-                                    className={sortColumn === 'customerDeleteDate' ? (sortOrder === 'asc' ? '▲' : '▼') : '▲'}>삭제일시
+                                <th
+                                    onClick={() => sortCustomers('customerDeleteDate')}
+                                    className={`sortable ${sortColumn === 'customerDeleteDate' && sortOrder === 'desc' ? 'sorted-desc' : ''}`}
+                                >
+                                    삭제일시
                                 </th>
-
                                 <th>상세내역</th>
                             </tr>
                             </thead>
