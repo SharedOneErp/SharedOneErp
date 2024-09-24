@@ -405,7 +405,7 @@ export const useHooksList = () => {
         const deliveryDateElement = document.querySelector('.delivery-date');
         const deliveryRequestDate = deliveryDateElement ? formatDateForInput(deliveryDateElement.value) : null;
 
-        //정보값 검증
+        // 정보값 검증
         if (!customerName) {
             alert("고객 이름을 입력하세요.");
             return; // 제출 중지
@@ -414,6 +414,7 @@ export const useHooksList = () => {
             alert("납품 날짜를 입력하세요.");
             return; // 제출 중지
         }
+
         // 제품 검증
         for (let product of products) {
             if (!product.code || !product.price || !product.quantity) {
@@ -452,34 +453,32 @@ export const useHooksList = () => {
                 const data = await response.json();
                 const order_h_no = data.orderNo;
 
-                console.log("order_h_no : " + order_h_no);
 
-                // 제품별 상세 주문 정보를 서버에 순차적으로 전송
-                for (const product of products) {
-                    const orderDetailData = {
-                        orderNo: order_h_no,
-                        productCd: product.code,
-                        orderDPrice: product.price,
-                        orderDQty: product.quantity,
-                        orderDTotalPrice: product.price * product.quantity,
-                        orderDDeliveryRequestDate: deliveryRequestDate,
-                        orderDInsertDate: new Date().toISOString(),
-                    };
+                // 제품별 상세 주문 데이터를 배열로 작성
+                const orderDetailData = products.map((product) => ({
+                    orderNo: order_h_no,
+                    productCd: product.code,
+                    orderDPrice: product.price,
+                    orderDQty: product.quantity,
+                    orderDTotalPrice: product.price * product.quantity,
+                    orderDDeliveryRequestDate: deliveryRequestDate,
+                    orderDInsertDate: new Date().toISOString(),
+                }));
 
-                    console.log("Order Detail Data: ", orderDetailData); // 추가
+                console.log("Order Detail Data: ", orderDetailData); // 디버깅용 출력
 
-                    const detailResponse = await fetch('/api/orderDetails', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(orderDetailData),
-                    });
+                // 한 번에 주문 상세 데이터를 전송 (배치로 전송)
+                const detailResponse = await fetch('/api/orderDetails/batch', {  // 서버의 '/batch' 엔드포인트로 가정
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderDetailData),
+                });
 
-                    if (!detailResponse.ok) {
-                        const errorText = await detailResponse.text();
-                        throw new Error(`상세 주문 처리 중 오류 발생: ${errorText}`);
-                    }
+                if (!detailResponse.ok) {
+                    const errorText = await detailResponse.text();
+                    throw new Error(`상세 주문 처리 중 오류 발생: ${errorText}`);
                 }
 
                 // 요약된 알림 생성
@@ -502,6 +501,7 @@ export const useHooksList = () => {
         }
     };
 
+
     // 제품 삭제 핸들러
     const handleDeleteProduct = (orderNo) => {
         console.log(`삭제할 제품 ID: ${orderNo}`); // 삭제할 제품 ID 로그
@@ -512,8 +512,15 @@ export const useHooksList = () => {
     //상품 수정
     const handleEdit = async (orderNo) => {
         try {
+            // 입력값 검증
             const deliveryDateElement = document.querySelector('.delivery-date');
             const deliveryRequestDate = deliveryDateElement ? formatDateForInput(deliveryDateElement.value) : null;
+
+
+            if (!deliveryRequestDate) {
+                alert("납품 날짜를 입력하세요.");
+                return; // 제출 중지
+            }
 
             console.log('납품 요청일 (deliveryRequestDate):', deliveryRequestDate); // deliveryRequestDate 값 로그
 
@@ -529,6 +536,7 @@ export const useHooksList = () => {
                 orderDTotalPrice: product.orderDPrice * product.orderDQty,
                 orderDDeliveryRequestDate: deliveryRequestDate || product.orderDDeliveryRequestDate,
             }));
+
 
             console.log(cleanProducts);
 

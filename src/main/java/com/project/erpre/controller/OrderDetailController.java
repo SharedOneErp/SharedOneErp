@@ -15,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 public class OrderDetailController {
 
@@ -39,6 +42,28 @@ public class OrderDetailController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping(value = "/api/orderDetails/batch")
+    public ResponseEntity<?> createOrderDetails(@RequestBody List<OrderDetailDTO> orderDetailDTOList) {
+        try {
+            // DTO 리스트 -> 엔티티 리스트 변환
+            List<OrderDetail> orderDetailList = orderDetailDTOList.stream()
+                    .map(orderDetailService::convertToEntity)
+                    .collect(Collectors.toList());
+
+            // 엔티티 리스트 저장 (배치 저장 가능)
+            List<OrderDetail> savedOrderDetails = orderDetailService.createOrderDetails(orderDetailList);
+
+            return new ResponseEntity<>(savedOrderDetails, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            logger.error("배치 주문 상세 저장 중 오류 발생: ", e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // 기존 단일 주문 상세 데이터 처리 엔드포인트 유지 가능
+
     @PutMapping("/api/orderDetails/{id}")
     public ResponseEntity<?> updateOrderDetail(@PathVariable Integer id, @RequestBody OrderDetailDTO orderDetailDTO) {
         try {
@@ -49,6 +74,7 @@ public class OrderDetailController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @DeleteMapping("/api/orderDetails/{id}")
     public ResponseEntity<?> deleteOrderDetail(@PathVariable Integer id) {
         try {
@@ -63,8 +89,4 @@ public class OrderDetailController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-
-
 }

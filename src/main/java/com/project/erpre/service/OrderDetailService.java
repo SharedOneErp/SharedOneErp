@@ -69,6 +69,11 @@ public class OrderDetailService {
         return orderDetailRepository.save(orderDetail);
     }
 
+    // 여러 OrderDetail 생성 메서드 (추가된 부분)
+    public List<OrderDetail> createOrderDetails(List<OrderDetail> orderDetails) {
+        return orderDetailRepository.saveAll(orderDetails);  // saveAll로 리스트 저장
+    }
+
     // 주문 상세 조회 (ID로)
     public Optional<OrderDetail> getOrderDetailById(Integer id) {
         return orderDetailRepository.findById(id);

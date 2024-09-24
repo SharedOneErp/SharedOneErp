@@ -465,25 +465,25 @@ function OrderList() {
                     <div className="table_wrap">
                         <table>
                             <thead>
-                                <tr>
-                                    {itsAssignedMode && role === 'admin' && (
-                                        <th className="checkbox-input">
-                                            <input
-                                                type="checkbox"
-                                                checked={allSelected}
-                                                onChange={handleSelectAll}
-                                            />
-                                        </th>
-                                    )}
-                                    <th>주문번호</th>
-                                    <th>고객사</th>
-                                    <th>주문 등록일</th>
-                                    <th>주문 상태</th>
-                                    <th>물품(계약) 리스트</th>
-                                    <th>총액(원)</th>
-                                    <th>담당자명</th>
-                                    <th>상세</th>
-                                </tr>
+                            <tr>
+                                {itsAssignedMode && role === 'admin' && (
+                                    <th className="checkbox-input">
+                                        <input
+                                            type="checkbox"
+                                            checked={allSelected}
+                                            onChange={handleSelectAll}
+                                        />
+                                    </th>
+                                )}
+                                <th>주문번호</th>
+                                <th>고객사</th>
+                                <th>주문 등록일</th>
+                                <th>주문 상태</th>
+                                <th>물품(계약) 리스트</th>
+                                <th>총액(원)</th>
+                                <th>담당자명</th>
+                                <th>상세</th>
+                            </tr>
                             </thead>
                             <tbody>
                                 {/* 로딩 중일 때 로딩 애니메이션 표시 */}
