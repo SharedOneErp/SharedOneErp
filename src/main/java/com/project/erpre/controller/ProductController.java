@@ -1,5 +1,6 @@
 package com.project.erpre.controller;
 
+import com.project.erpre.model.CategoryDTO;
 import com.project.erpre.model.ProductDTO;
 import com.project.erpre.service.CategoryService;
 import com.project.erpre.service.ProductService;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -133,5 +135,24 @@ public class ProductController {
         }
     }
 
+    // 7. 카테고리 조회 API
+    @GetMapping("/category")
+    public ResponseEntity<List<CategoryDTO>> getCategoryList(
+            @RequestParam(required = false) Integer topCategoryNo,
+            @RequestParam(required = false) Integer middleCategoryNo,
+            @RequestParam(required = false) Integer lowCategoryNo
+    ) {
+        try {
+            List<CategoryDTO> categories = productService.getCategoryList(topCategoryNo, middleCategoryNo, lowCategoryNo);
+
+            if (categories.isEmpty()) {
+                return ResponseEntity.ok(Collections.emptyList());
+            }
+
+            return ResponseEntity.ok(categories);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 }
 

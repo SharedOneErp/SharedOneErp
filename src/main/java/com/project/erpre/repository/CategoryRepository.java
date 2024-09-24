@@ -4,12 +4,13 @@ import com.project.erpre.model.Category;
 import com.project.erpre.model.CategoryDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface CategoryRepository extends JpaRepository<Category, Integer> {
+public interface CategoryRepository extends JpaRepository<Category, Integer>, CategoryRepositoryCustom, QuerydslPredicateExecutor<Category> {
 
     @Query(value = "WITH RECURSIVE CategoryTree AS (\n" +
             "    SELECT \n" +

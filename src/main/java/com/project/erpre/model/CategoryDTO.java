@@ -34,4 +34,11 @@ public class CategoryDTO {
         this.categoryInsertDate = categoryInsertDate;
         this.categoryUpdateDate = categoryUpdateDate;
     }
+
+    // 카테고리 조회 생성자
+    public CategoryDTO(Integer one, Integer two, Integer three) {
+        this.one = one;
+        this.two = two;
+        this.three = three;
+    }
 }
