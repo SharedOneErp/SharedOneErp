@@ -490,7 +490,7 @@ export const useHooksList = () => {
                     : `제품명: ${firstProduct.name}\n수량: ${firstProduct.quantity.toLocaleString()}개\n단가: ${firstProduct.price.toLocaleString()}원\n금액: ${(firstProduct.price * firstProduct.quantity).toLocaleString()}원`;
 
                 alert(`${employeeName}님의 주문 생성이 완료되었습니다.\n\n주문번호: ${order_h_no}\n고객사: ${customerName}\n\n${summaryString}`);
-                // window.location.href = `/order?no=${order_h_no}`;
+                window.location.href = `/order?no=${order_h_no}`;
             } else {
                 const errorText = await response.text();
                 console.error('주문 처리 오류:', errorText);
@@ -502,12 +502,12 @@ export const useHooksList = () => {
         }
     };
 
-
     // 제품 삭제 핸들러
     const handleDeleteProduct = (orderNo) => {
         console.log(`삭제할 제품 ID: ${orderNo}`); // 삭제할 제품 ID 로그
         setDeletedDetailIds(prevState => [...prevState, orderNo]); // 삭제할 제품 ID 추가
     };
+
 
     //상품 수정
     const handleEdit = async (orderNo) => {
@@ -610,11 +610,13 @@ export const useHooksList = () => {
             // 5. 삭제된 제품 처리 전에 로그 추가
             console.log('주문 수정 시 삭제된 제품 IDs:', deletedDetailIds);
 
+
+
             // 5. 삭제된 제품 처리
             for (let deletedId of deletedDetailIds) {
-                console.log(`삭제 요청 제품 ID: ${orderNo}`); // 삭제할 제품 ID 로그
+                console.log(`삭제 요청 제품임 ID: ${deletedId}`); // 삭제할 제품 ID 로그
 
-                const deleteResponse = await fetch(`/api/orderDetails/${orderNo}`, {
+                const deleteResponse = await fetch(`/api/orderDetails/${deletedId}`, {
                     method: 'DELETE',
                 });
 
@@ -622,11 +624,13 @@ export const useHooksList = () => {
                     const errorText = await deleteResponse.text();
                     throw new Error(`상세 주문 삭제 중 오류 발생: ${errorText}`);
                 } else {
-                    console.log(`제품 ID ${orderNo} 삭제 성공`); // 삭제 성공 로그
+                    console.log(`제품 ID ${deletedId} 삭제 성공`); // 삭제 성공 로그
                 }
             }
+
             // 6. 성공 후 페이지 이동
             alert("주문을 성공적으로 수정했습니다.");
+            window.location.href = `/order?no=${orderNo}`;
         } catch (error) {
             console.error('주문 수정 중 오류 발생:', error.message);
             alert("주문 수정 중 오류가 발생했습니다. 다시 확인해주세요.");
