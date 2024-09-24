@@ -120,24 +120,10 @@ public class ProductController {
         try {
             productService.restoreProducts(productCds);
             return ResponseEntity.ok().build();
-        } catch(Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-    // 7. 상품 정렬 API
-//    @GetMapping("/sort")
-//    public ResponseEntity<Map<String, Object>> getSortedProductList(
-//            @RequestParam String sortColumn,
-//            @RequestParam String sortDirection,
-//            @RequestParam(defaultValue = "1") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            @RequestParam(defaultValue = "all",required = false) String status) {
-//
-//        Map<String, Object> sortedProductsResponse = productService.getSortedProductList(page - 1, size, status, sortColumn, sortDirection);
-//
-//        return ResponseEntity.ok(sortedProductsResponse);
-//    }
 
 }
 

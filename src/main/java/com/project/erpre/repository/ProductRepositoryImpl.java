@@ -140,7 +140,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     }
 
 
-
     // 0920 예원 추가 (상품코드, 상품명, 대분류, 중분류, 소분류, 상태별 상품목록 페이징 적용하여 가져오기)
     public Page<ProductDTO> findProductsFilter(Pageable pageable, String status,
                                                Integer topCategoryNo, Integer middleCategoryNo, Integer lowCategoryNo,

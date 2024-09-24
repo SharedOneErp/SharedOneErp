@@ -95,6 +95,7 @@ public class ProductService {
 
         // 상품 정보 업데이트
         product.setProductNm(productDTO.getProductNm());
+        product.setProductPrice(productDTO.getProductPrice());
 
         // 수정일시 업데이트
         product.setProductUpdateDate(LocalDateTime.now());
@@ -146,18 +147,6 @@ public class ProductService {
 
     }
 
-    // 6. 특정 조건으로 상품 정렬
-//    public Map<String, Object> getSortedProductList(int page, int size, String status, String sortColumn, String sortDirection) {
-//        Page<ProductDTO> sortedProducts = productRepository.sortProduct(page, size, status, sortColumn, sortDirection); // Page<ProductDTO>로 반환
-//
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("products", sortedProducts.getContent());
-//        response.put("totalItems", sortedProducts.getTotalElements());
-//        response.put("totalPages", sortedProducts.getTotalPages());
-//        response.put("currentPage", sortedProducts.getNumber() + 1);
-//
-//        return response;
-//    }
 
     // 대분류 조회
     public List<Category> getTopCategory() {

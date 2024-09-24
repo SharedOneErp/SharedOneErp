@@ -33,6 +33,7 @@ function Pagination({
                             </button>
                         )}
                         <input
+                            type="number"
                             id="itemsPerPage"
                             className="box"
                             value={itemsPerPage}
@@ -101,7 +102,7 @@ function Pagination({
                 showFilters && (
                     <div className="pagination-sub right">
                         <input
-                            type="text"
+                            type="number"
                             id="pageInput"
                             className="box"
                             value={pageInputValue}
