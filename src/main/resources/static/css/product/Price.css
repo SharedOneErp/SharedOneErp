@@ -13,7 +13,7 @@
 .menu_price .table_wrap table th:nth-child(6),
 .menu_price .table_wrap table td:nth-child(6) { width: 150px; /* 적용시작일 */ } 
 .menu_price .table_wrap table th:nth-child(7),
-.menu_price .table_wrap table td:nth-child(7) { width: 190px; /* 적용종료일 */ } 
+.menu_price .table_wrap table td:nth-child(7) { width: 210px; /* 적용종료일 */ } 
 .menu_price .table_wrap table th:nth-child(8),
 .menu_price .table_wrap table td:nth-child(8), 
 .menu_price .table_wrap table th:nth-child(9),
@@ -28,6 +28,9 @@
 /* 🔴 적용 시작/종료일 */
 .menu_price .table_wrap table tr td .date_wrap { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 5px; background-color: #ecf5f9; } 
 .menu_price .table_wrap table tr td .date_wrap i { margin-right: 4px; font-size: 13px; color: #005585; } 
+.menu_price .table_wrap table:not(.not_hover) tbody tr:not(.tr_empty):not(.tr_input):not(.selected_row):hover .date_wrap { background-color: #0058a324; } 
+/* 적용기간 */
+.menu_price .table_wrap table tr td span.diffdays { font-size: 13px; color:#666 } 
 /* 🔴 등록/수정 행 */
 .menu_price .table_wrap table tr.tr_input td { padding: 14px 8px; } 
 .menu_price .table_wrap table tr.tr_input td .box { font-size: 15px; padding: 5px 8px; } 

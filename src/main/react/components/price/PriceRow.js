@@ -20,6 +20,9 @@ const PriceRow = ({
     index,
     priceInsertDate,
     priceUpdateDate,
+    openConfirmModal,
+    setConfirmedAction,
+    setModalMessage,
 }) => {
 
     // 콤마 추가 함수
@@ -62,9 +65,85 @@ const PriceRow = ({
         }
     }, [isEditMode, priceData, setSelectedCustomer, setSelectedProduct]);
 
+    // 🔴🔴🔴 update(기간이 겹치는 기존 데이터 적용일자 조정)
+    const handleDuplicateCheck = async (duplicatePrices, inputStartDate, inputEndDate) => {
+        // 기본적으로 입력한 값으로 초기화
+        let updatedStartDate = inputStartDate;
+        let updatedEndDate = inputEndDate;
+        
+        const duplicatePrice = duplicatePrices[0]; // 중복된 첫 번째 데이터 사용
+
+        // 1️⃣ 특정 하루만 적용되는 데이터 처리 (시작일과 종료일이 동일한 경우)
+        if (duplicatePrice.priceStartDate === duplicatePrice.priceEndDate) {
+            window.showToast(`${duplicatePrice.priceStartDate} 에만 해당되는 데이터가 존재합니다. 데이터를 수정해주세요.`, 'error');
+            return;
+        }
+
+        // 2️⃣ 입력 구간이 기존 구간 내에 완전히 포함되는 경우 처리 (예: 기존 1~5일, 입력 2~3일)
+        if (inputStartDate >= duplicatePrice.priceStartDate && inputEndDate <= duplicatePrice.priceEndDate) {
+            window.showToast(`입력한 기간을 포함하는 데이터가 존재합니다. 데이터를 수정해주세요.`, 'error');
+            return;
+        }
+
+        // 3️⃣ 입력한 시작일이 기존 데이터와 겹치는 경우 - 기존 종료일의 다음 날로 설정
+        if (inputStartDate <= duplicatePrice.priceEndDate && inputStartDate >= duplicatePrice.priceStartDate) {
+            const nextDay = new Date(duplicatePrice.priceEndDate);
+            nextDay.setDate(nextDay.getDate() + 1); // 종료일 다음 날로 설정
+            updatedStartDate = nextDay.toISOString().split('T')[0]; // yyyy-mm-dd 형식으로 변환
+        }
+
+        // 4️⃣ 입력한 종료일이 기존 데이터와 겹치는 경우 - 기존 시작일의 전날로 설정
+        if (inputEndDate >= duplicatePrice.priceStartDate && inputEndDate <= duplicatePrice.priceEndDate) {
+            const prevDay = new Date(duplicatePrice.priceStartDate);
+            prevDay.setDate(prevDay.getDate() - 1); // 시작일 전날로 설정
+            updatedEndDate = prevDay.toISOString().split('T')[0]; // yyyy-mm-dd 형식으로 변환
+        }
+
+        // 겹치는 날짜에 따라 시작일 또는 종료일을 업데이트하는 모달 메시지 설정💡
+        let updateMessage = `해당 고객사와 상품에 해당하는 데이터 중 <br>`;
+
+        // 시작일이 겹치는 경우 - 기존 종료일 강조💡
+        if (inputStartDate <= duplicatePrice.priceEndDate && inputStartDate >= duplicatePrice.priceStartDate) {
+            updateMessage += `${duplicatePrice.priceStartDate} ~ <strong>${duplicatePrice.priceEndDate}</strong> 기간 동안 적용되는 데이터가 있습니다.<br>`;
+            updateMessage += `해당 데이터의 <strong>시작일</strong>을 <strong>${updatedStartDate}</strong>으로 조정하시겠습니까?`;
+        }
+        // 종료일이 겹치는 경우 - 기존 시작일 강조💡
+        else if (inputEndDate >= duplicatePrice.priceStartDate && inputEndDate <= duplicatePrice.priceEndDate) {
+            updateMessage += `<strong>${duplicatePrice.priceStartDate}</strong> ~ ${duplicatePrice.priceEndDate} 기간 동안 적용되는 데이터가 있습니다.<br>`;
+            updateMessage += `해당 데이터의 <strong>종료일</strong>을 <strong>${updatedEndDate}</strong>으로 조정하시겠습니까?`;
+        }
+
+        // 모달 메시지 설정
+        setModalMessage(updateMessage);
+
+        // 모달 열기
+        openConfirmModal();
+
+        // 확인 버튼을 누르면 기존 데이터 업데이트 실행
+        setConfirmedAction(() => async () => {
+            // 요청 데이터 로그 출력
+            const requestData = {
+                priceNo: duplicatePrice.priceNo,
+                priceStartDate: updatedStartDate,  // 새로운 시작일로
+                priceEndDate: updatedEndDate  // 새로운 종료일로
+            };
+            console.log('🔴 Request Data to be sent:', requestData);
+
+            try {
+                const response = await axios.put('/api/price/update', requestData);
+                console.log("업데이트 성공:", response.data);
+                window.showToast('업데이트 성공');
+                fetchData();  // 성공 시 데이터 다시 불러오기
+            } catch (error) {
+                console.error("업데이트 실패:", error);
+                window.showToast('업데이트 실패', 'error');
+            }
+        });
+    };
+
+
     // 🔴🔴🔴 insert/update(작성/수정 완료 버튼 클릭 시 실행)
     const onSubmit = async (data) => {
-        console.log('🔴 11');
         // data.priceCustomer가 문자열인지 확인한 후, 콤마 제거한 실제 값을 저장
         if (typeof data.priceCustomer === 'string') {
             data.priceCustomer = data.priceCustomer.replace(/,/g, '');
@@ -73,36 +152,58 @@ const PriceRow = ({
             data.priceCustomer = String(data.priceCustomer).replace(/,/g, '');
         }
 
-        console.log('🔴 22');
-        const requestData = [
-            {
+        // 🔴 중복 데이터 확인 API 호출
+        try {
+            const requestData = {
                 customerNo: selectedCustomer.customerNo,
                 productCd: selectedProduct.productCd,
-                priceCustomer: parseInt(data.priceCustomer, 10),
                 priceStartDate: data.priceStartDate,
                 priceEndDate: data.priceEndDate
-            }
-        ];
+            };
 
-        console.log('🔴 33');
-        // 수정 모드일 경우 priceNo 추가
-        if (isEditMode) {
-            console.log('🔴 44');
-            requestData.priceNo = priceData.priceNo;
+            const duplicateCheckResponse = await axios.post('/api/price/check-duplicate', requestData);
+
+            const duplicatePrices = duplicateCheckResponse.data; // 중복된 PriceDTO 리스트를 받음
+
+            // 수정/등록 모드에 따른 중복 처리 로직
+            if ((isEditMode && duplicatePrices.length > 1) || (!isEditMode && duplicatePrices.length > 0)) {
+                handleDuplicateCheck(duplicatePrices, data.priceStartDate, data.priceEndDate);
+                return;
+            }
+
+        } catch (error) {
+            console.error('Duplicate check failed:', error);
+            return; // 중복 확인 실패 시 저장 중단
         }
 
-        // 요청 데이터 로그 출력
-        console.log('🔴 Request Data to be sent:', requestData);
-
+        // 🔴 등록 및 수정 API 호출
         try {
+
+            const requestData = [
+                {
+                    customerNo: selectedCustomer.customerNo,
+                    productCd: selectedProduct.productCd,
+                    priceCustomer: parseInt(data.priceCustomer, 10),
+                    priceStartDate: data.priceStartDate,
+                    priceEndDate: data.priceEndDate
+                }
+            ];
+
+            // 요청 데이터 로그 출력
+            console.log('🔴 Request Data to be sent:', requestData);
+
+            // 수정 모드일 경우 priceNo 추가
+            if (isEditMode) {
+                requestData[0].priceNo = priceData.priceNo; // 배열의 첫 번째 요소에 priceNo 추가
+            }
 
             let response;
             if (isEditMode) {
-                console.log('🔴 55');
+                console.log('🔴 update');
                 // 수정 모드일 경우 PUT 메서드로 요청
                 response = await axios.put(`/api/price/update`, requestData);
             } else {
-                console.log('🔴 66');
+                console.log('🔴 insert');
                 // 새로 추가할 경우 POST 메서드로 요청
                 response = await axios.post(`/api/price/insert`, requestData);
             }
@@ -113,7 +214,6 @@ const PriceRow = ({
             // 저장 성공 시 onSave 호출
             onSave(data); // handleAddSave()
 
-            console.log('🔴 77');
             // 저장 후 고객사, 상품, 가격 정보 초기화
             setSelectedCustomer({ customerName: '고객사 선택', customerNo: '' });
             setSelectedProduct({ productNm: '상품 선택', productCd: '' });

@@ -27,6 +27,7 @@ create table m_product (
     product_cd             varchar(10)      not null, -- 제품 코드
     category_no            int              null,     -- 카테고리 번호 (m_category 테이블 참조)
     product_nm             varchar(100)     not null, -- 제품 이름
+    product_price          decimal(15, 2)   not null, -- 제품 가격
     product_insert_date    timestamp        not null default current_timestamp, -- 제품 등록 일시
     product_update_date    timestamp        null,     -- 제품 수정 일시
     product_delete_yn      varchar(20)      not null default 'N', -- 삭제 여부 기본값 'N'

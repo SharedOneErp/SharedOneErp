@@ -199,7 +199,9 @@ input[type="checkbox"]:disabled + .chkbox_icon .bi-check-lg { color: #f6f6f6; }
 /* 🟣 토스트 메시지(짧고 간결한 알림을 일정 시간 동안 화면에 표시) */
 .toast-container { position: fixed; top: 25px; left: 50%; transform: translateX(-50%); z-index: 1000; } 
 .toast { background-color: #000; color: white; padding: 12px 25px; border-radius: 5px; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); font-size: 17px; } 
-.toast i { color: #10ae77; margin-right: 5px; } 
+.toast i { margin-right: 5px; } 
+.toast i.bi-check-circle-fill { color: #10ae77; } 
+.toast i.bi-exclamation-circle-fill { color: #ff0b00; } 
 /* 🟣 툴팁 메시지(특정 요소에 마우스를 올리거나 포커스할 때 추가적인 정보 표시) - 라이브러리 설치 */
 .react-tooltip { z-index: 10; padding: 5px 10px !important; border-radius: 6px !important; } 
 /* 🟣 모달 */
@@ -229,7 +231,8 @@ input[type="checkbox"]:disabled + .chkbox_icon .bi-check-lg { color: #f6f6f6; }
 .modal-actions button.box.gray:hover, .modal-actions button.box.gray:active { background-color: #eaeaea !important; color: #444 !important; border:none !important; } 
 .modal-actions button.box.gray:active { box-shadow: 0 0 2px 1px #dddddd; } 
 /* confirm 모달 */
-.modal_confirm { background: white; padding: 20px; border-radius: 8px; text-align: center; } 
+.modal_confirm { background: white; padding: 20px; border-radius: 8px; text-align: center; width: 500px;} 
+.modal_confirm p.msg { line-height: 28px;} 
 .modal_confirm .del_icon { margin-bottom: 10px; } 
 .modal_confirm .del_icon i { font-size:40px; color: #ff7c76; } 
 .modal_confirm .modal-actions { margin-top: 20px; display:flex; flex-direction: column; gap: 7px; } 

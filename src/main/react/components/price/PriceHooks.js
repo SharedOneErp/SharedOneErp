@@ -326,6 +326,7 @@ export const useHooksList = () => {
         // editingId에 현재 수정 중인 priceNo를 설정하고, 수정할 데이터를 editedPriceData에 설정
         setEditingId(priceNo);
         setEditedPriceData({
+            priceNo: priceDataToEdit.priceNo,
             customerName: priceDataToEdit.customerName,
             customerNo: priceDataToEdit.customerNo,
             productNm: priceDataToEdit.productNm,
@@ -488,6 +489,9 @@ export const useHooksList = () => {
         setSortField,
         sortOrder,
         setSortOrder,
+
+        setConfirmedAction,
+        setModalMessage,
     };
 
 };

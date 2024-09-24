@@ -74,8 +74,14 @@ public class PriceService {
 
         // 각 PriceDTO에 대해 엔티티 변환 및 저장
         List<PriceDTO> savedPriceDTOs = priceDTOs.stream().map(priceDTO -> {
-            logger.info("[2] 🟢 Saving or updating price: {}", priceDTO); // 각 PriceDTO 로그 출력
+            logger.info("🟢 Saving or updating price: {}", priceDTO); // 각 PriceDTO 로그 출력
             Price price = convertToEntity(priceDTO); // DTO -> 엔티티 변환
+
+            // priceNo가 존재하는 경우(수정 모드) 수정일시를 현재 시간으로 설정
+            if (price.getPriceNo() != null) {
+                price.setPriceUpdateDate(new Timestamp(System.currentTimeMillis())); // 수정 모드일 때 수정일시 업데이트
+            }
+
             Price savedPrice = priceRepository.save(price); // 엔티티 저장
             return convertToDTO(savedPrice); // 저장 후 DTO로 반환
         }).collect(Collectors.toList());
@@ -125,9 +131,27 @@ public class PriceService {
                 .collect(Collectors.toList());
     }
 
+    // 🟢 중복 가격 정보 확인 메서드
+    public List<PriceDTO> checkDuplicate(PriceDTO priceDTO) {
+        logger.info("🟢 Checking for duplicate price for customerNo: {}, productCd: {}, priceStartDate: {}, priceEndDate: {}",
+                priceDTO.getCustomerNo(), priceDTO.getProductCd(), priceDTO.getPriceStartDate(), priceDTO.getPriceEndDate());
+
+        // 중복되는 가격 정보 조회
+        List<Price> overlappingPrices = priceRepository.findOverlappingPrices(
+                priceDTO.getCustomerNo(),
+                priceDTO.getProductCd(),
+                priceDTO.getPriceStartDate(),
+                priceDTO.getPriceEndDate());
+
+        // Price 엔티티를 PriceDTO로 변환하여 반환
+        return overlappingPrices.stream()
+                .map(this::convertToDTO) // 엔티티를 DTO로 변환
+                .collect(Collectors.toList()); // 리스트로 반환
+    }
+
     // 🔴 필터링 + 페이지네이션 + 정렬 처리 (Price 엔티티를 PriceDTO로 변환하여 반환)
     public Page<PriceDTO> getAllPrices(Integer customerNo, String productCd, String startDate, String endDate, String targetDate, String customerSearchText, String productSearchText, String selectedStatus, PageRequest pageRequest) {
-        logger.info("[5] Fetching all prices with filters");
+        logger.info("🟢 Fetching all prices with filters");
 
         // 필터 조건이 하나라도 존재할 경우 필터링된 가격 정보를 조회
         if (customerNo != null || productCd != null || startDate != null || endDate != null || customerSearchText != null || productSearchText != null || selectedStatus != null) {

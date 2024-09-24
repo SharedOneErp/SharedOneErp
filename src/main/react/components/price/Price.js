@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from "react-router-dom";
 import Layout from "../../layout/Layout";
 import '../../../resources/static/css/product/Price.css'; // 개별 CSS 파일 임포트
-import { format } from 'date-fns';
+import { format, differenceInDays } from 'date-fns'; // date-fns에서 날짜 포맷과 차이를 계산하는 함수 import
 import CustomerSearchModal from '../common/CustomerSearchModal'; // 고객사 검색 모달 임포트
 import ProductSearchModal from '../common/ProductSearchModal'; // 상품 검색 모달 임포트
 import Pagination from '../common/Pagination'; // 페이지네이션 컴포넌트 임포트
@@ -121,6 +121,9 @@ function Price() {
         setSortField,
         sortOrder,
         setSortOrder,
+
+        setConfirmedAction,
+        setModalMessage,
     } = useHooksList();          // 커스텀 훅 사용
 
     // 🟡 UI 및 상태에 따라 렌더링
@@ -374,6 +377,9 @@ function Price() {
                                         setProductModalOpen={setProductModalOpen}
                                         setSelectedCustomer={setSelectedCustomer}
                                         setSelectedProduct={setSelectedProduct}
+                                        openConfirmModal={openConfirmModal}
+                                        setConfirmedAction={setConfirmedAction}
+                                        setModalMessage={setModalMessage}
                                     />
                                 )}
 
@@ -410,6 +416,9 @@ function Price() {
                                                     index={index}
                                                     priceInsertDate={m_price.priceInsertDate}
                                                     priceUpdateDate={m_price.priceUpdateDate}
+                                                    openConfirmModal={openConfirmModal}
+                                                    setConfirmedAction={setConfirmedAction}
+                                                    setModalMessage={setModalMessage}
                                                 />
                                             ) : (
                                                 // 수정 모드가 아닐 경우 기존 데이터를 보여줌
@@ -447,7 +456,13 @@ function Price() {
                                                     </td>
                                                     <td><b>{m_price.priceCustomer.toLocaleString()}</b>원</td>
                                                     <td><div className='date_wrap'><i className="bi bi-calendar-check"></i>{format(m_price.priceStartDate, 'yyyy-MM-dd')}</div></td> {/* 적용시작일 */}
-                                                    <td><div className='date_wrap'><i className="bi bi-calendar-check"></i>{format(m_price.priceEndDate, 'yyyy-MM-dd')}</div></td>   {/* 적용종료일 */}
+                                                    <td>
+                                                        <div className='date_wrap'>
+                                                            <i className="bi bi-calendar-check"></i>
+                                                            {format(m_price.priceEndDate, 'yyyy-MM-dd')} {/* 적용종료일 */}
+                                                        </div>
+                                                        <span className='diffdays'> (총 {differenceInDays(new Date(m_price.priceEndDate), new Date(m_price.priceStartDate)) + 1}일)</span> {/* 적용기간 표시 */}
+                                                    </td>
                                                     <td>{format(m_price.priceInsertDate, 'yy-MM-dd HH:mm')}</td>
                                                     <td>{m_price.priceUpdateDate ? format(m_price.priceUpdateDate, 'yy-MM-dd HH:mm') : '-'}</td>
                                                     <td>{m_price.priceDeleteDate ? format(m_price.priceDeleteDate, 'yy-MM-dd HH:mm') : '-'}</td>
