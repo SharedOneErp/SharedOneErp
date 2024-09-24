@@ -118,7 +118,7 @@ public class ProductService {
         List<Product> products = productRepository.findByProductCdIn(productCds);
 
         if (products.isEmpty()) {
-            throw new RuntimeException("삭제할 상품이 없습니다.");
+            throw new IllegalArgumentException("삭제할 상품이 존재하지 않습니다.");
         }
 
         for (Product product : products) {
@@ -166,25 +166,25 @@ public class ProductService {
 
     // 주로 쓰기 작업(저장, 수정, 삭제 작업)이나 비즈니스 로직 처리에 사용
     // DTO -> 엔티티 변환 메서드
-//    private Product convertToEntity(ProductDTO productDTO) {
-//        Product product = new Product();
-//        product.setProductCd(productDTO.getProductCd());
-//        product.setProductNm(productDTO.getProductNm());
-//        product.setProductInsertDate(productDTO.getProductInsertDate());
-//        product.setProductUpdateDate(productDTO.getProductUpdateDate());
-//        product.setProductDeleteYn(productDTO.getProductDeleteYn());
-//        product.setProductDeleteDate(productDTO.getProductDeleteDate());
-//
-//        // Category 조회 및 설정
-//        Integer categoryNo = productDTO.getCategoryNo();
-//        if (categoryNo != null) {
-//            Category category = categoryRepository.findById(categoryNo)
-//                    .orElseThrow(() -> new RuntimeException("해당 카테고리를 찾을 수 없습니다."));
-//            product.setCategory(category);
-//        }
-//
-//        return product;
-//    }
+    private Product convertToEntity(ProductDTO productDTO) {
+        Product product = new Product();
+        product.setProductCd(productDTO.getProductCd());
+        product.setProductNm(productDTO.getProductNm());
+        product.setProductInsertDate(productDTO.getProductInsertDate());
+        product.setProductUpdateDate(productDTO.getProductUpdateDate());
+        product.setProductDeleteYn(productDTO.getProductDeleteYn());
+        product.setProductDeleteDate(productDTO.getProductDeleteDate());
+
+        // Category 조회 및 설정
+        Integer categoryNo = productDTO.getCategoryNo();
+        if (categoryNo != null) {
+            Category category = categoryRepository.findById(categoryNo)
+                    .orElseThrow(() -> new RuntimeException("해당 카테고리를 찾을 수 없습니다."));
+            product.setCategory(category);
+        }
+
+        return product;
+    }
 
     // 엔티티 -> DTO 변환 메서드
     public static ProductDTO convertToDTO(Product product) {

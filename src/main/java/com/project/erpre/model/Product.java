@@ -25,9 +25,9 @@ public class Product {
     private String productCd;
 
     @ManyToOne
-    @JsonManagedReference
+    // @JsonManagedReference
     @JoinColumn(name = "category_no", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    @JsonIgnore
+    // @JsonIgnore
     private Category category;
 
     @Column(name = "product_nm", length = 100, nullable = false)
@@ -63,11 +63,9 @@ public class Product {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
     private List<Price> prices;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
     private List<OrderDetail> orderDetails;
 }

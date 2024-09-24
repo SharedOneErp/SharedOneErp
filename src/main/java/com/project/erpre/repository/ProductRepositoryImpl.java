@@ -60,7 +60,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
             builder.and(product.productCd.containsIgnoreCase(productCd).or(product.productNm.containsIgnoreCase(productNm)));
         }
 
-
         // 쿼리 실행
         List<ProductDTO> results = queryFactory.select(Projections.fields(ProductDTO.class,
                         product.productCd,
