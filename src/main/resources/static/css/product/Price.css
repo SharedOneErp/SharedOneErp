@@ -33,6 +33,6 @@
 .menu_price .table_wrap table tr td span.diffdays { font-size: 13px; color:#666 } 
 /* 🔴 등록/수정 행 */
 .menu_price .table_wrap table tr.tr_input td { padding: 14px 8px; } 
-.menu_price .table_wrap table tr.tr_input td .box { font-size: 15px; padding: 5px 8px; } 
+.menu_price .table_wrap table tr.tr_input td .box { font-size: 15px; padding: 5px 8px;overflow: hidden; } 
 /* 가격(우측 정렬) */
 .menu_price .table_wrap table tr.tr_input td .box.price { width: 80%; margin-right: 2px; text-align: right; } 
