@@ -519,7 +519,8 @@ export const useProductHooks = () => {
         setEditableProduct({}); // 수정된 데이터 초기화
     };
 
-    // 상품 삭제 함수
+    // 트러블 슈팅: 순환 참조 문제 (상품 삭제시 발생하는 문제)
+    // 🟠 상품 삭제 함수
     const handleDeleteSelected = (productCd = null) => {
         if (!productCd && selectedProducts.length === 0) {
             alert('삭제할 상품을 선택해주세요.');
@@ -529,22 +530,24 @@ export const useProductHooks = () => {
             return;
         }
 
-        // 선택된 상품 코드만 추출 (정상적인 상품 코드만 남기기)
         const productsToDelete = productCd ? [productCd] : selectedProducts.filter(cd => typeof cd === 'string');
 
-        axios.delete('/api/products/delete', {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: productsToDelete
-        })
+        if (productsToDelete.length === 0) {
+            alert('삭제할 상품이 없습니다.');
+            return;
+        }
+
+        console.log('삭제할 상품 코드:', productsToDelete); // 디버깅용 로그
+
+        axios.delete('/api/products/delete', { data: productsToDelete }) // 단순 배열로 전송
             .then(response => {
                 alert('상품이 삭제되었습니다.');
-                fetchProducts();
+                fetchProducts(); // 삭제 후 상품 목록을 다시 조회
                 setSelectedProducts([]); // 선택된 상품 초기화
             })
             .catch(error => {
                 console.error('상품 삭제 실패:', error);
+                alert('상품 삭제에 실패했습니다. 다시 시도해주세요.');
             });
     };
 
