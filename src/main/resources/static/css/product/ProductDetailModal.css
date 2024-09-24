@@ -127,3 +127,5 @@ input[type="text"] {
     font-size: 18px;
     padding: 20px;
 }
+
+.form-group label {margin-right: 5px;}

@@ -23,10 +23,21 @@ function ProductDetailModal({productCd, onClose}) { // 파라미터 구조 분�
 
     const detail = productDetail[0] || {};
 
+    // 🟢 모달 배경 클릭 시 창 닫기
+    const handleBackgroundClick = (e) => {
+        if (e.target.className === 'modal_overlay') {
+            onClose();
+        }
+    };
+
     return (
-        <div className="modal-overlay">
-            <div className="modal-content">
-                <h1>상품 상세</h1>
+        <div className="modal_overlay" onMouseDown={handleBackgroundClick}>
+            <div className="modal_container search">
+                <div className="header">
+                    <div>상품 상세</div>
+                    <button className="btn_close" onClick={onClose}><i className="bi bi-x-lg"></i></button>
+                    {/* 모달 닫기 버튼 */}
+                </div>
 
                 {isLoading ? (
                     <div className="spinner">정보를 받아오는 중입니다</div>
@@ -85,10 +96,6 @@ function ProductDetailModal({productCd, onClose}) { // 파라미터 구조 분�
                         <p>납품내역은 최근 5건까지 표시됩니다</p>
                     </div>
                 )}
-
-                <div className="modal-bottom">
-                    <button className="modal-close-bottom" onClick={onClose}>닫기</button>
-                </div>
             </div>
         </div>
     );
