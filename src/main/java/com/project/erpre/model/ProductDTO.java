@@ -36,13 +36,14 @@ public class ProductDTO {
     private String lowCategory; // 소분류 이름
     private String productDeleteYn; // 삭제 여부 기본값 'N'
     private Timestamp productDeleteDate; // 삭제 일시
+    private BigDecimal productPrice; // 상품 가격
 
 
     // 1. 전체 상품 목록 조회 생성자
     public ProductDTO(String productCd, String productNm, LocalDateTime productInsertDate, LocalDateTime productUpdateDate,
                       Timestamp productDeleteDate, String productDeleteYn,
                       String lowCategory, String middleCategory, String topCategory,
-                      Integer lowCategoryNo, Integer middleCategoryNo,Integer topCategoryNo) {
+                      Integer lowCategoryNo, Integer middleCategoryNo,Integer topCategoryNo, BigDecimal productPrice) {
         this.productCd = productCd;
         this.productNm = productNm;
         this.productInsertDate = productInsertDate;
@@ -55,12 +56,13 @@ public class ProductDTO {
         this.lowCategoryNo = lowCategoryNo;
         this.middleCategoryNo = middleCategoryNo;
         this.topCategoryNo = topCategoryNo;
+        this.productPrice = productPrice;
     }
 
     // 2. 상품 상세정보 조회 생성자
     public ProductDTO(String productCd, String productNm, LocalDateTime productInsertDate, LocalDateTime productUpdateDate,
                       String employeeName, String customerName, Date orderDDeliveryRequestDate, Integer orderDQty, BigDecimal orderDTotalPrice,
-                      String topCategory, String middleCategory, String lowCategory) {
+                      String topCategory, String middleCategory, String lowCategory, BigDecimal productPrice) {
         this.productCd = productCd;
         this.productNm = productNm;
         this.productInsertDate = productInsertDate;
@@ -73,13 +75,15 @@ public class ProductDTO {
         this.topCategory = topCategory;
         this.middleCategory = middleCategory;
         this.lowCategory = lowCategory;
+        this.productPrice = productPrice;
     }
 
     // 3. 상품 등록 및 수정 생성자
-    public ProductDTO(String productCd, String productNm, Integer categoryNo) {
+    public ProductDTO(String productCd, String productNm, Integer categoryNo, BigDecimal productPrice) {
         this.productCd = productCd;
         this.productNm = productNm;
         this.categoryNo = categoryNo;
+        this.productPrice = productPrice;
     }
 
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,19 +45,8 @@ public class Product {
     @Column(name = "product_delete_date")
     private Timestamp productDeleteDate; // 삭제 일시
 
-//    @PrePersist
-//    @PreUpdate
-//    public void updateFields() {
-//        if (this.productDeleteYn == null) {
-//            this.productDeleteYn = "N"; // 기본값 설정
-//        }
-//        if (this.productUpdateDate != null) {
-//            this.productUpdateDate = LocalDateTime.now();
-//        }
-//        if (this.productInsertDate == null) {
-//            this.productInsertDate = LocalDateTime.now(); // 기본값 설정
-//        }
-//    }
+    @Column(name = "product_price", nullable = false, precision = 15, scale = 2)
+    private BigDecimal productPrice; // 상품 가격
 
     @PrePersist
     public void prePersist() {

@@ -74,7 +74,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                         topCategory.categoryNm.as("topCategory"),
                         category.categoryNo.as("lowCategoryNo"),
                         middleCategory.categoryNo.as("middleCategoryNo"),
-                        topCategory.categoryNo.as("topCategoryNo")))
+                        topCategory.categoryNo.as("topCategoryNo"),
+                        product.productPrice))
                 .from(product)
                 .leftJoin(product.category, category)
                 .leftJoin(category.parentCategory, middleCategory)

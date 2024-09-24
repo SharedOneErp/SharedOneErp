@@ -38,6 +38,8 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final StringPath productNm = createString("productNm");
 
+    public final NumberPath<java.math.BigDecimal> productPrice = createNumber("productPrice", java.math.BigDecimal.class);
+
     public final DateTimePath<java.time.LocalDateTime> productUpdateDate = createDateTime("productUpdateDate", java.time.LocalDateTime.class);
 
     public QProduct(String variable) {

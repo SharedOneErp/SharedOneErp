@@ -46,6 +46,7 @@ export const useProductHooks = () => {
         productCd: '',
         productNm: '',
         categoryNo: null,
+        productPrice: '',
     });
 
     // [2] 카테고리 state
@@ -127,6 +128,7 @@ export const useProductHooks = () => {
                     topCategory: product.topCategory,
                     middleCategory: product.middleCategory,
                     lowCategory: product.lowCategory,
+                    productPrice: product.productPrice,
                 }));
 
                 // 상품 목록 및 필터링된 상품 목록 업데이트
@@ -323,8 +325,8 @@ export const useProductHooks = () => {
 
     // 등록 버튼 클릭 시 처리할 함수
     const handleAddNewProduct = () => {
-        if (!newProductData.productCd || !newProductData.productNm) {
-            alert('상품 코드와 상품명을 입력해주세요.');
+        if (!newProductData.productCd || !newProductData.productNm || !newProductData.productPrice) {
+            alert('품번, 상품명, 가격을 모두 입력해주세요.');
             return;
         }
 
@@ -332,8 +334,11 @@ export const useProductHooks = () => {
         const cleanedProductData = {
             productCd: newProductData.productCd,
             productNm: newProductData.productNm,
-            categoryNo: newProductData.categoryNo
+            categoryNo: newProductData.categoryNo,
+            productPrice: newProductData.productPrice,
         };
+
+        console.log("전송할 데이터:", cleanedProductData);
 
         axios.post('/api/products/add', cleanedProductData, {
             headers: {
@@ -360,10 +365,12 @@ export const useProductHooks = () => {
                             topCategory: product.topCategory,
                             middleCategory: product.middleCategory,
                             lowCategory: product.lowCategory,
+                            productPrice: product.productPrice,
                         }));
                         setProducts(productsWithCategoryNames);
                         setFilteredProducts(productsWithCategoryNames);
-                        setTotalItems(response.data.totalItems || 0);
+                        setTotalItems(response.data.totalElements || 0);
+                        setTotalPages(response.data.totalPages || 0);
                     })
                     .catch((error) => console.error('상품 목록 갱신 실패', error));
 
@@ -373,6 +380,7 @@ export const useProductHooks = () => {
                     productCd: '',
                     productNm: '',
                     categoryNo: null,
+                    productPrice: '',
                 });
                 setSelectedTopCategory('');
                 setSelectedMiddleCategory('');
@@ -400,6 +408,7 @@ export const useProductHooks = () => {
             productCd: '',
             productNm: '',
             categoryNo: null,
+            productPrice: '',
         });
     };
 
@@ -472,6 +481,7 @@ export const useProductHooks = () => {
             topCategoryNo: product.topCategoryNo || '',
             middleCategoryNo: product.middleCategoryNo || '',
             lowCategoryNo: product.lowCategoryNo || '',
+            productPrice: product.productPrice || 0,
         });
 
         // 대분류가 있을 경우 중분류 목록 불러오기
@@ -504,7 +514,8 @@ export const useProductHooks = () => {
         const updatedProduct = {
             productCd: editableProduct.productCd,
             productNm: editableProduct.productNm,
-            categoryNo: editableProduct.categoryNo ? Number(editableProduct.categoryNo) : null
+            categoryNo: editableProduct.categoryNo ? Number(editableProduct.categoryNo) : null,
+            productPrice: editableProduct.productPrice,
         };
 
         console.log('수정할 상품:', updatedProduct)
@@ -535,10 +546,12 @@ export const useProductHooks = () => {
                             topCategory: product.topCategory,
                             middleCategory: product.middleCategory,
                             lowCategory: product.lowCategory,
+                            productPrice: product.productPrice,
                         }));
                         setProducts(productsWithCategoryNames);
                         setFilteredProducts(productsWithCategoryNames);
-                        setTotalItems(response.data.totalItems || 0);
+                        setTotalItems(response.data.totalElements || 0);
+                        setTotalPages(response.data.totalPages || 0);
                     })
                     .catch((error) => console.error('상품 목록 갱신 실패', error));
 
@@ -628,10 +641,12 @@ export const useProductHooks = () => {
                     middleCategory: product.middleCategory,
                     lowCategory: product.lowCategory,
                     productDeleteYn: product.productDeleteDate ? 'Y' : 'N',
+                    productPrice: product.productPrice,
                 }));
                 setProducts(productsWithCategoryNames);
                 setFilteredProducts(productsWithCategoryNames);
-                setTotalItems(response.data.totalItems || 0);
+                setTotalItems(response.data.totalElements || 0);
+                setTotalPages(response.data.totalPages || 0);
                 setLoading(false);
             })
             .catch((error) => console.error('상품 목록 조회 실패', error));
