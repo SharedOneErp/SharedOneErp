@@ -15,3 +15,34 @@
 .logo-image { margin: 0 10px; /* 이미지 사이에 간격을 추가합니다. */
  max-height: 100px; /* 이미지의 최대 높이를 설정하여 크기를 조정합니다. */
  display: block; /* 이미지가 블록 요소로 다루어지도록 설정합니다. */}
+
+ /* 고객관리 모달 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* 다른 요소보다 위에 표시되도록 설정 */
+}
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
