@@ -17,8 +17,8 @@ function ProductList() {
         selectedProducts,
         handleAllSelectProducts,
         handleSelectProduct,
-        isAdding,
-        setIsAdding,
+        isAddMode,
+        setIsAddMode,
         newProductData,
         handleAddNewProduct,
         handleInputChange,
@@ -57,7 +57,6 @@ function ProductList() {
         setSearchTerm,
         addFilteredMiddleCategories,
         addFilteredLowCategories,
-        fullTopCategories,
         filteredEditMiddleCategories,
         filteredEditLowCategories,
         handleFilterTopCategoryChangeForEdit,
@@ -172,13 +171,13 @@ function ProductList() {
                             </div>
                         </div>
                         <div className="right">
-                            <button className="box color" onClick={() => setIsAdding(true)}><i
+                            <button className="box color" onClick={() => setIsAddMode(true)}><i
                                 className="bi bi-plus-circle"></i> 추가하기
                             </button>
                         </div>
                     </div>
 
-                    <div className={`table_wrap ${isAdding ? 'uniform-width' : ''}`}>
+                    <div className={`table_wrap ${isAddMode ? 'uniform-width' : ''}`}>
                         <table>
                             <thead>
                             <tr>
@@ -195,58 +194,76 @@ function ProductList() {
                                     </label>
                                 </th>
                                 <th>
-                                    <span>품번</span>
-                                    <button className="btn-order" onClick={() => handleSort('productCd')}>
-                                        <i className={`bi ${sortColumn === 'productCd' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
-                                    </button>
+                                    <div className={`order_wrap ${sortColumn === 'productCd' ? 'active' : ''}`}>
+                                        <span>품번</span>
+                                        <button className="btn_order" onClick={() => handleSort('productCd')}>
+                                            <i className={`bi ${sortColumn === 'productCd' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                        </button>
+                                    </div>
                                 </th>
                                 <th>
-                                    <span>상품명</span>
-                                    <button className="btn-order" onClick={() => handleSort('productNm')}>
-                                        <i className={`bi ${sortColumn === 'productNm' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
-                                    </button>
+                                    <div className={`order_wrap ${sortColumn === 'productNm' ? 'active' : ''}`}>
+                                        <span>상품명</span>
+                                        <button className="btn_order" onClick={() => handleSort('productNm')}>
+                                            <i className={`bi ${sortColumn === 'productNm' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                        </button>
+                                    </div>
                                 </th>
                                 <th>
-                                    <span>대분류</span>
-                                    <button className="btn-order" onClick={() => handleSort('topCategory')}>
-                                        <i className={`bi ${sortColumn === 'topCategory' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
-                                    </button>
+                                    <div className={`order_wrap ${sortColumn === 'topCategory' ? 'active' : ''}`}>
+                                        <span>대분류</span>
+                                        <button className="btn_order" onClick={() => handleSort('topCategory')}>
+                                            <i className={`bi ${sortColumn === 'topCategory' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                        </button>
+                                    </div>
                                 </th>
                                 <th>
-                                    <span>중분류</span>
-                                    <button className="btn-order" onClick={() => handleSort('middleCategory')}>
-                                        <i className={`bi ${sortColumn === 'middleCategory' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
-                                    </button>
+                                    <div className={`order_wrap ${sortColumn === 'middleCategory' ? 'active' : ''}`}>
+                                        <span>중분류</span>
+                                        <button className="btn_order" onClick={() => handleSort('middleCategory')}>
+                                            <i className={`bi ${sortColumn === 'middleCategory' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                        </button>
+                                    </div>
                                 </th>
                                 <th>
-                                    <span>소분류</span>
-                                    <button className="btn-order" onClick={() => handleSort('lowCategory')}>
-                                        <i className={`bi ${sortColumn === 'lowCategory' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
-                                    </button>
+                                    <div className={`order_wrap ${sortColumn === 'lowCategory' ? 'active' : ''}`}>
+                                        <span>소분류</span>
+                                        <button className="btn_order" onClick={() => handleSort('lowCategory')}>
+                                            <i className={`bi ${sortColumn === 'lowCategory' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                        </button>
+                                    </div>
                                 </th>
                                 <th>
-                                    <span>가격(원)</span>
-                                    <button className="btn-order" onClick={() => handleSort('productPrice')}>
-                                        <i className={`bi ${sortColumn === 'productPrice' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
-                                    </button>
+                                    <div className={`order_wrap ${sortColumn === 'productPrice' ? 'active' : ''}`}>
+                                        <span>가격(원)</span>
+                                        <button className="btn_order" onClick={() => handleSort('productPrice')}>
+                                            <i className={`bi ${sortColumn === 'productPrice' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                        </button>
+                                    </div>
                                 </th>
                                 <th>
-                                    <span>등록일시</span>
-                                    <button className="btn-order" onClick={() => handleSort('productInsertDate')}>
-                                        <i className={`bi ${sortColumn === 'productInsertDate' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
-                                    </button>
+                                    <div className={`order_wrap ${sortColumn === 'productInsertDate' ? 'active' : ''}`}>
+                                        <span>등록일시</span>
+                                        <button className="btn_order" onClick={() => handleSort('productInsertDate')}>
+                                            <i className={`bi ${sortColumn === 'productInsertDate' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                        </button>
+                                    </div>
                                 </th>
                                 <th>
-                                    <span>수정일시</span>
-                                    <button className="btn-order" onClick={() => handleSort('productUpdateDate')}>
-                                        <i className={`bi ${sortColumn === 'productUpdateDate' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
-                                    </button>
+                                    <div className={`order_wrap ${sortColumn === 'productUpdateDate' ? 'active' : ''}`}>
+                                        <span>수정일시</span>
+                                        <button className="btn-order" onClick={() => handleSort('productUpdateDate')}>
+                                            <i className={`bi ${sortColumn === 'productUpdateDate' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                        </button>
+                                    </div>
                                 </th>
                                 <th>
-                                    <span>삭제일시</span>
-                                    <button className="btn-order" onClick={() => handleSort('productDeleteDate')}>
-                                        <i className={`bi ${sortColumn === 'productDeleteDate' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
-                                    </button>
+                                    <div className={`order_wrap ${sortColumn === 'productDeleteDate' ? 'active' : ''}`}>
+                                        <span>삭제일시</span>
+                                        <button className="btn-order" onClick={() => handleSort('productDeleteDate')}>
+                                            <i className={`bi ${sortColumn === 'productDeleteDate' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                        </button>
+                                    </div>
                                 </th>
                                 {/* 수정/삭제 버튼 */}
                                 <th></th>
@@ -254,12 +271,12 @@ function ProductList() {
                             </thead>
                             <tbody>
                             {/* 추가 상태일 때 새로운 입력 행 추가 */}
-                            {isAdding && (
+                            {isAddMode && (
                                 <ProductRow
                                     isEditMode={false}
                                     productData={newProductData}
                                     topCategory={selectedTopCategory}
-                                    topCategories={fullTopCategories}
+                                    topCategories={topCategories}
                                     midCategory={selectedMiddleCategory}
                                     midCategories={addFilteredMiddleCategories}
                                     lowCategory={selectedLowCategory}
@@ -291,7 +308,7 @@ function ProductList() {
                                             isEditMode={true}
                                             productData={editableProduct}
                                             topCategory={editableProduct.topCategoryNo || ''} // 선택된 대분류
-                                            topCategories={fullTopCategories} // 대분류 목록
+                                            topCategories={topCategories} // 대분류 목록
                                             midCategory={editableProduct.middleCategoryNo || ''} // 선택된 중분류
                                             midCategories={filteredEditMiddleCategories} // 중분류 목록
                                             lowCategory={editableProduct.lowCategoryNo || ''} // 선택된 소분류

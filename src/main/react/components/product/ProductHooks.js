@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export const useProductHooks = () => {
 
-    // 1. Read
+    // 🟢 조회
 
     // [1] 상품 state
     const [products, setProducts] = useState([]);     // 상품 목록
@@ -12,20 +12,16 @@ export const useProductHooks = () => {
     const [filteredProducts, setFilteredProducts] = useState([]); // 필터링된 상품 목록
 
     // [2] 카테고리 state
-    const [fullTopCategories, setFullTopCategories] = useState([]); // 대분류 전체 목록
-    const [fullMiddleCategories, setFullMiddleCategories] = useState([]); // 중분류 전체 목록
-    const [fullLowCategories, setFullLowCategories] = useState([]); // 소분류 전체 목록
-
+    const [topCategories, setTopCategories] = useState([]); // 대분류 목록
+    const [middleCategories, setMiddleCategories] = useState([]); // 중분류 목록
+    const [lowCategories, setLowCategories] = useState([]); // 소분류 목록
+    
     const [filterTopCategory, setFilterTopCategory] = useState(''); // 대분류 필터링
     const [filterMiddleCategory, setFilterMiddleCategory] = useState(''); // 중분류 필터링
     const [filterLowCategory, setFilterLowCategory] = useState(''); // 소분류 필터링
 
-    const [topCategories, setTopCategories] = useState([]); // 대분류 상태
-    const [middleCategories, setMiddleCategories] = useState([]); // 중분류 상태
-    const [lowCategories, setLowCategories] = useState([]); // 소분류 상태
 
-    const [addMiddleCategories, setAddMiddleCategories] = useState([]); // Adding 모드용 카테고리
-    const [addLowCategories, setAddLowCategories] = useState([]);
+  
 
     const [filteredEditMiddleCategories, setFilteredEditMiddleCategories] = useState([]); // Edit 모드용 카테고리
     const [filteredEditLowCategories, setFilteredEditLowCategories] = useState([])
@@ -33,15 +29,14 @@ export const useProductHooks = () => {
     // [3] 검색 state
     const [searchTerm, setSearchTerm] = useState('');
 
-    // [4] 정렬 state
+    // 정렬 state
     const [sortColumn, setSortColumn] = useState('productCd'); // 정렬할 컬럼
     const [sortDirection, setSortDirection] = useState('asc'); // 정렬 방향
 
-
-    // 2. Create
-
-    // [1] 상품 state
-    const [isAdding, setIsAdding] = useState(false);
+    // 🟡 Add Mode state
+    const [isAddMode, setIsAddMode] = useState(false);
+    
+    // 🟡 상품 state
     const [newProductData, setNewProductData] = useState({
         productCd: '',
         productNm: '',
@@ -49,15 +44,18 @@ export const useProductHooks = () => {
         productPrice: '',
     });
 
-    // [2] 카테고리 state
+    // 🟡 카테고리 state
     const [selectedLowCategory, setSelectedLowCategory] = useState('');
     const [selectedMiddleCategory, setSelectedMiddleCategory] = useState('');
     const [selectedTopCategory, setSelectedTopCategory] = useState('');
 
+    const [addMiddleCategories, setAddMiddleCategories] = useState([]); // Adding 모드용 카테고리
+    const [addLowCategories, setAddLowCategories] = useState([]);
 
-    // 3. Update
 
-    // [1] 상품 state
+    // 3️⃣ Update
+
+    //  상품 state
     const [isEditMode, setIsEditMode] = useState(null);
     const [editableProduct, setEditableProduct] = useState({
         productCd: '',
@@ -69,7 +67,7 @@ export const useProductHooks = () => {
     });
 
 
-    // 4. 페이지 state
+    // 4️⃣ 페이지 state
     const [totalPages, setTotalPages] = useState(0); // 총 페이지 수
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
     const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지 당 아이템 수
@@ -77,7 +75,7 @@ export const useProductHooks = () => {
     const [pageInputValue, setPageInputValue] = useState(1);
 
 
-    // 5. 모달 state
+    // 5️⃣ 모달 state
 
     const [isLoading, setLoading] = useState(true); // 로딩 상태 관리
 
@@ -99,7 +97,7 @@ export const useProductHooks = () => {
 
     const [selectedStatus, setSelectedStatus] = useState("active"); // 상태
 
-    // useEffect (productList)
+    // 🟢 조회
     useEffect(() => {
         setLoading(true);
         axios
@@ -113,7 +111,6 @@ export const useProductHooks = () => {
                     status: selectedStatus,
                     sortColumn,
                     sortDirection,
-
                     productNm: searchTerm || null,
                     productCd: searchTerm || null,
                 },
@@ -154,8 +151,7 @@ export const useProductHooks = () => {
         // 대분류 API 호출
         axios.get('/api/category/top')
             .then((response) => {
-                setFullTopCategories(response.data);      // 전체 대분류 목록
-                setTopCategories(response.data);          // 대분류 필터 목록
+                setTopCategories(response.data);          // 대분류 목록
             })
             .catch((error) => console.error('대분류 조회 실패', error));
 
@@ -261,45 +257,37 @@ export const useProductHooks = () => {
         }
     };
 
-    // // 필터링된 상품 목록 조회
-    // const filterProducts = () => {
-    //     let filtered = products;
-    //
-    //     // 카테고리 필터링
-    //     if (filterTopCategory) {
-    //         filtered = filtered.filter(product => String(product.topCategoryNo) === String(filterTopCategory));
-    //     }
-    //     if (filterMiddleCategory) {
-    //         filtered = filtered.filter(product => String(product.middleCategoryNo) === String(filterMiddleCategory));
-    //     }
-    //     if (filterLowCategory) {
-    //         filtered = filtered.filter(product => String(product.lowCategoryNo) === String(filterLowCategory));
-    //     }
-    //
-    //     // 검색어 필터링 (상품명 또는 상품번호)
-    //     if (searchTerm) {
-    //         filtered = filtered.filter(product =>
-    //             product.productNm.includes(searchTerm) || product.productCd.includes(searchTerm)
-    //         );
-    //     }
-    //
-    //     setFilteredProducts(filtered);
-    // };
-
-    // 정렬 함수
+    // ⚪ 정렬 함수
     const handleSort = (column) => {
         let mappedColumn = column;
         switch(column){
+            case 'productCd':
+                mappedColumn = 'productCd';
+                break;
+            case 'productNm':
+                mappedColumn = 'productNm';
+                break;
             case 'topCategory':
-                mappedColumn = 'topCategoryNo';
+                mappedColumn = 'topCategory';
                 break;
             case 'middleCategory':
-                mappedColumn = 'middleCategoryNo';
+                mappedColumn = 'middleCategory';
                 break;
             case 'lowCategory':
-                mappedColumn = 'lowCategoryNo';
+                mappedColumn = 'lowCategory';
                 break;
-            // 필요에 따라 다른 컬럼도 매핑
+            case 'productPrice':
+                mappedColumn = 'productPrice';
+                break;
+            case 'productInsertDate':
+                mappedColumn = 'productInsertDate';
+                break;
+            case 'productUpdateDate':
+                mappedColumn = 'productUpdateDate';
+                break;
+            case 'productDeleteDate':
+                mappedColumn = 'productDeleteDate';
+                break;
             default:
                 break;
         }
@@ -323,59 +311,25 @@ export const useProductHooks = () => {
         });
     };
 
-    // 등록 버튼 클릭 시 처리할 함수
+    // 🟡 등록
     const handleAddNewProduct = () => {
+
         if (!newProductData.productCd || !newProductData.productNm || !newProductData.productPrice) {
             alert('품번, 상품명, 가격을 모두 입력해주세요.');
             return;
         }
 
-        // 필요한 데이터만 추출하여 전송
-        const cleanedProductData = {
-            productCd: newProductData.productCd,
-            productNm: newProductData.productNm,
-            categoryNo: newProductData.categoryNo,
-            productPrice: newProductData.productPrice,
-        };
-
-        console.log("전송할 데이터:", cleanedProductData);
-
-        axios.post('/api/products/add', cleanedProductData, {
+        axios.post('/api/products/add', newProductData, {
             headers: {
                 'Content-Type': 'application/json'
             }
         })
             .then(response => {
                 alert('상품이 성공적으로 등록되었습니다.');
-
-                // 상품 등록 후 상품 목록을 다시 불러오기
-                axios.get('/api/products/productList', {
-                    params: {
-                        page: currentPage,
-                        size: itemsPerPage,
-                        topCategoryNo: filterTopCategory || null,
-                        middleCategoryNo: filterMiddleCategory || null,
-                        lowCategoryNo: filterLowCategory || null,
-                        status: selectedStatus,
-                    },
-                })
-                    .then((response) => {
-                        const productsWithCategoryNames = response.data.content.map(product => ({
-                            ...product,
-                            topCategory: product.topCategory,
-                            middleCategory: product.middleCategory,
-                            lowCategory: product.lowCategory,
-                            productPrice: product.productPrice,
-                        }));
-                        setProducts(productsWithCategoryNames);
-                        setFilteredProducts(productsWithCategoryNames);
-                        setTotalItems(response.data.totalElements || 0);
-                        setTotalPages(response.data.totalPages || 0);
-                    })
-                    .catch((error) => console.error('상품 목록 갱신 실패', error));
+                fetchProducts(); // 상품 등록 후 상품 목록 다시 불러오기
 
                 // 등록 상태 초기화 및 입력 데이터 초기화
-                setIsAdding(false);
+                setIsAddMode(false);
                 setNewProductData({
                     productCd: '',
                     productNm: '',
@@ -396,9 +350,9 @@ export const useProductHooks = () => {
             });
     };
 
-    // 등록 모드 취소 버튼 클릭 시 처리할 함수
+    // 🟡 Add Mode 취소 버튼 클릭
     const handleCancelAdd = () => {
-        setIsAdding(false);
+        setIsAddMode(false);
 
         setSelectedTopCategory('');
         setSelectedMiddleCategory('');
@@ -422,13 +376,13 @@ export const useProductHooks = () => {
                 ...prev,
                 [name]: value,
             }));
-        } else if (isAdding && newProductData[name] !== value) {
+        } else if (isAddMode && newProductData[name] !== value) {
             setNewProductData((prev) => ({
                 ...prev,
                 [name]: value,
             }));
         }
-    }, [isEditMode, isAdding, editableProduct, newProductData]);
+    }, [isEditMode, isAddMode, editableProduct, newProductData]);
 
     // 페이지 입력 필드의 변경을 처리하는 함수
     const handlePageInputChange = (e) => {
@@ -454,20 +408,6 @@ export const useProductHooks = () => {
         }
     };
 
-    // // 입력 완료 후 검증을 처리하는 함수
-    // const handlePageInputBlur = () => {
-    //     let page = Number(pageInputValue);
-    //
-    //     // 페이지 유효성 검사
-    //     if (isNaN(page) || page < 1) {
-    //         page = 1;
-    //     }
-    //     if (page > totalPages) {
-    //         page = totalPages;
-    //     }
-    //
-    //     setCurrentPage(page);
-    // };
 
     // 상품 수정
     const handleEditClick = (product) => {
@@ -538,6 +478,10 @@ export const useProductHooks = () => {
                         middleCategoryNo: filterMiddleCategory || null,
                         lowCategoryNo: filterLowCategory || null,
                         status: selectedStatus,
+                        sortColumn,
+                        sortDirection,
+                        productNm: searchTerm || null,
+                        productCd: searchTerm || null,
                     },
                 })
                     .then((response) => {
@@ -552,6 +496,7 @@ export const useProductHooks = () => {
                         setFilteredProducts(productsWithCategoryNames);
                         setTotalItems(response.data.totalElements || 0);
                         setTotalPages(response.data.totalPages || 0);
+                        setLoading(false);
                     })
                     .catch((error) => console.error('상품 목록 갱신 실패', error));
 
@@ -623,6 +568,7 @@ export const useProductHooks = () => {
             })
     }
 
+    // 🟢 상품 재조회
     const fetchProducts = () => {
         axios.get('/api/products/productList', {
             params: {
@@ -632,6 +578,10 @@ export const useProductHooks = () => {
                 middleCategoryNo: filterMiddleCategory || null,
                 lowCategoryNo: filterLowCategory || null,
                 status: selectedStatus,
+                productNm: searchTerm || null,
+                productCd: searchTerm || null,
+                sortColumn,
+                sortDirection,
             },
         })
             .then((response) => {
@@ -658,14 +608,6 @@ export const useProductHooks = () => {
         setCurrentPage(1);
     };
 
-    useEffect(() => {
-        // 대분류로 변경될 때 중분류와 소분류 초기화
-        if (filterTopCategory === '') {
-            setMiddleCategories(fullMiddleCategories);
-            setLowCategories(fullLowCategories);
-        }
-    }, [filterTopCategory, fullMiddleCategories, fullLowCategories]);
-
     // 카테고리 필터링된 중분류 목록
     const filteredMiddleCategories = useMemo(() => {
         if (filterTopCategory) {
@@ -682,20 +624,7 @@ export const useProductHooks = () => {
         return lowCategories;
     }, [lowCategories, filterMiddleCategory]);
 
-    // 상품 목록에서 카테고리 이름 표시
-    const getCategoryNameByNo = (categoryNo) => {
-        if (!categoryNo) {
-            return '-';  // 분류가 없는 경우 '-' 출력
-        }
-        const category = [...topCategories, ...fullMiddleCategories, ...fullLowCategories].find(
-            cat => String(cat.categoryNo) === String(categoryNo)
-        );
-        return category ? category.categoryNm : '-';
-    };
-
-    // 카테고리 필터링 (Adding)
-
-    // Adding 모드: 대분류 변경 시 중분류 목록 가져오기
+    // 🟡 대분류 변경 시 중분류 목록 가져오기
     const handleAddTopCategoryChange = (e) => {
         const selectedTop = e.target.value;
         setSelectedTopCategory(selectedTop);
@@ -705,10 +634,10 @@ export const useProductHooks = () => {
         if (selectedTop) {
             axios.get(`/api/category/middle/${selectedTop}`)
                 .then((response) => {
-                    setAddMiddleCategories(response.data); // Adding 모드용 중분류 목록 업데이트
+                    setAddMiddleCategories(response.data); // Add Mode 중분류 목록 업데이트
                 })
                 .catch((error) => {
-                    console.error('Adding 모드: 중분류 목록 조회 실패', error);
+                    console.error('Add Mode: 중분류 목록 조회 실패', error);
                 });
         } else {
             setAddMiddleCategories([]);
@@ -716,7 +645,7 @@ export const useProductHooks = () => {
     }
 
 
-    // Adding 모드: 중분류 변경 시 소분류 목록 가져오기
+    // 🟡 중분류 변경 시 소분류 목록 가져오기
     const handleAddMiddleCategoryChange = (e) => {
         const selectedMiddle = e.target.value;
         setSelectedMiddleCategory(selectedMiddle);
@@ -725,10 +654,10 @@ export const useProductHooks = () => {
         if (selectedMiddle) {
             axios.get(`/api/category/low/${selectedMiddle}/${selectedTopCategory}/`)
                 .then((response) => {
-                    setAddLowCategories(response.data); // Adding 모드용 소분류 목록 업데이트
+                    setAddLowCategories(response.data); // Add Mode 용 소분류 목록 업데이트
                 })
                 .catch((error) => {
-                    console.error('Adding 모드: 소분류 목록 조회 실패', error);
+                    console.error('Add Mode: 소분류 목록 조회 실패', error);
                 });
         } else {
             setAddLowCategories([]);
@@ -746,7 +675,7 @@ export const useProductHooks = () => {
         }));
     }
 
-    // Adding 모드용 중분류 필터링
+    // Add Mode 중분류 필터링
     const addFilteredMiddleCategories = useMemo(() => {
         if (selectedTopCategory) {
             return addMiddleCategories;
@@ -754,7 +683,7 @@ export const useProductHooks = () => {
         return [];
     }, [selectedTopCategory, addMiddleCategories]);
 
-    // Adding 모드용 소분류 필터링
+    // Add Mode 소분류 필터링
     const addFilteredLowCategories = useMemo(() => {
         if (selectedMiddleCategory) {
             return addLowCategories;
@@ -860,8 +789,8 @@ export const useProductHooks = () => {
         selectedProducts,
         handleAllSelectProducts,
         handleSelectProduct,
-        isAdding,
-        setIsAdding,
+        isAddMode,
+        setIsAddMode,
         newProductData,
         handleAddNewProduct,
         handleInputChange,
@@ -903,10 +832,8 @@ export const useProductHooks = () => {
         handlePreviousPageGroup,
         handleNextPageGroup,
         filteredProducts,
-        getCategoryNameByNo,
         searchTerm,
         setSearchTerm,
-        fullTopCategories,
         addFilteredMiddleCategories,
         addFilteredLowCategories,
         filteredEditMiddleCategories,

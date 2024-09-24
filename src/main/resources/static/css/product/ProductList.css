@@ -36,3 +36,43 @@
 /*.uniform-width td:nth-child(6) {*/
 /*    width: 10%;*/
 /*}*/
+/*.active-sort {*/
+/*    color: #007CC1;*/
+/*}*/
+
+
+/*.bi::before, [class*=" bi-"]::before, [class^=bi-]::before {*/
+/*    display: inline-block;*/
+/*    font-family: bootstrap-icons !important;*/
+/*    font-style: normal;*/
+/*    font-weight: 400 !important;*/
+/*    font-variant: normal;*/
+/*    text-transform: none;*/
+/*    line-height: 1;*/
+/*    vertical-align: -.125em;*/
+/*    -webkit-font-smoothing: antialiased;*/
+/*    -moz-osx-font-smoothing: grayscale;*/
+/*}*/
+/*.table_wrap table th .order_wrap {*/
+/*    display: inline-flex;*/
+/*    gap: 2px;*/
+/*}*/
+/*.bi-arrow-up::before {*/
+/*    content: "\f148";*/
+/*}*/
+/*table_wrap table th .order_wrap .btn_order {*/
+/*    font-size: 13px;*/
+/*    border-radius: 3px;*/
+/*    padding: 0 2px;*/
+/*    transition: all 0.2s;*/
+/*    color: #aaa;*/
+/*    margin-left: 1px;*/
+/*}*/
+/*button {*/
+/*    appearance: none;*/
+/*    border: 0;*/
+/*    background: transparent;*/
+/*    font: inherit;*/
+/*    outline: none;*/
+/*    cursor: pointer;*/
+/*}*/
