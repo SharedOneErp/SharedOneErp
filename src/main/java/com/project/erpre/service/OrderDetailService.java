@@ -105,12 +105,12 @@ public class OrderDetailService {
     public OrderDetail updateOrderDetail(Integer id, OrderDetailDTO orderDetailDTO) {
         OrderDetail existingOrderDetail = orderDetailRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("주문 상세 정보를 찾을 수 없습니다."));
-
         // 필요한 필드만 업데이트
         existingOrderDetail.setOrderDPrice(orderDetailDTO.getOrderDPrice());
         existingOrderDetail.setOrderDQty(orderDetailDTO.getOrderDQty());
         existingOrderDetail.setOrderDTotalPrice(orderDetailDTO.getOrderDTotalPrice());
         existingOrderDetail.setOrderDUpdateDate(LocalDateTime.now());
+        existingOrderDetail.setOrderDDeliveryRequestDate(orderDetailDTO.getOrderDDeliveryRequestDate());
 
         // 연관된 Order와 Product 엔티티도 업데이트
         existingOrderDetail.setOrder(orderRepository.findById(orderDetailDTO.getOrderNo()).orElse(null));

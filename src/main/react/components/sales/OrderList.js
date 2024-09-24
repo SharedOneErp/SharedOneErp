@@ -559,6 +559,7 @@ function OrderList() {
                                 </button>
                             )}
 
+
                             {/* '이전' 버튼 */}
                             {currentPage > 1 && (
                                 <button className="box icon left" onClick={() => handlePageClick(currentPage - 1)}>
