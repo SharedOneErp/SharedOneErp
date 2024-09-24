@@ -268,13 +268,16 @@ export const useHooksList = () => {
     const removeProducteditRow = (index) => {
         console.log('Order details before removal:', orderDetails);
         const orderDetailToDelete = orderDetails[index]; // 삭제할 주문 상세 정보
-        if (orderDetailToDelete && orderDetailToDelete.id) {
-            setDeletedDetailIds(prevState => [...prevState, orderDetailToDelete.id]); // 삭제 ID 추가
+
+        if (orderDetailToDelete && orderDetailToDelete.orderNo) {
+            handleDeleteProduct(orderDetailToDelete.orderNo); // 삭제할 제품 ID 추가
         }
+
         const newOrderDetails = orderDetails.filter((_, i) => i !== index); // 새로운 주문 상세 목록
         setOrderDetails(newOrderDetails); // 상태 업데이트
         console.log('Order details after removal:', newOrderDetails);
     };
+
 
 
 
@@ -487,7 +490,7 @@ export const useHooksList = () => {
                     : `제품명: ${firstProduct.name}\n수량: ${firstProduct.quantity.toLocaleString()}개\n단가: ${firstProduct.price.toLocaleString()}원\n금액: ${(firstProduct.price * firstProduct.quantity).toLocaleString()}원`;
 
                 alert(`${employeeName}님의 주문 생성이 완료되었습니다.\n\n주문번호: ${order_h_no}\n고객사: ${customerName}\n\n${summaryString}`);
-                // window.location.href = `/order?no=${order_h_no}`;
+                window.location.href = `/order?no=${order_h_no}`;
             } else {
                 const errorText = await response.text();
                 console.error('주문 처리 오류:', errorText);
@@ -499,23 +502,35 @@ export const useHooksList = () => {
         }
     };
 
+    // 제품 삭제 핸들러
+    const handleDeleteProduct = (orderNo) => {
+        console.log(`삭제할 제품 ID: ${orderNo}`); // 삭제할 제품 ID 로그
+        setDeletedDetailIds(prevState => [...prevState, orderNo]); // 삭제할 제품 ID 추가
+    };
+
 
     //상품 수정
     const handleEdit = async (orderNo) => {
-        const deliveryDateElement = document.querySelector('.delivery-date');
-        const deliveryRequestDate = deliveryDateElement ? formatDateForInput(deliveryDateElement.value) : null;
-
         try {
+            const deliveryDateElement = document.querySelector('.delivery-date');
+            const deliveryRequestDate = deliveryDateElement ? formatDateForInput(deliveryDateElement.value) : null;
+
+            console.log('납품 요청일 (deliveryRequestDate):', deliveryRequestDate); // deliveryRequestDate 값 로그
+
+            // 1. 전체 금액 계산
             const totalAmount = displayItemEdit.reduce((sum, product) => sum + product.orderDPrice * product.orderDQty, 0);
+
+            // 2. 주문 데이터 준비
             const cleanProducts = displayItemEdit.map((product) => ({
                 orderNo: product.orderNo,
                 productCd: product.productCd,
                 orderDPrice: product.orderDPrice,
                 orderDQty: product.orderDQty,
                 orderDTotalPrice: product.orderDPrice * product.orderDQty,
-                orderDDeliveryRequestDate: deliveryRequestDate,
-                orderDInsertDate: new Date().toISOString(),
+                orderDDeliveryRequestDate: deliveryRequestDate || product.orderDDeliveryRequestDate,
             }));
+
+            console.log(cleanProducts);
 
             const customerNo = document.querySelector('input[name="customerNo"]').value.trim();
             const employeeId = document.querySelector('.employee-id').textContent.trim();
@@ -530,6 +545,7 @@ export const useHooksList = () => {
                 orderHDeleteYn: "N",
             };
 
+            // 3. 주문 데이터 업데이트 API 호출
             const response = await fetch(`/api/order/${orderNo}`, {
                 method: 'PUT',
                 headers: {
@@ -546,43 +562,60 @@ export const useHooksList = () => {
             const data = await response.json();
             const updatedOrderNo = data.orderNo;
 
+            // 4. 주문 상세 정보 업데이트 및 삭제
             for (let product of cleanProducts) {
                 const orderDetailData = {
                     orderNo: updatedOrderNo,
                     productCd: product.productCd,
                     orderDPrice: product.orderDPrice,
                     orderDQty: product.orderDQty,
-                    orderDTotalPrice: product.orderDPrice * product.orderDQty || 0,
-                    orderDDeliveryRequestDate: deliveryRequestDate,
+                    orderDTotalPrice: product.orderDTotalPrice,
+                    orderDUpdateDate: new Date().toISOString(),
                     orderDInsertDate: new Date().toISOString(),
+                    orderDDeliveryRequestDate:  deliveryRequestDate || product.orderDDeliveryRequestDate,
                 };
 
-                let detailResponse;
                 if (product.orderNo) {
-                    detailResponse = await fetch(`/api/orderDetails/${product.orderNo}`, {
+                    // 기존 항목 업데이트
+                    const detailResponse = await fetch(`/api/orderDetails/${product.orderNo}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify(orderDetailData),
                     });
+
+                    if (!detailResponse.ok) {
+                        const errorText = await detailResponse.text();
+                        throw new Error(`상세 주문 처리 중 오류 발생: ${errorText}`);
+                    }
                 } else {
-                    detailResponse = await fetch(`/api/orderDetails`, {
+                    // 새로운 항목 추가
+                    const detailResponse = await fetch(`/api/orderDetails`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify(orderDetailData),
                     });
-                }
 
-                if (!detailResponse.ok) {
-                    const errorText = await detailResponse.text();
-                    throw new Error(`상세 주문 처리 중 오류 발생: ${errorText}`);
+                    if (!detailResponse.ok) {
+                        const errorText = await detailResponse.text();
+                        throw new Error(`상세 주문 추가 중 오류 발생: ${errorText}`);
+                    }
                 }
             }
+            //여기까지는 해결. 손대지 마시오
 
+            // 5. 삭제된 제품 처리 전에 로그 추가
+            console.log('주문 수정 시 삭제된 제품 IDs:', deletedDetailIds);
+
+
+
+            // 5. 삭제된 제품 처리
             for (let deletedId of deletedDetailIds) {
+                console.log(`삭제 요청 제품임 ID: ${deletedId}`); // 삭제할 제품 ID 로그
+
                 const deleteResponse = await fetch(`/api/orderDetails/${deletedId}`, {
                     method: 'DELETE',
                 });
@@ -590,22 +623,20 @@ export const useHooksList = () => {
                 if (!deleteResponse.ok) {
                     const errorText = await deleteResponse.text();
                     throw new Error(`상세 주문 삭제 중 오류 발생: ${errorText}`);
+                } else {
+                    console.log(`제품 ID ${deletedId} 삭제 성공`); // 삭제 성공 로그
                 }
             }
 
+            // 6. 성공 후 페이지 이동
             alert("주문을 성공적으로 수정했습니다.");
+            window.location.href = `/order?no=${orderNo}`;
         } catch (error) {
             console.error('주문 수정 중 오류 발생:', error.message);
             alert("주문 수정 중 오류가 발생했습니다. 다시 확인해주세요.");
         }
     };
 
-
-
-    // 제품 삭제 핸들러
-    const handleDeleteProduct = (detailId) => {
-        setDeletedDetailIds(prevState => [...prevState, detailId]); // 삭제할 제품 ID 추가
-    };
 
     // 주문 업데이트 시 삭제된 제품 목록을 포함하여 전송
     const updateOrder = async () => {

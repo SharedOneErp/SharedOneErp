@@ -17,7 +17,6 @@ public class OrderDetailDTO {
     private Integer orderNo;  // OrderDetail의 PK
     private Integer orderHNo; // Order의 FK (Order 엔티티 대신 사용)
     private String productCd; // Product의 FK (Product 엔티티 대신 사용)
-
     private BigDecimal orderDPrice;
     private int orderDQty;
     private BigDecimal orderDTotalPrice;

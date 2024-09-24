@@ -14,6 +14,7 @@ function Order() {
     const [isDenied, setIsDenied] = useState(false);
 
 
+
     const fetchEmployee = async () => {
         try {
             const response = await fetch('/api/employee', {
@@ -365,11 +366,15 @@ function Order() {
                                             <td style={{ width: '100px' }}>
                                                 <button className="box icon del" onClick={() => {
                                                     if (isCreateMode) {
-                                                        console.log("createmode")
+                                                        console.log("생성모드")
                                                         removeProductRow(index);
                                                     } else if (isEditMode) {
-                                                        console.log("editmode")
-                                                        removeProducteditRow(index);
+                                                        console.log("수정모드")
+                                                        if(index!=0) {
+                                                            removeProducteditRow(index);
+                                                        }else {
+                                                            alert("상품은 최소 1개 이상이어야 합니다.")
+                                                        }
                                                     }
                                                 }}>
                                                     <i className="bi bi-trash"></i>{/* 삭제 */}

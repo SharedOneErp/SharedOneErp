@@ -114,6 +114,13 @@ public class OrderController {
         try {
             // 주문 업데이트 서비스 호출
             Order updatedOrder = orderService.updateOrder(orderNo, orderDTO);
+
+            if (orderDTO.getDeletedDetailIds() != null && !orderDTO.getDeletedDetailIds().isEmpty()) {
+                for (Integer detailId : orderDTO.getDeletedDetailIds()) {
+                    orderService.deleteOrderDetail(orderNo, detailId);
+                }
+            }
+
             return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("주문 수정 중 오류 발생: ", e);

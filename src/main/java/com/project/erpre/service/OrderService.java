@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
 
-    private static final Logger logger = LoggerFactory.getLogger(PriceController.class); // Logger 선언
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class); // 로거 선언
 
     @Autowired
     private OrderRepository orderRepository;
@@ -172,14 +172,24 @@ public class OrderService {
         orderDetail.setOrder(existingOrder); // 주문 설정
         return orderDetailRepository.save(orderDetail);
     }
+
+
+    // 주문 상세 삭제
     public void deleteOrderDetail(Integer orderNo, Integer detailId) {
+        logger.info("deleteOrderDetail - 주문 번호: {}, 삭제할 상세 번호: {}", orderNo, detailId); // 삭제 요청 로그
+
         // 주문이 존재하는지 확인
         Order existingOrder = orderRepository.findById(orderNo)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
 
+        logger.info("주문 {} 존재 확인 완료", orderNo); // 주문 확인 완료 로그
+
         // 상세 항목을 삭제
         orderDetailRepository.deleteById(detailId);
+
+        logger.info("상세 주문 {} 삭제 완료", detailId); // 삭제 완료 로그
     }
+
 
 
 
