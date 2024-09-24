@@ -313,7 +313,7 @@ function Order() {
                                                     : isEditMode || isDetailView
                                                         ? item?.productNm || ''
                                                         : ''}
-                                                readOnly={!isEditMode && !isCreateMode}
+                                                readOnly
                                                 placeholder="상품 선택"
                                                 onChange={(e) => {
                                                     if (isCreateMode) {
