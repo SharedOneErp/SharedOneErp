@@ -11,7 +11,6 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class MainController {
 
-
     @GetMapping("/")
     public String home(HttpSession session) {
         if (session.getAttribute("employee") == null) {

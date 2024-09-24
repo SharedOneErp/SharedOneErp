@@ -15,11 +15,10 @@ import java.util.List;
 //@CrossOrigin(origins = "http://localhost:8787") // React 개발 서버 포트
 public class CustomerController {
 
-    private static final Logger logger = LoggerFactory.getLogger(PriceController.class); // Logger 선언
+    private static final Logger logger = LoggerFactory.getLogger(CustomerController.class); // Logger 선언
 
     @Autowired
     private CustomerService customerService;
-
 
     // 전체 고객 목록 조회
     @GetMapping("/getList")
@@ -29,12 +28,11 @@ public class CustomerController {
     }
 
     // 전체 고객사, 삭제된 고객사 목록 조회
-    @GetMapping("/api/customer/getList")
+    @GetMapping("/getListByDeleteYn") //경로 수정 (중복 제거)
     public ResponseEntity<List<Customer>> getCustomers(@RequestParam(required = false) String deleteYn) {
         List<Customer> customers = customerService.getCustomersByDeleteYn(deleteYn);
         return ResponseEntity.ok(customers);
     }
-
 
     // 고객 정보 등록
     @PostMapping("/register")
@@ -63,4 +61,24 @@ public class CustomerController {
         return customerService.searchCustomers(name);
     }
 
+    // 메인 - 총 고객사 수
+    @GetMapping("/count")
+    public ResponseEntity<Long> getTotalCustomer() {
+        Long count = customerService.getTotalCustomer();
+        return ResponseEntity.ok(count);
+    }
+
+    // 메인 - 최근 신규 고객(등록일시가 오늘부터 3일전 까지)
+    @GetMapping("/recent")
+    public ResponseEntity<List<Customer>> getRecentCustomer() {
+        List<Customer> recentCustomer = customerService.getRecentCustomer();
+        return ResponseEntity.ok(recentCustomer);
+    }
+
+    // 메인 - 계약 갱신 예정(거래종료일시가 오늘 기준 3일 남은 것)
+    @GetMapping("/renewals")
+    public ResponseEntity<List<Customer>> getRenewalCustomer() {
+        List<Customer> renewalCustomer = customerService.getRenewalCustomer();
+        return ResponseEntity.ok(renewalCustomer);
+    }
 }

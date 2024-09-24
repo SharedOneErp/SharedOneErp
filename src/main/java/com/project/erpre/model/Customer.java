@@ -11,12 +11,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "m_customer")
-@Data
+@Data //@Data는 @Getter, @Setter, @ToString, @EqualsAndHashCode 등을 포함
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Customer {
 

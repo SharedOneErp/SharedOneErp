@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -124,4 +124,23 @@ public class CustomerService {
     public List<Customer> searchCustomers(String name) {
         return customerRepository.findByCustomerNameContainingIgnoreCase(name);
     }
+
+    // 메인 - 총 고객사 수 (삭제안된거)
+    public Long getTotalCustomer() {
+        return customerRepository.countByCustomerDeleteYn("N");
+    }
+
+    // 메인 - 최근 신규 고객 (등록일시가 오늘부터 3일 전까지)
+    public List<Customer> getRecentCustomer() {
+        Timestamp threeDaysAgo = new Timestamp(System.currentTimeMillis() - 3L * 24 * 60 * 60 * 1000);
+        return customerRepository.findByCustomerInsertDateAfterAndCustomerDeleteYn(threeDaysAgo, "N");
+    }
+
+    // 메인 - 계약 갱신 예정 (transactionEndDate가 오늘 기준 3일 남은 것)
+    public List<Customer> getRenewalCustomer() {
+        Timestamp today = new Timestamp(System.currentTimeMillis());
+        Timestamp targetDate = new Timestamp(today.getTime() + 3L * 24 * 60 * 60 * 1000);
+        return customerRepository.findByCustomerTransactionEndDateBetweenAndCustomerDeleteYn(today, targetDate, "N");
+    }
+
 }
