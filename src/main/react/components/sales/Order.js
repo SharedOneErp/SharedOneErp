@@ -559,7 +559,7 @@ function Order() {
                                                     onClick={() => isEditMode ? handleProductSelectEdit(result) : handleProductSelect(result)}
                                                 >
                                                     <td>{result.productCd}</td>
-                                                    <td>{result.category.categoryNo}</td>
+                                                    <td>{result.category.categoryNm}</td>
                                                     <td>{result.productNm}</td>
                                                 </tr>
                                             ))}
