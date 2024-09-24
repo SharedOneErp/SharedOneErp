@@ -401,6 +401,24 @@ export const useHooksList = () => {
         const customerName = document.querySelector('input[name="customerName"]').value.trim();
         const deliveryDateElement = document.querySelector('.delivery-date');
         const deliveryRequestDate = deliveryDateElement ? formatDateForInput(deliveryDateElement.value) : null;
+
+        //정보값 검증
+        if (!customerName) {
+            alert("고객 이름을 입력하세요.");
+            return; // 제출 중지
+        }
+        if (!deliveryRequestDate) {
+            alert("납품 날짜를 입력하세요.");
+            return; // 제출 중지
+        }
+        // 제품 검증
+        for (let product of products) {
+            if (!product.code || !product.price || !product.quantity) {
+                alert("모든 제품 정보가 입력되어야 합니다.");
+                return; // 제출 중지
+            }
+        }
+
         const employeeElement = document.querySelector('.employee-name');
         const employeeName = employeeElement ? employeeElement.textContent.trim() : "담당자 이름 없음";
         const customerNo = document.querySelector('input[name="customerNo"]').value.trim();
@@ -536,7 +554,7 @@ export const useHooksList = () => {
                     orderDQty: product.orderDQty,
                     orderDTotalPrice: product.orderDPrice * product.orderDQty || 0,
                     orderDDeliveryRequestDate: deliveryRequestDate,
-                    orderDUpadteDate: new Date().toISOString(),
+                    orderDInsertDate: new Date().toISOString(),
                 };
 
                 let detailResponse;
