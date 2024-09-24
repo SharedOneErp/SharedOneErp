@@ -1,5 +1,6 @@
 package com.project.erpre.service;
 import com.project.erpre.model.Category;
+import com.project.erpre.model.CategoryDTO;
 import com.project.erpre.model.Product;
 import com.project.erpre.model.ProductDTO;
 import com.project.erpre.repository.CategoryRepository;
@@ -146,6 +147,12 @@ public class ProductService {
             productRepository.saveAll(products);
 
     }
+
+    // 7. 카테고리 조회
+    public List<CategoryDTO> getCategoryList(Integer topCategoryNo, Integer middleCategoryNo, Integer lowCategoryNo) {
+        return categoryRepository.getCategoryList(topCategoryNo, middleCategoryNo, lowCategoryNo);
+    }
+
 
 
     // 대분류 조회
