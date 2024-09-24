@@ -64,6 +64,18 @@ public class PriceController {
         return priceService.getPricesByCustomerAndProduct(customerNo, productCd);
     }
 
+    // 🔴 가격의 시작일과 종료일이 겹치는지 확인하는 API
+    @PostMapping("/check-duplicate")
+    public ResponseEntity<List<PriceDTO>> checkDuplicatePrice(@RequestBody PriceDTO priceDTO) {
+        logger.info("🟢 Received PriceDTO: {}", priceDTO);  // priceDTO 로그 출력
+
+        // 겹치는 데이터가 있는지 서비스에서 확인
+        List<PriceDTO> duplicatePrices = priceService.checkDuplicate(priceDTO);
+
+        // 중복 가격 정보를 반환 (없으면 빈 리스트 반환)
+        return ResponseEntity.ok(duplicatePrices);
+    }
+
     // 🔴 가격 정보 목록 조회 (필터링, 페이징, 정렬 지원)
     @GetMapping("/all")
     public Page<PriceDTO> getAllPrices(

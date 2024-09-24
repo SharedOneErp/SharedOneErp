@@ -42,7 +42,7 @@ public class Price {
     @Column(name = "price_end_date")
     private Date priceEndDate;  // 가격 적용 종료 일자 (null일 경우 무기한 적용)
 
-    @Column(name = "price_insert_date", nullable = false, insertable = false)
+    @Column(name = "price_insert_date", nullable = false, insertable = false, updatable = false)
     private Timestamp priceInsertDate;  // 가격 등록 일시 (데이터베이스에서 자동으로 설정, CURRENT_TIMESTAMP 사용)
 
     @Column(name = "price_update_date")

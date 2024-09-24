@@ -76,9 +76,9 @@ VALUES
 (2, 1, '의자'),
 (3, 2, '사무용 의자');
 
-INSERT INTO m_product (product_cd, category_no, product_nm)
+INSERT INTO m_product (product_cd, category_no, product_nm, product_price)
 VALUES
-('P0001', 3, '의자 블랙 A');
+('P0001', 3, '의자 블랙 A', 10000);
 
 INSERT INTO m_price (customer_no, product_cd, price_customer, price_start_date, price_end_date)
 VALUES

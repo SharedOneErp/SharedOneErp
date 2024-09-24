@@ -28,6 +28,19 @@ public interface PriceRepository extends JpaRepository<Price, Integer> {
     // 🔴 특정 고객과 특정 제품의 가격 정보 조회
     List<Price> findByCustomer_CustomerNoAndProduct_ProductCd(Integer customerNo, String productCd);
 
+    // 🔴 겹치는 가격 정보 조회
+    @Query("SELECT p FROM Price p WHERE "
+            + "p.customer.customerNo = :customerNo AND "
+            + "p.product.productCd = :productCd AND "
+            + "((:priceEndDate >= p.priceStartDate AND :priceStartDate <= p.priceEndDate) " // 구간이 겹치는 경우
+            + "OR (:priceStartDate <= p.priceStartDate AND :priceEndDate >= p.priceEndDate) " // 등록된 구간이 기존 구간을 완전히 포함하는 경우
+            + "OR (p.priceStartDate IS NULL OR p.priceEndDate IS NULL))")  // 기존 데이터의 시작일/종료일이 NULL인 경우도 포함
+    List<Price> findOverlappingPrices(@Param("customerNo") Integer customerNo,
+                                      @Param("productCd") String productCd,
+                                      @Param("priceStartDate") Date priceStartDate,
+                                      @Param("priceEndDate") Date priceEndDate);
+
+
     // 🔴 가격 정보 조회 (필터링, 페이징, 정렬 지원)
     @Query("SELECT p FROM Price p WHERE "
             + "(:customerNo IS NULL OR p.customer.customerNo = :customerNo) AND "
