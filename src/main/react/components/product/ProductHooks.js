@@ -259,6 +259,8 @@ export const useProductHooks = () => {
         }
     };
 
+
+
     // ⚪ 정렬 함수
     const handleSort = (column) => {
         let mappedColumn = column;
@@ -312,6 +314,7 @@ export const useProductHooks = () => {
             }
         });
     };
+
 
     // 🟡 등록
     const handleAddNewProduct = () => {
@@ -522,32 +525,37 @@ export const useProductHooks = () => {
     // 트러블 슈팅: 순환 참조 문제 (상품 삭제시 발생하는 문제)
     // 🟠 상품 삭제 함수
     const handleDeleteSelected = (productCd = null) => {
-        if (!productCd && selectedProducts.length === 0) {
+        let productsToDelete = [];
+
+        if (productCd) {
+            productsToDelete = [productCd];
+        } else if (selectedProducts && selectedProducts.length > 0) {
+            productsToDelete = selectedProducts;
+        } else {
             alert('삭제할 상품을 선택해주세요.');
             return;
         }
+
         if (!window.confirm('정말 삭제하시겠습니까?')) {
             return;
         }
 
-        const productsToDelete = productCd ? [productCd] : selectedProducts.filter(cd => typeof cd === 'string');
+        console.log('개별 코드:', productsToDelete, '전체 코드:', selectedProducts);
 
-        if (productsToDelete.length === 0) {
-            alert('삭제할 상품이 없습니다.');
-            return;
-        }
-
-        console.log('삭제할 상품 코드:', productsToDelete); // 디버깅용 로그
-
-        axios.delete('/api/products/delete', { data: productsToDelete }) // 단순 배열로 전송
+        axios.post('/api/products/delete', selectedProducts.length > 0 ? selectedProducts : productsToDelete, { // 데이터 형식 수정
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then(response => {
                 alert('상품이 삭제되었습니다.');
-                fetchProducts(); // 삭제 후 상품 목록을 다시 조회
+                fetchProducts(); // 삭제 후 상품 목록 다시 불러오기
                 setSelectedProducts([]); // 선택된 상품 초기화
             })
             .catch(error => {
                 console.error('상품 삭제 실패:', error);
                 alert('상품 삭제에 실패했습니다. 다시 시도해주세요.');
+                // 선택된 상품을 초기화하지 않아도 됩니다. 필요 시 유지
             });
     };
 
@@ -759,13 +767,22 @@ export const useProductHooks = () => {
         setSelectedProducts([]);
 
         // 페이지 변경 후 전체 선택 체크박스 상태 초기화
-        const allSelectCheckbox = document.getElementById('all-select-checkbox');
+        const allSelectCheckbox = document.getElementById('all-select_checkbox');
         if(allSelectCheckbox) {
             allSelectCheckbox.checked = false;
         }
 
         setCurrentPage(newPage);
-    };
+    }
+
+    useEffect(() => {
+        setSelectedProducts([]);
+
+        const allSelectCheckbox = document.getElementById('all-select_checkbox');
+        if (allSelectCheckbox) {
+            allSelectCheckbox.checked = false;
+        }
+    }, [currentPage, filteredProducts]);
 
     // 페이지당 항목 수 변경
     const handleItemsPerPageChange = (e) => {

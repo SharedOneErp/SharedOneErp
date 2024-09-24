@@ -142,8 +142,8 @@ public class ProductService {
             product.setProductDeleteYn("N");
             product.setProductDeleteDate(null);
 
-            productRepository.saveAll(products);
         }
+            productRepository.saveAll(products);
 
     }
 
