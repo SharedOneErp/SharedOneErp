@@ -218,7 +218,8 @@ function Order() {
                                         <div className="form-group">
                                             <label>주문 등록일</label>
                                             <input type="date" value={formatDateForInput(orderHInsertDate) || ''} readOnly
-                                                className="readonly box" />
+                                                className="readonly box"
+                                            />
 
                                         </div>
                                     </>
@@ -227,12 +228,35 @@ function Order() {
                                 <div className="form-group">
                                     {/*위는 주문 생성 , 아래는 수정과 변경*/}
                                     <label>납품요청일</label>
-                                    <input type="date" className="delivery-date box" defaultValue={formatDateForInput(orderDetails[0]?.orderDDeliveryRequestDate)} readOnly={isDetailView} />
+                                    <input
+                                        type="date"
+                                        className="delivery-date box"
+                                        defaultValue={formatDateForInput(orderDetails[0]?.orderDDeliveryRequestDate)}
+                                        readOnly={isDetailView}
+                                        min={new Date().toISOString().split('T')[0]}
+                                        onChange={(e) => {
+                                            const selectedDate = new Date(e.target.value);
+                                            const today = new Date();
+                                            today.setHours(0, 0, 0, 0); // 오늘 날짜의 시간 부분을 00:00:00으로 설정
+                                            // 날짜 검증
+                                            if (isNaN(selectedDate.getTime())) {
+                                                // 유효하지 않은 날짜 처리
+                                                alert("유효하지 않은 날짜입니다.");
+                                            } else if (selectedDate < today) {
+                                                // 선택한 날짜가 오늘보다 이전인지 확인
+                                                alert("납품 요청일은 오늘보다 같거나 이후여야 합니다.");
+                                                e.target.value = ''; // 잘못된 날짜 선택 시 입력값 초기화
+                                            } else {
+                                                // 선택한 날짜가 유효할 경우
+                                                console.log("선택한 날짜:", selectedDate);
+                                            }
+                                        }}
+                                    />
                                 </div>
 
                                 <div className="form-group">
                                     <label>담당자</label>
-                                    <span className="employee-id" style={{ display: 'none' }}>{employee ? (
+                                    <span className="employee-id" style={{display: 'none'}}>{employee ? (
                                         <>
                                             {employee.employeeId}
                                         </>
@@ -246,7 +270,6 @@ function Order() {
                                     ) : (
                                         'LOADING'
                                     )}
-
 
                                     </span>
                                 </div>
@@ -281,8 +304,10 @@ function Order() {
                         </div>
                         <div className="right">
                             {/* 제품 추가 버튼 - 생성 모드 또는 수정 모드에서만 표시 */}
-                            {(isCreateMode || isEditMode) && (
-                                <button className="box color" onClick={isCreateMode ? addProductRow : editProductRow}><i className="bi bi-plus-circle"></i> 추가하기</button>
+                            {(isCreateMode || isEditMode) && customerData.customerName && (
+                                <button className="box color" onClick={isCreateMode ? addProductRow : editProductRow}>
+                                    <i className="bi bi-plus-circle"></i> 추가하기
+                                </button>
                             )}
                         </div>
                     </div>
@@ -301,7 +326,8 @@ function Order() {
                             </thead>
                             <tbody>
                                 {/* 하나의 데이터 소스를 조건에 맞게 사용 */}
-                                {(isCreateMode ? products : isEditMode ? displayItemEdit : displayItems || []).map((item, index) => (
+                                {customerData.customerName && (
+                                (isCreateMode  ? products : isEditMode ? displayItemEdit : displayItems || []).map((item, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>
@@ -390,7 +416,7 @@ function Order() {
                                             />
                                         </td>
                                     </tr>
-                                ))}
+                                )))}
                             </tbody>
                         </table>
                     </div>
