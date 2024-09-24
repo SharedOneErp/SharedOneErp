@@ -218,7 +218,8 @@ function Order() {
                                         <div className="form-group">
                                             <label>주문 등록일</label>
                                             <input type="date" value={formatDateForInput(orderHInsertDate) || ''} readOnly
-                                                className="readonly box" />
+                                                className="readonly box"
+                                            />
 
                                         </div>
                                     </>
@@ -227,7 +228,7 @@ function Order() {
                                 <div className="form-group">
                                     {/*위는 주문 생성 , 아래는 수정과 변경*/}
                                     <label>납품요청일</label>
-                                    <input type="date" className="delivery-date box" defaultValue={formatDateForInput(orderDetails[0]?.orderDDeliveryRequestDate)} readOnly={isDetailView} />
+                                    <input type="date" className="delivery-date box" defaultValue={formatDateForInput(orderDetails[0]?.orderDDeliveryRequestDate)} readOnly={isDetailView} min={new Date().toISOString().split('T')[0]}/>
                                 </div>
 
                                 <div className="form-group">
@@ -246,7 +247,6 @@ function Order() {
                                     ) : (
                                         'LOADING'
                                     )}
-
 
                                     </span>
                                 </div>
@@ -281,8 +281,10 @@ function Order() {
                         </div>
                         <div className="right">
                             {/* 제품 추가 버튼 - 생성 모드 또는 수정 모드에서만 표시 */}
-                            {(isCreateMode || isEditMode) && (
-                                <button className="box color" onClick={isCreateMode ? addProductRow : editProductRow}><i className="bi bi-plus-circle"></i> 추가하기</button>
+                            {(isCreateMode || isEditMode) && customerData.customerName && (
+                                <button className="box color" onClick={isCreateMode ? addProductRow : editProductRow}>
+                                    <i className="bi bi-plus-circle"></i> 추가하기
+                                </button>
                             )}
                         </div>
                     </div>
@@ -301,7 +303,8 @@ function Order() {
                             </thead>
                             <tbody>
                                 {/* 하나의 데이터 소스를 조건에 맞게 사용 */}
-                                {(isCreateMode ? products : isEditMode ? displayItemEdit : displayItems || []).map((item, index) => (
+                                {customerData.customerName && (
+                                (isCreateMode  ? products : isEditMode ? displayItemEdit : displayItems || []).map((item, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>
@@ -390,7 +393,7 @@ function Order() {
                                             />
                                         </td>
                                     </tr>
-                                ))}
+                                )))}
                             </tbody>
                         </table>
                     </div>
