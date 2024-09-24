@@ -70,7 +70,7 @@ export const useProductHooks = () => {
     // 4️⃣ 페이지 state
     const [totalPages, setTotalPages] = useState(0); // 총 페이지 수
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
-    const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지 당 아이템 수
+    const [itemsPerPage, setItemsPerPage] = useState(20); // 페이지 당 아이템 수
     const [totalItems, setTotalItems] = useState(0); // 총 상품 수
     const [pageInputValue, setPageInputValue] = useState(1);
 
@@ -250,7 +250,9 @@ export const useProductHooks = () => {
     // 상품 전체 선택
     const handleAllSelectProducts = (checked) => {
         if (checked) {
-            const allProductCds = products.map(product => product.productCd);
+            const allProductCds = products
+                .filter(product => product.productDeleteYn === 'N')
+                .map(product => product.productCd);
             setSelectedProducts(allProductCds);
         } else {
             setSelectedProducts([]);
@@ -315,7 +317,7 @@ export const useProductHooks = () => {
     const handleAddNewProduct = () => {
 
         if (!newProductData.productCd || !newProductData.productNm || !newProductData.productPrice) {
-            alert('품번, 상품명, 가격을 모두 입력해주세요.');
+            alert('상품코드, 상품명, 가격에 적절한 값을 입력해주세요. 가격은 숫자만 허용됩니다.');
             return;
         }
 
@@ -344,6 +346,10 @@ export const useProductHooks = () => {
             .catch(error => {
                 if (error.response && error.response.status === 400) {
                     alert('이미 존재하는 상품 코드입니다. 다른 코드를 입력해주세요.');
+                    setNewProductData(prevState => ({
+                        ...prevState,
+                        productCd: '',  // 상품코드만 초기화하여 새 값을 입력할 수 있게 함
+                    }));
                 } else {
                     console.error('상품 추가 실패:', error.response?.data || error.message);
                 }
@@ -455,7 +461,7 @@ export const useProductHooks = () => {
             productCd: editableProduct.productCd,
             productNm: editableProduct.productNm,
             categoryNo: editableProduct.categoryNo ? Number(editableProduct.categoryNo) : null,
-            productPrice: editableProduct.productPrice,
+            productPrice: editableProduct.productPrice || 0,
         };
 
         console.log('수정할 상품:', updatedProduct)
@@ -482,6 +488,7 @@ export const useProductHooks = () => {
                         sortDirection,
                         productNm: searchTerm || null,
                         productCd: searchTerm || null,
+                       
                     },
                 })
                     .then((response) => {
@@ -522,7 +529,8 @@ export const useProductHooks = () => {
             return;
         }
 
-        const productsToDelete = productCd ? [productCd] : selectedProducts;
+        // 선택된 상품 코드만 추출 (정상적인 상품 코드만 남기기)
+        const productsToDelete = productCd ? [productCd] : selectedProducts.filter(cd => typeof cd === 'string');
 
         axios.delete('/api/products/delete', {
             headers: {
@@ -743,6 +751,16 @@ export const useProductHooks = () => {
     // 페이지 변경
     const handlePageChange = (pageNumber) => {
         const newPage = Math.min(pageNumber, totalPages);
+
+        // 선택된 상품 초기화 (전체 선택 해제)
+        setSelectedProducts([]);
+
+        // 페이지 변경 후 전체 선택 체크박스 상태 초기화
+        const allSelectCheckbox = document.getElementById('all-select-checkbox');
+        if(allSelectCheckbox) {
+            allSelectCheckbox.checked = false;
+        }
+
         setCurrentPage(newPage);
     };
 
@@ -752,7 +770,7 @@ export const useProductHooks = () => {
         const parsedValue = parseInt(value, 10);
         if (isNaN(parsedValue) || parsedValue < 1) {
             alert('페이지당 항목 수는 최소 1 이상이어야 합니다.');
-            setItemsPerPage(10); // 기본값으로 설정
+            setItemsPerPage(20); // 기본값으로 설정
         } else {
             setItemsPerPage(parsedValue);
         }

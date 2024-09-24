@@ -123,7 +123,7 @@ function ProductList() {
 
                             {/* 2️⃣ 검색어 입력 */}
                             <div className={`search_box ${searchTerm ? 'has_text' : ''}`}>
-                                <label className={`label_floating ${searchTerm ? 'active' : ''}`}>상품명, 상품코드</label>
+                                <label className={`label_floating ${searchTerm ? 'active' : ''}`}>상품코드, 상품명</label>
                                 <i className="bi bi-search"></i>
                                 <input
                                     type="text"
@@ -186,6 +186,7 @@ function ProductList() {
                                     <label className="chkbox_label">
                                         <input
                                             type="checkbox" className="chkbox"
+                                            id="all-select_checkbox"
                                             onChange={(e) => handleAllSelectProducts(e.target.checked)}
                                         />
                                         <i className="chkbox_icon">
@@ -195,7 +196,7 @@ function ProductList() {
                                 </th>
                                 <th>
                                     <div className={`order_wrap ${sortColumn === 'productCd' ? 'active' : ''}`}>
-                                        <span>품번</span>
+                                        <span>상품코드</span>
                                         <button className="btn_order" onClick={() => handleSort('productCd')}>
                                             <i className={`bi ${sortColumn === 'productCd' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
                                         </button>

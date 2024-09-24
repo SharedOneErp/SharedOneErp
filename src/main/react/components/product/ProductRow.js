@@ -21,11 +21,11 @@ const ProductRow = React.memo(({
             <td></td>
             {/* 체크박스 칸 */}
             <td>
-                {/* 품번 */}
+                {/* 상품코드 */}
                 <input
                     type="text"
                     className="box wp100"
-                    placeholder="품번 입력"
+                    placeholder="상품코드 입력"
                     value={productData.productCd}
                     name="productCd"
                     onChange={handleInputChange}
@@ -92,7 +92,7 @@ const ProductRow = React.memo(({
             <td>
                 {/* 상품 가격 */}
                 <input
-                    type="text"
+                    type="number"
                     className="box wp100"
                     placeholder="가격 입력"
                     value={productData.productPrice ? productData.productPrice : ''}
