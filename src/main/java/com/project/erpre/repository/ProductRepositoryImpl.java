@@ -5,12 +5,9 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.hibernate.id.insert.AbstractReturningDelegate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -39,7 +36,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         QProduct product = QProduct.product;
         QCategory category = QCategory.category;
         QCategory middleCategory = new QCategory("middleCategory");
-        QCategory topCategory = new QCategory("torCategory");
+        QCategory topCategory = new QCategory("topCategory");
 
         BooleanBuilder builder = new BooleanBuilder();
 
