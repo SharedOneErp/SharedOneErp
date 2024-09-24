@@ -69,6 +69,7 @@ public class ProductService {
         // 상품 정보 설정
         product.setProductCd(productDTO.getProductCd());
         product.setProductNm(productDTO.getProductNm());
+        product.setProductPrice(productDTO.getProductPrice());
 
         // 상품 등록일시 - 현재 시간으로 설정
         product.setProductInsertDate(LocalDateTime.now());

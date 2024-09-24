@@ -18,7 +18,7 @@ const ProductRow = React.memo(({
                                }) => {
     return (
         <tr className='tr_input'>
-            <td>-</td>
+            <td></td>
             {/* 체크박스 칸 */}
             <td>
                 {/* 품번 */}
@@ -89,11 +89,22 @@ const ProductRow = React.memo(({
                     ))}
                 </select>
             </td>
-            <td>-</td>
+            <td>
+                {/* 상품 가격 */}
+                <input
+                    type="text"
+                    className="box wp100"
+                    placeholder="가격 입력"
+                    value={productData.productPrice ? productData.productPrice : ''}
+                    name="productPrice"
+                    onChange={handleInputChange}
+                />
+            </td>
+            <td></td>
             {/* 등록일시 */}
-            <td>-</td>
+            <td></td>
             {/* 수정일시 */}
-            <td>-</td>
+            <td></td>
             {/* 삭제일시 */}
             <td>
                 <div className='btn_group'>

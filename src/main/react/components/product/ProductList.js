@@ -178,7 +178,7 @@ function ProductList() {
                         </div>
                     </div>
 
-                    <div className="table_wrap">
+                    <div className={`table_wrap ${isAdding ? 'uniform-width' : ''}`}>
                         <table>
                             <thead>
                             <tr>
@@ -222,6 +222,12 @@ function ProductList() {
                                     <span>소분류</span>
                                     <button className="btn-order" onClick={() => handleSort('lowCategory')}>
                                         <i className={`bi ${sortColumn === 'lowCategory' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                    </button>
+                                </th>
+                                <th>
+                                    <span>가격(원)</span>
+                                    <button className="btn-order" onClick={() => handleSort('productPrice')}>
+                                        <i className={`bi ${sortColumn === 'productPrice' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
                                     </button>
                                 </th>
                                 <th>
@@ -330,6 +336,7 @@ function ProductList() {
                                             <td>{product.topCategory ? product.topCategory : '-'}</td>
                                             <td>{product.middleCategory ? product.middleCategory : '-'}</td>
                                             <td>{product.lowCategory ? product.lowCategory : '-'}</td>
+                                            <td>{product.productPrice ? product.productPrice.toLocaleString() : '-'}</td>
                                             <td>{product.productInsertDate ? formatDate(product.productInsertDate) : '-'}</td>
                                             <td>{product.productUpdateDate ? formatDate(product.productUpdateDate) : '-'}</td>
                                             <td>{product.productDeleteDate ? formatDate(product.productDeleteDate) : '-'}</td>

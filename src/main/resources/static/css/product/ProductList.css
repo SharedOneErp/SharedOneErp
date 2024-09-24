@@ -1,25 +1,38 @@
 /* src/main/resources/static/css/product/ProductList.css */
 /* 🔴 개별 열 너비 지정 */
 .menu_product .table_wrap table th:nth-child(1),
-.menu_product .table_wrap table td:nth-child(1) { width: 5%; /* 체크박스 */ }
+.menu_product .table_wrap table td:nth-child(1) { width: 7%; /* 체크박스 */ }
 .menu_product .table_wrap table th:nth-child(2),
-.menu_product .table_wrap table td:nth-child(2) { width: 7%; /* 품번 */ }
+.menu_product .table_wrap table td:nth-child(2) { width: 10%; /* 품번 */ }
 .menu_product .table_wrap table th:nth-child(3),
-.menu_product .table_wrap table td:nth-child(3) { width: 10%; /* 상품명 */ }
+.menu_product .table_wrap table td:nth-child(3) { width: 15%; /* 상품명 */ }
 .menu_product .table_wrap table th:nth-child(4),
-.menu_product .table_wrap table td:nth-child(4) { width: 7%; /* 대분류 */ }
+.menu_product .table_wrap table td:nth-child(4) { width: 11%; /* 대분류 */ }
 .menu_product .table_wrap table th:nth-child(5),
-.menu_product .table_wrap table td:nth-child(5) { width: 7%; /* 중분류 */ }
+.menu_product .table_wrap table td:nth-child(5) { width: 11%; /* 중분류 */ }
 .menu_product .table_wrap table th:nth-child(6),
-.menu_product .table_wrap table td:nth-child(6) { width: 7%; /* 소분류 */ }
+.menu_product .table_wrap table td:nth-child(6) { width: 11%; /* 소분류 */ }
 .menu_product .table_wrap table th:nth-child(7),
-.menu_product .table_wrap table td:nth-child(7) { width: 12%; /* 등록일시 */ }
+.menu_product .table_wrap table td:nth-child(7) { width: 13%; /* 가격 */ }
 .menu_product .table_wrap table th:nth-child(8),
-.menu_product .table_wrap table td:nth-child(8) { width: 12%; /* 수정일시 */ }
+.menu_product .table_wrap table td:nth-child(8) { width: 13%; /* 등록일시 */ }
 .menu_product .table_wrap table th:nth-child(9),
-.menu_product .table_wrap table td:nth-child(9) { width: 12%; /* 삭제일시 */ }
+.menu_product .table_wrap table td:nth-child(9) { width: 13%; /* 수정일시 */ }
 .menu_product .table_wrap table th:nth-child(10),
-.menu_product .table_wrap table td:nth-child(10) { width: 12%; /* 액션 */ }
+.menu_product .table_wrap table td:nth-child(10) { width: 12%; /* 삭제일시 */ }
+.menu_product .table_wrap table th:nth-child(11),
+.menu_product .table_wrap table td:nth-child(11) { width: 13%; /* 액션 */ }
 /* padding 조절 */
 .menu_product .table_wrap table th,
 .menu_product .table_wrap table td { padding: 12px 8px; text-align: left; }
+/*!* 추가 모드의 테이블 너비 *!*/
+/*.uniform-width th:nth-child(3), !* 상품명 *!*/
+/*.uniform-width th:nth-child(3),*/
+/*.uniform-width th:nth-child(4), !* 대분류 *!*/
+/*.uniform-width td:nth-child(4),*/
+/*.uniform-width th:nth-child(5), !* 중분류 *!*/
+/*.uniform-width td:nth-child(5),*/
+/*.uniform-width th:nth-child(6), !* 소분류 *!*/
+/*.uniform-width td:nth-child(6) {*/
+/*    width: 10%;*/
+/*}*/
