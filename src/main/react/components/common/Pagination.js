@@ -14,8 +14,6 @@ function Pagination({
     handleDeleteSelected, // 선택 삭제 핸들러
     selectedItems, // 선택된 항목 배열
     showFilters = true, // 필터링 부분 표시 여부를 결정하는 옵션
-    enablePageBlur = false,
-    handlePageInputBlur,
 }) {
     return (
         // showFilters가 false일 경우 페이지 블록만 가운데 정렬
@@ -35,7 +33,6 @@ function Pagination({
                             </button>
                         )}
                         <input
-                            type="text"
                             id="itemsPerPage"
                             className="box"
                             value={itemsPerPage}
@@ -69,7 +66,7 @@ function Pagination({
 
                 {/* 페이지 번호 블록 */}
                 {Array.from({ length: Math.min(5, totalPages) }, (_, index) => {
-                    const startPage = Math.floor((currentPage - 1) / 5) * 5 + 1;
+                    const startPage = Math.max(Math.floor((currentPage - 1) / 5) * 5 + 1, 1);
                     const page = startPage + index;
                     return (
                         page <= totalPages && (
@@ -109,7 +106,6 @@ function Pagination({
                             className="box"
                             value={pageInputValue}
                             onChange={handlePageInputChange}
-                            onBlur={enablePageBlur ? handlePageInputBlur : undefined}
                             min={1}
                             max={totalPages}
                             step={1}
