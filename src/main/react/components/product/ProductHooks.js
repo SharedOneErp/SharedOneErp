@@ -73,6 +73,7 @@ export const useProductHooks = () => {
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
     const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지 당 아이템 수
     const [totalItems, setTotalItems] = useState(0); // 총 상품 수
+    const [pageInputValue, setPageInputValue] = useState(1);
 
 
     // 5. 모달 state
@@ -422,27 +423,42 @@ export const useProductHooks = () => {
 
     // 페이지 입력 필드의 변경을 처리하는 함수
     const handlePageInputChange = (e) => {
-        const value = e.target.value;
+        let value = e.target.value;
+        value = value.replace(/\D/g, '');
 
-        setCurrentPage(value);
+        if (value === '' || isNaN(value)) {
+            setPageInputValue('');
+            setCurrentPage(1);
+        } else {
+            let page = Number(value);
+
+            // 페이지 유효성 검사
+            if (page < 1) {
+                page = 1;
+            }
+            if (page > totalPages) {
+                page = totalPages;
+            }
+
+            setPageInputValue(page);
+            setCurrentPage(page);
+        }
     };
 
-    // 입력 완료 후 검증을 처리하는 함수
-    const handlePageInputBlur = () => {
-        let page = parseInt(currentPage);
-
-        // 페이지가 유효하지 않거나 1 이하일 경우 1페이지로 설정
-        if (isNaN(page) || page < 1) {
-            page = 1;
-        }
-
-        // 페이지가 총 페이지 수보다 클 경우 마지막 페이지로 설정
-        if (page > totalPages) {
-            page = totalPages;
-        }
-
-        setCurrentPage(page);
-    };
+    // // 입력 완료 후 검증을 처리하는 함수
+    // const handlePageInputBlur = () => {
+    //     let page = Number(pageInputValue);
+    //
+    //     // 페이지 유효성 검사
+    //     if (isNaN(page) || page < 1) {
+    //         page = 1;
+    //     }
+    //     if (page > totalPages) {
+    //         page = totalPages;
+    //     }
+    //
+    //     setCurrentPage(page);
+    // };
 
     // 상품 수정
     const handleEditClick = (product) => {
@@ -789,15 +805,20 @@ export const useProductHooks = () => {
     // 페이지당 항목 수 변경
     const handleItemsPerPageChange = (e) => {
         const value = e.target.value;
-        const newItemsPerPage = !isNaN(value) && value > 0 ? parseInt(value) : 0;  // 0이 기본값으로 설정됨
-        setItemsPerPage(newItemsPerPage);
+        const parsedValue = parseInt(value, 10);
+        if (isNaN(parsedValue) || parsedValue < 1) {
+            alert('페이지당 항목 수는 최소 1 이상이어야 합니다.');
+            setItemsPerPage(10); // 기본값으로 설정
+        } else {
+            setItemsPerPage(parsedValue);
+        }
         setCurrentPage(1);
     };
 
     const paginationNumbers = useMemo(() => {
         const maxPagesToShow = 5;
         const currentPageGroup = Math.floor((currentPage) / maxPagesToShow);
-        const startPage = currentPageGroup * maxPagesToShow + 1; // 시작 페이지
+        const startPage = Math.max(currentPageGroup * maxPagesToShow + 1, 1); // 시작 페이지
         const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages); // 끝 페이지
 
         if (totalPages === 0) {
@@ -890,6 +911,6 @@ export const useProductHooks = () => {
         addLowCategories,
         handleAddMiddleCategoryChange,
         handleAddTopCategoryChange,
-        handlePageInputBlur,
+        pageInputValue,
     };
 }

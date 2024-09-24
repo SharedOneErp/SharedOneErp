@@ -73,7 +73,7 @@ function ProductList() {
         sortDirection,
         handleAddMiddleCategoryChange,
         handleAddTopCategoryChange,
-        handlePageInputBlur,
+        pageInputValue,
     } = useProductHooks(); // 커스텀 훅 사용
 
 
@@ -381,15 +381,13 @@ function ProductList() {
                         itemsPerPage={itemsPerPage}
                         totalItems={totalItems}
                         isLoading={isLoading}
-                        pageInputValue={currentPage}
+                        pageInputValue={pageInputValue}
                         handlePage={handlePageChange}
                         handleItemsPerPageChange={handleItemsPerPageChange}
                         handlePageInputChange={handlePageInputChange}
                         handleDeleteSelected={handleDeleteSelected}
                         selectedItems={selectedProducts}
                         showFilters={true}
-                        handlePageInputBlur={handlePageInputBlur}
-                        enablePageBlur={true}
                     />
                 </div>
                 {/* 납품 내역 모달 */}
