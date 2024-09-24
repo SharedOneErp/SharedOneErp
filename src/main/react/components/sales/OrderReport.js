@@ -157,7 +157,7 @@ function OrderReport() {
                 setChartData({
                     labels: labels,
                     datasets: [{
-                        label: '총 주문건수',
+                        label: '총 주문금액',
                         data: processedData,  // 데이터 반영
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
@@ -171,7 +171,7 @@ function OrderReport() {
                 setChartData({
                     labels: labels,
                     datasets: [{
-                        label: '총 주문건수',
+                        label: '총 주문금액',
                         data: defaultData,  // 기본값으로 처리
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
@@ -235,7 +235,7 @@ function OrderReport() {
                                     onChange={handleOrderTypeChange}
                                     checked={selectedOrderType === 'totalOrders'}
                                 />
-                                <label htmlFor="totalOrders">총 주문건수</label>
+                                <label htmlFor="totalOrders">총 주문금액</label>
                                 <input
                                     type="radio"
                                     id="productOrders"
@@ -244,7 +244,7 @@ function OrderReport() {
                                     onChange={handleOrderTypeChange}
                                     checked={selectedOrderType === 'productOrders'}
                                 />
-                                <label htmlFor="productOrders">상품별 주문건수</label>
+                                <label htmlFor="productOrders">상품별 주문금액</label>
                                 <input
                                     type="radio"
                                     id="customerOrders"
@@ -253,7 +253,7 @@ function OrderReport() {
                                     onChange={handleOrderTypeChange}
                                     checked={selectedOrderType === 'customerOrders'}
                                 />
-                                <label htmlFor="customerOrders">고객별 주문건수</label>
+                                <label htmlFor="customerOrders">고객별 주문금액</label>
                                 <input
                                     type="radio"
                                     id="employeeOrders"
@@ -262,7 +262,7 @@ function OrderReport() {
                                     onChange={handleOrderTypeChange}
                                     checked={selectedOrderType === 'employeeOrders'}
                                 />
-                                <label htmlFor="employeeOrders">담당자별 주문건수</label>
+                                <label htmlFor="employeeOrders">담당자별 주문금액</label>
                             </div>
                         </div>
                         <div className="right">
@@ -287,7 +287,7 @@ function OrderReport() {
                             ) : (
                                 <p>차트 불러오는중</p>
                             )
-                        ) : (
+                        ) :(
                             <p>{message}</p>
                         )}
                     </div>
