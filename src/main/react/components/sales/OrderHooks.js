@@ -395,7 +395,7 @@ export const useHooksList = () => {
     };
 
     //주문 생성 및 정보 직관화 한 alert 생성
-    const handleSubmit = async (e) => {
+    const handleSubmit = async () => {
 
         // 입력값 검증
         const customerName = document.querySelector('input[name="customerName"]').value.trim();
@@ -479,8 +479,6 @@ export const useHooksList = () => {
                     }
                 }
 
-                await Promise.all(detailPromises);
-
                 // 요약된 알림 생성
                 const firstProduct = products[0];
                 const additionalProductsCount = products.length > 1 ? products.length - 1 : 0;
@@ -504,22 +502,20 @@ export const useHooksList = () => {
 
     //상품 수정
     const handleEdit = async (orderNo) => {
+        const deliveryDateElement = document.querySelector('.delivery-date');
+        const deliveryRequestDate = deliveryDateElement ? formatDateForInput(deliveryDateElement.value) : null;
+
         try {
             const totalAmount = displayItemEdit.reduce((sum, product) => sum + product.orderDPrice * product.orderDQty, 0);
-            const deliveryDateElement = document.querySelector('.delivery-date');
-            const deliveryRequestDate = deliveryDateElement ? formatDateForInput(deliveryDateElement.value) : null;
-
-            const cleanProducts = displayItemEdit.map((product) => {
-                return {
-                    orderNo: product.orderNo,
-                    productCd: product.productCd,
-                    orderDPrice: product.orderDPrice,
-                    orderDQty: product.orderDQty,
-                    orderDTotalPrice: product.orderDPrice * product.orderDQty,
-                    orderDDeliveryRequestDate: deliveryRequestDate || product.orderDDeliveryRequestDate,
-                    orderDInsertDate: new Date().toISOString(), // 추가된 부분
-                };
-            });
+            const cleanProducts = displayItemEdit.map((product) => ({
+                orderNo: product.orderNo,
+                productCd: product.productCd,
+                orderDPrice: product.orderDPrice,
+                orderDQty: product.orderDQty,
+                orderDTotalPrice: product.orderDPrice * product.orderDQty,
+                orderDDeliveryRequestDate: deliveryRequestDate,
+                orderDInsertDate: new Date().toISOString(),
+            }));
 
             const customerNo = document.querySelector('input[name="customerNo"]').value.trim();
             const employeeId = document.querySelector('.employee-id').textContent.trim();
@@ -557,40 +553,36 @@ export const useHooksList = () => {
                     orderDPrice: product.orderDPrice,
                     orderDQty: product.orderDQty,
                     orderDTotalPrice: product.orderDPrice * product.orderDQty || 0,
-                    orderDDeliveryRequestDate: deliveryRequestDate || product.orderDDeliveryRequestDate,
-                    orderDInsertDate: new Date().toISOString(), // 추가된 부분
+                    orderDDeliveryRequestDate: deliveryRequestDate,
+                    orderDInsertDate: new Date().toISOString(),
                 };
 
+                let detailResponse;
                 if (product.orderNo) {
-                    const detailResponse = await fetch(`/api/orderDetails/${product.orderNo}`, {
+                    detailResponse = await fetch(`/api/orderDetails/${product.orderNo}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify(orderDetailData),
                     });
-
-                    if (!detailResponse.ok) {
-                        const errorText = await detailResponse.text();
-                        throw new Error(`상세 주문 처리 중 오류 발생: ${errorText}`);
-                    }
                 } else {
-                    const detailResponse = await fetch(`/api/orderDetails`, {
+                    detailResponse = await fetch(`/api/orderDetails`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify(orderDetailData),
                     });
+                }
 
-                    if (!detailResponse.ok) {
-                        const errorText = await detailResponse.text();
-                        throw new Error(`상세 주문 추가 중 오류 발생: ${errorText}`);
-                    }
+                if (!detailResponse.ok) {
+                    const errorText = await detailResponse.text();
+                    throw new Error(`상세 주문 처리 중 오류 발생: ${errorText}`);
                 }
             }
 
-            await Promise.all(deletedDetailIds.map(async (deletedId) => {
+            for (let deletedId of deletedDetailIds) {
                 const deleteResponse = await fetch(`/api/orderDetails/${deletedId}`, {
                     method: 'DELETE',
                 });
@@ -599,7 +591,7 @@ export const useHooksList = () => {
                     const errorText = await deleteResponse.text();
                     throw new Error(`상세 주문 삭제 중 오류 발생: ${errorText}`);
                 }
-            }));
+            }
 
             alert("주문을 성공적으로 수정했습니다.");
         } catch (error) {
@@ -607,6 +599,7 @@ export const useHooksList = () => {
             alert("주문 수정 중 오류가 발생했습니다. 다시 확인해주세요.");
         }
     };
+
 
 
     // 제품 삭제 핸들러
