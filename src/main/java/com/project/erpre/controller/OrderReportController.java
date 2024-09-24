@@ -3,6 +3,7 @@ package com.project.erpre.controller;
 import com.project.erpre.service.OrderReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,13 +13,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/orderReport")
 public class OrderReportController {
 
     @Autowired
     private OrderReportService orderReportService;
 
     // 총 주문건수(기간동안의 총 주문건수를 집계하는 거, 일단은 안씀)
-    @GetMapping("/api/orderReport/totalOrders")
+    @GetMapping("/totalOrders")
     public Long getTotalOrders(@RequestParam String startDate, @RequestParam String endDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); //요청이 String으로 오니까 변환해줘야함
 
@@ -33,7 +35,7 @@ public class OrderReportController {
     }
 
     // 달별 주문건수
-    @GetMapping("/api/orderReport/monthlyOrders")
+    @GetMapping("/monthlyOrders")
     public List<Object[]> getMonthlyOrders(@RequestParam String startDate, @RequestParam String endDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -47,8 +49,8 @@ public class OrderReportController {
     }
 
     // 반기별 주문건수
-    @GetMapping("/api/orderReport/halfYearlyOrders")
-    public List<Object[]> getDynamicHalfYearlyOrders(@RequestParam String startDate, @RequestParam String endDate) {
+    @GetMapping("/halfYearlyOrders")
+    public List<Object[]> getHalfYearlyOrders(@RequestParam String startDate, @RequestParam String endDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         LocalDate start = LocalDate.parse(startDate, formatter);
@@ -57,12 +59,12 @@ public class OrderReportController {
         LocalDateTime startDateTime = start.atStartOfDay();
         LocalDateTime endDateTime = end.atTime(23, 59, 59);
 
-        return orderReportService.getOrdersByDynamicHalfYear(startDateTime, endDateTime);
+        return orderReportService.getOrdersByHalfYear(startDateTime, endDateTime);
     }
 
 
     // 연도별 주문건수
-    @GetMapping("/api/orderReport/yearlyOrders")
+    @GetMapping("/yearlyOrders")
     public List<Object[]> getYearlyOrders(@RequestParam String startDate, @RequestParam String endDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

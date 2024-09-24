@@ -44,7 +44,7 @@ public interface OrderReportRepository extends JpaRepository<Order, Integer> {
             "AND ((o.orderHUpdateDate IS NOT NULL AND o.orderHUpdateDate BETWEEN :startDate AND :endDate) " +
             "OR (o.orderHUpdateDate IS NULL AND o.orderHInsertDate BETWEEN :startDate AND :endDate)) " +
             "GROUP BY halfYear, YEAR(CASE WHEN o.orderHUpdateDate IS NOT NULL THEN o.orderHUpdateDate ELSE o.orderHInsertDate END)")
-    List<Object[]> countOrdersByDynamicHalfYear(
+    List<Object[]> countOrdersByHalfYear(
             @Param("startMonth1") int startMonth1,
             @Param("endMonth1") int endMonth1,
             @Param("startDate") LocalDateTime startDate,
