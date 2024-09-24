@@ -250,7 +250,8 @@ function Order() {
                                                 // 선택한 날짜가 유효할 경우
                                                 console.log("선택한 날짜:", selectedDate);
                                             }
-                                        }}
+                                        }
+                                    }
                                     />
                                 </div>
 
@@ -391,16 +392,18 @@ function Order() {
                                         {(isCreateMode || isEditMode) && (
                                             <td style={{ width: '100px' }}>
                                                 <button className="box icon del" onClick={() => {
-                                                    if (isCreateMode) {
-                                                        console.log("생성모드")
-                                                        removeProductRow(index);
-                                                    } else if (isEditMode) {
-                                                        console.log("수정모드")
-                                                        if(index!=0) {
+                                                    const currentProducts = isCreateMode ? products : isEditMode ? displayItemEdit : displayItems || [];
+                                                    // 상품이 없을 경우 알림 표시
+                                                    if (currentProducts.length > 1) {
+                                                        if (isCreateMode) {
+                                                            console.log("생성모드")
+                                                            removeProductRow(index);
+                                                        } else if (isEditMode) {
+                                                            console.log("수정모드")
                                                             removeProducteditRow(index);
-                                                        }else {
-                                                            alert("상품은 최소 1개 이상이어야 합니다.")
                                                         }
+                                                    }else {
+                                                        alert("상품은 최소 1개 이상이어야 합니다.");
                                                     }
                                                 }}>
                                                     <i className="bi bi-trash"></i>{/* 삭제 */}
