@@ -37,28 +37,41 @@ public class PriceService {
     @Autowired
     private ModelMapper modelMapper;  // ModelMapper 객체 주입
 
-    // 엔티티 -> DTO 변환(ModelMapper 라이브러리 사용)
+    // 엔티티 -> DTO 변환(ModelMapper 라이브러리 사용x)
     public PriceDTO convertToDTO(Price price) {
-        // 기본 필드 자동 매핑
-        PriceDTO dto = modelMapper.map(price, PriceDTO.class);
-
-        // 수동으로 처리해야 하는 필드
+        PriceDTO dto = new PriceDTO();
+        // 필드 수동 매핑
+        dto.setPriceNo(price.getPriceNo());
+        dto.setPriceCustomer(price.getPriceCustomer());
+        dto.setPriceStartDate(price.getPriceStartDate());
+        dto.setPriceEndDate(price.getPriceEndDate());
         dto.setCustomerNo(price.getCustomer().getCustomerNo());
         dto.setProductCd(price.getProduct().getProductCd());
-        dto.setCustomerName(price.getCustomer().getCustomerName()); // 고객 이름 설정
-        dto.setProductNm(price.getProduct().getProductNm()); // 제품 이름 설정
-        dto.setCategoryNm(price.getProduct().getCategory().getCategoryNm()); // 카테고리 이름 설정
-        dto.setCategoryPath(price.getProduct().getCategory().getCategoryPath()); // 전체 경로 설정
+        dto.setCustomerName(price.getCustomer().getCustomerName());
+        dto.setProductNm(price.getProduct().getProductNm());
+        dto.setCategoryNm(price.getProduct().getCategory().getCategoryNm());
+        dto.setCategoryPath(price.getProduct().getCategory().getCategoryPath());
+        dto.setPriceInsertDate(price.getPriceInsertDate());
+        dto.setPriceUpdateDate(price.getPriceUpdateDate());
+        dto.setPriceDeleteYn(price.getPriceDeleteYn());
+        dto.setPriceDeleteDate(price.getPriceDeleteDate());
 
         return dto;
     }
 
-    // DTO -> 엔티티 변환(ModelMapper 라이브러리 사용)
+    // DTO -> 엔티티 변환(ModelMapper 라이브러리 사용x)
     public Price convertToEntity(PriceDTO priceDTO) {
-        // ModelMapper를 사용하여 기본 필드 자동 매핑
-        Price price = modelMapper.map(priceDTO, Price.class);
+        Price price = new Price();
+        price.setPriceNo(priceDTO.getPriceNo());
+        price.setPriceCustomer(priceDTO.getPriceCustomer());
+        price.setPriceStartDate(priceDTO.getPriceStartDate());
+        price.setPriceEndDate(priceDTO.getPriceEndDate());
+        price.setPriceDeleteYn(priceDTO.getPriceDeleteYn());
+        price.setPriceInsertDate(priceDTO.getPriceInsertDate());
+        price.setPriceUpdateDate(priceDTO.getPriceUpdateDate());
+        price.setPriceDeleteDate(priceDTO.getPriceDeleteDate());
 
-        // 수동으로 처리해야 하는 필드 (연관 관계 매핑)
+        // 수동으로 연관 엔티티 매핑
         price.setCustomer(customerRepository.findById(priceDTO.getCustomerNo())
                 .orElseThrow(() -> new RuntimeException("고객을 찾을 수 없습니다: " + priceDTO.getCustomerNo())));
         price.setProduct(productRepository.findById(priceDTO.getProductCd())

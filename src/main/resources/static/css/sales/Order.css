@@ -1,5 +1,5 @@
 
-.menu_order .box { padding: 5px 12px; margin-left: 5px;}
+.menu_order .box { padding: 5px 12px; margin-left: 5px; } 
 .orderDetail-title h3 { font-size: 18px; font-weight: bold; color: #333333; letter-spacing: -0.1px; padding-bottom: 16px; border-bottom: 1px solid #999999; margin: 26px 0 0; position: relative; } 
 .order-detail-container { padding: 20px; } 
 .form-row { display: flex; flex-wrap: wrap; gap: 15px; } 
@@ -13,7 +13,7 @@
 .manager { border: 0px; background-color: #f5f5f5; } 
 .gray-background { background-color: #f5f5f5; } 
 .product-table { position: relative; margin-top: 20px; } 
-.styled-table { border-collapse: collapse; width: 100%; background-color: #ffffff; /*order: 1px solid #dddddd;*/ } 
+.styled-table { border-collapse: collapse; width: 100%; background-color: #ffffff; /*order: 1px solid #dddddd; */ } 
 .styled-table th, .styled-table td { padding: 7px 7px; text-align: center; /*border: 1px solid #dddddd; */ } 
 /* .styled-table tbody tr:last-of-type { border-bottom: 2px solid #0058A3; } */
 .product-name-cell { display: flex; } 
@@ -26,7 +26,7 @@
 .orderDetail-edit { background-color: #007CC1; } 
 .orderDetail-close { background-color: gray; } 
 .order-buttons { display: flex; justify-content: center; margin-bottom: 20px; } 
-.order-buttons .close-btn { background-color: gray; }
+.order-buttons .close-btn { background-color: gray; } 
 .search-button { margin-left: 5px; } 
 .orderHtotal-price { margin-left: 10px; font-weight: bold; } 
 /* 페이지네이션 */
@@ -54,3 +54,5 @@
 .close-modal { background: none; border: none; color: #333; font-size: 20px; cursor: pointer; line-height: 1; padding: 0; transition: color 0.3s; } 
 .close-modal:hover { color: #007bff; } 
 .close-modal:focus { outline: none; } 
+
+.form-group input[readonly], .form-group select[readonly], .form-group input:disabled, .form-group select:disabled { background-color: #fafafa; } 
