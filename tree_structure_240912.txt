@@ -79,7 +79,7 @@ src
 │  │  │  │  │  ├─ Product.js
 │  │  │  │  │  ├─ ProductCategory.js
 │  │  │  │  │  ├─ ProductDetail2.js
-│  │  │  │  │  ├─ ProductHooks.js
+│  │  │  │  │  ├─ useProductHooks.js
 │  │  │  │  │  ├─ ProductList.js
 │  │  │  │  │  ├─ Price.js
 │  │  │  │  │  ├─ ProductPrice2.js

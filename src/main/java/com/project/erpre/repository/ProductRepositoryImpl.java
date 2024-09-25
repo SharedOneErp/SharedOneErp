@@ -95,7 +95,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         QProduct product = QProduct.product;
         QCategory category = QCategory.category;
         QCategory middleCategory = new QCategory("middleCategory");
-        QCategory topCategory = new QCategory("torCategory");
+        QCategory topCategory = new QCategory("topCategory");
 
         OrderSpecifier<?> orderSpecifier;
 
