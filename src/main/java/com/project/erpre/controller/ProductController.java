@@ -138,12 +138,12 @@ public class ProductController {
     // 7. 카테고리 조회 API
     @GetMapping("/category")
     public ResponseEntity<List<CategoryDTO>> getCategoryList(
-            @RequestParam(required = false) Integer one,
-            @RequestParam(required = false) Integer two,
-            @RequestParam(required = false) Integer three
+            @RequestParam(required = false) Integer topCategoryNo,
+            @RequestParam(required = false) Integer middleCategoryNo,
+            @RequestParam(required = false) Integer lowCategoryNo
     ) {
         try {
-            List<CategoryDTO> categories = productService.getCategoryList(one, two, three);
+            List<CategoryDTO> categories = productService.getCategoryList(topCategoryNo, middleCategoryNo, lowCategoryNo);
 
             if (categories.isEmpty()) {
                 return ResponseEntity.ok(Collections.emptyList());
