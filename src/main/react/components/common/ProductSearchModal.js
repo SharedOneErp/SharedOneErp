@@ -305,7 +305,7 @@ function ProductSearchModal({ onClose, onProductSelect }) {
                                 ))
                             ) : (
                                 <tr className="tr_empty">
-                                    <td colSpan="3">
+                                    <td colSpan="4">
                                         <div className="no_data">조회된 결과가 없습니다.</div>
                                     </td>
                                 </tr>

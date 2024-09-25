@@ -505,8 +505,6 @@ function Order() {
                         </div>
                     )}
 
-
-
                     <div className="order-buttons">
                         {isCreateMode && <button className="box color" onClick={handleSubmit}><i className="bi bi-floppy"></i> 주문 등록</button>}
                         {isEditMode && orderHStatus === 'ing' && (<button className="box color" onClick={() => handleEdit(orderNo)}><i className="bi bi-floppy"></i> 주문 수정</button>)}
@@ -529,66 +527,103 @@ function Order() {
             {/* 고객사 검색 모달 */}
             {
                 customerModalOpen && (
-                    <div className="modal">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h4>고객사 검색</h4>
-                                <button className="close-modal" onClick={closeCustomerModal}>&times;</button>
+                    <div className="modal_overlay">
+                        <div className="modal_container search search_customer">
+                            <div className="header">
+                                <div>고객사 검색</div>
+                                <button className="btn_close" onClick={closeCustomerModal}><i className="bi bi-x-lg"></i></button> {/* 모달 닫기 버튼 */}
                             </div>
-
-                            <div className="search-fields">
+                            <div className="search_wrap">
                                 <input
                                     type="text"
+                                    className="box"
                                     placeholder="검색하실 고객사를 입력하세요"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
-                                <button className="search-modal" onClick={customerSearch}>검색</button>
+                                <button className="box color_border" onClick={customerSearch}>검색</button>
                             </div>
-
-                            <div className="search-results">
-                                {customerSearchResults.length > 0 ? (
-                                    <table className="search-results-table">
-                                        <thead>
-                                            <tr>
-                                                <th>고객사</th>
-                                                <th>주소</th>
-                                                <th>연락처</th>
-                                                <th>대표명</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {paginatedCustomerSearchResults.map((result) => (
+                            <div className="table_wrap">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>고객사</th>
+                                            <th>주소</th>
+                                            <th>연락처</th>
+                                            <th>대표명</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {customerSearchResults.length > 0 ? (
+                                            paginatedCustomerSearchResults.map((result) => (
                                                 <tr key={result.customerNo}
                                                     onClick={() => handleCustomerSelect(result)}>
-                                                    <td>{result.customerName}</td>
-                                                    <td>{result.customerAddr}</td>
-                                                    <td>{result.customerTel}</td>
-                                                    <td>{result.customerRepresentativeName}</td>
+                                                    <td>{result.customerName || '-'}</td> {/* 고객사 이름 */}
+                                                    <td>{result.customerAddr || '-'}</td> {/* 고객사 주소 */}
+                                                    <td>{result.customerTel || '-'}</td> {/* 고객사 연락처 */}
+                                                    <td>{result.customerRepresentativeName || '-'}</td> {/* 대표 이름 */}
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                ) : (
-                                    <div className="table_wrap">
-                                        <div className="loading">
-                                            <span></span> {/* 첫 번째 원 */}
-                                            <span></span> {/* 두 번째 원 */}
-                                            <span></span> {/* 세 번째 원 */}
-                                        </div>
-                                    </div>
-                                )}
-                                {/* 페이지네이션 */}
+                                            ))
+                                        ) : (
+                                            <tr className="tr_empty">
+                                                <td colSpan="4">
+                                                    <div className="no_data">조회된 결과가 없습니다.</div>
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {/* 페이지네이션 */}
+                            <div
+                                className="pagination-container"
+                                style={{ justifyContent: 'space-around' }}
+                            >
                                 <div className="pagination">
-                                    {Array.from({ length: totalCustomerPages }, (_, i) => i + 1).map(number => (
-                                        <button
-                                            key={number}
-                                            onClick={() => handlePageChangeCustomer(number)}
-                                            className={number === currentPageCustomer ? 'active' : ''}
-                                        >
-                                            {number}
+                                    {/* '처음' 버튼 */}
+                                    {currentPageCustomer > 1 && (
+                                        <button className="box icon first" onClick={() => handlePageChangeCustomer(1)}>
+                                            <i className="bi bi-chevron-double-left"></i>
                                         </button>
-                                    ))}
+                                    )}
+
+                                    {/* '이전' 버튼 */}
+                                    {currentPageCustomer > 1 && (
+                                        <button className="box icon left" onClick={() => handlePageChangeCustomer(currentPageCustomer - 1)}>
+                                            <i className="bi bi-chevron-left"></i>
+                                        </button>
+                                    )}
+
+                                    {/* 페이지 번호 블록 */}
+                                    {Array.from({ length: Math.min(5, totalCustomerPages) }, (_, index) => {
+                                        const startPage = Math.max(Math.floor((currentPageCustomer - 1) / 5) * 5 + 1, 1);
+                                        const page = startPage + index;
+                                        return (
+                                            page <= totalCustomerPages && (
+                                                <button
+                                                    key={page}
+                                                    onClick={() => handlePageChangeCustomer(page)}
+                                                    className={currentPageCustomer === page ? 'box active' : 'box'}
+                                                >
+                                                    {page}
+                                                </button>
+                                            )
+                                        );
+                                    })}
+
+                                    {/* '다음' 버튼 */}
+                                    {currentPageCustomer < totalCustomerPages && (
+                                        <button className="box icon right" onClick={() => handlePageChangeCustomer(currentPageCustomer + 1)}>
+                                            <i className="bi bi-chevron-right"></i>
+                                        </button>
+                                    )}
+
+                                    {/* '끝' 버튼 */}
+                                    {currentPageCustomer < totalCustomerPages && (
+                                        <button className="box icon last" onClick={() => handlePageChangeCustomer(totalCustomerPages)}>
+                                            <i className="bi bi-chevron-double-right"></i>
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -599,15 +634,14 @@ function Order() {
             {/* 상품 검색 모달 */}
             {
                 showModal && (
-                    <div className="modal">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h4>상품 검색</h4>
-                                <button className="close-modal" onClick={closeModal}>&times;</button>
+                    <div className="modal_overlay">
+                        <div className="modal_container search search_product">
+                            <div className="header">
+                                <div>상품 검색</div>
+                                <button className="btn_close" onClick={closeModal}><i className="bi bi-x-lg"></i></button> {/* 모달 닫기 버튼 */}
                             </div>
-
-                            <div className="category-selectors">
-                                <select value={selectedCategory.top} onChange={handleTopChange}>
+                            <div className="search_wrap">
+                                <select className="box" value={selectedCategory.top} onChange={handleTopChange}>
                                     <option value="">대분류</option>
                                     {categories.topCategories.map(category => (
                                         <option key={category.categoryNo}
@@ -615,7 +649,7 @@ function Order() {
                                     ))}
                                 </select>
 
-                                <select value={selectedCategory.middle} onChange={handleMiddleChange}
+                                <select className="box" value={selectedCategory.middle} onChange={handleMiddleChange}
                                     disabled={!selectedCategory.top}>
                                     <option value="">중분류</option>
                                     {categories.middleCategories.map(category => (
@@ -624,7 +658,7 @@ function Order() {
                                     ))}
                                 </select>
 
-                                <select value={selectedCategory.low} onChange={(e) => setSelectedCategory({
+                                <select className="box" value={selectedCategory.low} onChange={(e) => setSelectedCategory({
                                     ...selectedCategory,
                                     low: e.target.value
                                 })} disabled={!selectedCategory.middle}>
@@ -635,67 +669,113 @@ function Order() {
                                     ))}
                                 </select>
                             </div>
-
-                            <div className="search-fields">
+                            <div className="search_wrap">
                                 <input
                                     type="text"
+                                    className="box"
                                     placeholder="상품명"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                                 <input
                                     type="text"
+                                    className="box"
                                     placeholder="상품코드"
                                     value={searchCode}
                                     onChange={(e) => setSearchCode(e.target.value)}
                                 />
-                                <button className="search-modal" onClick={handleSearch}>검색</button>
+                                <button className="box color_border" onClick={handleSearch}>검색</button>
                             </div>
 
-                            {/* 검색 결과 */}
-                            <div className="search-results">
-                                {searchResults.length > 0 ? (
-                                    <table className="search-results-table">
-                                        <thead>
-                                            <tr>
-                                                <th>상품코드</th>
-                                                <th>카테고리</th>
-                                                <th>상품명</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {paginatedSearchResults.map((result, index) => (
+                            <div className="table_wrap">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>상품코드</th>
+                                            <th>카테고리</th>
+                                            <th>상품명</th>
+                                            <th>가격</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {searchResults.length > 0 ? (
+                                            paginatedSearchResults.map((result, index) => (
                                                 <tr
                                                     key={index}
                                                     onClick={() => isEditMode ? handleProductSelectEdit(result) : handleProductSelect(result)}
                                                 >
-                                                    <td>{result.productCd}</td>
-                                                    <td>{result.category.categoryNm}</td>
-                                                    <td>{result.productNm}</td>
+                                                    <td>{result.productCd || '-'}</td> {/* 상품 코드 */}
+                                                    <td>{result.category.categoryNm}</td> {/* 상품 카테고리 */}
+                                                    <td>{result.productNm || '-'}</td> {/* 상품명 */}
+                                                    <td>
+                                                        {result.productPrice ? (
+                                                            `${result.productPrice.toLocaleString()}원`
+                                                        ) : (
+                                                            '-'
+                                                        )}
+                                                    </td>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                ) : (
-                                    <div className="table_wrap">
-                                        <div className="loading">
-                                            <span></span> {/* 첫 번째 원 */}
-                                            <span></span> {/* 두 번째 원 */}
-                                            <span></span> {/* 세 번째 원 */}
-                                        </div>
-                                    </div>
-                                )}
-                                {/* 페이지네이션 */}
+                                            ))
+                                        ) : (
+                                            <tr className="tr_empty">
+                                                <td colSpan="4">
+                                                    <div className="no_data">조회된 결과가 없습니다.</div>
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {/* 페이지네이션 */}
+                            <div
+                                className="pagination-container"
+                                style={{ justifyContent: 'space-around' }}
+                            >
                                 <div className="pagination">
-                                    {Array.from({ length: totalProductPages }, (_, i) => i + 1).map(number => (
-                                        <button
-                                            key={number}
-                                            onClick={() => handlePageChangeProduct(number)}
-                                            className={number === currentPageProduct ? 'active' : ''}
-                                        >
-                                            {number}
+                                    {/* '처음' 버튼 */}
+                                    {currentPageProduct > 1 && (
+                                        <button className="box icon first" onClick={() => handlePageChangeProduct(1)}>
+                                            <i className="bi bi-chevron-double-left"></i>
                                         </button>
-                                    ))}
+                                    )}
+
+                                    {/* '이전' 버튼 */}
+                                    {currentPageProduct > 1 && (
+                                        <button className="box icon left" onClick={() => handlePageChangeProduct(currentPageProduct - 1)}>
+                                            <i className="bi bi-chevron-left"></i>
+                                        </button>
+                                    )}
+
+                                    {/* 페이지 번호 블록 */}
+                                    {Array.from({ length: Math.min(5, totalProductPages) }, (_, index) => {
+                                        const startPage = Math.max(Math.floor((currentPageProduct - 1) / 5) * 5 + 1, 1);
+                                        const page = startPage + index;
+                                        return (
+                                            page <= totalProductPages && (
+                                                <button
+                                                    key={page}
+                                                    onClick={() => handlePageChangeProduct(page)}
+                                                    className={currentPageProduct === page ? 'box active' : 'box'}
+                                                >
+                                                    {page}
+                                                </button>
+                                            )
+                                        );
+                                    })}
+
+                                    {/* '다음' 버튼 */}
+                                    {currentPageProduct < totalProductPages && (
+                                        <button className="box icon right" onClick={() => handlePageChangeProduct(currentPageProduct + 1)}>
+                                            <i className="bi bi-chevron-right"></i>
+                                        </button>
+                                    )}
+
+                                    {/* '끝' 버튼 */}
+                                    {currentPageProduct < totalProductPages && (
+                                        <button className="box icon last" onClick={() => handlePageChangeProduct(totalProductPages)}>
+                                            <i className="bi bi-chevron-double-right"></i>
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>

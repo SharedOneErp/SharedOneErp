@@ -30,8 +30,8 @@ export const useHooksList = () => {
 
     const [startDate, setStartDate] = useState(null); // 시작 날짜
     const [endDate, setEndDate] = useState(null); // 종료 날짜
-    const [targetDate, setTargetDate] = useState(today);
-    const [isCurrentPriceChecked, setIsCurrentPriceChecked] = useState(true); // 현재 적용되는 가격 체크박스 상태
+    const [targetDate, setTargetDate] = useState(null);
+    const [isCurrentPriceChecked, setIsCurrentPriceChecked] = useState(false); // 현재 적용되는 가격 체크박스 상태
 
     const [selectedStatus, setSelectedStatus] = useState("active"); // 상태
 

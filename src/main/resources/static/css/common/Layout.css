@@ -225,7 +225,7 @@ input[type="checkbox"]:disabled + .chkbox_icon .bi-check-lg { color: #f6f6f6; }
 /* .modal_container.search_product .table_wrap table th:nth-child(3),
 .modal_container.search_product .table_wrap table td:nth-child(3) { width: 200px; 상품명 } */
 .modal_container.search_product .table_wrap table th:nth-child(4),
-.modal_container.search_product .table_wrap table td:nth-child(4) { width: 125px; text-align: right; padding-right: 15px; /* 가격 */ } 
+.modal_container.search_product .table_wrap table td:nth-child(4) { width: 140px; text-align: right; padding-right: 15px; /* 가격 */ } 
 .modal_container .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 23px; font-weight: 600; } 
 .modal_container .search_wrap { display: flex; gap: 10px; } 
 .modal_container .search_wrap select,

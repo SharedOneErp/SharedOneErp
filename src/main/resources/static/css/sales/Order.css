@@ -30,14 +30,14 @@
 .search-button { margin-left: 5px; } 
 .orderHtotal-price { margin-left: 10px; font-weight: bold; } 
 /* 페이지네이션 */
-.pagination { display: flex; justify-content: center; align-items: center; margin: 20px 0; } 
+/* .pagination { display: flex; justify-content: center; align-items: center; margin: 20px 0; } 
 .pagination button { background-color: #ffffff; border: 1px solid #cccccc; border-radius: 50%; color: #333333; cursor: pointer; font-size: 16px; font-weight: bold; height: 36px; width: 36px; display: flex; align-items: center; justify-content: center; margin-right: 5px; transition: background-color 0.3s, color 0.3s; } 
 .pagination button.active { background-color: #007bff; border-color: #007bff; color: #ffffff; } 
 .pagination button:disabled { background-color: #f0f0f0; border-color: #f0f0f0; color: #b0b0b0; cursor: not-allowed; } 
 .pagination button:hover { background-color: #e0e0e0; } 
 .pagination .prev, .pagination .next { font-size: 18px; } 
 .pagination .first, .pagination .last { background-color: #007bff; border-color: #007bff; color: #ffffff; font-size: 16px; } 
-.pagination .first:hover, .pagination .last:hover { background-color: #0056b3; border-color: #004085; } 
+.pagination .first:hover, .pagination .last:hover { background-color: #0056b3; border-color: #004085; }  */
 /*모달 시작*/
 .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #f9f9f9; border: 1px solid #ccc; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); width: 60%; z-index: 1000; padding: 20px; } 
 .modal-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid #ccc; margin-bottom: 15px; } 
