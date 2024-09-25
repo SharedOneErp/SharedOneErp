@@ -227,7 +227,7 @@ export const useHooksList = () => {
 
   //
 
-  // 상품 선택
+  // 카테고리 선택
   const handleSelectCategory = (categoryNo) => {
     setSelectedProducts(prevSelected => {
       if (prevSelected.includes(categoryNo)) {
@@ -256,9 +256,16 @@ export const useHooksList = () => {
     }
   }
 
+  // 상태 변수를 추가하여 중복 요청 방지
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  //카테고리 등록 버튼
+  // 🔴 카테고리 등록 버튼
   const handleAddButton = (categoryLevel) => {
+
+
+    if (isSubmitting) {
+      return; // 이미 요청 중일 때는 추가 요청을 막음
+    }
 
     let categoryName = ''; //변경필요 때문 let사용
     let parentCategoryNo = null;
@@ -294,6 +301,11 @@ export const useHooksList = () => {
       categoryName = insertLow;
       parentCategoryNo = selectedMidCategory;
     }
+
+
+
+    // 요청 중 상태로 설정
+    setIsSubmitting(true);
 
     fetch('/api/category/save', {
       method: 'POST',
@@ -342,8 +354,11 @@ export const useHooksList = () => {
       .catch(error => {
         alert(error.message);
         console.error('카테고리 추가 실패:', error);
+      })
+      .finally(() => {
+        // 요청 완료 후 상태를 false로 변경하여 다시 요청할 수 있게 함
+        setIsSubmitting(false);
       });
-
 
   };
 
@@ -359,7 +374,7 @@ export const useHooksList = () => {
   ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-  // 모달 열기
+  // 🟡 모달 열기
   const openModal = () => {
     setShowModal(true);
   };
@@ -530,6 +545,7 @@ export const useHooksList = () => {
     handleLowClick,
     handleTopHover,
     handleBackgroundClick,
+    isSubmitting,
   };
 
 };
