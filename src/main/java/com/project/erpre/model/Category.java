@@ -48,7 +48,7 @@ public class Category {
     @ToString.Exclude
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @JsonIgnore
-    @JsonBackReference
+    // @JsonBackReference
     private List<Product> products;
 
     // 부모 카테고리를 참조하는 필드

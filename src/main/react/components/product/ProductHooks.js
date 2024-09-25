@@ -12,6 +12,8 @@ export const useProductHooks = () => {
     const [filteredProducts, setFilteredProducts] = useState([]); // 필터링된 상품 목록
 
     // [2] 카테고리 state
+    const [categories, setCategories] = useState([]);
+
     const [topCategories, setTopCategories] = useState([]); // 대분류 목록
     const [middleCategories, setMiddleCategories] = useState([]); // 중분류 목록
     const [lowCategories, setLowCategories] = useState([]); // 소분류 목록
@@ -144,44 +146,57 @@ export const useProductHooks = () => {
             });
     }, [sortColumn, sortDirection, currentPage, itemsPerPage, filterTopCategory, filterMiddleCategory, filterLowCategory, selectedStatus, searchTerm]);
 
-    // 카테고리 조회 useEffect
     useEffect(() => {
-        setLoading(true);
-
-        // 대분류 API 호출
-        axios.get('/api/category/top')
+        axios.get('/api/products/category')
             .then((response) => {
-                setTopCategories(response.data);          // 대분류 목록
+                console.log('카테고리 데이터:', response.data);
+                const categoriesData = response.data;
+                setCategories(categoriesData);
+                setTopCategories((categoriesData.filter(cat => cat.categoryLevel === 1)));
             })
-            .catch((error) => console.error('대분류 조회 실패', error));
+            .catch((error) => {
+                console.error('대분류 조회 실패', error);
+            });
+    }, []);
 
-        // 대분류 선택 시 중분류 API 호출
-        if (filterTopCategory) {
-            axios.get(`/api/category/middle/${filterTopCategory}`)
-                .then((response) => {
-                    setMiddleCategories(response.data);  // 중분류 데이터 설정
-                    setFilterMiddleCategory('');        // 중분류 초기화
-                })
-                .catch((error) => console.error('중분류 조회 실패', error));
-        } else {
-            setMiddleCategories([]);  // 중분류 선택이 없을 경우 빈 배열로 초기화
-        }
-
-        setLoading(false);
-    }, [filterTopCategory]);
-
-    // 중분류 변경 시 소분류 API 호출
-    useEffect(() => {
-        if (filterTopCategory && filterMiddleCategory) {
-            axios.get(`/api/category/low/${filterMiddleCategory}/${filterTopCategory}/`)
-                .then((response) => {
-                    setLowCategories(response.data);  // 소분류 데이터 설정
-                })
-                .catch((error) => console.error('소분류 조회 실패', error));
-        } else {
-            setLowCategories([]);  // 소분류 선택이 없을 경우 빈 배열로 초기화
-        }
-    }, [filterMiddleCategory, filterTopCategory]);
+    // 카테고리 조회 useEffect
+    // useEffect(() => {
+    //     setLoading(true);
+    //
+    //     // 대분류 API 호출
+    //     axios.get('/api/category/top')
+    //         .then((response) => {
+    //             setTopCategories(response.data);          // 대분류 목록
+    //         })
+    //         .catch((error) => console.error('대분류 조회 실패', error));
+    //
+    //     // 대분류 선택 시 중분류 API 호출
+    //     if (filterTopCategory) {
+    //         axios.get(`/api/category/middle/${filterTopCategory}`)
+    //             .then((response) => {
+    //                 setMiddleCategories(response.data);  // 중분류 데이터 설정
+    //                 setFilterMiddleCategory('');        // 중분류 초기화
+    //             })
+    //             .catch((error) => console.error('중분류 조회 실패', error));
+    //     } else {
+    //         setMiddleCategories([]);  // 중분류 선택이 없을 경우 빈 배열로 초기화
+    //     }
+    //
+    //     setLoading(false);
+    // }, [filterTopCategory]);
+    //
+    // // 중분류 변경 시 소분류 API 호출
+    // useEffect(() => {
+    //     if (filterTopCategory && filterMiddleCategory) {
+    //         axios.get(`/api/category/low/${filterMiddleCategory}/${filterTopCategory}/`)
+    //             .then((response) => {
+    //                 setLowCategories(response.data);  // 소분류 데이터 설정
+    //             })
+    //             .catch((error) => console.error('소분류 조회 실패', error));
+    //     } else {
+    //         setLowCategories([]);  // 소분류 선택이 없을 경우 빈 배열로 초기화
+    //     }
+    // }, [filterMiddleCategory, filterTopCategory]);
 
     // 대분류 변경
     const handleFilterTopCategoryChange = (e) => {
@@ -259,6 +274,8 @@ export const useProductHooks = () => {
         }
     };
 
+
+
     // ⚪ 정렬 함수
     const handleSort = (column) => {
         let mappedColumn = column;
@@ -312,6 +329,7 @@ export const useProductHooks = () => {
             }
         });
     };
+
 
     // 🟡 등록
     const handleAddNewProduct = () => {
@@ -522,28 +540,32 @@ export const useProductHooks = () => {
     // 트러블 슈팅: 순환 참조 문제 (상품 삭제시 발생하는 문제)
     // 🟠 상품 삭제 함수
     const handleDeleteSelected = (productCd = null) => {
-        if (!productCd && selectedProducts.length === 0) {
+        let productsToDelete = [];
+
+        if (productCd) {
+            productsToDelete = [productCd];
+        } else if (selectedProducts && selectedProducts.length > 0) {
+            productsToDelete = selectedProducts;
+        } else {
             alert('삭제할 상품을 선택해주세요.');
             return;
         }
+
         if (!window.confirm('정말 삭제하시겠습니까?')) {
             return;
         }
 
-        const productsToDelete = productCd ? [productCd] : selectedProducts.filter(cd => typeof cd === 'string');
+        console.log('개별 코드:', productsToDelete, '전체 코드:', selectedProducts);
 
-        if (productsToDelete.length === 0) {
-            alert('삭제할 상품이 없습니다.');
-            return;
-        }
-
-        console.log('삭제할 상품 코드:', productsToDelete); // 디버깅용 로그
-
-        axios.delete('/api/products/delete', { data: productsToDelete }) // 단순 배열로 전송
+        axios.post('/api/products/delete', selectedProducts.length > 0 ? selectedProducts : productsToDelete, { // 데이터 형식 수정
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then(response => {
                 alert('상품이 삭제되었습니다.');
-                fetchProducts(); // 삭제 후 상품 목록을 다시 조회
-                setSelectedProducts([]); // 선택된 상품 초기화
+                fetchProducts();
+                setSelectedProducts([]);
             })
             .catch(error => {
                 console.error('상품 삭제 실패:', error);
@@ -759,13 +781,22 @@ export const useProductHooks = () => {
         setSelectedProducts([]);
 
         // 페이지 변경 후 전체 선택 체크박스 상태 초기화
-        const allSelectCheckbox = document.getElementById('all-select-checkbox');
+        const allSelectCheckbox = document.getElementById('all-select_checkbox');
         if(allSelectCheckbox) {
             allSelectCheckbox.checked = false;
         }
 
         setCurrentPage(newPage);
-    };
+    }
+
+    useEffect(() => {
+        setSelectedProducts([]);
+
+        const allSelectCheckbox = document.getElementById('all-select_checkbox');
+        if (allSelectCheckbox) {
+            allSelectCheckbox.checked = false;
+        }
+    }, [currentPage, filteredProducts]);
 
     // 페이지당 항목 수 변경
     const handleItemsPerPageChange = (e) => {

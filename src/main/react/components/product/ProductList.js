@@ -370,11 +370,11 @@ function ProductList() {
                                                             <button className="box icon edit"
                                                                     onClick={() => handleOpenModal(product.productCd)}>납품내역
                                                             </button>
-                                                            <button className="box icon deit"
+                                                            <button className="box icon edit"
                                                                     onClick={() => handleEditClick(product)}>
                                                                 <i className="bi bi-pencil-square"></i>{/* 수정 */}
                                                             </button>
-                                                            <button className="box icon deit"
+                                                            <button className="box icon edit"
                                                                     onClick={() => handleDeleteSelected(product.productCd)}>
                                                                 <i className="bi bi-trash"></i>{/* 삭제 */}
                                                             </button>

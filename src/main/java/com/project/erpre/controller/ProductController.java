@@ -1,5 +1,6 @@
 package com.project.erpre.controller;
 
+import com.project.erpre.model.CategoryDTO;
 import com.project.erpre.model.ProductDTO;
 import com.project.erpre.service.CategoryService;
 import com.project.erpre.service.ProductService;
@@ -9,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,12 +107,19 @@ public class ProductController {
     }
 
     // 5. 선택한 상품 삭제 API
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public ResponseEntity<Void> deleteProducts(@RequestBody List<String> productCds) {
+        if (productCds == null || productCds.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         try {
             productService.deleteProducts(productCds);
             return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();  // 잘못된 요청
         } catch (Exception e) {
+            e.printStackTrace();  // 에러 로그 기록
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -125,5 +135,24 @@ public class ProductController {
         }
     }
 
+    // 7. 카테고리 조회 API
+    @GetMapping("/category")
+    public ResponseEntity<List<CategoryDTO>> getCategoryList(
+            @RequestParam(required = false) Integer one,
+            @RequestParam(required = false) Integer two,
+            @RequestParam(required = false) Integer three
+    ) {
+        try {
+            List<CategoryDTO> categories = productService.getCategoryList(one, two, three);
+
+            if (categories.isEmpty()) {
+                return ResponseEntity.ok(Collections.emptyList());
+            }
+
+            return ResponseEntity.ok(categories);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 }
 

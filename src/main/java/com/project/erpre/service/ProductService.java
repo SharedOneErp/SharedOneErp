@@ -1,5 +1,6 @@
 package com.project.erpre.service;
 import com.project.erpre.model.Category;
+import com.project.erpre.model.CategoryDTO;
 import com.project.erpre.model.Product;
 import com.project.erpre.model.ProductDTO;
 import com.project.erpre.repository.CategoryRepository;
@@ -142,10 +143,16 @@ public class ProductService {
             product.setProductDeleteYn("N");
             product.setProductDeleteDate(null);
 
-            productRepository.saveAll(products);
         }
+            productRepository.saveAll(products);
 
     }
+
+    // 7. 카테고리 조회
+    public List<CategoryDTO> getCategoryList(Integer one, Integer two, Integer three) {
+        return categoryRepository.getCategoryList(one, two, three);
+    }
+
 
 
     // 대분류 조회

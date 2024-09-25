@@ -12,6 +12,8 @@ function Order() {
     const [role, setRole] = useState('');
     const [isApproved, setIsApproved] = useState(false);
     const [isDenied, setIsDenied] = useState(false);
+    const [loading, setLoading] = useState(true);
+
 
 
 
@@ -498,22 +500,28 @@ function Order() {
                                         </tbody>
                                     </table>
                                 ) : (
-                                    <div>검색 결과가 없습니다.</div>
-                                )}
-                                {/* 페이지네이션 */}
-                                <div className="pagination">
-                                    {Array.from({ length: totalCustomerPages }, (_, i) => i + 1).map(number => (
-                                        <button
-                                            key={number}
-                                            onClick={() => handlePageChangeCustomer(number)}
-                                            className={number === currentPageCustomer ? 'active' : ''}
-                                        >
-                                            {number}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
+                                    <div className="table_wrap">
+                                        <div className="loading">
+                                                <span></span> {/* 첫 번째 원 */}
+                                                <span></span> {/* 두 번째 원 */}
+                                                <span></span> {/* 세 번째 원 */}
+                                        </div>
+                                    </div>
+                                        )}
+                                        {/* 페이지네이션 */}
+                                        <div className="pagination">
+                                            {Array.from({length: totalCustomerPages}, (_, i) => i + 1).map(number => (
+                                                <button
+                                                    key={number}
+                                                    onClick={() => handlePageChangeCustomer(number)}
+                                                    className={number === currentPageCustomer ? 'active' : ''}
+                                                >
+                                                    {number}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    </div>
                     </div>
                 )
             }
@@ -574,7 +582,6 @@ function Order() {
                                 <button className="search-modal" onClick={handleSearch}>검색</button>
                             </div>
 
-
                             {/* 검색 결과 */}
                             <div className="search-results">
                                 {searchResults.length > 0 ? (
@@ -599,8 +606,14 @@ function Order() {
                                             ))}
                                         </tbody>
                                     </table>
-                                ) : (
-                                    <div>검색 결과가 없습니다.</div>
+                                ) :  (
+                                    <div className="table_wrap">
+                                        <div className="loading">
+                                            <span></span> {/* 첫 번째 원 */}
+                                            <span></span> {/* 두 번째 원 */}
+                                            <span></span> {/* 세 번째 원 */}
+                                        </div>
+                                    </div>
                                 )}
                                 {/* 페이지네이션 */}
                                 <div className="pagination">
