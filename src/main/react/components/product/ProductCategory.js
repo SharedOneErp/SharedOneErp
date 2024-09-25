@@ -36,6 +36,11 @@ function ProductCategory() {
         hoverLow,
         collapsed,
         collapsedTwo,
+        isSubmitting,
+        allCategories,
+        topCategories,
+        midCategories,
+        lowCategories,
         handleEditButton,
         handleDeleteButton,
         handleAllSelectCategory,
@@ -56,7 +61,11 @@ function ProductCategory() {
         toggleAllCollapse,
         toggleAllCollapseTwo,
         handleBackgroundClick,
-        isSubmitting,
+        setAllCategories,
+        setTopCategories,
+        setMidCategories,
+        setLowCategories,
+        setSelectedCategory,
     } = useHooksList();
 
 
@@ -171,6 +180,12 @@ function ProductCategory() {
                         insertTop={insertTop}
                         insertMid={insertMid}
                         insertLow={insertLow}
+                        isSubmitting={isSubmitting}
+                        allCategories={allCategories}
+                        topCategories={topCategories}
+                        midCategories={midCategories}
+                        lowCategories={lowCategories}
+                        selectedCategory={selectedCategory}
                         handleInsert={handleInsert}
                         handleAddButton={handleAddButton}
                         handleEditButton={handleEditButton}
@@ -181,7 +196,11 @@ function ProductCategory() {
                         handleTopHover={handleTopHover}
                         closeModal={closeModal}
                         handleBackgroundClick={handleBackgroundClick}
-                        isSubmitting={isSubmitting}
+                        setAllCategories={setAllCategories}
+                        setTopCategories={setTopCategories}
+                        setMidCategories={setMidCategories}
+                        setLowCategories={setLowCategories}
+                        setSelectedCategory={setSelectedCategory}
                     />
                 )
             }

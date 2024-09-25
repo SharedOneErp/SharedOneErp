@@ -1,12 +1,13 @@
 // src/main/react/components/product/ProductCategoryHooks.js
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export const useHooksList = () => {
 
 
   const [category, setCategory] = useState([]);
   const [categoryName, setCategoryName] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState([]); // 선택된 카테고리
+
   const [categoryLevel, setCategoryLevel] = useState('대분류'); // 카테고리 레벨 (대분류/중분류/소분류)
 
   // 모달 관련
@@ -37,6 +38,18 @@ export const useHooksList = () => {
   const [hoverMid, setHoverMid] = useState(null);
   const [hoverLow, setHoverLow] = useState(null);
 
+  // 모든 카테고리 조회
+  const [allCategories, setAllCategories] = useState([]);
+  const [topCategories, setTopCategories] = useState([]);
+  const [midCategories, setMidCategories] = useState([]);
+  const [lowCategories, setLowCategories] = useState([]);
+
+  // 선택된 카테고리
+  const [selectedCategory, setSelectedCategory] = useState([{
+    top: '',
+    middle: '',
+    low: ''
+  }]);
 
   // 전체목록 조회
   useEffect(() => {
@@ -96,118 +109,200 @@ export const useHooksList = () => {
   }, [selectedTopCategory, selectedMidCategory]);
 
 
+  //모든 카테고리 조회
+  useEffect(() => {
+    const fetchAllCategories = async () => {
+      try {
+        const response = await axios.get('/api/category/all');
+        const categories = response.data;
+        console.log("전체 카테고리 데이터:", categories);
+
+        setAllCategories(categories);
+
+        const top = categories.filter(cat => !cat.parentCategoryNo);
+        setTopCategories(top);
+        console.log("대분류:", top);
+
+        const mid = categories.filter(cat => cat.parentCategoryNo && top.some(topCate => topCate.categoryNo === cat.parentCategoryNo));
+        setMidCategories(mid);
+        console.log("중분류:", mid);
+
+        const low = categories.filter(cat => {
+          const middleCate = mid.find(m => m.categoryNo === cat.parentCategoryNo);
+          return middleCate && top.some(topCate => topCate.categoryNo === middleCate.parentCategoryNo);
+        });
+        setLowCategories(low);
+        console.log("소분류:", low);
+
+      } catch (error) {
+        console.error('모든 카테고리 가져오기 실패:', error);
+      }
+    };
+
+    fetchAllCategories();
+  }, []);
+
+  // 🟡 대분류 변경 시 중분류 필터링
+  useEffect(() => {
+    console.log("대분류 변경 시 selectedCategory.top:", selectedCategory.top);
+    if (selectedCategory.top) {
+      // selectedCategory.top을 숫자로 변환
+      const topValue = Number(selectedCategory.top);
+      const filteredMiddle = allCategories.filter(cat => cat.parentCategoryNo === topValue);
+      console.log("필터링된 중분류:", filteredMiddle);
+      setMidCategories(filteredMiddle);
+    } else {
+      setMidCategories([]);
+    }
+    setSelectedCategory(prev => ({ ...prev, middle: '', low: '' }));
+    setLowCategories([]);
+  }, [selectedCategory.top, allCategories]);
+
+  // 🟡 중분류 변경 시 소분류 필터링
+  useEffect(() => {
+    if (selectedCategory.middle) {
+      const middleValue = Number(selectedCategory.middle);
+      const filteredLow = allCategories.filter(cat => cat.parentCategoryNo === middleValue);
+      console.log("필터링된 소분류:", filteredLow);
+      setLowCategories(filteredLow);
+    } else {
+      setLowCategories([]);
+    }
+    setSelectedCategory(prev => ({ ...prev, low: '' }));
+  }, [selectedCategory.middle, allCategories]);
+
+
+
+
+
+
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // 카테고리 수정함수
   const handleEditButton = () => {
-    if (selectedTopCategory || selectedMidCategory || selectedLowCategory) {
-      let selectedCategory;
+    if (selectedCategory.top || selectedCategory.middle || selectedCategory.low) {
+      let selectedCate = null;
 
-      if (selectedLowCategory) {
-        selectedCategory = getLowCategory.find(cate => cate.categoryNo === selectedLowCategory);
-      } else if (selectedMidCategory) {
-        selectedCategory = getMidCategory.find(cate => cate.categoryNo === selectedMidCategory);
-      } else if (selectedTopCategory) {
-        selectedCategory = getTopCategory.find(cate => cate.categoryNo === selectedTopCategory);
+      if (selectedCategory.low) {
+        selectedCate = lowCategories.find(cate => cate.categoryNo === selectedCategory.low);
+      } else if (selectedCategory.middle) {
+        selectedCate = midCategories.find(cate => cate.categoryNo === selectedCategory.middle);
+      } else if (selectedCategory.top) {
+        selectedCate = topCategories.find(cate => cate.categoryNo === selectedCategory.top);
       }
 
-      const updateCategoryName = prompt("새로운 카테고리 명을 입력하세요", selectedCategory ? selectedCategory.categoryNm : "");// 변경 예정
+      const updateCategoryName = prompt("새로운 카테고리 명을 입력하세요", selectedCate ? selectedCate.categoryNm : "");
 
-      if (!updateCategoryName) {
+      if (!updateCategoryName || updateCategoryName.trim() === "") {
         alert("수정이 취소되었습니다.");
         return;
       }
 
-      fetch(`/api/category/upd/${selectedCategory.categoryNo}`, {
+      fetch(`/api/category/upd/${selectedCate.categoryNo}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          categoryNm: updateCategoryName,
-          categoryLevel: selectedCategory.categoryLevel,
-          categoryDeleteYn: selectedCategory.categoryDeleteYn,
-          parentCategoryNo: selectedCategory.parentCategoryNo
+          categoryNm: updateCategoryName.trim(),
+          categoryLevel: selectedCate.categoryLevel,
+          categoryDeleteYn: selectedCate.categoryDeleteYn,
+          parentCategoryNo: selectedCate.parentCategoryNo
         }),
       })
         .then(response => response.json())
         .then(data => {
           alert('카테고리가 수정되었습니다.');
 
-          if (selectedCategory.categoryLevel === 1) {
-            const updatedCategory = getTopCategory.map(cate =>
-              cate.categoryNo === selectedCategory.categoryNo ? { ...cate, categoryNm: updateCategoryName } : cate
+          if (selectedCate.categoryLevel === 1) {
+            const updatedCategory = topCategories.map(cate =>
+              cate.categoryNo === selectedCate.categoryNo ? { ...cate, categoryNm: updateCategoryName } : cate
             );
-            setGetTopCategory(updatedCategory);
-          } else if (selectedCategory.categoryLevel === 2) {
-            const updatedCategory = getMidCategory.map(cate =>
-              cate.categoryNo === selectedCategory.categoryNo ? { ...cate, categoryNm: updateCategoryName } : cate
+            setTopCategories(updatedCategory);
+          } else if (selectedCate.categoryLevel === 2) {
+            const updatedCategory = midCategories.map(cate =>
+              cate.categoryNo === selectedCate.categoryNo ? { ...cate, categoryNm: updateCategoryName } : cate
             );
-            setGetMidCategory(updatedCategory);
-          } else if (selectedCategory.categoryLevel === 3) {
-            const updatedCategory = getLowCategory.map(cate =>
-              cate.categoryNo === selectedCategory.categoryNo ? { ...cate, categoryNm: updateCategoryName } : cate
+            setMidCategories(updatedCategory);
+          } else if (selectedCate.categoryLevel === 3) {
+            const updatedCategory = lowCategories.map(cate =>
+              cate.categoryNo === selectedCate.categoryNo ? { ...cate, categoryNm: updateCategoryName } : cate
             );
-            setGetLowCategory(updatedCategory);
+            setLowCategories(updatedCategory);
           }
         })
         .catch(error => console.error('카테고리 수정 실패:', error));
     } else {
-      alert("수정할 카테고리를 선택하세요.")
+      alert("수정할 카테고리를 선택하세요.");
     }
   };
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////
 
   // 카테고리 삭제함수
   const handleDeleteButton = () => {
-    if (selectedTopCategory || selectedMidCategory || selectedLowCategory) {
-      let selectedCategory;
+    if (selectedCategory.top || selectedCategory.middle || selectedCategory.low) {
+      let selectedCate = null; // selectedCategory와 충돌 방지
 
-      if (selectedLowCategory) {
-        selectedCategory = getLowCategory.find(cate => cate.categoryNo === selectedLowCategory);
-      } else if (selectedMidCategory) {
-        selectedCategory = getMidCategory.find(cate => cate.categoryNo === selectedMidCategory);
-      } else if (selectedTopCategory) {
-        selectedCategory = getTopCategory.find(cate => cate.categoryNo === selectedTopCategory);
+      // 선택된 카테고리 찾기
+      if (selectedCategory.low) {
+        selectedCate = lowCategories.find(cate => cate.categoryNo === selectedCategory.low);
+      } else if (selectedCategory.middle) {
+        selectedCate = midCategories.find(cate => cate.categoryNo === selectedCategory.middle);
+      } else if (selectedCategory.top) {
+        selectedCate = topCategories.find(cate => cate.categoryNo === selectedCategory.top);
       }
-      const checkDelete = window.confirm(`"${selectedCategory.categoryNm}" 카테고리를 삭제하시겠습니까?`);
+
+      const checkDelete = window.confirm(`"${selectedCate.categoryNm}" 카테고리를 삭제하시겠습니까?`);
 
       if (!checkDelete) {
         return;
       }
 
-      fetch(`/api/category/del/${selectedCategory.categoryNo}`, {
+      // 삭제 요청
+      fetch(`/api/category/del/${selectedCate.categoryNo}`, {
         method: 'DELETE',
       })
         .then(response => {
           if (response.ok) {
             alert('카테고리가 삭제되었습니다.');
 
-            if (selectedCategory.categoryLevel === 1) {
-              const updatedCategory = getTopCategory.filter(cate => cate.categoryNo !== selectedCategory.categoryNo);
-              setGetTopCategory(updatedCategory);
-              setGetMidCategory([]); // 대분류 삭제 시 중분류 비우기
-              setGetLowCategory([]);
-              setSelectedTopCategory(null);
-              setSelectedMidCategory(null);
-              setSelectedLowCategory(null);
-            } else if (selectedCategory.categoryLevel === 2) {
-              const updatedCategory = getMidCategory.filter(cate => cate.categoryNo !== selectedCategory.categoryNo);
-              setGetMidCategory(updatedCategory);
-              setGetLowCategory([]);
-              setSelectedMidCategory(null);
-              setSelectedLowCategory(null);
-            } else if (selectedCategory.categoryLevel === 3) {
-              const updatedCategories = getLowCategory.filter(cate => cate.categoryNo !== selectedCategory.categoryNo);
-              setGetLowCategory(updatedCategories);
-              setSelectedLowCategory(null);
+            if (selectedCate.categoryLevel === 1) {
+              const updatedCategory = topCategories.filter(cate => cate.categoryNo !== selectedCate.categoryNo);
+              setTopCategories(updatedCategory);
+              setMidCategories([]); // 대분류 삭제 시 중분류 초기화
+              setLowCategories([]);
+              setSelectedCategory(prev => ({
+                ...prev,
+                top: null,
+                middle: null,
+                low: null
+              }));
+            } else if (selectedCate.categoryLevel === 2) {
+              const updatedCategory = midCategories.filter(cate => cate.categoryNo !== selectedCate.categoryNo);
+              setMidCategories(updatedCategory);
+              setLowCategories([]);
+              setSelectedCategory(prev => ({
+                ...prev,
+                middle: null,
+                low: null
+              }));
+            } else if (selectedCate.categoryLevel === 3) {
+              const updatedCategories = lowCategories.filter(cate => cate.categoryNo !== selectedCate.categoryNo);
+              setLowCategories(updatedCategories);
+              setSelectedCategory(prev => ({
+                ...prev,
+                low: null
+              }));
             }
           }
         })
         .catch(error => console.error('카테고리 삭제 실패:', error));
     } else {
-      alert("삭제할 카테고리를 선택하세요.")
+      alert("삭제할 카테고리를 선택하세요.");
     }
   };
+
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // 체크표시 state
@@ -259,50 +354,48 @@ export const useHooksList = () => {
   // 상태 변수를 추가하여 중복 요청 방지
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 🔴 카테고리 등록 버튼
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // 🔴 카테고리 등록 함수
   const handleAddButton = (categoryLevel) => {
-
-
     if (isSubmitting) {
       return; // 이미 요청 중일 때는 추가 요청을 막음
     }
 
-    let categoryName = ''; //변경필요 때문 let사용
+    let categoryName = ''; // 변경 필요 때문 let 사용
     let parentCategoryNo = null;
 
     if (categoryLevel === 1) {
       if (!insertTop.trim()) {
-        alert('대분류 값을 입력하세요.')
+        alert('대분류 값을 입력하세요.');
         return;
       }
       categoryName = insertTop;
 
     } else if (categoryLevel === 2) {
-      if (!selectedTopCategory) {
-        alert('상위 카테고리를 먼저 선택하세요.')
+      if (!selectedCategory.top) {
+        alert('상위 카테고리를 먼저 선택하세요.');
         return;
       }
       if (!insertMid.trim()) {
-        alert('중분류 값을 입력하세요.')
+        alert('중분류 값을 입력하세요.');
         return;
       }
       categoryName = insertMid;
-      parentCategoryNo = selectedTopCategory;
+      parentCategoryNo = selectedCategory.top;
 
-    } else if (categoryLevel == 3) {
-      if (!selectedMidCategory) {
-        alert('상위 카테고리를 먼저 선택하세요.')
+    } else if (categoryLevel === 3) {
+      if (!selectedCategory.middle) {
+        alert('상위 카테고리를 먼저 선택하세요.');
         return;
       }
       if (!insertLow.trim()) {
-        alert('소분류 값을 입력하세요.')
+        alert('소분류 값을 입력하세요.');
         return;
       }
       categoryName = insertLow;
-      parentCategoryNo = selectedMidCategory;
+      parentCategoryNo = selectedCategory.middle;
     }
-
-
 
     // 요청 중 상태로 설정
     setIsSubmitting(true);
@@ -327,28 +420,27 @@ export const useHooksList = () => {
         return response.json();
       })
       .then(data => {
-        //카테고리레벨에 따른 리스트 업데이트
+        // 카테고리 레벨에 따른 리스트 업데이트
         if (categoryLevel === 1) {
-
-          setGetTopCategory(prevCategory => [...prevCategory, data]);
+          setTopCategories(prevCategory => [...prevCategory, data]);
           setInsertedTopList([...insertedTopList, data]);
-          setSelectedTopCategory(data.categoryNo);
+          setSelectedCategory(prev => ({ ...prev, top: data.categoryNo })); // 등록 시 업데이트
           setInsertTop('');
-          alert('대분류 카테고리가 추가되었습니다.')
+          alert('대분류 카테고리가 추가되었습니다.');
+
         } else if (categoryLevel === 2) {
-
-          setGetMidCategory(prevCategory => [...prevCategory, data]);
+          setMidCategories(prevCategory => [...prevCategory, data]);
           setInsertedMidList([...insertedMidList, data]);
-          setSelectedMidCategory(data.categoryNo);
+          setSelectedCategory(prev => ({ ...prev, middle: data.categoryNo }));
           setInsertMid('');
-          alert('중분류 카테고리가 추가되었습니다.')
-        } else if (categoryLevel === 3) {
+          alert('중분류 카테고리가 추가되었습니다.');
 
-          setGetLowCategory(prevCategory => [...prevCategory, data]);
+        } else if (categoryLevel === 3) {
+          setLowCategories(prevCategory => [...prevCategory, data]);
           setInsertedLowList([...insertedLowList, data]);
-          setSelectedLowCategory(data.categoryNo);
+          setSelectedCategory(prev => ({ ...prev, low: data.categoryNo }));
           setInsertLow('');
-          alert('소분류 카테고리가 추가되었습니다.')
+          alert('소분류 카테고리가 추가되었습니다.');
         }
       })
       .catch(error => {
@@ -359,8 +451,8 @@ export const useHooksList = () => {
         // 요청 완료 후 상태를 false로 변경하여 다시 요청할 수 있게 함
         setIsSubmitting(false);
       });
-
   };
+
 
 
   //중분류 추가 버튼
@@ -384,60 +476,45 @@ export const useHooksList = () => {
     setShowModal(false);
   };
 
-  // 대분류 li 선택했을 떄
+  // 대분류 li 선택했을 때
   function handleTopClick(categoryNo) {
-    if (selectedTopCategory === categoryNo) {
-      return;  // 같은 항목을 클릭하면 아무 동작도 하지 않음
-    } else {
-      setSelectedTopCategory(categoryNo);  // 선택된 대분류만 상태에 반영
-      setSelectedMidCategory(null);  // 중분류와 소분류는 초기화
-      setSelectedLowCategory(null);
-    }
+    setSelectedCategory(prev => ({
+      ...prev,
+      top: prev.top === categoryNo ? '' : categoryNo, // 선택 : 선택해제
+      middle: '',
+      low: ''
+    }));
   }
 
   useEffect(() => {
-    if (selectedTopCategory) {
-      console.log("선택된 대분류 번호: " + selectedTopCategory);
-    } else {
-      console.log("대분류가 해제되었습니다.");
-    }
-  }, [selectedTopCategory]);
-
+    console.log(selectedCategory.top ? `선택된 대분류 번호: ${selectedCategory.top}` : '대분류가 해제되었습니다.');
+  }, [selectedCategory.top]);
 
   // 중분류 li 선택했을 때
   function handleMidClick(categoryNo) {
-    if (selectedMidCategory === categoryNo) {
-      setSelectedMidCategory(null);
-      setSelectedLowCategory(null);
-    } else {
-      setSelectedMidCategory(categoryNo);
-      setSelectedLowCategory(null);
-    }
+    setSelectedCategory(prev => ({
+      ...prev,
+      middle: prev.middle === categoryNo ? '' : categoryNo, // 선택 : 선택해제
+      low: '' // 소분류 초기화
+    }));
   }
+
   useEffect(() => {
-    if (selectedMidCategory) {
-      console.log("선택된 중분류 번호:" + selectedMidCategory);
-    } else {
-      console.log("중분류가 해제되었습니다.");
-    }
-  }, [selectedMidCategory]);
+    console.log(selectedCategory.middle ? `선택된 중분류 번호: ${selectedCategory.middle}` : '중분류가 해제되었습니다.');
+  }, [selectedCategory.middle]);
 
-
-  //소분류 li 를 선택했을 때
+  // 소분류 li 선택했을 때
   function handleLowClick(categoryNo) {
-    if (selectedLowCategory === categoryNo) {
-      setSelectedLowCategory(null);
-    } else {
-      setSelectedLowCategory(categoryNo);
-    }
+    setSelectedCategory(prev => ({
+      ...prev,
+      low: prev.low === categoryNo ? '' : categoryNo // 선택 : 선택해제
+    }));
   }
+
   useEffect(() => {
-    if (selectedLowCategory) {
-      console.log("선택된 소분류 번호:" + selectedLowCategory);
-    } else {
-      console.log("소분류가 해제되었습니다.");
-    }
-  }, [selectedLowCategory]);
+    console.log(selectedCategory.low ? `선택된 소분류 번호: ${selectedCategory.low}` : '소분류가 해제되었습니다.');
+  }, [selectedCategory.low]);
+
 
 
   // 클릭 hover저장
@@ -525,6 +602,11 @@ export const useHooksList = () => {
     hoverLow,
     collapsed,
     collapsedTwo,
+    isSubmitting,
+    allCategories,
+    topCategories,
+    midCategories,
+    lowCategories,
     toggleCollapse,
     toggleCollapseTwo,
     toggleAllCollapse,
@@ -545,7 +627,10 @@ export const useHooksList = () => {
     handleLowClick,
     handleTopHover,
     handleBackgroundClick,
-    isSubmitting,
+    setAllCategories,
+    setTopCategories,
+    setMidCategories,
+    setLowCategories,
+    setSelectedCategory,
   };
-
 };
