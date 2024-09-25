@@ -177,6 +177,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                         product.productUpdateDate,
                         product.productDeleteDate,
                         product.productDeleteYn,
+                        product.productPrice,
                         category.categoryNm.as("lowCategory"),
                         middleCategory.categoryNm.as("middleCategory"),
                         topCategory.categoryNm.as("topCategory"),
@@ -188,6 +189,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .leftJoin(category.parentCategory, middleCategory)
                 .leftJoin(middleCategory.parentCategory, topCategory)
                 .where(builder)  // 조건 적용
+                .orderBy(product.category.categoryNo.asc(), product.productNm.asc())  // categoryNo와 productNm 기준 오름차순 정렬
                 .offset(pageable.getOffset())  // 페이지 시작 위치
                 .limit(pageable.getPageSize())  // 페이지 크기 설정
                 .fetch();

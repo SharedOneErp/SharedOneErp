@@ -19,7 +19,7 @@ function Price() {
     const [isCustomerModalOpen, setCustomerModalOpen] = useState(false);
     const [isProductModalOpen, setProductModalOpen] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState({ customerName: '고객사 선택', customerNo: '' });
-    const [selectedProduct, setSelectedProduct] = useState({ productNm: '상품 선택', productCd: '' });
+    const [selectedProduct, setSelectedProduct] = useState({ productNm: '상품 선택', productCd: '', productPrice: 0 });
 
     // 🔴 고객사 선택 시 모달을 닫고 버튼에 값 설정
     const handleCustomerSelect = (customer) => {
@@ -35,7 +35,8 @@ function Price() {
     const handleProductSelect = (product) => {
         setSelectedProduct({
             productNm: product.productNm,  // 선택된 상품 이름
-            productCd: product.productCd   // 선택된 상품 코드
+            productCd: product.productCd,   // 선택된 상품 코드
+            productPrice: product.productPrice   // 선택된 상품 가격
         });
         setProductModalOpen(false);
     };
