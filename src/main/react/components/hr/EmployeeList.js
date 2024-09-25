@@ -407,7 +407,19 @@ function EmployeeList() {
                         <table>
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox" checked={selectAll} onChange={handleSelectAll} /></th>
+                                    {/* 전체 선택 체크박스 */}
+                                    <th>
+                                        <label className="chkbox_label">
+                                            <input
+                                                type="checkbox" className="chkbox"
+                                                checked={selectAll}
+                                                onChange={handleSelectAll}
+                                            />
+                                            <i className="chkbox_icon">
+                                                <i className="bi bi-check-lg"></i>
+                                            </i>
+                                        </label>
+                                    </th>
                                     <th>번호</th>
                                     <th>직원아이디</th>
                                     <th>이름</th>
@@ -427,7 +439,17 @@ function EmployeeList() {
                                             <td>
                                                 {/* 삭제된 상태에 따라 조건부 렌더링 */}
                                                 {employee.employeeDeleteYn !== 'Y' ? (
-                                                    <input type="checkbox" checked={selectedEmployees[index] || false} onChange={() => handleSelect(index)} />
+                                                    <label className="chkbox_label">
+                                                        <input
+                                                            type="checkbox"
+                                                            className="chkbox"
+                                                            checked={selectedEmployees[index] || false}
+                                                            onChange={() => handleSelect(index)}
+                                                        />
+                                                        <i className="chkbox_icon">
+                                                            <i className="bi bi-check-lg"></i>
+                                                        </i>
+                                                    </label>
                                                 ) : (
                                                     <span className="label_del">삭제</span>
                                                 )}

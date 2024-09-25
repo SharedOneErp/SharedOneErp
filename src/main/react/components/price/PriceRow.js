@@ -8,7 +8,7 @@ const PriceRow = ({
     isEditMode,
     priceData,
     selectedCustomer = { customerName: '', customerNo: '' }, // 기본값 설정
-    selectedProduct = { productNm: '', productCd: '' },      // 기본값 설정
+    selectedProduct = { productNm: '', productCd: '', productPrice: 0 },      // 기본값 설정
     onSave,
     onCancel,
     setCustomerModalOpen,
@@ -250,7 +250,7 @@ const PriceRow = ({
 
             // 저장 후 고객사, 상품, 가격 정보 초기화
             setSelectedCustomer({ customerName: '고객사 선택', customerNo: '' });
-            setSelectedProduct({ productNm: '상품 선택', productCd: '' });
+            setSelectedProduct({ productNm: '상품 선택', productCd: '', productCd: 0 });
             setValue('priceCustomer', ''); // 가격 필드 초기화
             setValue('priceStartDate', ''); // 시작일 필드 초기화
             setValue('priceEndDate', ''); // 종료일 필드 초기화
@@ -266,7 +266,7 @@ const PriceRow = ({
 
     // 🟡 상품 선택 시 처리
     useEffect(() => {
-        setValue('selectedProductCd', selectedProduct.productCd, { shouldValidate: isSubmitted });
+        setValue('selectedProductCd', selectedProduct.productCd, selectedProduct.productPrice, { shouldValidate: isSubmitted });
     }, [selectedProduct, setValue, isSubmitted]);
 
     // 🟡 날짜 입력 시 유효성 검사 실행

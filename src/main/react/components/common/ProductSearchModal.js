@@ -181,7 +181,7 @@ function ProductSearchModal({ onClose, onProductSelect }) {
     // 🟣 모달 렌더링
     return (
         <div className="modal_overlay" onMouseDown={handleBackgroundClick}>
-            <div className="modal_container search">
+            <div className="modal_container search search_product">
                 <div className="header">
                     <div>상품 검색</div>
                     <button className="btn_close" onClick={onClose}><i className="bi bi-x-lg"></i></button> {/* 모달 닫기 버튼 */}
@@ -272,6 +272,7 @@ function ProductSearchModal({ onClose, onProductSelect }) {
                         <thead>
                             <tr>
                                 <th>상품코드</th>
+                                <th>카테고리</th>
                                 <th>상품명</th>
                                 <th>가격</th>
                             </tr>
@@ -279,7 +280,7 @@ function ProductSearchModal({ onClose, onProductSelect }) {
                         <tbody>
                             {loading ? (
                                 <tr className="tr_empty">
-                                    <td colSpan="3"> {/* 로딩 애니메이션 중앙 배치 */}
+                                    <td colSpan="4"> {/* 로딩 애니메이션 중앙 배치 */}
                                         <div className="loading">
                                             <span></span> {/* 첫 번째 원 */}
                                             <span></span> {/* 두 번째 원 */}
@@ -291,8 +292,15 @@ function ProductSearchModal({ onClose, onProductSelect }) {
                                 searchResults.map((result, index) => (
                                     <tr key={index} onClick={() => onProductSelect(result)}>
                                         <td>{result.productCd || '-'}</td> {/* 상품 코드 */}
+                                        <td>{result.lowCategory}</td> {/* 상품 카테고리 */}
                                         <td>{result.productNm || '-'}</td> {/* 상품명 */}
-                                        <td>{result.price || '-'}</td>     {/* 상품 가격 */}
+                                        <td>
+                                            {result.productPrice ? (
+                                                `${result.productPrice.toLocaleString()}원`
+                                            ) : (
+                                                '-'
+                                            )}
+                                        </td>
                                     </tr>
                                 ))
                             ) : (

@@ -203,8 +203,11 @@ public class ProductService {
                 .productUpdateDate(product.getProductUpdateDate())
                 .productDeleteYn(product.getProductDeleteYn())
                 .productDeleteDate(product.getProductDeleteDate())
+                .productPrice(product.getProductPrice())
                 .build();
     }
+
+
 }
 
 

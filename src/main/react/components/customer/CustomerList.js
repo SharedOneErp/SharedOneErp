@@ -652,6 +652,8 @@ const formatDateTime = (dateString) => {
 
 // 고객 리스트
 function CustomerList() {
+
+    const [loading, setLoading] = useState(false); // 🔴 로딩 상태 추가
     const [filter, setFilter] = useState(''); // 검색어 상태
     const [itemsPerPage] = useState(20); // 페이지당 항목 수
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 번호
@@ -666,16 +668,19 @@ function CustomerList() {
     const [sortOrder, setSortOrder] = useState('asc'); // 기본 정렬은 오름차순
 
     const fetchData = () => {
+        setLoading(true); // 로딩 시작
         axios.get('/api/customer/getList')
             .then(response => {
                 if (Array.isArray(response.data)) {
                     setCustomers(response.data);
+                    setLoading(false); // 로딩 종료
                 } else {
                     console.error("Error: Expected an array but got ", typeof response.data);
                 }
             })
             .catch(error => {
                 console.error("Error fetching customer data:", error);
+                setLoading(false); // 로딩 종료
             });
     };
 
@@ -982,7 +987,17 @@ function CustomerList() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredCustomers
+                                {loading ? (
+                                    <tr className="tr_empty">
+                                        <td colSpan="10"> {/* 로딩 애니메이션 중앙 배치 */}
+                                            <div className="loading">
+                                                <span></span> {/* 첫 번째 원 */}
+                                                <span></span> {/* 두 번째 원 */}
+                                                <span></span> {/* 세 번째 원 */}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : filteredCustomers
                                     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                                     .map((customer, index) => (
                                         <tr key={customer.customerNo}>
