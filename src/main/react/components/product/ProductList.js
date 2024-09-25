@@ -329,28 +329,29 @@ function ProductList() {
                                         <tr
                                             key={product.productCd}
                                             className={
-                                                `${selectedProducts.includes(product.productCd)
-                                                    ? 'selected'
-                                                    : ''}`
+                                                selectedProducts.includes(product.productCd)
+                                                    ? ('selected_row')
+                                                    : ''
                                             }
                                         >
                                             <td>
+                                                {product.productDeleteYn !== 'Y' ? (
                                                 <label className="chkbox_label">
                                                     {/* 삭제된 상태가 아닌 경우에만 체크박스 표시 */}
-                                                    {product.productDeleteYn !== 'Y' && (
-                                                        <>
                                                             <input
                                                                 type="checkbox"
                                                                 className="chkbox"
                                                                 checked={selectedProducts.includes(product.productCd)}
                                                                 onChange={() => handleSelectProduct(product.productCd)}
+                                                                disabled={isAddMode || !!isEditMode}
                                                             />
                                                             <i className="chkbox_icon">
                                                                 <i className="bi bi-check-lg"></i>
                                                             </i>
-                                                        </>
-                                                    )}
                                                 </label>
+                                                    ) : (
+                                                        <span className='label_del'>삭제</span>
+                                                    )}
                                             </td>
                                             <td>{product.productCd}</td>
                                             <td>{product.productNm}</td>
