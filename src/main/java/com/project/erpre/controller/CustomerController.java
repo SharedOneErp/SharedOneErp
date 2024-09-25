@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/customer")
@@ -80,5 +82,21 @@ public class CustomerController {
     public ResponseEntity<List<Customer>> getRenewalCustomer() {
         List<Customer> renewalCustomer = customerService.getRenewalCustomer();
         return ResponseEntity.ok(renewalCustomer);
+    }
+
+    //유효성검사
+    @PostMapping("/checkDuplicate")
+    public ResponseEntity<Map<String, Boolean>> checkDuplicate(@RequestBody Map<String, String> requestData) {
+        String customerName = requestData.get("customerName");
+        String customerBusinessRegNo = requestData.get("customerBusinessRegNo");
+
+        boolean isDuplicateName = customerService.isDuplicateCustomerName(customerName);
+        boolean isDuplicateBusinessRegNo = customerService.isDuplicateBusinessRegNo(customerBusinessRegNo);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isDuplicateName", isDuplicateName);
+        response.put("isDuplicateBusinessRegNo", isDuplicateBusinessRegNo);
+
+        return ResponseEntity.ok(response);
     }
 }
