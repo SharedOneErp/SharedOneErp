@@ -390,7 +390,7 @@ function OrderList() {
 
     return (
         <Layout currentMenu='orderList'>
-            <main className="main-content menu_order_list">
+            <main className={`main-content menu_order_list ${role === 'admin' ? 'role_admin' : 'role_normal'}`}>
                 <div className="menu_title">
                     <div className="sub_title">영업 관리</div>
                     <div className="main_title">{role === 'admin' ? '전체 주문 목록' : '담당 주문 목록'}</div>
@@ -399,7 +399,7 @@ function OrderList() {
                     <div className="search_wrap">
                         <div className="left">
                             <select className="box" onChange={(e) => setFilterType(e.target.value)}
-                                value={filterType}>
+                                    value={filterType}>
                                 <option value="customer">고객사</option>
                                 <option value="date">주문 등록일</option>
                                 <option value="status">주문 상태</option>
@@ -420,51 +420,51 @@ function OrderList() {
                                 />
                             </div>
 
-                            <br />
+                            <br/>
                             <div className="radio_box">
                                 <span>상태</span>
                                 {/* 'itsAssignedMode'가 참일 때는 '결재중' 라디오 버튼만 보이도록 설정 */}
 
 
-                                        <input
-                                            type="radio"
-                                            id="all"
-                                            name="status"
-                                            value=""
-                                            checked={selectedStatus === ''}
-                                            onChange={handleStatusChange}
-                                        />
-                                        <label htmlFor="all">전체</label>
+                                <input
+                                    type="radio"
+                                    id="all"
+                                    name="status"
+                                    value=""
+                                    checked={selectedStatus === ''}
+                                    onChange={handleStatusChange}
+                                />
+                                <label htmlFor="all">전체</label>
 
-                                        <input
-                                            type="radio"
-                                            id="pending"
-                                            name="status"
-                                            value="결재중"
-                                            checked={selectedStatus === '결재중'}
-                                            onChange={handleStatusChange}
-                                        />
-                                        <label htmlFor="pending">결재중</label>
+                                <input
+                                    type="radio"
+                                    id="pending"
+                                    name="status"
+                                    value="결재중"
+                                    checked={selectedStatus === '결재중'}
+                                    onChange={handleStatusChange}
+                                />
+                                <label htmlFor="pending">결재중</label>
 
-                                        <input
-                                            type="radio"
-                                            id="completed"
-                                            name="status"
-                                            value="결재완료"
-                                            checked={selectedStatus === '결재완료'}
-                                            onChange={handleStatusChange}
-                                        />
-                                        <label htmlFor="completed">결재완료</label>
+                                <input
+                                    type="radio"
+                                    id="completed"
+                                    name="status"
+                                    value="결재완료"
+                                    checked={selectedStatus === '결재완료'}
+                                    onChange={handleStatusChange}
+                                />
+                                <label htmlFor="completed">결재완료</label>
 
-                                        <input
-                                            type="radio"
-                                            id="rejected"
-                                            name="status"
-                                            value="반려"
-                                            checked={selectedStatus === '반려'}
-                                            onChange={handleStatusChange}
-                                        />
-                                        <label htmlFor="rejected">반려</label>
+                                <input
+                                    type="radio"
+                                    id="rejected"
+                                    name="status"
+                                    value="반려"
+                                    checked={selectedStatus === '반려'}
+                                    onChange={handleStatusChange}
+                                />
+                                <label htmlFor="rejected">반려</label>
 
 
                             </div>
@@ -480,7 +480,7 @@ function OrderList() {
                                 />
                             </div>
                             <span className="date-separator">~</span>
-                            <div className={`date_box ${endDate ? 'has_text' : ''}`}>
+                            <div className={`date_box ${endDate ? 'has_text' : ''}`} style={{padding: '0'}}>
                                 <input
                                     type="date"
                                     max="9999-12-31"
@@ -525,57 +525,71 @@ function OrderList() {
                                 <th>물품(계약) 리스트</th>
                                 <th>총액(원)</th>
                                 <th>담당자명</th>
-                                <th>상세</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
-                                {/* 로딩 중일 때 로딩 애니메이션 표시 */}
-                                {loading ? (
-                                    <tr className="tr_empty">
-                                        <td colSpan={role === 'admin' ? 10 : 9}> {/* admin 여부에 따라 colSpan 결정 */}
-                                            <div className="loading">
-                                                <span></span> {/* 첫 번째 원 */}
-                                                <span></span> {/* 두 번째 원 */}
-                                                <span></span> {/* 세 번째 원 */}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    filteredOrders
-                                        .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                                        .map(order => (
-                                            <tr key={order.orderNo}>
-                                                {itsAssignedMode && role === 'admin' && (
-                                                    <td className="checkbox-input">
-                                                        {order.orderHStatus === 'ing' ? (
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={selectedOrders.has(order.orderNo)}
-                                                                onChange={() => handleCheckboxChange(order.orderNo)}
-                                                                disabled={order.orderHStatus !== 'ing'} // ing가 아닐때는 비활성
-                                                            />
-                                                        ) : (
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={selectedOrders.has(order.orderNo)}
-                                                                disabled
-                                                            />
-                                                        )}
-                                                    </td>
-                                                )}
+                            {/* 로딩 중일 때 로딩 애니메이션 표시 */}
+                            {loading ? (
+                                <tr className="tr_empty">
+                                    <td colSpan={role === 'admin' ? 10 : 9}> {/* admin 여부에 따라 colSpan 결정 */}
+                                        <div className="loading">
+                                            <span></span> {/* 첫 번째 원 */}
+                                            <span></span> {/* 두 번째 원 */}
+                                            <span></span> {/* 세 번째 원 */}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : (
+                                filteredOrders
+                                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                                    .map(order => (
+                                        <tr key={order.orderNo}>
+                                            {itsAssignedMode && role === 'admin' && (
+                                                <td className="checkbox-input">
+                                                    {order.orderHStatus === 'ing' ? (
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectedOrders.has(order.orderNo)}
+                                                            onChange={() => handleCheckboxChange(order.orderNo)}
+                                                            disabled={order.orderHStatus !== 'ing'} // ing가 아닐때는 비활성
+                                                        />
+                                                    ) : (
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectedOrders.has(order.orderNo)}
+                                                            disabled
+                                                        />
+                                                    )}
+                                                </td>
+                                            )}
 
-                                                <td>{String(order.orderNo).padStart(3, '0')}</td>
-                                                <td>{order.customer?.customerName || 'N/A'}</td>
-                                                <td>{order.orderHInsertDate?.split('T')[0] || 'N/A'}</td>
-                                                <td>{mapStatusFromDbToUi(order.orderHStatus) || 'N/A'}</td>
-                                                <td>{formatProductNames(order.productNames || []) || 'N/A'}</td>
-                                                <td>{order.orderHTotalPrice?.toLocaleString() + '원' || 'N/A'}</td>
-                                                <td>{order.employee?.employeeName || 'N/A'}</td>
-                                                <td><a href={`/order?no=${order.orderNo}`}><i
-                                                    className="bi bi-pencil-square"></i></a></td>
-                                            </tr>
-                                        ))
-                                )}
+                                            <td>{String(order.orderNo).padStart(3, '0')}</td>
+                                            <td>{order.customer?.customerName || 'N/A'}</td>
+                                            <td>{order.orderHInsertDate?.split('T')[0] || 'N/A'}</td>
+                                            <td> <span
+                                                className={`order-status ${order.orderHStatus}`}>
+                                                {mapStatusFromDbToUi(order.orderHStatus)}
+                                                </span>
+                                            </td>
+                                            <td>{formatProductNames(order.productNames || []) || 'N/A'}</td>
+                                            <td>{order.orderHTotalPrice?.toLocaleString() + '원' || 'N/A'}</td>
+                                            <td>{order.employee?.employeeName || 'N/A'}</td>
+                                            <td>
+                                                <div className="btn_group">
+                                                    <button
+                                                        className="box small"
+                                                        onClick={() => {
+                                                            window.location.href = `/order?no=${order.orderNo}`;
+                                                        }}
+                                                    >
+                                                        상세보기
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                            )}
                             </tbody>
                         </table>
                     </div>
