@@ -25,7 +25,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer>, Ca
             "        category_insert_date AS top_category_insert_date,\n" +
             "        category_insert_date,\n" +
             "\t\tcategory_update_date,\n" +
-            "        LPAD(CAST(category_no AS VARCHAR), 10, '0') AS sort_key\n" +
+            "        CAST(category_nm AS VARCHAR) AS sort_key\n" +
             "    FROM \n" +
             "        m_category\n" +
             "    WHERE \n" +
@@ -46,7 +46,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer>, Ca
             "        ct.top_category_insert_date,\n" +
             "        c.category_insert_date,\n" +
             "\t\tc.category_update_date,\n" +
-            "        CONCAT(ct.sort_key, '-', LPAD(CAST(c.category_no AS VARCHAR), 10, '0')) AS sort_key\n" +
+            "        CONCAT(ct.sort_key, '-', CAST(c.category_no AS VARCHAR)) AS sort_key\n" +
             "    FROM \n" +
             "        m_category c\n" +
             "    INNER JOIN \n" +
@@ -65,15 +65,16 @@ public interface CategoryRepository extends JpaRepository<Category, Integer>, Ca
     //카테고리 번호 조회
     Category findByCategoryNo(Integer categoryNo);
 
-    
     //카테고리 하위 카테고리 조회(상위 카테고리삭제 시 하위 카테고리 삭제 위함)
     List<Category> findByParentCategoryNo(Integer parentCategoryNo);
 
-
+    // 🔴모든 분류
+    @Query("select c from Category c where c.categoryDeleteYn = 'N' order by c.categoryNm asc")
+    List<Category> findAllCategory();
 
     //대분류
     @Query("select c from Category c where c.categoryLevel = 1 and c.categoryDeleteYn = 'N' order by c.categoryNm asc")
-    List<Category> findTopCategory ();
+    List<Category> findTopCategory();
 
     //중분류
     @Query("select c2 from Category c2" +
@@ -97,18 +98,16 @@ public interface CategoryRepository extends JpaRepository<Category, Integer>, Ca
     List<Category> findLowCategoryByTopAndMiddleCategory(@Param("topCategoryNo") Integer topCategoryNo,
                                                          @Param("middleCategoryNo") Integer middleCategoryNo);
 
-
-        @Query("SELECT c3 FROM Category c3 " +
-        "JOIN Category c2 ON c3.parentCategoryNo = c2.categoryNo " +
-        "JOIN Category c1 ON c2.parentCategoryNo = c1.categoryNo " +
-        "WHERE c1.categoryNm = :topCategory " +
-        "AND (:middleCategory IS NULL OR c2.categoryNm = :middleCategory) " +
-        "AND (:lowCategory IS NULL OR c3.categoryNm = :lowCategory) " +
-        "AND c3.categoryDeleteYn = 'N'")
-        Category findCategoryByNames2(@Param("topCategory") String topCategory,
-                                @Param("middleCategory") String middleCategory,
-                                @Param("lowCategory") String lowCategory);
-
+    @Query("SELECT c3 FROM Category c3 " +
+            "JOIN Category c2 ON c3.parentCategoryNo = c2.categoryNo " +
+            "JOIN Category c1 ON c2.parentCategoryNo = c1.categoryNo " +
+            "WHERE c1.categoryNm = :topCategory " +
+            "AND (:middleCategory IS NULL OR c2.categoryNm = :middleCategory) " +
+            "AND (:lowCategory IS NULL OR c3.categoryNm = :lowCategory) " +
+            "AND c3.categoryDeleteYn = 'N'")
+    Category findCategoryByNames2(@Param("topCategory") String topCategory,
+                                  @Param("middleCategory") String middleCategory,
+                                  @Param("lowCategory") String lowCategory);
 
     // topCategory, middleCategory, lowCategory 이름으로 카테고리 조회
     @Query("SELECT c3 FROM Category c3 " +
@@ -122,9 +121,6 @@ public interface CategoryRepository extends JpaRepository<Category, Integer>, Ca
                                  @Param("middleCategory") String middleCategory,
                                  @Param("lowCategory") String lowCategory);
 
-
-
-                                 
 }
 /*
 

@@ -448,8 +448,14 @@ function EmployeeList() {
                                         </tr>
                                     ))
                                 ) : (
-                                    <tr>
-                                        <td colSpan="10">검색한 직원이 없습니다.</td>
+                                    <tr className="tr_empty">
+                                        <td colSpan="9"> {/* 로딩 애니메이션 중앙 배치 */}
+                                            <div className="loading">
+                                                <span></span> {/* 첫 번째 원 */}
+                                                <span></span> {/* 두 번째 원 */}
+                                                <span></span> {/* 세 번째 원 */}
+                                            </div>
+                                        </td>
                                     </tr>
                                 )}
                             </tbody>
