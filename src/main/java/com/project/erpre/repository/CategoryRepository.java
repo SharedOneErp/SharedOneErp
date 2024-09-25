@@ -25,7 +25,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer>, Ca
             "        category_insert_date AS top_category_insert_date,\n" +
             "        category_insert_date,\n" +
             "\t\tcategory_update_date,\n" +
-            "        LPAD(CAST(category_no AS VARCHAR), 10, '0') AS sort_key\n" +
+            "        CAST(category_nm AS VARCHAR) AS sort_key\n" +
             "    FROM \n" +
             "        m_category\n" +
             "    WHERE \n" +
@@ -46,7 +46,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer>, Ca
             "        ct.top_category_insert_date,\n" +
             "        c.category_insert_date,\n" +
             "\t\tc.category_update_date,\n" +
-            "        CONCAT(ct.sort_key, '-', LPAD(CAST(c.category_no AS VARCHAR), 10, '0')) AS sort_key\n" +
+            "        CONCAT(ct.sort_key, '-', CAST(c.category_no AS VARCHAR)) AS sort_key\n" +
             "    FROM \n" +
             "        m_category c\n" +
             "    INNER JOIN \n" +
