@@ -13,7 +13,6 @@ export const useProductHooks = () => {
 
     // [2] 카테고리 state
     const [categories, setCategories] = useState([]);
-
     const [topCategories, setTopCategories] = useState([]); // 대분류 목록
     const [middleCategories, setMiddleCategories] = useState([]); // 중분류 목록
     const [lowCategories, setLowCategories] = useState([]); // 소분류 목록
@@ -119,8 +118,6 @@ export const useProductHooks = () => {
             })
             .then((response) => {
 
-                console.log('받아온 데이터:', response.data);
-
                 // 상품 데이터가 있을 경우에만 map 함수 호출
                 const productsWithCategoryNames = (response.data.content || []).map(product => ({
                     ...product,
@@ -146,77 +143,58 @@ export const useProductHooks = () => {
             });
     }, [sortColumn, sortDirection, currentPage, itemsPerPage, filterTopCategory, filterMiddleCategory, filterLowCategory, selectedStatus, searchTerm]);
 
+    // 카테고리 - 대분류 목록 가져오기
     useEffect(() => {
+            setLoading(true);
         axios.get('/api/products/category')
             .then((response) => {
-                console.log('카테고리 데이터:', response.data);
                 const categoriesData = response.data;
                 setCategories(categoriesData);
-                setTopCategories((categoriesData.filter(cat => cat.categoryLevel === 1)));
+                console.log('카테고리 데이터:', categoriesData);
+
+                const topCats = categoriesData.filter(cat => cat?.categoryLv === 1);
+                setTopCategories(topCats);
+
             })
             .catch((error) => {
                 console.error('대분류 조회 실패', error);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     }, []);
 
-    // 카테고리 조회 useEffect
-    // useEffect(() => {
-    //     setLoading(true);
-    //
-    //     // 대분류 API 호출
-    //     axios.get('/api/category/top')
-    //         .then((response) => {
-    //             setTopCategories(response.data);          // 대분류 목록
-    //         })
-    //         .catch((error) => console.error('대분류 조회 실패', error));
-    //
-    //     // 대분류 선택 시 중분류 API 호출
-    //     if (filterTopCategory) {
-    //         axios.get(`/api/category/middle/${filterTopCategory}`)
-    //             .then((response) => {
-    //                 setMiddleCategories(response.data);  // 중분류 데이터 설정
-    //                 setFilterMiddleCategory('');        // 중분류 초기화
-    //             })
-    //             .catch((error) => console.error('중분류 조회 실패', error));
-    //     } else {
-    //         setMiddleCategories([]);  // 중분류 선택이 없을 경우 빈 배열로 초기화
-    //     }
-    //
-    //     setLoading(false);
-    // }, [filterTopCategory]);
-    //
-    // // 중분류 변경 시 소분류 API 호출
-    // useEffect(() => {
-    //     if (filterTopCategory && filterMiddleCategory) {
-    //         axios.get(`/api/category/low/${filterMiddleCategory}/${filterTopCategory}/`)
-    //             .then((response) => {
-    //                 setLowCategories(response.data);  // 소분류 데이터 설정
-    //             })
-    //             .catch((error) => console.error('소분류 조회 실패', error));
-    //     } else {
-    //         setLowCategories([]);  // 소분류 선택이 없을 경우 빈 배열로 초기화
-    //     }
-    // }, [filterMiddleCategory, filterTopCategory]);
-
-    // 대분류 변경
+    // 카테고리 - 대분류 변경 시 중분류 목록 필터링
     const handleFilterTopCategoryChange = (e) => {
-        setFilterTopCategory(e.target.value);
-        setFilterMiddleCategory('');
-        setFilterLowCategory('');
-        setCurrentPage(1);
-    };
+        const selectedTop = parseInt(e.target.value);
+        setFilterTopCategory(selectedTop);
+
+        // 대분류 선택에 따라 중분류 목록 필터링
+        const filteredMiddleCategories = categories.filter(cat => cat?.categoryLv === 2 && cat.parentCategoryNo === selectedTop);
+
+        // console.log('필터링 된 중분류 데이터:', filteredMiddleCategories)
+
+        setMiddleCategories(filteredMiddleCategories);  // 중분류 목록 설정
+    }
 
     // 중분류 변경
     const handleFilterMiddleCategoryChange = (e) => {
-        setFilterMiddleCategory(e.target.value);
-        setFilterLowCategory('');
-        setCurrentPage(1);
+        const selectedMiddle = parseInt(e.target.value);
+        setFilterMiddleCategory(selectedMiddle);
+
+        console.log('선택된 중분류', selectedMiddle);
+
+        const filteredLowCategories = categories.filter(cat => cat?.categoryLv === 3 && cat.parentCategoryNo === selectedMiddle);
+
+        console.log('필터링된 소분류:', filteredLowCategories);
+
+        setLowCategories(filteredLowCategories);
     };
 
     // 소분류 변경
     const handleFilterLowCategoryChange = (e) => {
-        setFilterLowCategory(e.target.value);
-        setCurrentPage(1);
+        const selectedLow = e.target.value;
+        setFilterLowCategory(selectedLow);
     };
 
     // 상품 필터링 함수
@@ -641,21 +619,7 @@ export const useProductHooks = () => {
         setCurrentPage(1);
     };
 
-    // 카테고리 필터링된 중분류 목록
-    const filteredMiddleCategories = useMemo(() => {
-        if (filterTopCategory) {
-            return middleCategories.filter(cat => String(cat.parentCategoryNo) === String(filterTopCategory));
-        }
-        return middleCategories;
-    }, [filterTopCategory, middleCategories]);
 
-    // 카테고리 필터링된 소분류 목록
-    const filteredLowCategories = useMemo(() => {
-        if (filterMiddleCategory) {
-            return lowCategories.filter(cat => String(cat.parentCategoryNo) === String(filterMiddleCategory));
-        }
-        return lowCategories;
-    }, [lowCategories, filterMiddleCategory]);
 
     // 🟡 대분류 변경 시 중분류 목록 가져오기
     const handleAddTopCategoryChange = (e) => {
@@ -856,8 +820,6 @@ export const useProductHooks = () => {
         filterLowCategory,
         filterMiddleCategory,
         filterTopCategory,
-        filteredMiddleCategories,
-        filteredLowCategories,
         handleFilterLowCategoryChange,
         handleFilterMiddleCategoryChange,
         handleFilterTopCategoryChange,

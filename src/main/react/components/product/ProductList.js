@@ -32,8 +32,6 @@ function ProductList() {
         filterLowCategory,
         filterMiddleCategory,
         filterTopCategory,
-        filteredLowCategories,
-        filteredMiddleCategories,
         handleFilterLowCategoryChange,
         handleFilterMiddleCategoryChange,
         handleFilterTopCategoryChange,
@@ -73,6 +71,8 @@ function ProductList() {
         handleAddMiddleCategoryChange,
         handleAddTopCategoryChange,
         pageInputValue,
+        middleCategories,
+        lowCategories,
     } = useProductHooks(); // 커스텀 훅 사용
 
 
@@ -91,20 +91,19 @@ function ProductList() {
                             <select className="box" value={filterTopCategory}
                                     onChange={handleFilterTopCategoryChange}>
                                 <option value="">대분류</option>
-                                {topCategories
-                                    .map((category, index) => (
-                                        <option key={index} value={category.categoryNo}>
-                                            {category.categoryNm}
-                                        </option>
+                                {topCategories.map((category) => (
+                                    <option key={category.categoryNo} value={category.categoryNo}>
+                                        {category.categoryNm}
+                                    </option>
                                     ))}
                             </select>
                             <select className="box" value={filterMiddleCategory}
                                     onChange={handleFilterMiddleCategoryChange}
                                     disabled={!filterTopCategory}>
                                 <option value="">중분류</option>
-                                {filteredMiddleCategories
+                                {middleCategories
                                     .map((category, index) => (
-                                        <option key={index} value={category.categoryNo}>
+                                        <option key={category.categoryNo} value={category.categoryNo}>
                                             {category.categoryNm}
                                         </option>
                                     ))}
@@ -113,9 +112,9 @@ function ProductList() {
                                     onChange={handleFilterLowCategoryChange}
                                     disabled={!filterMiddleCategory}>
                                 <option value="">소분류</option>
-                                {filteredLowCategories
+                                {lowCategories
                                     .map((category, index) => (
-                                        <option key={index} value={category.categoryNo}>
+                                        <option key={category.categoryNo} value={category.categoryNo}>
                                             {category.categoryNm}
                                         </option>
                                     ))}
