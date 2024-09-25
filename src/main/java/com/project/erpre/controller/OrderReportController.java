@@ -41,42 +41,15 @@ public class OrderReportController {
         return orderReportService.getOrders(periodType, startDateTime, endDateTime);
     }
 
-    // 🟡 담당자별 주문 금액 및 주문 건수 조회 메서드
-    @GetMapping("/ordersByEmployee")
-    public List<Object[]> getOrdersByEmployee(@RequestParam String startDate,
-                                              @RequestParam String endDate) {
+    @GetMapping("/ordersByFilter")
+    public List<Object[]> getOrdersByFilter(@RequestParam String filterType,
+                                            @RequestParam String startDate,
+                                            @RequestParam String endDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime startDateTime = LocalDate.parse(startDate, formatter).atStartOfDay();
+        LocalDateTime endDateTime = LocalDate.parse(endDate, formatter).atTime(23, 59, 59);
 
-        LocalDate start = LocalDate.parse(startDate, formatter);
-        LocalDate end = LocalDate.parse(endDate, formatter);
-
-        LocalDateTime startDateTime = start.atStartOfDay();
-        LocalDateTime endDateTime = end.atTime(23, 59, 59);
-
-        // OrderReportService에서 담당자별 주문 금액 및 주문 건수를 가져오는 메서드 호출
-        return orderReportService.getOrdersByEmployee("monthly", startDateTime, endDateTime);  // 기본으로 월별 조회
+        return orderReportService.getOrdersByFilter(filterType, startDateTime, endDateTime);
     }
-
-    // 🟡 최근 3개월 동안 각 월별로 주문 건수가 가장 많은 상위 3명의 담당자에 대한 주문 건수와 총 금액을 조회
-    @GetMapping("/top3-employees-last3months")
-    public List<Object[]> getTop3EmployeesLast3Months() {
-        return orderReportService.getTop3EmployeesLast3Months();
-    }
-
-
-    // 총 주문건수(기간동안의 총 주문건수를 집계하는 거, 일단은 안씀)
-//    @GetMapping("/totalOrders")
-//    public Long getTotalOrders(@RequestParam String startDate, @RequestParam String endDate) {
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); //요청이 String으로 오니까 변환해줘야함
-//
-//        // LocalDate로 변환 후, LocalDateTime으로 시작/끝 시간 추가
-//        LocalDate start = LocalDate.parse(startDate, formatter);
-//        LocalDate end = LocalDate.parse(endDate, formatter);
-//
-//        LocalDateTime startDateTime = start.atStartOfDay(); // 00:00:00 추가(localdatetime)
-//        LocalDateTime endDateTime = end.atTime(23, 59, 59);  // 23:59:59 추가
-//
-//        return orderReportService.getTotalOrders(startDateTime, endDateTime);
-//    }
 
 }

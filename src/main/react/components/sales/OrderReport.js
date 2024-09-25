@@ -183,34 +183,6 @@ function OrderReport() {
                             yAxisID: 'y-amounts'  // 주문 금액 Y축
                         }
                     ]
-                }, {
-                    scales: {
-                        yOrders: {
-                            type: 'linear',
-                            position: 'left',  // 왼쪽 Y축에 표시
-                            title: {
-                                display: true,
-                                text: '총 주문건수'
-                            },
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        },
-                        yAmounts: {
-                            type: 'linear',
-                            position: 'right',  // 오른쪽 Y축에 표시
-                            title: {
-                                display: true,
-                                text: '총 주문금액'
-                            },
-                            ticks: {
-                                beginAtZero: true
-                            },
-                            grid: {
-                                drawOnChartArea: false  // 왼쪽 Y축 그리드와 중첩되지 않도록 설정
-                            }
-                        }
-                    }
                 });
 
             })
@@ -223,148 +195,55 @@ function OrderReport() {
 
     };
 
-    // 🔴 담당자별 주문 금액 및 주문 건수 API 호출
-    const fetchOrdersByEmployee = () => {
-        const today = getTodayDate();
-        const calculatedStartDate = calculateStartDate("3months"); // 기본적으로 최근 3개월 조회
+    // 주문 필터 데이터 호출
+    const fetchOrdersByFilter = (filterType) => {
+        const startDate = calculateStartDate("3months");
+        const endDate = getTodayDate();
 
-        // 🔴 API 요청
-        axios.get(`/api/orderReport/ordersByEmployee`, {
-            params: { startDate: calculatedStartDate, endDate: today }
+        axios.get(`/api/orderReport/ordersByFilter`, {
+            params: { filterType, startDate, endDate }
         })
             .then(response => {
-                console.log("담당자별 주문 API 응답:", response.data);  // 응답 데이터 확인
-                let processedData = { counts: [], amounts: [], employees: [], months: [] };  // 주문 건수, 금액, 담당자 목록, 월별 정보 저장
+            const processedData = {
+                counts: response.data.map(item => item[1]), // 주문 건수
+                amounts: response.data.map(item => item[2]) // 주문 금액
+            };
 
-                response.data.forEach(([month, employeeName, count, totalAmount]) => {
-                    processedData.months.push(month);  // 월 추가
-                    processedData.employees.push(employeeName);  // 담당자 이름 추가
-                    processedData.counts.push(count);  // 주문 건수 추가
-                    processedData.amounts.push(totalAmount);  // 주문 금액 추가
-                });
+            const labels = response.data.map(item => item[0]); // 담당자, 고객사, 상품 이름
 
-                // 차트에 보여줄 라벨(월과 담당자 이름 결합) 설정
-                const labels = processedData.months.map((month, index) => `${month}월 - ${processedData.employees[index]}`);
-
-                // 🔴 차트 데이터 및 옵션 설정
-                setChartData({
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: '총 주문건수',
-                            data: processedData.counts,  // 주문 건수 데이터
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'y-orders'
-                        },
-                        {
-                            label: '총 주문금액',
-                            data: processedData.amounts,  // 주문 금액 데이터
-                            backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                            borderColor: 'rgba(153, 102, 255, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'y-amounts'
-                        }
-                    ]
-                }, {
-                    scales: {
-                        yOrders: {
-                            type: 'linear',
-                            position: 'left',
-                            title: {
-                                display: true,
-                                text: '총 주문건수'
-                            },
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        },
-                        yAmounts: {
-                            type: 'linear',
-                            position: 'right',
-                            title: {
-                                display: true,
-                                text: '총 주문금액'
-                            },
-                            ticks: {
-                                beginAtZero: true
-                            },
-                            grid: {
-                                drawOnChartArea: false
-                            }
-                        }
+            setChartData({
+                labels: labels,
+                datasets: [
+                    {
+                        label: '총 주문건수',
+                        data: processedData.counts,  // 주문 건수 데이터
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y-orders'  // 주문 건수 Y축
+                    },
+                    {
+                        label: '총 주문금액',
+                        data: processedData.amounts,  // 주문 금액 데이터
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y-amounts'  // 주문 금액 Y축
                     }
-                });
-            })
-            .catch(error => {
-                console.error('담당자별 주문 API 호출 에러:', error.response || error);
-                setChartData(null);
-                console.log('차트를 불러오는 데 실패했습니다. 나중에 다시 시도해 주세요.');
+                ]
             });
-
-    };
-
-    // 🔴 최근 3개월 동안 상위 3명의 담당자 주문 금액 및 건수 API 호출
-    const fetchTop3EmployeesLast3Months = () => {
-        const today = getTodayDate();
-        const calculatedStartDate = calculateStartDate("3months");
-
-        // 🔴 API 요청
-        axios.get(`/api/orderReport/top3-employees-last3months`, {
-            params: { startDate: calculatedStartDate, endDate: today }
         })
-            .then(response => {
-                console.log("상위 3명의 담당자별 주문 API 응답:", response.data);
-
-                let processedData = { counts: [], amounts: [], employees: [], months: [] };
-
-                response.data.forEach(([month, employeeName, count, totalAmount]) => {
-                    processedData.months.push(month);  // 월 추가
-                    processedData.employees.push(employeeName);  // 담당자 이름 추가
-                    processedData.counts.push(count);  // 주문 건수 추가
-                    processedData.amounts.push(totalAmount);  // 주문 금액 추가
-                });
-
-                // 라벨 구성: 월과 담당자 이름 결합
-                const labels = processedData.months.map((month, index) => `${month}월 - ${processedData.employees[index]}`);
-
-                // 차트 데이터 구성
-                setChartData({
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: '총 주문건수',
-                            data: processedData.counts,
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'y-orders'
-                        },
-                        {
-                            label: '총 주문금액',
-                            data: processedData.amounts,
-                            backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                            borderColor: 'rgba(153, 102, 255, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'y-amounts'
-                        }
-                    ]
-                });
-            })
             .catch(error => {
-                console.error('상위 3명의 담당자 API 호출 에러:', error.response || error);
-                setChartData(null);
-                console.log('차트를 불러오는 데 실패했습니다. 나중에 다시 시도해 주세요.');
-            });
+            console.error('API 에러:', error.response || error);
+            setChartData(null);
+        });
     };
-
 
     // 기간에 따른 날짜 변경 처리
     const handleDateRangeChange = (e) => {
         const value = e.target.value;
-        setStartDate(calculateStartDate(value)); // 시작일 동적으로 설정
-        setEndDate(getTodayDate()); // 오늘 날짜를 종료일로 설정
+         setStartDate(calculateStartDate(value)); // 시작일 동적으로 설정
+         setEndDate(getTodayDate()); // 오늘 날짜를 종료일로 설정
         fetchTotalOrders(value); // 새로운 기간에 맞춰 주문 데이터를 가져옴
     };
 
@@ -377,15 +256,8 @@ function OrderReport() {
 
         if (value === 'totalOrders') {
             fetchTotalOrders("3months");
-        } else if (value === 'employeeOrders') {
-            fetchOrdersByEmployee();  // 담당자별 데이터 불러오기
         } else {
-            // 해당 주문 유형에 따른 메시지 설정
-            if (value === 'productOrders') {
-                setMessage("상품별 주문건수 화면");
-            } else if (value === 'customerOrders') {
-                setMessage("고객별 주문건수 화면");
-            }
+            fetchOrdersByFilter(value);
         }
     };
 
@@ -460,7 +332,33 @@ function OrderReport() {
                                 responsive: true,
                                 plugins: {
                                     legend: { position: 'top' },
-                                    title: { display: true, text: selectedOrderType === 'employeeOrders' ? '담당자별 주문 현황' : '전체 주문 현황' }
+                                    title: {
+                                        display: true,
+                                        text: selectedOrderType === 'employeeOrders' 
+                                            ? '최근 3개월 간 담당자별 주문 현황'
+                                            : selectedOrderType === 'customerOrders' 
+                                            ? '최근 3개월 간 고객별 주문 현황'
+                                            : selectedOrderType === 'productOrders'
+                                            ? '최근 3개월 간 상품별 주문 현황'
+                                            : '전체 주문 현황' // 기본값
+                                    }
+                                },
+                                scales: {
+                                    yOrders: {
+                                        type: 'linear',
+                                        position: 'left',
+                                        display : false,
+                                        title: { display: true, text: '총 주문건수' },
+                                        ticks: { beginAtZero: true}
+                                    },
+                                    yAmounts: {
+                                        type: 'linear',
+                                        position: 'right',
+                                        display : false,
+                                        title: { display: true, text: '총 주문금액' },
+                                        ticks: { beginAtZero: true },
+                                        grid: { drawOnChartArea: false}
+                                    }
                                 }
                             }} />
                         ) : (

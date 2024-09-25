@@ -3,6 +3,8 @@ package com.project.erpre.service;
 import com.project.erpre.repository.OrderReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
@@ -36,22 +38,20 @@ public class OrderReportService {
         return orderReportRepository.countOrdersByMonth(startDate, endDate);
     }
 
-    // 🟡 담당자별 주문 금액 및 주문 건수 집계 (달별)
-    public List<Object[]> getOrdersByEmployee(String periodType, LocalDateTime startDate, LocalDateTime endDate) {
-        return orderReportRepository.countOrdersByMonthAndEmployee(startDate, endDate);
-    }
+    public List<Object[]> getOrdersByFilter(String filterType, LocalDateTime startDate, LocalDateTime endDate) {
+        Pageable top10 = PageRequest.of(0, 10);
+        switch (filterType) {
+            case "productOrders":
+                return orderReportRepository.countOrdersByProduct(startDate, endDate, top10);
+            case "customerOrders":
+                return orderReportRepository.countOrdersByCustomer(startDate, endDate, top10);
+            case "employeeOrders":
+                return orderReportRepository.countOrdersByEmployee(startDate, endDate, top10);
+            default:
+                throw new IllegalArgumentException("Invalid filter type");
+        }
+    }   
 
-    // 🟡 최근 3개월 동안 각 월별로 주문 건수가 가장 많은 상위 3명의 담당자에 대한 주문 건수와 총 금액을 조회
-    public List<Object[]> getTop3EmployeesLast3Months() {
-        LocalDateTime endDate = LocalDateTime.now();
-        LocalDateTime startDate = endDate.minusMonths(3).with(TemporalAdjusters.firstDayOfMonth()).withHour(0).withMinute(0).withSecond(0).withNano(0);
 
-        return orderReportRepository.countTop3OrdersByMonthAndEmployee(startDate, endDate);
-    }
-
-//    // 총 주 금액
-//    public Long getTotalOrders(LocalDateTime startDate, LocalDateTime endDate) {
-//        return orderReportRepository.countTotalOrders(startDate, endDate);
-//    }
 
 }
