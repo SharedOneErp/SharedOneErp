@@ -5,6 +5,9 @@ import Pagination from './Pagination'; // 페이지네이션 컴포넌트 임포
 import { useDebounce } from '../common/useDebounce'; // useDebounce 훅 임포트
 
 function CustomerSearchModal({ onClose, onCustomerSelect }) {
+
+    const [loading, setLoading] = useState(false); // 🔴 로딩 상태 추가
+
     // 🔴 검색어 및 검색 결과 상태 관리
     const [customerSearchText, setCustomerSearchText] = useState(''); // 고객사 검색어 상태
     const debouncedCustomerSearchText = useDebounce(customerSearchText, 300); // 딜레이 적용
@@ -19,6 +22,7 @@ function CustomerSearchModal({ onClose, onCustomerSelect }) {
 
     // 🔴 고객사 검색 처리 함수 (비동기)
     const fetchData = async () => {
+        setLoading(true); // 로딩 시작
         try {
             // 검색 API 호출
             const response = await axios.get(`/api/customer/search`, {
@@ -29,10 +33,12 @@ function CustomerSearchModal({ onClose, onCustomerSelect }) {
             const data = response.data; // axios는 자동으로 JSON 응답을 변환
             setCustomerSearchResults(data); // 검색 결과 상태 업데이트
             setCurrentPage(1); // 검색 후 페이지를 첫 페이지로 초기화
+            setLoading(false); // 로딩 종료
         } catch (error) {
             // 오류 처리
             console.error('검색 중 오류 발생:', error);
             setCustomerSearchResults([]); // 검색 결과 초기화
+            setLoading(false); // 에러 시 로딩 종료
         }
     };
 
@@ -67,7 +73,7 @@ function CustomerSearchModal({ onClose, onCustomerSelect }) {
             onClose();
         }
     };
-    
+
     // 🟢 검색된 고객사를 클릭
     const handleCustomerClick = (customer) => {
         onCustomerSelect(customer); // 부모 컴포넌트에서 전달된 함수 호출 (handleCustomerSelect)
@@ -116,7 +122,17 @@ function CustomerSearchModal({ onClose, onCustomerSelect }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {customerSearchResults.length > 0 ? (
+                            {loading ? (
+                                <tr className="tr_empty">
+                                    <td colSpan="3"> {/* 로딩 애니메이션 중앙 배치 */}
+                                        <div className="loading">
+                                            <span></span> {/* 첫 번째 원 */}
+                                            <span></span> {/* 두 번째 원 */}
+                                            <span></span> {/* 세 번째 원 */}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : customerSearchResults.length > 0 ? (
                                 /* 검색된 고객사 목록을 출력 */
                                 paginatedCustomerSearchResults.map((result) => (
                                     <tr key={result.customerNo} onClick={() => handleCustomerClick(result)}>

@@ -26,7 +26,7 @@ public class CategoryController {
         return categoryService.getAllCategoryPaths();
     }
 
-    //전체 카테고리
+    // 🔴모든 분류
     @GetMapping("/all")
     public List<Category> getAllCategory() {
         return categoryService.getAllCategory();

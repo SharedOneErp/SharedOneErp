@@ -57,15 +57,6 @@ public class CategoryService {
         )).collect(Collectors.toList());
     }
 
-    //전체 카테고리
-    public List<Category> getAllCategory() {
-        // 정렬
-        Sort sort = Sort.by(Sort.Order.asc("categoryLevel"),
-                Sort.Order.asc("parentCategoryNo"),
-                Sort.Order.asc("categoryNo"));
-        return categoryRepository.findAll(sort);
-    }
-
     // 특정 카테고리
     public Optional<Category> getCategoryById(Integer categoryNo) {
         return categoryRepository.findById(categoryNo);
@@ -149,6 +140,11 @@ public class CategoryService {
             // 하위 카테고리가 있는 경우 재귀적으로 삭제 처리
             deleteSubCategories(subCategory); // 재귀적으로 소분류까지 처리
         }
+    }
+
+    // 🔴모든 분류
+    public List<Category> getAllCategory() {
+        return categoryRepository.findAllCategory();
     }
 
     public List<Category> getTopCategory() {
