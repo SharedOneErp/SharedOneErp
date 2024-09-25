@@ -143,4 +143,12 @@ public class CustomerService {
         return customerRepository.findByCustomerTransactionEndDateBetweenAndCustomerDeleteYn(today, targetDate, "N");
     }
 
+    //유효성 검사
+    public boolean isDuplicateCustomerName(String customerName) {
+        return customerRepository.existsByCustomerName(customerName);
+    }
+    public boolean isDuplicateBusinessRegNo(String customerBusinessRegNo) {
+        return customerRepository.existsByCustomerBusinessRegNo(customerBusinessRegNo);
+    }
+
 }

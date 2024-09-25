@@ -21,4 +21,8 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     List<Customer> findByCustomerInsertDateAfterAndCustomerDeleteYn(Timestamp date, String deleteYn);
     // 메인 - 계약 갱신 예정 (transactionEndDate가 오늘 기준 3일 남은 것)
     List<Customer> findByCustomerTransactionEndDateBetweenAndCustomerDeleteYn(Timestamp startDate, Timestamp endDate, String deleteYn);
+
+    //유효성검사
+    boolean existsByCustomerName(String customerName);
+    boolean existsByCustomerBusinessRegNo(String customerBusinessRegNo);
 }

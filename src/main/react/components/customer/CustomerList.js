@@ -72,7 +72,6 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
         }
     }, [show, customerData]);
 
-
     // 입력 값 변경 시 폼 상태 업데이트
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -83,7 +82,7 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        //유효성 검증
+        // 유효성 검증
         const businessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
         const telRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -97,7 +96,7 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
             customerManagerEmail: ''
         };
 
-        //필수 필드 값 검증
+        // 필수 필드 값 검증
         if (!form.customerName.trim()) {
             newErrors.customerName = '고객사 이름은 필수 입력 항목입니다.';
             valid = false;
@@ -106,7 +105,8 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
             newErrors.customerBusinessRegNo = '사업자 등록번호는 필수 입력 항목입니다.';
             valid = false;
         }
-        //유효성 검사
+
+        // 유효성 검사
         if (!businessRegNoRegex.test(form.customerBusinessRegNo)) {
             newErrors.customerBusinessRegNo = '사업자 등록번호 형식이 올바르지 않습니다. 예: 123-45-67890';
             valid = false;
@@ -132,15 +132,32 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
             return;
         }
 
-        //모든 검증을 통과하면 등록 확인 모달 표시
-        setShowConfirmModal(true);
+        // 중복 체크
+        axios.post('/api/customer/checkDuplicate', {
+            customerName: form.customerName,
+            customerBusinessRegNo: form.customerBusinessRegNo
+        })
+        .then(response => {
+            if (response.data.isDuplicateName) {
+                alert('이미 존재하는 고객명입니다.');
+                return;
+            }
+            if (response.data.isDuplicateBusinessRegNo) {
+                alert('이미 존재하는 사업자 등록번호입니다.');
+                return;
+            }
+        })
+        .catch(error => {
+            console.error('중복 체크 중 오류 발생:', error);
+        });
     };
 
     // 실제 저장 함수
     const handleConfirmSave = () => {
-        onSave(form); //상위 컴포넌트로 저장된 데이터 전달
+        onSave(form); // 상위 컴포넌트로 저장된 데이터 전달
         onClose(); // 상세 모달 닫기
         setShowConfirmModal(false); // 등록 확인 모달 닫기
+        window.showToast("등록 되었습니다.");
     };
 
     if (!show) return null; // 모달 표시 여부 체크
@@ -162,6 +179,8 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                                     name="customerName"
                                     value={form.customerName || ''}
                                     onChange={handleInputChange} />
+                                {errors.customerName && (
+                                    <span className="error-message">{errors.customerName}</span>)}
                             </div>
                             <div className="form-group">
                                 <label>사업자 등록번호<span className='span_red'>*</span></label>
@@ -215,6 +234,7 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                                     name="customerType"
                                     value={form.customerType || ''}
                                     onChange={handleInputChange}>
+                                    <option value="">선택</option>
                                     <option value="01">01. 고객기업</option>
                                     <option value="02">02. 협력기업</option>
                                     <option value="03">03. 본사기업</option>
@@ -259,10 +279,11 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                                     name="customerCountryCode"
                                     value={form.customerCountryCode || ''}
                                     onChange={handleInputChange}>
-                                    <option value="KR">한국 (+82)</option>
-                                    <option value="US">미국 (+1)</option>
-                                    <option value="JP">일본 (+81)</option>
-                                    <option value="CN">중국 (+86)</option>
+                                    <option value="">선택</option>
+                                    <option value="KR">한국 (KR)</option>
+                                    <option value="US">미국 (US)</option>
+                                    <option value="JP">일본 (JP)</option>
+                                    <option value="CN">중국 (CN)</option>
                                 </select>
                             </div>
                             <div className="form-group">
@@ -271,6 +292,7 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                                     name="customerEtaxInvoiceYn"
                                     value={form.customerEtaxInvoiceYn || ''}
                                     onChange={handleInputChange}>
+                                    <option value="">선택</option>
                                     <option value="Y">Y</option>
                                     <option value="N">N</option>
                                 </select>
@@ -318,7 +340,7 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
     const [editableCustomer, setEditableCustomer] = useState(customer || {}); // 편집 가능한 고객 데이터
     const [showEditConfirmModal, setShowEditConfirmModal] = useState(false); // 수정 확인 모달 표시 여부
     const [showSaveConfirmModal, setShowSaveConfirmModal] = useState(false); // 저장 확인 모달 표시 여부
-    const [errors, setErrors] = useState({ //에러 메시지
+    const [errors, setErrors] = useState({ // 에러 메시지
         customerName: '',
         customerBusinessRegNo: '',
         customerTel: '',
@@ -343,14 +365,14 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
 
     // 편집 모드 토글 함수
     const toggleEditMode = () => {
-        if (isEditMode) return; //편집 모드일 경우 동작X
-        setShowEditConfirmModal(true); //수정 확인 모달 표시
+        if (isEditMode) return; // 편집 모드일 경우 동작하지 않음
+        setShowEditConfirmModal(true); // 수정 확인 모달 표시
     };
 
     // 수정 확인 모달에서 확인을 누르면 편집 모드 활성화
     const handleConfirmEdit = () => {
-        setIsEditMode(true); //편집 모드 활성화
-        setShowEditConfirmModal(false); //수정 확인 모달 닫기
+        setIsEditMode(true); // 편집 모드 활성화
+        setShowEditConfirmModal(false); // 수정 확인 모달 닫기
     };
 
     // 입력 값 변경 시 상태 업데이트 함수
@@ -391,7 +413,7 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
             customerManagerEmail: ''
         };
 
-        //필수 값 검증
+        // 필수 필드 값 검증
         if (!editableCustomer.customerName.trim()) {
             newErrors.customerName = '고객사 이름은 필수 입력 항목입니다.';
             valid = false;
@@ -401,7 +423,7 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
             valid = false;
         }
 
-        //유효성 검증
+        // 유효성 검사
         if (!businessRegNoRegex.test(editableCustomer.customerBusinessRegNo)) {
             newErrors.customerBusinessRegNo = '사업자 등록번호 형식이 올바르지 않습니다. 예: 123-45-67890';
             valid = false;
@@ -514,6 +536,7 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                             <label>거래처분류</label>
                             <select name="customerType" value={editableCustomer.customerType || ''} onChange={handleChange}
                                 disabled={!isEditMode}>
+                                <option value="">선택</option>
                                 <option value="01">01. 고객기업</option>
                                 <option value="02">02. 협력기업</option>
                                 <option value="03">03. 본사기업</option>
@@ -547,7 +570,7 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                         <div className="form-group">
                             <label>담당자 이메일</label>
                             <input
-                                type="text"
+                                type="email"
                                 name="customerManagerEmail"
                                 value={editableCustomer.customerManagerEmail || ''}
                                 onChange={handleChange}
@@ -560,6 +583,7 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                             <label>국가 코드</label>
                             <select name="customerCountryCode" value={editableCustomer.customerCountryCode || ''}
                                 onChange={handleChange} disabled={!isEditMode}>
+                                <option value="">선택</option>
                                 <option value="KR">한국 (+82)</option>
                                 <option value="US">미국 (+1)</option>
                                 <option value="JP">일본 (+81)</option>
@@ -571,6 +595,7 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                             <select name="customerEtaxInvoiceYn" value={editableCustomer.customerEtaxInvoiceYn || ''}
                                 onChange={handleChange}
                                 disabled={!isEditMode}>
+                                <option value="">선택</option>
                                 <option value="Y">Y</option>
                                 <option value="N">N</option>
                             </select>
@@ -578,24 +603,24 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                         <div className="form-group">
                             <label>거래 시작일</label>
                             <input type="date" name="customerTransactionStartDate"
-                                value={editableCustomer.customerTransactionStartDate || ''} onChange={handleChange}
+                                value={editableCustomer.customerTransactionStartDate ? editableCustomer.customerTransactionStartDate.substring(0, 10) : ''} onChange={handleChange}
                                 readOnly={!isEditMode} />
                         </div>
                         <div className="form-group">
                             <label>거래 종료일</label>
                             <input type="date" name="customerTransactionEndDate"
-                                value={editableCustomer.customerTransactionEndDate || ''} onChange={handleChange}
+                                value={editableCustomer.customerTransactionEndDate ? editableCustomer.customerTransactionEndDate.substring(0, 10) : ''} onChange={handleChange}
                                 readOnly={!isEditMode} />
                         </div>
                     </div>
                 </div>
                 <div className="modal-actions">
                     {isEditMode ? (
-                        <button className="box blue" onClick={handleSave}>저장</button>
+                        <button className="box blue" type="button" onClick={handleSave}>저장</button>
                     ) : (
                         <>
-                            <button className="box blue" onClick={toggleEditMode}>수정</button>
-                            <button className="box red" onClick={onDelete}>삭제</button>
+                            <button className="box blue" type="button" onClick={toggleEditMode}>수정</button>
+                            <button className="box red" type="button" onClick={onDelete}>삭제</button>
                         </>
                     )}
                 </div>
@@ -617,13 +642,12 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                         onCancel={() => setShowSaveConfirmModal(false)}
                     />
                 )}
-
             </div>
         </div>
     );
 }
 
-//모달창 확인 컴포넌트 추가
+// 모달창 확인 컴포넌트
 function ConfirmationModal({ message, onConfirm, onCancel }) {
     return (
         <div className="modal-overlay confirm-modal-overlay">
@@ -638,7 +662,7 @@ function ConfirmationModal({ message, onConfirm, onCancel }) {
     );
 }
 
-//날짜 포맷팅 함수 추가(등록일시, 수정일시, 삭제일시)
+// 날짜 포맷팅 함수
 const formatDateTime = (dateString) => {
     if (!dateString) return '-';
     const date = new Date(dateString);
@@ -660,7 +684,7 @@ function CustomerList() {
     const [showDetailModal, setShowDetailModal] = useState(false); // 상세 모달 표시 여부
     const [selectedCustomers, setSelectedCustomers] = useState([]); // 선택된 고객 번호 리스트
     const [customers, setCustomers] = useState([]); // 전체 고객 리스트
-    const [filterType, setFilterType] = useState('active'); //전체고객사, 삭제된 고객사 구분
+    const [filterType, setFilterType] = useState('active'); // 전체고객사, 삭제된 고객사 구분
 
     const [sortColumn, setSortColumn] = useState('customerName'); // 기본적으로 정렬 열 customerName 설정
     const [sortOrder, setSortOrder] = useState('asc'); // 기본 정렬은 오름차순
@@ -882,7 +906,7 @@ function CustomerList() {
                                     name="filterType"
                                     value="all"
                                     checked={filterType === 'all'}
-                                    onClick={showAllCustomers}
+                                    onChange={showAllCustomers}
                                 />
                                 <label htmlFor="all">전체</label>
                                 <input
@@ -891,7 +915,7 @@ function CustomerList() {
                                     name="filterType"
                                     value="active"
                                     checked={filterType === 'active'}
-                                    onClick={showActiveCustomers}
+                                    onChange={showActiveCustomers}
                                 />
                                 <label htmlFor="active">정상</label>
                                 <input
@@ -900,7 +924,7 @@ function CustomerList() {
                                     name="filterType"
                                     value="deleted"
                                     checked={filterType === 'deleted'}
-                                    onClick={showDeletedCustomers}
+                                    onChange={showDeletedCustomers}
                                 />
                                 <label htmlFor="deleted">삭제</label>
                             </div>
@@ -924,7 +948,7 @@ function CustomerList() {
                                     <th>번호</th>
                                     <th>
                                         <div className={`order_wrap ${sortColumn === 'customerName' ? 'active' : ''}`}>
-                                            <span>고객명</span>
+                                            <span>고객사</span>
                                             <button className="btn_order" onClick={() => sortCustomers('customerName')}>
                                                 <i className={`bi ${sortColumn === 'customerName' ? (sortOrder === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
                                             </button>
@@ -1011,8 +1035,8 @@ function CustomerList() {
                                                     : '-'}
                                             </td>
                                             <td>
-                                                <div class="btn_group">
-                                                    <button class="box small" onClick={() => openDetailModal(customer)}>상세보기</button>
+                                                <div className="btn_group">
+                                                    <button className="box small" onClick={() => openDetailModal(customer)}>상세보기</button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -1021,22 +1045,9 @@ function CustomerList() {
                         </table>
                     </div>
                 </div>
-                {/* 페이지네이션 컴포넌트 사용 */}
-                {/* <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    itemsPerPage={itemsPerPage}
-                    totalItems={totalItems}
-                    isLoading={isLoading}
-                    pageInputValue={pageInputValue}
-                    handlePage={handlePage}
-                    handleItemsPerPageChange={handleItemsPerPageChange}
-                    handlePageInputChange={handlePageInputChange}
-                /> */}
-
                 <div className="pagination-container">
                     <div className="pagination-sub left">
-                        <button className="box" onClick={handleDeleteAll}><i className="bi bi-trash3"></i>선택 삭제</button>
+                        <button className="box" onClick={handleDeleteAll}><i className="bi bi-trash3"></i> 선택 삭제</button>
                     </div>
                     {/* 가운데: 페이지네이션 */}
                     <div className="pagination">
