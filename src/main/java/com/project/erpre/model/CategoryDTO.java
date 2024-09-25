@@ -24,6 +24,16 @@ public class CategoryDTO {
     private Integer two; // 중분류 번호
     private Integer three; // 소분류 번호
     private String paths; // 전체 경로
+
+    // 추가
+    private Integer topCategoryNo;
+    private Integer middleCategoryNo;
+    private Integer lowCategoryNo;
+    private Integer categoryLv;
+
+
+
+
     public CategoryDTO(Integer one, Integer two, Integer three, Integer categoryNo, Integer categoryLevel, String paths, Timestamp categoryInsertDate, Timestamp categoryUpdateDate) {
         this.one = one;
         this.two = two;
@@ -36,9 +46,9 @@ public class CategoryDTO {
     }
 
     // 카테고리 조회 생성자
-    public CategoryDTO(Integer one, Integer two, Integer three) {
-        this.one = one;
-        this.two = two;
-        this.three = three;
+    public CategoryDTO(Integer topCategoryNo, Integer middleCategoryNo, Integer lowCategoryNo) {
+        this.topCategoryNo = topCategoryNo;
+        this.middleCategoryNo = middleCategoryNo;
+        this.lowCategoryNo = lowCategoryNo;
     }
 }
