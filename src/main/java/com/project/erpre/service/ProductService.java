@@ -149,8 +149,8 @@ public class ProductService {
     }
 
     // 7. 카테고리 조회
-    public List<CategoryDTO> getCategoryList(Integer topCategoryNo, Integer middleCategoryNo, Integer lowCategoryNo) {
-        return categoryRepository.getCategoryList(topCategoryNo, middleCategoryNo, lowCategoryNo);
+    public List<CategoryDTO> getCategoryList(Integer one, Integer two, Integer three) {
+        return categoryRepository.getCategoryList(one, two, three);
     }
 
 

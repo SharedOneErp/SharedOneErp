@@ -12,6 +12,8 @@ export const useProductHooks = () => {
     const [filteredProducts, setFilteredProducts] = useState([]); // 필터링된 상품 목록
 
     // [2] 카테고리 state
+    const [categories, setCategories] = useState([]);
+
     const [topCategories, setTopCategories] = useState([]); // 대분류 목록
     const [middleCategories, setMiddleCategories] = useState([]); // 중분류 목록
     const [lowCategories, setLowCategories] = useState([]); // 소분류 목록
@@ -144,44 +146,57 @@ export const useProductHooks = () => {
             });
     }, [sortColumn, sortDirection, currentPage, itemsPerPage, filterTopCategory, filterMiddleCategory, filterLowCategory, selectedStatus, searchTerm]);
 
-    // 카테고리 조회 useEffect
     useEffect(() => {
-        setLoading(true);
-
-        // 대분류 API 호출
-        axios.get('/api/category/top')
+        axios.get('/api/products/category')
             .then((response) => {
-                setTopCategories(response.data);          // 대분류 목록
+                console.log('카테고리 데이터:', response.data);
+                const categoriesData = response.data;
+                setCategories(categoriesData);
+                setTopCategories((categoriesData.filter(cat => cat.categoryLevel === 1)));
             })
-            .catch((error) => console.error('대분류 조회 실패', error));
+            .catch((error) => {
+                console.error('대분류 조회 실패', error);
+            });
+    }, []);
 
-        // 대분류 선택 시 중분류 API 호출
-        if (filterTopCategory) {
-            axios.get(`/api/category/middle/${filterTopCategory}`)
-                .then((response) => {
-                    setMiddleCategories(response.data);  // 중분류 데이터 설정
-                    setFilterMiddleCategory('');        // 중분류 초기화
-                })
-                .catch((error) => console.error('중분류 조회 실패', error));
-        } else {
-            setMiddleCategories([]);  // 중분류 선택이 없을 경우 빈 배열로 초기화
-        }
-
-        setLoading(false);
-    }, [filterTopCategory]);
-
-    // 중분류 변경 시 소분류 API 호출
-    useEffect(() => {
-        if (filterTopCategory && filterMiddleCategory) {
-            axios.get(`/api/category/low/${filterMiddleCategory}/${filterTopCategory}/`)
-                .then((response) => {
-                    setLowCategories(response.data);  // 소분류 데이터 설정
-                })
-                .catch((error) => console.error('소분류 조회 실패', error));
-        } else {
-            setLowCategories([]);  // 소분류 선택이 없을 경우 빈 배열로 초기화
-        }
-    }, [filterMiddleCategory, filterTopCategory]);
+    // 카테고리 조회 useEffect
+    // useEffect(() => {
+    //     setLoading(true);
+    //
+    //     // 대분류 API 호출
+    //     axios.get('/api/category/top')
+    //         .then((response) => {
+    //             setTopCategories(response.data);          // 대분류 목록
+    //         })
+    //         .catch((error) => console.error('대분류 조회 실패', error));
+    //
+    //     // 대분류 선택 시 중분류 API 호출
+    //     if (filterTopCategory) {
+    //         axios.get(`/api/category/middle/${filterTopCategory}`)
+    //             .then((response) => {
+    //                 setMiddleCategories(response.data);  // 중분류 데이터 설정
+    //                 setFilterMiddleCategory('');        // 중분류 초기화
+    //             })
+    //             .catch((error) => console.error('중분류 조회 실패', error));
+    //     } else {
+    //         setMiddleCategories([]);  // 중분류 선택이 없을 경우 빈 배열로 초기화
+    //     }
+    //
+    //     setLoading(false);
+    // }, [filterTopCategory]);
+    //
+    // // 중분류 변경 시 소분류 API 호출
+    // useEffect(() => {
+    //     if (filterTopCategory && filterMiddleCategory) {
+    //         axios.get(`/api/category/low/${filterMiddleCategory}/${filterTopCategory}/`)
+    //             .then((response) => {
+    //                 setLowCategories(response.data);  // 소분류 데이터 설정
+    //             })
+    //             .catch((error) => console.error('소분류 조회 실패', error));
+    //     } else {
+    //         setLowCategories([]);  // 소분류 선택이 없을 경우 빈 배열로 초기화
+    //     }
+    // }, [filterMiddleCategory, filterTopCategory]);
 
     // 대분류 변경
     const handleFilterTopCategoryChange = (e) => {
@@ -549,13 +564,12 @@ export const useProductHooks = () => {
         })
             .then(response => {
                 alert('상품이 삭제되었습니다.');
-                fetchProducts(); // 삭제 후 상품 목록 다시 불러오기
-                setSelectedProducts([]); // 선택된 상품 초기화
+                fetchProducts();
+                setSelectedProducts([]);
             })
             .catch(error => {
                 console.error('상품 삭제 실패:', error);
                 alert('상품 삭제에 실패했습니다. 다시 시도해주세요.');
-                // 선택된 상품을 초기화하지 않아도 됩니다. 필요 시 유지
             });
     };
 

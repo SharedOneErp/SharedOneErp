@@ -7,6 +7,6 @@ import java.util.List;
 public interface CategoryRepositoryCustom {
 
     // 카테고리 조회
-    List<CategoryDTO> getCategoryList(Integer topCategoryNo, Integer middleCategoryNo, Integer lowCategoryNo);
+    List<CategoryDTO> getCategoryList(Integer one, Integer two, Integer three);
 
 }
