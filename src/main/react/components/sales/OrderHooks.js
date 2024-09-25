@@ -32,6 +32,7 @@ export const useHooksList = () => {
     const [searchCode, setSearchCode] = useState(''); // 상품코드 상태
     const [searchResults, setSearchResults] = useState([]); // 검색 결과 상태
     const [customerSearchResults, setCustomerSearchResults] = useState([]); // 고객 검색 결과
+    const [orderHStatus, setOrderHStatus] = useState('');
     const [orderHTotalPrice, setOrderHTotalPrice] = useState(0);
     const [orderHInsertDate, setOrderHInsertDate] = useState(0);
     const [customerNo, setCustomerNo] = useState('');
@@ -227,6 +228,7 @@ export const useHooksList = () => {
         };
     });
 
+    //주문 데이터 가져오기 (orderDetail)
     const fetchOrderDetail = async (orderNo) => {
 
         try {
@@ -237,6 +239,7 @@ export const useHooksList = () => {
             setProducts(data.products || []);
             setEmployee(data.employee || null);
             setCustomer(data.customer || {});
+            setOrderHStatus(data.orderHStatus || 'LOADING');
             setOrderHTotalPrice(data.orderHTotalPrice || 0); // 상태 업데이트
             setOrderHInsertDate(data.orderHInsertDate || 0);
 
@@ -726,6 +729,7 @@ export const useHooksList = () => {
         products,           // 상품 리스트
         customerData,       // 고객사 정보
         orderDetails,       // 주문 상세 정보
+        orderHStatus,       // 주문 상태
         orderHTotalPrice,   // 주문 총액
         orderHInsertDate,   // 주문 등록일
         deliveryDate,       // 납품 요청일

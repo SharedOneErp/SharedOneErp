@@ -10,11 +10,7 @@ import '../../../resources/static/css/sales/Order.css';
 function Order() {
 
     const [role, setRole] = useState('');
-    const [isApproved, setIsApproved] = useState(false);
-    const [isDenied, setIsDenied] = useState(false);
     const [loading, setLoading] = useState(true);
-
-
 
 
     const fetchEmployee = async () => {
@@ -54,10 +50,6 @@ function Order() {
 
     const updateOrderStatus = async (orderNo, status, message) => {
 
-        const userConfirmed = confirm(message);
-        if (!userConfirmed) {
-            return;
-        }
 
         try {
             const response = await fetch(`/api/order/updateStatus/${orderNo}`, {
@@ -68,30 +60,54 @@ function Order() {
                 body: JSON.stringify({ orderHStatus: status }),
             });
             if (response.ok) {
-                alert('주문 상태가 업데이트되었습니다.');
+                console.log("orderstatus update success");
+                return true;
             } else {
                 throw new Error('주문 상태 업데이트 실패');
             }
         } catch (error) {
-            alert('주문 상태를 업데이트하는 중 오류 발생');
+            console.error('주문 상태를 업데이트하는 중 오류 발생');
+            return false;
         }
     };
 
     const handleApproveOrder = async () => {
         try {
-            await updateOrderStatus(orderNo, 'approved', '해당 주문을 승인하시겠습니까? 이 결정은 되돌릴 수 없습니다.');
-            setIsApproved(true); // 승인 상태로 변경
+
+            const userConfirmed = confirm('해당 주문을 승인하시겠습니까? 이 결정은 되돌릴 수 없습니다.');
+            if (!userConfirmed) {
+                return;
+            }
+
+            const result = await updateOrderStatus(orderNo, 'approved');
+
+            if(result){
+                alert("주문 승인이 정상적으로 완료되었습니다.");
+                window.location.reload();
+            }else{
+                throw new Error("주문 승인 중 오류 발생");
+            }
         } catch (error) {
-            alert('주문 승인 중 오류 발생');
+           alert('주문 승인이 실패했습니다. 관리자에게 문의하세요');
         }
     };
 
     const handleDeniedOrder = async () => {
         try {
-            await updateOrderStatus(orderNo, 'denied', '해당 주문을 반려하시겠습니까? 이 결정은 되돌릴 수 없습니다.');
-            setIsDenied(true); // 반려 상태로 변경
+            const userConfirmed = confirm('해당 주문을 반려하시겠습니까? 이 결정은 되돌릴 수 없습니다.');
+            if (!userConfirmed) {
+                return;
+            }
+            const result = await updateOrderStatus(orderNo, 'denied');
+
+            if(result) {
+                alert("주문 반려가 정상적으로 완료되었습니다.");
+                window.location.reload();
+            }else{
+                throw new Error('주문 반려 중 오류 발생');
+            }
         } catch (error) {
-            alert('주문 반려 중 오류 발생');
+            alert("주문 반려가 실패했습니다. 관리자에게 문의하세요");
         }
     };
 
@@ -111,6 +127,7 @@ function Order() {
         products,           // 상품 리스트
         customerData,       // 고객사 정보
         orderDetails,       // 주문 상세 정보
+        orderHStatus,
         orderHTotalPrice,   // 주문 총액
         orderHInsertDate,   // 주문 등록일
         deliveryDate,       // 납품 요청일
@@ -217,6 +234,9 @@ function Order() {
                                             <label>물품 총액</label>
                                             <span className="orderHtotal-price"> {orderHTotalPrice.toLocaleString()}원</span>
                                         </div>
+
+
+
                                         <div className="form-group">
                                             <label>주문 등록일</label>
                                             <input type="date" value={formatDateForInput(orderHInsertDate) || ''} readOnly
@@ -295,13 +315,17 @@ function Order() {
                                         placeholder="고객사 선택" readOnly />
                                 </div>
 
-                                <div
-                                    className="form-group"
-                                    style={{ display: isCreateMode ? 'none' : 'block' }}
-                                >
-                                    <label>주문 상태</label>
-                                    <span style={{ display: 'none' }} className="order-status"></span>
+                                { !isCreateMode &&
+                                <div className="form-group">
+                                        <label>현재 주문 상태</label>
+                                    <span className={`order-status ${orderHStatus}`}>
+                                        {/* 상태에 따른 한글로 텍스트 변경 */}
+                                        {orderHStatus === 'ing' && '결재중'}
+                                        {orderHStatus === 'denied' && '반려'}
+                                        {orderHStatus === 'approved' && '결재완료'}
+                                    </span>
                                 </div>
+                                }
                             </div>
 
                         </div>
@@ -360,39 +384,56 @@ function Order() {
                                         </td>
                                         <td>
                                             <input
-                                                type="number"
+                                                type="text" // type을 text로 변경하여 콤마가 들어간 값을 처리 가능하게 함
                                                 className="box"
-                                                value={isCreateMode ? (item?.price || '') : isEditMode ? item?.orderDPrice : item?.orderDPrice || ''}
+                                                value={isCreateMode
+                                                    ? (item?.price !== undefined ? item.price.toLocaleString() : '')
+                                                    : isEditMode
+                                                        ? (item?.orderDPrice !== undefined ? item.orderDPrice.toLocaleString() : '')
+                                                        : item?.orderDPrice?.toLocaleString() || ''
+                                                }
                                                 readOnly={!isEditMode && !isCreateMode}
                                                 placeholder="단가 입력"
                                                 onChange={(e) => {
+                                                    // 콤마를 제거한 숫자만 추출
+                                                    const numericValue = Number(e.target.value.replace(/,/g, ''));
+
                                                     if (isCreateMode) {
-                                                        handleProductChange(index, 'price', Number(e.target.value));
+                                                        handleProductChange(index, 'price', numericValue);
                                                     } else if (isEditMode) {
-                                                        handleProductEdit(index, 'orderDPrice', Number(e.target.value));
+                                                        handleProductEdit(index, 'orderDPrice', numericValue);
                                                     }
                                                 }}
                                             />
                                         </td>
                                         <td>
                                             <input
-                                                type="number"
+                                                type="text" // 콤마가 포함된 값을 처리하기 위해 type을 text로 변경
                                                 className="box"
-                                                value={isCreateMode ? (item?.quantity || 0) : isEditMode ? item?.orderDQty : item?.orderDQty || 0}
+                                                value={isCreateMode
+                                                    ? (item?.quantity !== undefined ? item.quantity.toLocaleString() : 0)
+                                                    : isEditMode
+                                                        ? (item?.orderDQty !== undefined ? item.orderDQty.toLocaleString() : 0)
+                                                        : item?.orderDQty?.toLocaleString() || 0
+                                                }
                                                 readOnly={!isEditMode && !isCreateMode}
                                                 placeholder="수량 입력"
                                                 onChange={(e) => {
+                                                    // 콤마를 제거한 숫자만 추출
+                                                    const numericValue = Number(e.target.value.replace(/,/g, ''));
+
+                                                    // 상태 업데이트: 콤마 없는 숫자를 상태에 저장
                                                     if (isCreateMode) {
-                                                        handleProductChange(index, 'quantity', Number(e.target.value));
+                                                        handleProductChange(index, 'quantity', numericValue);
                                                     } else if (isEditMode) {
-                                                        handleProductEdit(index, 'orderDQty', Number(e.target.value));
+                                                        handleProductEdit(index, 'orderDQty', numericValue);
                                                     }
                                                 }}
                                             />
                                         </td>
                                         <td>{((isCreateMode ? (item?.price || 0) * (item?.quantity || 0) : item?.orderDPrice * item?.orderDQty) || 0).toLocaleString()}</td>
                                         {(isCreateMode || isEditMode) && (
-                                            <td style={{ width: '100px' }}>
+                                            <td style={{width: '100px'}}>
                                                 <button className="box icon del" onClick={() => {
                                                     const currentProducts = isCreateMode ? products : isEditMode ? displayItemEdit : displayItems || [];
                                                     // 상품이 없을 경우 알림 표시
@@ -439,7 +480,7 @@ function Order() {
                         {isCreateMode && <button className="box color" onClick={handleSubmit}><i className="bi bi-floppy"></i> 주문 등록</button>}
                         {/*추 후 배포시에는 role!=='admin'으로 변경할 것*/}
                         {isEditMode && role ==='admin' &&(<button className="box color" onClick={() => handleEdit(orderNo)}><i className="bi bi-floppy"></i> 주문 수정</button>)}
-                        {isDetailView && role === 'admin' && !isApproved && !isDenied && (
+                        {isDetailView && role === 'admin' && orderHStatus === 'ing' && (
                             <>
                                 <button className="box color" onClick={handleApproveOrder}>
                                     결재승인

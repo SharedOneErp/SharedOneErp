@@ -45,12 +45,14 @@ const updateOrderStatus = async (orderNo) => {
             body: JSON.stringify({ orderHStatus: 'approved' }),
         });
         if (response.ok) {
-            alert('주문 상태가 업데이트되었습니다.');
+            console.log("approved success");
+            return true;
         } else {
             throw new Error('주문 상태 업데이트 실패');
         }
     } catch (error) {
-        alert('주문 상태를 업데이트하는 중 오류 발생');
+       console.error('주문 상태를 업데이트하는 중 오류 발생');
+        return false;
     }
 };
 
@@ -65,15 +67,17 @@ const deniedOrderStatus = async (orderNo) => {
             body: JSON.stringify({ orderHStatus: 'denied' }),
         });
         if (response.ok) {
-            alert('주문 상태가 업데이트되었습니다.');
+            console.log("denied success");
+            return true;
         } else {
             throw new Error('주문 상태 업데이트 실패');
         }
     } catch (error) {
-        alert('주문 상태를 업데이트하는 중 오류 발생');
+        console.error('주문 상태를 업데이트하는 중 오류 발생');
+        return false;
+
     }
 };
-
 
 
 function OrderList() {
@@ -291,13 +295,32 @@ function OrderList() {
 
 
     const handleDeniedSelectedOrders = async () => {
-        if (selectedOrders.size === 0) {
-            alert('승인할 주문을 선택해 주세요.');
+
+        const isConfirmed = confirm("선택하신 주문을 반려하시겠습니까?");
+
+        if (!isConfirmed) {
             return;
         }
+       
+        if (selectedOrders.size === 0) {
+            alert('반려할 주문을 선택해 주세요.');
+            return;
+        }
+        let successCount = 0;
+        let failCount = 0;
 
         for (const orderNo of selectedOrders) {
-            await deniedOrderStatus(orderNo);
+            const result = await deniedOrderStatus(orderNo);
+            if(result){
+                successCount++;
+            }else{
+                failCount++;
+            }
+        }
+        if(successCount>1){
+            alert(`${successCount}건의 주문이 정상적으로 반려되었습니다.`);
+        }else{
+            alert(`${failCount}건의 주문 반려에 실패했습니다.`);
         }
 
         // 반려 후 선택된 주문 목록 초기화
@@ -309,13 +332,33 @@ function OrderList() {
 
 
     const handleApproveSelectedOrders = async () => {
+
+        const isConfirmed = confirm("선택하신 주문을 승인하시겠습니까?");
+
+        if (!isConfirmed) {
+            return;
+        }
+
         if (selectedOrders.size === 0) {
             alert('승인할 주문을 선택해 주세요.');
             return;
         }
 
+        let successCount = 0;
+        let failCount = 0;
+
         for (const orderNo of selectedOrders) {
-            await updateOrderStatus(orderNo);
+           const result = await updateOrderStatus(orderNo);
+            if(result){
+                successCount++;
+            }else{
+                failCount++;
+            }
+        }
+        if(successCount>1){
+            alert(`${successCount}건의 주문이 정상적으로 승인되었습니다.`);
+        }else{
+            alert(`${failCount}건의 주문 승인에 실패했습니다.`);
         }
 
         // 승인 후 선택된 주문 목록 초기화

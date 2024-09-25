@@ -101,6 +101,7 @@ public class OrderService {
                 .orderNo(order.getOrderNo())
                 .employee(order.getEmployee())
                 .customer(order.getCustomer())
+                .orderHStatus(order.getOrderHStatus())
                 .orderHTotalPrice(order.getOrderHTotalPrice())
                 .orderHInsertDate(order.getOrderHInsertDate())
                 .orderHUpdateDate(order.getOrderHUpdateDate())
