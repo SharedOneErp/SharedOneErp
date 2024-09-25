@@ -278,7 +278,7 @@ function Order() {
                                 </div>
 
                                 <div className="form-group">
-                                    <label>담당자</label>
+                                    <label style={{ opacity: isCreateMode ? 0 : 1 }} >담당자</label>
                                     <span className="employee-id" style={{display: 'none'}}>{employee ? (
                                         <>
                                             {employee.employeeId}
@@ -286,15 +286,31 @@ function Order() {
                                     ) : (
                                         'LOADING'
                                     )}</span>
-                                    <span className="employee-name">{employee ? (
-                                        <>
-                                            {employee.employeeName}
-                                        </>
-                                    ) : (
-                                        'LOADING'
-                                    )}
 
+                                    <span className="employee-name" style={{display: 'none'}} >{employee ? (
+                                            <>
+                                                {employee.employeeName}
+                                            </>
+                                    ) : (
+                                        <span></span>
+                                    )}
                                     </span>
+
+                                    <span className="employee-name">
+    {employee ? (
+        <input
+            type="text"
+            className="employee-name box"
+            defaultValue={employee.employeeName}
+            readOnly
+            style={{ opacity: isCreateMode ? 0 : 1 }}
+        />
+    ) : (
+        <span>NOT AVAILABLE</span> // employee가 없을 때 대체 텍스트 제공
+    )}
+</span>
+
+
                                 </div>
                                 <div className="form-group">
                                     <label>주소</label>
@@ -331,7 +347,7 @@ function Order() {
                         </div>
                         <div className="right">
                             {/* 제품 추가 버튼 - 생성 모드 또는 수정 모드에서만 표시 */}
-                            {(isCreateMode || isEditMode) && customerData.customerName && (
+                            {(isCreateMode || isEditMode) && customerData.customerName && orderHStatus!=='approved' && orderHStatus !== 'denied' && (
                                 <button className="box color" onClick={isCreateMode ? addProductRow : editProductRow}>
                                     <i className="bi bi-plus-circle"></i> 추가하기
                                 </button>
@@ -342,19 +358,19 @@ function Order() {
                         {/*상세 수정 생성 Mode별 SPA 구현*/}
                         <table className="styled-table">
                             <thead>
-                                <tr>
-                                    <th>상품번호</th>
-                                    <th>상품명</th>
-                                    <th>단가</th>
-                                    <th>수량</th>
-                                    <th>총 금액</th>
-                                    {(isCreateMode || isEditMode) && <th style={{ width: '100px' }}>삭제</th>}
-                                </tr>
+                            <tr>
+                                <th>상품번호</th>
+                                <th>상품명</th>
+                                <th>단가</th>
+                                <th>수량</th>
+                                <th>총 금액</th>
+                                {(isCreateMode || isEditMode) && <th style={{width: '100px'}}>삭제</th>}
+                            </tr>
                             </thead>
                             <tbody>
-                                {/* 하나의 데이터 소스를 조건에 맞게 사용 */}
-                                {customerData.customerName && (
-                                (isCreateMode  ? products : isEditMode ? displayItemEdit : displayItems || []).map((item, index) => (
+                            {/* 하나의 데이터 소스를 조건에 맞게 사용 */}
+                            {customerData.customerName ? (
+                                (isCreateMode ? products : isEditMode ? displayItemEdit : displayItems || []).map((item, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>
@@ -390,8 +406,7 @@ function Order() {
                                                     ? (item?.price !== undefined ? item.price.toLocaleString() : '')
                                                     : isEditMode
                                                         ? (item?.orderDPrice !== undefined ? item.orderDPrice.toLocaleString() : '')
-                                                        : item?.orderDPrice?.toLocaleString() || ''
-                                                }
+                                                        : item?.orderDPrice?.toLocaleString() || ''}
                                                 readOnly={!isEditMode && !isCreateMode}
                                                 placeholder="단가 입력"
                                                 onChange={(e) => {
@@ -414,8 +429,7 @@ function Order() {
                                                     ? (item?.quantity !== undefined ? item.quantity.toLocaleString() : 0)
                                                     : isEditMode
                                                         ? (item?.orderDQty !== undefined ? item.orderDQty.toLocaleString() : 0)
-                                                        : item?.orderDQty?.toLocaleString() || 0
-                                                }
+                                                        : item?.orderDQty?.toLocaleString() || 0}
                                                 readOnly={!isEditMode && !isCreateMode}
                                                 placeholder="수량 입력"
                                                 onChange={(e) => {
@@ -431,7 +445,9 @@ function Order() {
                                                 }}
                                             />
                                         </td>
-                                        <td>{((isCreateMode ? (item?.price || 0) * (item?.quantity || 0) : item?.orderDPrice * item?.orderDQty) || 0).toLocaleString()}</td>
+                                        <td>
+                                            {((isCreateMode ? (item?.price || 0) * (item?.quantity || 0) : item?.orderDPrice * item?.orderDQty) || 0).toLocaleString()}
+                                        </td>
                                         {(isCreateMode || isEditMode) && (
                                             <td style={{width: '100px'}}>
                                                 <button className="box icon del" onClick={() => {
@@ -439,22 +455,22 @@ function Order() {
                                                     // 상품이 없을 경우 알림 표시
                                                     if (currentProducts.length > 1) {
                                                         if (isCreateMode) {
-                                                            console.log("생성모드")
+                                                            console.log("생성모드");
                                                             removeProductRow(index);
                                                         } else if (isEditMode) {
-                                                            console.log("수정모드")
+                                                            console.log("수정모드");
                                                             removeProducteditRow(index);
                                                         }
-                                                    }else {
+                                                    } else {
                                                         alert("상품은 최소 1개 이상이어야 합니다.");
                                                     }
                                                 }}>
-                                                    <i className="bi bi-trash"></i>{/* 삭제 */}
+                                                    <i className="bi bi-trash"></i> {/* 삭제 아이콘 */}
                                                 </button>
                                             </td>
                                         )}
                                         {/* 숨겨진 상품 코드 */}
-                                        <td style={{ display: 'none' }}>
+                                        <td style={{display: 'none'}}>
                                             <input
                                                 type="text"
                                                 value={isCreateMode ? item?.code : isEditMode ? item?.productCd : item?.productCd || ''}
@@ -462,24 +478,37 @@ function Order() {
                                             />
                                         </td>
                                     </tr>
-                                )))}
+                                ))
+                            ) : (
+                                <tr className="tr_empty">
+                                    <td colSpan="10">
+                                        <div className="no_data">
+                                            <i className="bi bi-exclamation-triangle"></i> 고객사를 먼저 선택해주세요.
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
                             </tbody>
                         </table>
                     </div>
-                    <div className="total-amount">
-                        {isCreateMode ? (
-                            <>
-                                <label>총 금액: </label>
-                                <span>{(products.reduce((sum, product) => sum + product.price * product.quantity, 0)).toLocaleString()}원</span>
-                            </>
-                        ) : (
-                            <span></span>
-                        )}
-                    </div>
+                    {customerData.customerName && (
+                        <div className="table_footer_wrapper">
+                            <tr>
+                                <td colSpan="5" style={{textAlign: 'right', fontWeight: 'bold', padding: '12px 8px'}}>총 금액 :
+                                    <span style={{marginLeft: "5px"}}>{(
+                                        (isCreateMode ? products : isEditMode ? displayItemEdit : displayItems || [])
+                                            .reduce((sum, item) => sum + (isCreateMode ? item?.price || 0 : item?.orderDPrice || 0) * (isCreateMode ? item?.quantity || 0 : item?.orderDQty || 0), 0)
+                                    ).toLocaleString()} 원</span>
+                                </td>
+                            </tr>
+                        </div>
+                    )}
+
+
+
                     <div className="order-buttons">
                         {isCreateMode && <button className="box color" onClick={handleSubmit}><i className="bi bi-floppy"></i> 주문 등록</button>}
-                        {/*추 후 배포시에는 role!=='admin'으로 변경할 것*/}
-                        {isEditMode && role ==='admin' &&(<button className="box color" onClick={() => handleEdit(orderNo)}><i className="bi bi-floppy"></i> 주문 수정</button>)}
+                        {isEditMode && orderHStatus === 'ing' && (<button className="box color" onClick={() => handleEdit(orderNo)}><i className="bi bi-floppy"></i> 주문 수정</button>)}
                         {isDetailView && role === 'admin' && orderHStatus === 'ing' && (
                             <>
                                 <button className="box color" onClick={handleApproveOrder}>
@@ -490,8 +519,7 @@ function Order() {
                                 </button>
                             </>
                         )}
-                        {/*추 후 배포시에는 role!=='admin'으로 변경할 것*/}
-                        {isDetailView && role === 'admin' &&(
+                        {isDetailView && orderHStatus === 'ing' &&(
                             <button className="box color" onClick={() => window.location.href = `/order?no=${orderNo}&mode=edit`}>수정</button>)}
                     </div>
                 </div>

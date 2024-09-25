@@ -42,3 +42,31 @@
 /* 로딩 화면 스타일 */
 .loading-container { display: flex; justify-content: center; align-items: center; height: 100vh; /* 화면 전체 높이 */
  background-color: #f9f9f9; /* 배경색 */}
+
+/*td 사이즈 줄이기*/
+.menu_order_list.role_admin .table_wrap table th:nth-child(9),
+.menu_order_list.role_admin .table_wrap table td:nth-child(9) { width: 90px; /* 액션 */ }
+.menu_order_list.role_normal .table_wrap table th:nth-child(8),
+.menu_order_list.role_normal .table_wrap table td:nth-child(8) { width: 90px; /* 액션 */ }
+.menu_order_list .table_wrap .btn_group {justify-content: center; }
+
+.order-status {
+ display: inline-block;
+ padding: 5px 10px;
+ border-radius: 15px; /* 둥근 네모 모양 */
+ font-weight: 400;
+ font-size: 14px;
+ color: white;
+}
+
+.order-status.ing {
+ background-color: #f0ad4e; /* 주황색 (결재중) */
+}
+
+.order-status.denied {
+ background-color: #d9534f; /* 빨간색 (반려) */
+}
+
+.order-status.approved {
+ background-color: #5cb85c; /* 초록색 (결재완료) */
+}

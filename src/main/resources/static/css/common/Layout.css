@@ -135,13 +135,13 @@ input[type="checkbox"]:disabled + .chkbox_icon .bi-check-lg { color: #f6f6f6; }
 .menu_title .sub_title { font-size: 15px; line-height: 24px; font-weight: 400; color: #8f91a0; } 
 .menu_title .main_title { font-size: 24px; line-height: 36px; font-weight: 600; color: #292a2f; } 
 /* 🟡 메뉴 내용 */
-.menu_content { border-radius: 5px; flex: 1; overflow-y: auto; width: 100%; display: flex; flex-direction: column; } 
+.menu_content { border-radius: 5px; flex: 1; overflow-y: auto; width: 100%; display: flex; flex-direction: column; }
 /* 🟡 검색 영역 */
 .menu_content .search_wrap { display: flex; justify-content: space-between; align-items: flex-end; -webkit-user-select: none; user-select: none; margin-top: 10px; } 
 .menu_content .search_wrap .left, 
 .menu_content .search_wrap .right { display: flex; gap: 8px; } 
 /* 🟢 목록(table 영역만 스크롤) */
-.table_wrap { position: relative; margin-top: 10px; border: 1px solid #ddd; display: flex; flex-direction: column; flex: 1; overflow-y: auto; width: 100%; height: 100%; } 
+.table_wrap { position: relative; margin-top: 10px; border: 1px solid #ddd; display: flex; flex-direction: column; flex: 1; overflow-y: auto; width: 100%; height: 100%; }
 .table_wrap table { border-collapse: collapse; display: flex; flex-direction: column; } 
 .table_wrap table thead { flex: 0 0 auto; position: sticky; top: 0; background-color: #fafafa; border-bottom: 1px solid #ddd; color: #555; font-weight: 500; z-index: 1; } 
 .table_wrap table tbody { flex: 1 1 auto; font-size: 15px; } 
