@@ -14,11 +14,6 @@
 .menu_category .table_wrap table td:nth-child(3),
 .menu_category .table_wrap table th:nth-child(4),
 .menu_category .table_wrap table td:nth-child(4) { width: 200px; /* 등록/수정일시 */ } 
-/* 분류 라벨 */
-.menu_category .table_wrap table .label_level { display: inline-block; padding: 2px 6px; border-radius: 4px; color: #fff; font-size: 12px; font-weight: bold; } 
-.menu_category .table_wrap table .label_level.level-1 { background-color: #f0f8ff; color: #00008b; padding: 5px 10px; border-radius: 4px; } 
-.menu_category .table_wrap table .label_level.level-2 { background-color: #e3fad7; color: #0e7933; padding: 5px 10px; border-radius: 4px; } 
-.menu_category .table_wrap table .label_level.level-3 { background-color: #fff1cd; color: #87591a; padding: 5px 10px; border-radius: 4px; } 
 /* 들여쓰기 적용 */
 .menu_category .table_wrap table .indent { display: flex; align-items: center; } 
 .menu_category .table_wrap table .indent.level-2 { margin-left: 20px; } 

@@ -57,12 +57,6 @@ export const useHooksList = () => {
     const [editingId, setEditingId] = useState(null); // 수정 중인 항목 ID를 저장
     const [editedPriceData, setEditedPriceData] = useState({}); // 수정 중인 항목 데이터를 저장
 
-    const [isConfirmModalOpen, setConfirmModalOpen] = useState(false); // 모달 상태
-    const [confirmedAction, setConfirmedAction] = useState(null); // 사용자가 확정한 작업
-
-    // 모달 메시지 상태
-    const [modalMessage, setModalMessage] = useState(''); // 모달에 표시할 메시지 상태
-
     // 🔴🔴🔴 select
     const fetchData = async () => {
         setLoading(true);
@@ -356,44 +350,36 @@ export const useHooksList = () => {
 
     // 🟣 삭제 버튼 클릭 (단일 삭제)
     const handleDelete = (priceNo) => {
-        setConfirmedAction(() => async () => {
-            await updateDeleteYn(priceNo, 'Y');
+        window.confirmCustom("해당 항목을 삭제하시겠습니까?").then(result => {
+            if (result) {
+                updateDeleteYn(priceNo, 'Y');
+            }
         });
-
-        // 모달 메시지를 설정
-        setModalMessage(`해당 항목을 삭제하시겠습니까?`);
-
-        // 모달 열기
-        openConfirmModal();
     };
 
     // 🟣 선택 삭제 버튼 클릭 (del_yn 업데이트)
     const handleDeleteSelected = () => {
-        setConfirmedAction(() => async () => {
-            try {
+        window.confirmCustom(`선택된 ${selectedItems.length}건을 삭제하시겠습니까?`).then(result => {
+            if (result) {
                 const priceList = selectedItems.map(item => ({
                     priceNo: item,
                     priceDeleteYn: 'Y'  // del_yn 값을 'Y'로 업데이트
                 }));
 
-                const successMessage = '선택된 항목들이 삭제 처리되었습니다.';
+                const successMessage = `선택된 ${selectedItems.length}건이 삭제 처리되었습니다.`;
                 const errorMessage = '선택 항목 삭제 처리 중 오류가 발생했습니다.';
 
-                await updateDeleteYnList(priceList, successMessage, errorMessage);
-
-                // 상태 업데이트
-                setSelectedItems([]);
-            } catch (error) {
-                console.error("선택 항목 삭제 처리 중 오류 발생:", error);
-                window.showToast('선택 항목 삭제 처리 중 오류가 발생했습니다.');
+                updateDeleteYnList(priceList, successMessage, errorMessage)
+                    .then(() => {
+                        // 상태 업데이트
+                        setSelectedItems([]);  // 삭제 후 선택 항목 초기화
+                    })
+                    .catch(error => {
+                        console.error("선택 항목 삭제 처리 중 오류 발생:", error);
+                        window.showToast('선택 항목 삭제 처리 중 오류가 발생했습니다.');
+                    });
             }
         });
-
-        // 모달 메시지를 설정
-        setModalMessage(`선택된 ${selectedItems.length}건을 삭제하시겠습니까?`);
-
-        // 모달 열기
-        openConfirmModal();
     };
 
     // 🟣 복원 버튼 클릭
@@ -479,19 +465,10 @@ export const useHooksList = () => {
         handleRestore,
         handleDeleteSelected,    // 선택 삭제
 
-        isConfirmModalOpen,
-        openConfirmModal,
-        closeConfirmModal,
-        handleConfirmAction,
-        modalMessage,
-
         sortField,
         setSortField,
         sortOrder,
         setSortOrder,
-
-        setConfirmedAction,
-        setModalMessage,
     };
 
 };

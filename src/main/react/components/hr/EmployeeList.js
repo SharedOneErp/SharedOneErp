@@ -141,26 +141,34 @@ function EmployeeList() {
         }
     };
 
-    //체크된것만 논리적 삭제
+    // 체크된 것만 논리적 삭제
     const checkedDelete = () => {
         const selectedId = employees
-            .filter((_, index) => selectedEmployees[index])
-            .map(employee => employee.employeeId);
+            .filter((_, index) => selectedEmployees[index])  // 선택된 직원만 필터링
+            .map(employee => employee.employeeId);  // 선택된 직원의 ID를 추출
 
-        if (selectedId.length > 0) {
-            // 서버로 삭제 요청 보내기
-            axios.post('/api/deleteEmployees', selectedId)
-                .then(response => {
-                    alert('삭제가 완료되었습니다.');
-                    pageEmployeesN(page);
-                })
-                .catch(error => {
-                    console.error('삭제 중 발생된 에러 : ', error);
-                });
-        } else {
-            alert('삭제할 직원을 선택해주세요.');
+        if (selectedId.length === 0) {
+            // 체크된 항목이 없을 때는 바로 경고 메시지 표시
+            window.showToast("삭제할 직원을 선택해주세요.", 'error');
+            return;  // 더 이상 진행하지 않음
         }
-        console.log('삭제할 직원 id : ', selectedId) // 아이디 잘찍히나 확인
+
+        // 선택된 항목이 있을 때만 삭제 확인을 물음
+        window.confirmCustom('선택한 고객을 모두 삭제하시겠습니까?').then(result => {
+            if (result) {
+                // 서버로 삭제 요청 보내기
+                axios.post('/api/deleteEmployees', selectedId)
+                    .then(response => {
+                        window.showToast("삭제가 완료되었습니다.");
+                        pageEmployeesN(page);  // 삭제 후 페이지 갱신
+                    })
+                    .catch(error => {
+                        console.error('삭제 중 발생된 에러 : ', error);
+                    });
+
+                console.log('삭제할 직원 id : ', selectedId);  // 선택된 직원 ID 로그 출력
+            }
+        });
     };
 
     ////////////// 모달 ///////////
@@ -169,7 +177,7 @@ function EmployeeList() {
     const openModifyModal = (employee) => {
         // const selectedIndex = selectedEmployees.findIndex(selected => selected);
         // if (selectedIndex === -1) {
-        //     alert('수정할 직원을 선택해주세요.');
+        //     window.showToast('수정할 직원을 선택해주세요.', 'error');
         //     return;
         // }
 
@@ -202,13 +210,13 @@ function EmployeeList() {
 
         axios.put(`/api/updateEmployee/${selectedEmployee.employeeId}`, selectedEmployee)
             .then(() => {
-                alert('직원 정보가 성공적으로 수정되었습니다.');
+                window.showToast("직원 정보가 성공적으로 수정되었습니다.");
                 setShowModifyModal(false);
                 pageEmployeesN(page);
             })
             .catch(error => {
                 console.error('수정 중 에러 발생:', error);
-                alert('직원 정보 수정 중 에러가 발생했습니다.');
+                window.showToast('직원 정보 수정 중 에러가 발생했습니다.', 'error');
             });
     };
 
@@ -222,18 +230,22 @@ function EmployeeList() {
 
     //수정모달에서 삭제(논리적)
     const handleDelete = () => {
-        if (selectedEmployee) {
-            axios.put(`/api/deleteEmployee/${selectedEmployee.employeeId}`)
-                .then(response => {
-                    alert('직원이 삭제되었습니다.');
-                    closeModifyModal();
-                    pageEmployeesN(page);  // 삭제 후 재직자 목록 갱신
-                })
-                .catch(error => {
-                    console.error('삭제 중 에러 발생:', error);
-                    alert('직원 삭제 중 에러가 발생했습니다.');
-                });
-        }
+        window.confirmCustom("정말 삭제하시겠습니까?").then(result => {
+            if (result) {
+                if (selectedEmployee) {
+                    axios.put(`/api/deleteEmployee/${selectedEmployee.employeeId}`)
+                        .then(response => {
+                            window.showToast('직원이 삭제되었습니다.');
+                            closeModifyModal();
+                            pageEmployeesN(page);  // 삭제 후 재직자 목록 갱신
+                        })
+                        .catch(error => {
+                            console.error('삭제 중 에러 발생:', error);
+                            window.showToast('직원 삭제 중 에러가 발생했습니다.', 'error');
+                        });
+                }
+            }
+        });
     };
 
     //////////////////여기부터는 등록모달////////////////////////////////////////////////
@@ -267,7 +279,7 @@ function EmployeeList() {
     const InsertSubmit = () => {
 
         if (newEmployee.employeeRole === '') {
-            alert('권한을 선택해주세요.');
+            window.showToast('권한을 선택해주세요.', 'error');
             return;
         }
 
@@ -279,12 +291,12 @@ function EmployeeList() {
             .then(response => {
                 if (response.data) {
 
-                    alert('이미 존재하는 아이디입니다.');
+                    window.showToast('이미 존재하는 아이디입니다.', 'error');
                 } else {
 
                     axios.post('/api/registerEmployee', newEmployee)
                         .then(response => {
-                            alert('직원 등록이 완료되었습니다.');
+                            window.showToast('직원 등록이 완료되었습니다.');
                             closeInsertModal();
                             setNewEmployee({
                                 employeeId: '',
@@ -298,13 +310,13 @@ function EmployeeList() {
                         })
                         .catch(error => {
                             console.error('발생한 에러 : ', error);
-                            alert('직원 등록 중 에러발생');
+                            window.showToast('직원 등록 중 에러발생', 'error');
                         });
                 }
             })
             .catch(error => {
                 console.error('ID 중복 체크 중 에러 발생:', error);
-                alert('ID 중복 체크 중 에러가 발생했습니다.');
+                window.showToast('ID 중복 체크 중 에러가 발생했습니다.', 'error');
             });
     };
 
@@ -315,17 +327,17 @@ function EmployeeList() {
         const allowedRoles = ['admin', 'staff', 'manager'];
 
         if (!phoneRegex.test(employeeData.employeeTel)) {
-            alert('연락처는 000-0000-0000 형식으로 입력해주세요.');
+            window.showToast('연락처는 000-0000-0000 형식으로 입력해주세요.', 'error');
             return false;
         }
 
         if (!emailRegex.test(employeeData.employeeEmail)) {
-            alert('유효한 이메일 형식으로 입력해주세요.');
+            window.showToast('유효한 이메일 형식으로 입력해주세요.', 'error');
             return false;
         }
 
         //        if (!allowedRoles.includes(employeeData.employeeRole.toLowerCase())) {
-        //            alert('권한은 admin, staff, manager 중 하나를 입력해주세요.');
+        //            window.showToast('권한은 admin, staff, manager 중 하나를 입력해주세요.');
         //            return false;
         //        }
 
@@ -426,9 +438,9 @@ function EmployeeList() {
                                     <th>연락처</th>
                                     {/*<th>이메일</th>*/}
                                     <th>권한</th>
-                                    <th>등록일자</th>
-                                    <th>수정일자</th>
-                                    <th>삭제일자</th>
+                                    <th>등록일시</th>
+                                    <th>수정일시</th>
+                                    <th>삭제일시</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -458,13 +470,34 @@ function EmployeeList() {
                                             <td>{employee.employeeId}</td>
                                             <td>{employee.employeeName}</td>
                                             <td>{employee.employeeTel}</td>
-                                            <td>{employee.employeeRole}</td>
-                                            <td>{formatDate(employee.employeeInsertDate)}</td>
+                                            <td>
+                                                {/* employeeRole에 따라 label 레벨을 다르게 적용 */}
+                                                {employee.employeeRole === 'admin' && (
+                                                    <span className="label_level level-1">admin</span>
+                                                )}
+                                                {employee.employeeRole === 'manager' && (
+                                                    <span className="label_level level-2">manager</span>
+                                                )}
+                                                {employee.employeeRole === 'staff' && (
+                                                    <span className="label_level level-3">staff</span>
+                                                )}
+                                            </td>
+                                            <td>{employee.employeeInsertDate ? format(employee.employeeInsertDate, 'yyyy-MM-dd HH:mm') : '-'}</td>
                                             <td>{employee.employeeUpdateDate ? format(employee.employeeUpdateDate, 'yyyy-MM-dd HH:mm') : '-'}</td>
                                             <td>{employee.employeeDeleteDate ? format(employee.employeeDeleteDate, 'yyyy-MM-dd HH:mm') : '-'}</td>
                                             <td>
-                                                <div class="btn_group">
-                                                    <button class="box small" onClick={() => openModifyModal(employee)}>수정하기</button>
+                                                {/* 삭제된 상태에 따라 클릭 이벤트와 스타일 적용 */}
+                                                <div className="btn_group">
+                                                    <button
+                                                        className="box small"
+                                                        onClick={employee.employeeDeleteYn !== 'Y' ? () => openModifyModal(employee) : null}
+                                                        style={{
+                                                            opacity: employee.employeeDeleteYn === 'Y' ? 0 : 1,
+                                                            cursor: employee.employeeDeleteYn === 'Y' ? 'default' : 'pointer'
+                                                        }}
+                                                    >
+                                                        수정하기
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
