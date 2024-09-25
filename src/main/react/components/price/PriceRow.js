@@ -1,5 +1,5 @@
 // src/main/react/components/price/PriceRow.js
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form'; // react-hook-form import
 import { format } from 'date-fns';
 import axios from 'axios'; // axios import
@@ -48,19 +48,8 @@ const PriceRow = ({
     const priceStartDate = watch('priceStartDate'); // 시작 날짜 필드를 감시
     const priceEndDate = watch('priceEndDate'); // 종료 날짜 필드를 감시
 
-    // 수정 모드일 때 선택된 고객사와 상품 정보를 유지
-    useEffect(() => {
-        if (isEditMode) {
-            setSelectedCustomer({
-                customerName: priceData.customerName,
-                customerNo: priceData.customerNo,
-            });
-            setSelectedProduct({
-                productNm: priceData.productNm,
-                productCd: priceData.productCd,
-            });
-        }
-    }, [isEditMode, priceData, setSelectedCustomer, setSelectedProduct]);
+    // 🔴 상품 가격 상태 추가
+    const [productPrice, setProductPrice] = useState(selectedProduct.productPrice);
 
     // 🔴🔴🔴 update(기간이 겹치는 기존 데이터 적용일자 조정)
     const handleDuplicateCheck = async (duplicatePrices, inputStartDate, inputEndDate, data) => {
@@ -246,7 +235,7 @@ const PriceRow = ({
 
             // 저장 후 고객사, 상품, 가격 정보 초기화
             setSelectedCustomer({ customerName: '고객사 선택', customerNo: '' });
-            setSelectedProduct({ productNm: '상품 선택', productCd: '', productCd: 0 });
+            setSelectedProduct({ productNm: '상품 선택', productCd: '', productPrice: 0 });
             setValue('priceCustomer', ''); // 가격 필드 초기화
             setValue('priceStartDate', ''); // 시작일 필드 초기화
             setValue('priceEndDate', ''); // 종료일 필드 초기화
@@ -260,10 +249,38 @@ const PriceRow = ({
         setValue('selectedCustomerNo', selectedCustomer.customerNo, { shouldValidate: isSubmitted });
     }, [selectedCustomer, setValue, isSubmitted]);
 
-    // 🟡 상품 선택 시 처리
+    // 🟡🟡🟡 상품 선택 시 처리
     useEffect(() => {
-        setValue('selectedProductCd', selectedProduct.productCd, selectedProduct.productPrice, { shouldValidate: isSubmitted });
+        if (selectedProduct && selectedProduct.productCd) {
+            console.log("selectedProductCd: " + selectedProduct.productCd);
+
+            // 상품 코드 설정
+            setValue('selectedProductCd', selectedProduct.productCd, { shouldValidate: isSubmitted });
+
+            // 가격 설정 (가격이 undefined가 아닌 경우에만 toLocaleString 적용)
+            if (selectedProduct.productPrice !== undefined && selectedProduct.productPrice !== null) {
+                setValue('priceCustomer', selectedProduct.productPrice.toLocaleString(), { shouldValidate: isSubmitted });
+            }
+        }
     }, [selectedProduct, setValue, isSubmitted]);
+
+    // 🟡🟡🟡 수정 모드일 때 선택된 데이터 값 유지
+    useEffect(() => {
+        if (isEditMode) {
+            setSelectedCustomer({
+                customerName: priceData.customerName,
+                customerNo: priceData.customerNo,
+            });
+            setSelectedProduct({
+                productNm: priceData.productNm,
+                productCd: priceData.productCd,
+                productPrice: priceData.productPrice,
+            });
+
+            // 기존 가격 설정
+            setValue('priceCustomer', formatPriceWithComma(priceData.priceCustomer));
+        }
+    }, [isEditMode, priceData, setSelectedCustomer, setSelectedProduct, setValue]);
 
     // 🟡 날짜 입력 시 유효성 검사 실행
     useEffect(() => {
@@ -301,7 +318,7 @@ const PriceRow = ({
     // 🟢 취소 버튼 클릭 시 고객사와 상품 선택 상태 초기화
     const handleCancel = () => {
         setSelectedCustomer({ customerName: '고객사 선택', customerNo: '' }); // 고객사 선택 정보 초기화
-        setSelectedProduct({ productNm: '상품 선택', productCd: '' });      // 상품 선택 정보 초기화
+        setSelectedProduct({ productNm: '상품 선택', productCd: '', productPrice: 0 });      // 상품 선택 정보 초기화
         onCancel(); // 취소 처리
     };
 
@@ -384,6 +401,7 @@ const PriceRow = ({
                 <div className="input-with-text">
                     <input
                         type="text"
+                        // value={selectedProduct.productPrice}
                         className={`box price ${getFieldClass(errors.priceCustomer, priceCustomer)}`}
                         placeholder="0"
                         {...register('priceCustomer', {
