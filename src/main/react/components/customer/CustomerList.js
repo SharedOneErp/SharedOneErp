@@ -6,6 +6,18 @@ import { BrowserRouter } from "react-router-dom";
 import '../../../resources/static/css/customer/CustomerList.css';
 import axios from 'axios';
 
+// 날짜 포맷팅 함수
+const formatDateTime = (dateString) => {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = (`0${date.getMonth() + 1}`).slice(-2);
+    const day = (`0${date.getDate()}`).slice(-2);
+    const hours = (`0${date.getHours()}`).slice(-2);
+    const minutes = (`0${date.getMinutes()}`).slice(-2);
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+};
+
 // 고객 등록 모달창
 function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
     const [form, setForm] = useState({
@@ -82,62 +94,13 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // 유효성 검증
-        const businessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
-        const telRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        let valid = true;
-        let newErrors = {
-            customerName: '',
-            customerBusinessRegNo: '',
-            customerTel: '',
-            customerManagerTel: '',
-            customerManagerEmail: ''
-        };
-
-        // 필수 필드 값 검증
-        if (!form.customerName.trim()) {
-            newErrors.customerName = '고객사 이름은 필수 입력 항목입니다.';
-            valid = false;
-        }
-        if (!form.customerBusinessRegNo.trim()) {
-            newErrors.customerBusinessRegNo = '사업자 등록번호는 필수 입력 항목입니다.';
-            valid = false;
-        }
-
-        // 유효성 검사
-        if (!businessRegNoRegex.test(form.customerBusinessRegNo)) {
-            newErrors.customerBusinessRegNo = '사업자 등록번호 형식이 올바르지 않습니다. 예: 123-45-67890';
-            valid = false;
-        }
-        if (form.customerTel && !telRegex.test(form.customerTel)) {
-            newErrors.customerTel = '고객사 연락처 형식이 올바르지 않습니다. 예: 010-1234-5678';
-            valid = false;
-        }
-        if (form.customerManagerTel && !telRegex.test(form.customerManagerTel)) {
-            newErrors.customerManagerTel = '담당자 연락처 형식이 올바르지 않습니다. 예: 010-1234-5678';
-            valid = false;
-        }
-        if (form.customerManagerEmail && !emailRegex.test(form.customerManagerEmail)) {
-            newErrors.customerManagerEmail = '담당자 이메일 형식이 올바르지 않습니다. 예: abc@example.com';
-            valid = false;
-        }
-
-        // 에러 상태 업데이트
-        setErrors(newErrors);
-
-        // 유효성 검사 실패 시 저장 중단
-        if (!valid) {
-            return;
-        }
-
         // 중복 체크
-        axios.post('/api/customer/checkDuplicate', {
+        axios
+        .post('/api/customer/checkDuplicate', {
             customerName: form.customerName,
-            customerBusinessRegNo: form.customerBusinessRegNo
+            customerBusinessRegNo: form.customerBusinessRegNo,
         })
-        .then(response => {
+        .then((response) => {
             if (response.data.isDuplicateName) {
                 alert('이미 존재하는 고객명입니다.');
                 return;
@@ -146,19 +109,70 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                 alert('이미 존재하는 사업자 등록번호입니다.');
                 return;
             }
+
+            // 유효성 검사 수행
+            let valid = true;
+            let newErrors = {
+                customerName: '',
+                customerBusinessRegNo: '',
+                customerTel: '',
+                customerManagerTel: '',
+                customerManagerEmail: '',
+            };
+
+            // 필수 필드 값 검증
+            if (!form.customerName.trim()) {
+                newErrors.customerName = '고객사 이름은 필수 입력 항목입니다.';
+                valid = false;
+            }
+            if (!form.customerBusinessRegNo.trim()) {
+                newErrors.customerBusinessRegNo = '사업자 등록번호는 필수 입력 항목입니다.';
+                valid = false;
+            }
+
+            // 유효성 검증
+            const customerBusinessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
+            const customerTelRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
+            const customerManagerTelRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+            const customerManagerEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!customerBusinessRegNoRegex.test(form.customerBusinessRegNo)) {
+                newErrors.customerBusinessRegNo =
+                    '사업자 등록번호 형식이 올바르지 않습니다. 예: 123-45-67890';
+                valid = false;
+            }
+            if (form.customerTel && !customerTelRegex.test(form.customerTel)) {
+                newErrors.customerTel =
+                    '고객사 연락처 형식이 올바르지 않습니다. 예: 010-1234-5678';
+                valid = false;
+            }
+            if (form.customerManagerTel && !customerManagerTelRegex.test(form.customerManagerTel)) {
+                newErrors.customerManagerTel =
+                    '담당자 연락처 형식이 올바르지 않습니다. 예: 02-456-7890';
+                valid = false;
+            }
+            if (form.customerManagerEmail && !customerManagerEmailRegex.test(form.customerManagerEmail)) {
+                newErrors.customerManagerEmail =
+                    '담당자 이메일 형식이 올바르지 않습니다. 예: abc@example.com';
+                valid = false;
+            }
+
+            // 에러 상태 업데이트
+            setErrors(newErrors);
+
+            // 유효성 검사 실패 시 저장 중단
+            if (!valid) {
+                return;
+            }
+
+            // 모든 검증을 통과하면 저장 동작 수행
+            onSave(form); // 상위 컴포넌트로 저장된 데이터 전달
+            onClose(); // 모달 닫기
         })
-        .catch(error => {
+        .catch((error) => {
             console.error('중복 체크 중 오류 발생:', error);
         });
-    };
-
-    // 실제 저장 함수
-    const handleConfirmSave = () => {
-        onSave(form); // 상위 컴포넌트로 저장된 데이터 전달
-        onClose(); // 상세 모달 닫기
-        setShowConfirmModal(false); // 등록 확인 모달 닫기
-        window.showToast("등록 되었습니다.");
-    };
+};
 
     if (!show) return null; // 모달 표시 여부 체크
 
@@ -169,7 +183,6 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                     <div>{customerData ? '고객 정보 수정' : '고객 등록'}</div>
                     <button className="btn_close" onClick={onClose}><i className="bi bi-x-lg"></i></button> {/* 모달 닫기 버튼 */}
                 </div>
-                <form onSubmit={handleSubmit}>
                     <div className="register-form">
                         <div className="left-column">
                             <div className="form-group">
@@ -316,11 +329,10 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                         </div>
                     </div>
                     <div className="modal-actions">
-                        <button type="submit" className="box blue">등록</button>
+                        <button type="submit" className="box blue" onClick={handleSubmit}>등록</button>
                     </div>
-                </form>
-
-                {/* 확인 모달 */}
+                
+                {/* 저장 확인 모달 */}
                 {showConfirmModal && (
                     <ConfirmationModal
                         message="등록하시겠습니까?"
@@ -331,8 +343,8 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
             </div>
         </div>
     );
-}
-
+};
+    
 // 고객 상세 정보 모달창
 function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
 
@@ -400,10 +412,11 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
         }
 
         //유효성 검증
-        const businessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
-        const telRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+        const customerBusinessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
+        const customerTelRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
+        const customerManagerTelRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+        const customerManagerEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
         let valid = true;
         let newErrors = {
             customerName: '',
@@ -424,19 +437,19 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
         }
 
         // 유효성 검사
-        if (!businessRegNoRegex.test(editableCustomer.customerBusinessRegNo)) {
+        if (!customerBusinessRegNoRegex.test(editableCustomer.customerBusinessRegNo)) {
             newErrors.customerBusinessRegNo = '사업자 등록번호 형식이 올바르지 않습니다. 예: 123-45-67890';
             valid = false;
         }
-        if (editableCustomer.customerTel && !telRegex.test(editableCustomer.customerTel)) {
+        if (editableCustomer.customerTel && !customerTelRegex.test(editableCustomer.customerTel)) {
             newErrors.customerTel = '고객사 연락처 형식이 올바르지 않습니다. 예: 010-1234-5678';
             valid = false;
         }
-        if (editableCustomer.customerManagerTel && !telRegex.test(editableCustomer.customerManagerTel)) {
-            newErrors.customerManagerTel = '담당자 연락처 형식이 올바르지 않습니다. 예: 010-1234-5678';
+        if (editableCustomer.customerManagerTel && !customerManagerTelRegex.test(editableCustomer.customerManagerTel)) {
+            newErrors.customerManagerTel = '담당자 연락처 형식이 올바르지 않습니다. 예: 02-456-7890';
             valid = false;
         }
-        if (editableCustomer.customerManagerEmail && !emailRegex.test(editableCustomer.customerManagerEmail)) {
+        if (editableCustomer.customerManagerEmail && !customerManagerEmailRegex.test(editableCustomer.customerManagerEmail)) {
             newErrors.customerManagerEmail = '담당자 이메일 형식이 올바르지 않습니다. 예: abc@example.com';
             valid = false;
         }
@@ -448,7 +461,7 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
         if (!valid) {
             return;
         }
-
+        
         // 모든 검증을 통과하면 저장 동작 수행
         onSave(editableCustomer); // 상위 컴포넌트로 저장된 데이터 전달
         onClose(); //상세 모달 닫기
@@ -645,7 +658,7 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
             </div>
         </div>
     );
-}
+};
 
 // 모달창 확인 컴포넌트
 function ConfirmationModal({ message, onConfirm, onCancel }) {
@@ -660,18 +673,6 @@ function ConfirmationModal({ message, onConfirm, onCancel }) {
             </div>
         </div>
     );
-}
-
-// 날짜 포맷팅 함수
-const formatDateTime = (dateString) => {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = (`0${date.getMonth() + 1}`).slice(-2);
-    const day = (`0${date.getDate()}`).slice(-2);
-    const hours = (`0${date.getHours()}`).slice(-2);
-    const minutes = (`0${date.getMinutes()}`).slice(-2);
-    return `${year}-${month}-${day} ${hours}:${minutes}`;
 };
 
 // 고객 리스트
@@ -711,12 +712,13 @@ function CustomerList() {
     // 고객 목록 데이터 가져오기
     useEffect(() => {
         fetchData();
-    }, [filterType]);
+    }, []);
 
     // 전체 고객사(삭제 포함) 표시 함수
     const showAllCustomers = () => {
         setFilterType('all');
     };
+
     // 등록된 고객사만 표시 함수
     const showActiveCustomers = () => {
         setFilterType('active')
@@ -788,19 +790,30 @@ function CustomerList() {
         }
 
         if (window.confirm('선택한 고객을 모두 삭제하시겠습니까?')) {
-            selectedCustomers.forEach(customerNo => {
-                axios.delete(`/api/customer/delete/${customerNo}`)
+            const deletePromises = selectedCustomers.map((customerNo) =>
+                axios
+                    .delete(`/api/customer/delete/${customerNo}`)
                     .then(() => {
                         // 해당 고객의 customerDeleteYn을 'Y'로 변경
-                        setCustomers(customers.map(c => c.customerNo === customerNo ? {
-                            ...c,
-                            customerDeleteYn: 'Y',
-                            customerDeleteDate: new Date().toISOString()
-                        } : c));
+                        setCustomers((prevCustomers) =>
+                            prevCustomers.map((c) =>
+                                c.customerNo === customerNo
+                                    ? {
+                                        ...c,
+                                        customerDeleteYn: 'Y',
+                                        customerDeleteDate: new Date().toISOString(),
+                                    }
+                                    : c
+                            )
+                        );
                     })
-                    .catch(error => console.error('고객 삭제 중 오류:', error));
+                    .catch((error) => console.error('고객 삭제 중 오류:', error))
+            );
+            Promise.all(deletePromises).then(() => {
+                setFilterType('deleted'); // 상태를 'deleted'로 변경하여 삭제된 항목을 바로 표시
+                window.showToast('삭제 되었습니다.'); // 삭제 완료 메시지
+                setSelectedCustomers([]); // 선택한 고객 초기화
             });
-            setSelectedCustomers([]); // 선택한 고객 초기화
         }
     };
 
@@ -813,37 +826,54 @@ function CustomerList() {
     const handleSaveCustomer = (customerData) => {
         if (selectedCustomer) {
             // 수정 로직
-            axios.put(`/api/customer/update/${selectedCustomer.customerNo}`, customerData)
-                .then(response => {
-                    setCustomers(customers.map(c => c.customerNo === selectedCustomer.customerNo ? response.data : c));
-                    setShowRegisterModal(false);
+            axios
+                .put(`/api/customer/update/${selectedCustomer.customerNo}`, customerData)
+                .then((response) => {
+                    setCustomers(
+                        customers.map((c) =>
+                            c.customerNo === selectedCustomer.customerNo ? response.data : c
+                        )
+                    );
+                    setShowDetailModal(false);
+                    window.showToast('수정 되었습니다.'); // 수정 완료 메시지
                 })
-                .catch(error => console.error('고객 수정 중 오류:', error));
+                .catch((error) => console.error('고객 수정 중 오류:', error));
         } else {
             // 등록 로직
-            axios.post('/api/customer/register', customerData)
-                .then(response => {
+            axios
+                .post('/api/customer/register', customerData)
+                .then((response) => {
                     setCustomers([...customers, response.data]);
                     setShowRegisterModal(false);
+                    window.showToast('등록 되었습니다.'); // 등록 완료 메시지
                 })
-                .catch(error => console.error('고객 등록 중 오류:', error));
+                .catch((error) => console.error('고객 등록 중 오류:', error));
         }
     };
 
     // 고객 삭제 처리 함수
     const handleDeleteCustomer = () => {
         if (window.confirm('정말 삭제하시겠습니까?')) {
-            axios.delete(`/api/customer/delete/${selectedCustomer.customerNo}`)
+            axios
+                .delete(`/api/customer/delete/${selectedCustomer.customerNo}`)
                 .then(() => {
                     // 해당 고객의 customerDeleteYn을 'Y'로 변경
-                    setCustomers(customers.map(c => c.customerNo === selectedCustomer.customerNo ? {
-                        ...c,
-                        customerDeleteYn: 'Y',
-                        customerDeleteDate: new Date().toISOString()
-                    } : c));
+                    setCustomers(
+                        customers.map((c) =>
+                            c.customerNo === selectedCustomer.customerNo
+                                ? {
+                                    ...c,
+                                    customerDeleteYn: 'Y',
+                                    customerDeleteDate: new Date().toISOString(),
+                                }
+                                : c
+                        )
+                    );
+                    setFilterType('deleted'); // 상태를 'deleted'로 변경하여 삭제된 항목을 바로 표시
+                    window.showToast('삭제 되었습니다.'); // 삭제 완료 메시지
                     setShowDetailModal(false);
                 })
-                .catch(error => console.error('고객 삭제 중 오류:', error));
+                .catch((error) => console.error('고객 삭제 중 오류:', error));
         }
     };
 
@@ -1021,7 +1051,19 @@ function CustomerList() {
                                             </div>
                                         </td>
                                     </tr>
-                                ) : filteredCustomers
+                                ) : filteredCustomers.length === 0 ? (
+                                    // 조회된 결과가 없을 때 tr_empty 표시
+                                    <tr className="tr_empty">
+                                        <td colSpan="10">
+                                            <div className="no_data">
+                                                <i className="bi bi-exclamation-triangle"></i>
+                                                조회된 결과가 없습니다.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                //고객 리스트 표시
+                                filteredCustomers
                                     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                                     .map((customer, index) => (
                                         <tr key={customer.customerNo}>
@@ -1055,7 +1097,8 @@ function CustomerList() {
                                                 </div>
                                             </td>
                                         </tr>
-                                    ))}
+                                        ))
+                                    )}
                             </tbody>
                         </table>
                     </div>
