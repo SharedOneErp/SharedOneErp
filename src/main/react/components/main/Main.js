@@ -22,7 +22,7 @@ function Main() {
             })
             .catch(error => {
                 console.error("총 고객사 수를 가져오는 중 오류 발생:", error);
-                alert("총 고객사 수를 가져오는 데 실패했습니다.");
+                window.showToast("총 고객사 수를 가져오는 데 실패했습니다.", 'error');
             });
 
         // 최근 신규 고객 가져오기
@@ -32,7 +32,7 @@ function Main() {
             })
             .catch(error => {
                 console.error("최근 신규 고객을 가져오는 중 오류 발생:", error);
-                alert("최근 신규 고객을 가져오는 데 실패했습니다.");
+                window.showToast("최근 신규 고객을 가져오는 데 실패했습니다.", 'error');
             });
 
         // 계약 갱신 예정 고객 가져오기
@@ -42,7 +42,7 @@ function Main() {
             })
             .catch(error => {
                 console.error("계약 갱신 예정 고객을 가져오는 중 오류 발생:", error);
-                alert("계약 갱신 예정 고객을 가져오는 데 실패했습니다.");
+                window.showToast("계약 갱신 예정 고객을 가져오는 데 실패했습니다.", 'error');
             });
     }, []);
 

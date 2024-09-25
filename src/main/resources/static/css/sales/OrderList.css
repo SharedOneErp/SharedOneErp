@@ -57,6 +57,11 @@
  font-weight: 400;
  font-size: 14px;
  color: white;
+/* 추가 */
+ padding: 5px 10px;
+ border-radius: 4px;
+ font-size: 12px;
+ font-weight: 500;
 }
 
 .order-status.ing {

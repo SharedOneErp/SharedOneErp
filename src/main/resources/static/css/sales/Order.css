@@ -24,8 +24,9 @@
 .orderDetail-button > button { padding: 5px; border-radius: 5px; color: white; text-align: center; border: none; } 
 .orderDetail-edit { background-color: #007CC1; } 
 .orderDetail-close { background-color: gray; } 
-.order-buttons { display: flex; justify-content: center; margin-bottom: 20px; margin-top: 10px;}
+.order-buttons { display: flex; justify-content: center; margin-bottom: 19px; margin-top: 19px;}
 .order-buttons .close-btn { background-color: gray; } 
+.order-buttons i { font-size: 13px; } 
 .search-button { margin-left: 5px; } 
 .orderHtotal-price { margin-left: 10px; font-weight: bold; } 
 /* 페이지네이션 */
@@ -115,6 +116,11 @@
     font-weight: 400;
     font-size: 14px;
     color: white;
+    /* 추가 */
+     padding: 5px 10px;
+     border-radius: 4px;
+     font-size: 12px;
+     font-weight: 500;
 }
 
 .order-status.ing {

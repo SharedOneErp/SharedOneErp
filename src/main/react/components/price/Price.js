@@ -8,7 +8,6 @@ import { format, differenceInDays } from 'date-fns'; // date-fns에서 날짜 �
 import CustomerSearchModal from '../common/CustomerSearchModal'; // 고객사 검색 모달 임포트
 import ProductSearchModal from '../common/ProductSearchModal'; // 상품 검색 모달 임포트
 import Pagination from '../common/Pagination'; // 페이지네이션 컴포넌트 임포트
-import ConfirmModal from '../common/ConfirmModal'; // 사용자 정의 모달 컴포넌트
 import { useHooksList } from './PriceHooks'; // 가격 관리에 필요한 상태 및 로직을 처리하는 훅
 import PriceRow from './PriceRow'; // 분리한 PriceRow 컴포넌트 임포트
 
@@ -112,19 +111,10 @@ function Price() {
         handleRestore,
         handleDeleteSelected,    // 선택 삭제
 
-        isConfirmModalOpen,
-        openConfirmModal,
-        closeConfirmModal,
-        handleConfirmAction,
-        modalMessage,
-
         sortField,
         setSortField,
         sortOrder,
         setSortOrder,
-
-        setConfirmedAction,
-        setModalMessage,
     } = useHooksList();          // 커스텀 훅 사용
 
     // 🟡 UI 및 상태에 따라 렌더링
@@ -378,9 +368,6 @@ function Price() {
                                         setProductModalOpen={setProductModalOpen}
                                         setSelectedCustomer={setSelectedCustomer}
                                         setSelectedProduct={setSelectedProduct}
-                                        openConfirmModal={openConfirmModal}
-                                        setConfirmedAction={setConfirmedAction}
-                                        setModalMessage={setModalMessage}
                                     />
                                 )}
 
@@ -417,9 +404,6 @@ function Price() {
                                                     index={index}
                                                     priceInsertDate={m_price.priceInsertDate}
                                                     priceUpdateDate={m_price.priceUpdateDate}
-                                                    openConfirmModal={openConfirmModal}
-                                                    setConfirmedAction={setConfirmedAction}
-                                                    setModalMessage={setModalMessage}
                                                 />
                                             ) : (
                                                 // 수정 모드가 아닐 경우 기존 데이터를 보여줌
@@ -530,14 +514,6 @@ function Price() {
                 <ProductSearchModal
                     onClose={() => setProductModalOpen(false)}
                     onProductSelect={handleProductSelect}
-                />
-            )}
-            {/* 사용자 정의 삭제 확인 모달 */}
-            {isConfirmModalOpen && (
-                <ConfirmModal
-                    message={modalMessage}  // 동적으로 설정된 메시지 전달
-                    onConfirm={handleConfirmAction}
-                    onCancel={closeConfirmModal}
                 />
             )}
         </Layout>

@@ -51,7 +51,7 @@ const updateOrderStatus = async (orderNo) => {
             throw new Error('주문 상태 업데이트 실패');
         }
     } catch (error) {
-       console.error('주문 상태를 업데이트하는 중 오류 발생');
+        console.error('주문 상태를 업데이트하는 중 오류 발생');
         return false;
     }
 };
@@ -158,7 +158,7 @@ function OrderList() {
 
                     // Assigned 모드에 대한 권한 검사
                     if (itsAssignedMode && empData.employeeRole !== 'admin') {
-                        alert('해당 페이지에 접근 권한이 없습니다.');
+                        window.showToast('해당 페이지에 접근 권한이 없습니다.', 'error');
                         window.location.href = '/main'; // 권한 없는 사용자는 메인 페이지로 리디렉션
                         return;
                     }
@@ -175,7 +175,7 @@ function OrderList() {
                     setOrders(filteredOrders);
                 }
             } catch (err) {
-                alert('해당 페이지에 접근 권한이 없습니다.');
+                window.showToast('해당 페이지에 접근 권한이 없습니다.', 'error');
                 window.location.href = '/main';
             } finally {
                 setLoading(false); // 데이터 로딩 완료
@@ -283,7 +283,7 @@ function OrderList() {
         const isChecked = event.target.checked;
         if (isChecked) {
             const newSelectedOrders = new Set(filteredOrders
-                .filter(order=>order.orderHStatus ==='ing')
+                .filter(order => order.orderHStatus === 'ing')
                 .map(order => order.orderNo));
             setSelectedOrders(newSelectedOrders);
         } else {
@@ -291,81 +291,104 @@ function OrderList() {
         }
     };
 
-
-
-
     const handleDeniedSelectedOrders = async () => {
 
-        const isConfirmed = confirm("선택하신 주문을 반려하시겠습니까?");
+        window.confirmCustom("선택하신 주문을 반려하시겠습니까?").then(result => {
+            if (result) {
+                if (selectedOrders.size === 0) {
+                    window.showToast('반려할 주문을 선택해 주세요.', 'error');
+                    return;
+                }
 
-        if (!isConfirmed) {
-            return;
-        }
-       
-        if (selectedOrders.size === 0) {
-            alert('반려할 주문을 선택해 주세요.');
-            return;
-        }
-        let successCount = 0;
-        let failCount = 0;
+                let successCount = 0;
+                let failCount = 0;
 
-        for (const orderNo of selectedOrders) {
-            const result = await deniedOrderStatus(orderNo);
-            if(result){
-                successCount++;
-            }else{
-                failCount++;
+                const orderPromises = Array.from(selectedOrders).map(orderNo => {
+                    return deniedOrderStatus(orderNo)
+                        .then(result => {
+                            if (result) {
+                                successCount++;
+                            } else {
+                                failCount++;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('반려 처리 중 오류 발생:', error);
+                            failCount++;
+                        });
+                });
+
+                Promise.all(orderPromises).then(() => {
+                    if (successCount > 0) {
+                        window.showToast(`${successCount}건의 주문이 정상적으로 반려되었습니다.`);
+                    }
+                    if (failCount > 0) {
+                        window.showToast(`${failCount}건의 주문 반려에 실패했습니다.`, 'error');
+                    }
+
+                    // 반려 후 선택된 주문 목록 초기화
+                    setSelectedOrders(new Set());
+
+                    // 주문 목록 새로고침
+                    fetchOrders().then(orderData => {
+                        setOrders(role === 'admin' ? orderData : orderData.filter(order => order.employee.employeeId === employeeId));
+                    });
+                });
+
             }
-        }
-        if(successCount>1){
-            alert(`${successCount}건의 주문이 정상적으로 반려되었습니다.`);
-        }else{
-            alert(`${failCount}건의 주문 반려에 실패했습니다.`);
-        }
+        });
 
-        // 반려 후 선택된 주문 목록 초기화
-        setSelectedOrders(new Set());
-        // 주문 목록 새로고침
-        const orderData = await fetchOrders();
-        setOrders(role === 'admin' ? orderData : orderData.filter(order => order.employee.employeeId === employeeId));
     };
-
 
     const handleApproveSelectedOrders = async () => {
 
-        const isConfirmed = confirm("선택하신 주문을 승인하시겠습니까?");
+        window.confirmCustom("선택하신 주문을 승인하시겠습니까?").then(result => {
+            if (result) {
+                if (selectedOrders.size === 0) {
+                    window.showToast('승인할 주문을 선택해 주세요.', 'error');
+                    return;
+                }
 
-        if (!isConfirmed) {
-            return;
-        }
+                let successCount = 0;
+                let failCount = 0;
 
-        if (selectedOrders.size === 0) {
-            alert('승인할 주문을 선택해 주세요.');
-            return;
-        }
+                // 선택된 주문에 대해 비동기 요청 실행
+                const orderPromises = Array.from(selectedOrders).map(orderNo => {
+                    return updateOrderStatus(orderNo)
+                        .then(result => {
+                            if (result) {
+                                successCount++;
+                            } else {
+                                failCount++;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('승인 처리 중 오류 발생:', error);
+                            failCount++;
+                        });
+                });
 
-        let successCount = 0;
-        let failCount = 0;
+                // 모든 주문 승인 처리 후 결과 처리
+                Promise.all(orderPromises).then(() => {
+                    if (successCount > 0) {
+                        window.showToast(`${successCount}건의 주문이 정상적으로 승인되었습니다.`);
+                    }
+                    if (failCount > 0) {
+                        window.showToast(`${failCount}건의 주문 승인에 실패했습니다.`, 'error');
+                    }
 
-        for (const orderNo of selectedOrders) {
-           const result = await updateOrderStatus(orderNo);
-            if(result){
-                successCount++;
-            }else{
-                failCount++;
+                    // 승인 후 선택된 주문 목록 초기화
+                    setSelectedOrders(new Set());
+
+                    // 주문 목록 새로고침
+                    fetchOrders().then(orderData => {
+                        setOrders(role === 'admin' ? orderData : orderData.filter(order => order.employee.employeeId === employeeId));
+                    });
+                });
+
             }
-        }
-        if(successCount>1){
-            alert(`${successCount}건의 주문이 정상적으로 승인되었습니다.`);
-        }else{
-            alert(`${failCount}건의 주문 승인에 실패했습니다.`);
-        }
+        });
 
-        // 승인 후 선택된 주문 목록 초기화
-        setSelectedOrders(new Set());
-        // 주문 목록 새로고침
-        const orderData = await fetchOrders();
-        setOrders(role === 'admin' ? orderData : orderData.filter(order => order.employee.employeeId === employeeId));
     };
 
     const renderPageButtons = () => {
@@ -399,7 +422,7 @@ function OrderList() {
                     <div className="search_wrap">
                         <div className="left">
                             <select className="box" onChange={(e) => setFilterType(e.target.value)}
-                                    value={filterType}>
+                                value={filterType}>
                                 <option value="customer">고객사</option>
                                 <option value="date">주문 등록일</option>
                                 <option value="status">주문 상태</option>
@@ -420,7 +443,7 @@ function OrderList() {
                                 />
                             </div>
 
-                            <br/>
+                            <br />
                             <div className="radio_box">
                                 <span>상태</span>
                                 {/* 'itsAssignedMode'가 참일 때는 '결재중' 라디오 버튼만 보이도록 설정 */}
@@ -480,7 +503,7 @@ function OrderList() {
                                 />
                             </div>
                             <span className="date-separator">~</span>
-                            <div className={`date_box ${endDate ? 'has_text' : ''}`} style={{padding: '0'}}>
+                            <div className={`date_box ${endDate ? 'has_text' : ''}`} style={{ padding: '0' }}>
                                 <input
                                     type="date"
                                     max="9999-12-31"
@@ -508,88 +531,106 @@ function OrderList() {
                     <div className="table_wrap">
                         <table>
                             <thead>
-                            <tr>
-                                {itsAssignedMode && role === 'admin' && (
-                                    <th className="checkbox-input">
-                                        <input
-                                            type="checkbox"
-                                            checked={allSelected}
-                                            onChange={handleSelectAll}
-                                        />
-                                    </th>
-                                )}
-                                <th>주문번호</th>
-                                <th>고객사</th>
-                                <th>주문 등록일</th>
-                                <th>주문 상태</th>
-                                <th>물품(계약) 리스트</th>
-                                <th>총액(원)</th>
-                                <th>담당자명</th>
-                                <th></th>
-                            </tr>
+                                <tr>
+                                    {itsAssignedMode && role === 'admin' && (
+                                        <th className="checkbox-input">
+                                            <label className="chkbox_label">
+                                                <input
+                                                    type="checkbox"
+                                                    className="chkbox"
+                                                    checked={allSelected}
+                                                    onChange={handleSelectAll}
+                                                />
+                                                <i className="chkbox_icon">
+                                                    <i className="bi bi-check-lg"></i>
+                                                </i>
+                                            </label>
+                                        </th>
+                                    )}
+                                    <th>주문번호</th>
+                                    <th>고객사</th>
+                                    <th>주문 등록일</th>
+                                    <th>주문 상태</th>
+                                    <th>물품(계약) 리스트</th>
+                                    <th>총액(원)</th>
+                                    <th>담당자명</th>
+                                    <th></th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {/* 로딩 중일 때 로딩 애니메이션 표시 */}
-                            {loading ? (
-                                <tr className="tr_empty">
-                                    <td colSpan={role === 'admin' ? 10 : 9}> {/* admin 여부에 따라 colSpan 결정 */}
-                                        <div className="loading">
-                                            <span></span> {/* 첫 번째 원 */}
-                                            <span></span> {/* 두 번째 원 */}
-                                            <span></span> {/* 세 번째 원 */}
-                                        </div>
-                                    </td>
-                                </tr>
-                            ) : (
-                                filteredOrders
-                                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                                    .map(order => (
-                                        <tr key={order.orderNo}>
-                                            {itsAssignedMode && role === 'admin' && (
-                                                <td className="checkbox-input">
-                                                    {order.orderHStatus === 'ing' ? (
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={selectedOrders.has(order.orderNo)}
-                                                            onChange={() => handleCheckboxChange(order.orderNo)}
-                                                            disabled={order.orderHStatus !== 'ing'} // ing가 아닐때는 비활성
-                                                        />
-                                                    ) : (
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={selectedOrders.has(order.orderNo)}
-                                                            disabled
-                                                        />
-                                                    )}
-                                                </td>
-                                            )}
+                                {/* 로딩 중일 때 로딩 애니메이션 표시 */}
+                                {loading ? (
+                                    <tr className="tr_empty">
+                                        <td colSpan={role === 'admin' ? 10 : 9}> {/* admin 여부에 따라 colSpan 결정 */}
+                                            <div className="loading">
+                                                <span></span> {/* 첫 번째 원 */}
+                                                <span></span> {/* 두 번째 원 */}
+                                                <span></span> {/* 세 번째 원 */}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    filteredOrders
+                                        .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                                        .map(order => (
+                                            <tr key={order.orderNo}>
+                                                {itsAssignedMode && role === 'admin' && (
+                                                    <td className="checkbox-input">
+                                                        {order.orderHStatus === 'ing' ? (
+                                                            <label className="chkbox_label">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="chkbox"
+                                                                    checked={selectedOrders.has(order.orderNo)}
+                                                                    onChange={() => handleCheckboxChange(order.orderNo)}
+                                                                    disabled={order.orderHStatus !== 'ing'} // ing가 아닐때는 비활성
+                                                                />
+                                                                <i className="chkbox_icon">
+                                                                    <i className="bi bi-check-lg"></i>
+                                                                </i>
+                                                            </label>
+                                                        ) : (
+                                                            <label className="chkbox_label">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="chkbox"
+                                                                    checked={selectedOrders.has(order.orderNo)}
+                                                                    disabled
+                                                                />
+                                                                <i className="chkbox_icon">
+                                                                    <i className="bi bi-check-lg"></i>
+                                                                </i>
+                                                            </label>
+                                                        )}
+                                                    </td>
+                                                )}
 
-                                            <td>{String(order.orderNo).padStart(3, '0')}</td>
-                                            <td>{order.customer?.customerName || 'N/A'}</td>
-                                            <td>{order.orderHInsertDate?.split('T')[0] || 'N/A'}</td>
-                                            <td> <span
-                                                className={`order-status ${order.orderHStatus}`}>
-                                                {mapStatusFromDbToUi(order.orderHStatus)}
+                                                <td>{String(order.orderNo).padStart(3, '0')}</td>
+                                                <td>{order.customer?.customerName || 'N/A'}</td>
+                                                <td>{order.orderHInsertDate?.split('T')[0] || 'N/A'}</td>
+                                                <td> <span
+                                                    className={`order-status ${order.orderHStatus}`}>
+                                                    {mapStatusFromDbToUi(order.orderHStatus)}
                                                 </span>
-                                            </td>
-                                            <td>{formatProductNames(order.productNames || []) || 'N/A'}</td>
-                                            <td>{order.orderHTotalPrice?.toLocaleString() + '원' || 'N/A'}</td>
-                                            <td>{order.employee?.employeeName || 'N/A'}</td>
-                                            <td>
-                                                <div className="btn_group">
-                                                    <button
-                                                        className="box small"
-                                                        onClick={() => {
-                                                            window.location.href = `/order?no=${order.orderNo}`;
-                                                        }}
-                                                    >
-                                                        상세보기
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                            )}
+                                                </td>
+                                                <td>{formatProductNames(order.productNames || []) || 'N/A'}</td>
+                                                <td>{order.orderHTotalPrice?.toLocaleString() + '원' || 'N/A'}</td>
+                                                <td>{order.employee?.employeeName || 'N/A'}</td>
+                                                <td>
+                                                    <div className="btn_group">
+                                                        <button
+                                                            className="box small"
+                                                            onClick={() => {
+                                                                window.location.href = `/order?no=${order.orderNo}`;
+                                                            }}
+                                                        >
+                                                            상세보기
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                )}
                             </tbody>
                         </table>
                     </div>

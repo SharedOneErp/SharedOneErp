@@ -39,7 +39,7 @@ function Order() {
                     setRole(empData.employeeRole);
                 }
             } catch (err) {
-                alert('해당 페이지에 접근 권한이 없습니다.');
+                window.showToast('해당 페이지에 접근 권한이 없습니다.', 'error');
                 window.location.href = '/main';
             } finally {
             }
@@ -74,40 +74,41 @@ function Order() {
     const handleApproveOrder = async () => {
         try {
 
-            const userConfirmed = confirm('해당 주문을 승인하시겠습니까? 이 결정은 되돌릴 수 없습니다.');
-            if (!userConfirmed) {
-                return;
-            }
+            window.confirmCustom("해당 주문을 승인하시겠습니까? 이 결정은 되돌릴 수 없습니다.").then(result => {
+                if (result) {
+                    const result = updateOrderStatus(orderNo, 'approved');
 
-            const result = await updateOrderStatus(orderNo, 'approved');
+                    if (result) {
+                        window.showToast("주문 승인이 정상적으로 완료되었습니다.");
+                        window.location.reload();
+                    } else {
+                        throw new Error("주문 승인 중 오류 발생");
+                    }
+                }
+            });
 
-            if(result){
-                alert("주문 승인이 정상적으로 완료되었습니다.");
-                window.location.reload();
-            }else{
-                throw new Error("주문 승인 중 오류 발생");
-            }
         } catch (error) {
-           alert('주문 승인이 실패했습니다. 관리자에게 문의하세요');
+            window.showToast('주문 승인이 실패했습니다. 관리자에게 문의하세요', 'error');
         }
     };
 
     const handleDeniedOrder = async () => {
         try {
-            const userConfirmed = confirm('해당 주문을 반려하시겠습니까? 이 결정은 되돌릴 수 없습니다.');
-            if (!userConfirmed) {
-                return;
-            }
-            const result = await updateOrderStatus(orderNo, 'denied');
+            window.confirmCustom(`해당 주문을 반려하시겠습니까?<br>이 결정은 되돌릴 수 없습니다.`).then(result => {
+                if (result) {
+                    const result = updateOrderStatus(orderNo, 'denied');
 
-            if(result) {
-                alert("주문 반려가 정상적으로 완료되었습니다.");
-                window.location.reload();
-            }else{
-                throw new Error('주문 반려 중 오류 발생');
-            }
+                    if (result) {
+                        window.showToast("주문 반려가 정상적으로 완료되었습니다.");
+                        window.location.reload();
+                    } else {
+                        throw new Error('주문 반려 중 오류 발생');
+                    }
+                }
+            });
+
         } catch (error) {
-            alert("주문 반려가 실패했습니다. 관리자에게 문의하세요");
+            window.showToast("주문 반려가 실패했습니다. 관리자에게 문의하세요", 'error');
         }
     };
 
@@ -263,23 +264,23 @@ function Order() {
                                             // 날짜 검증
                                             if (isNaN(selectedDate.getTime())) {
                                                 // 유효하지 않은 날짜 처리
-                                                alert("유효하지 않은 날짜입니다.");
+                                                window.showToast("유효하지 않은 날짜입니다.", 'error');
                                             } else if (selectedDate < today) {
                                                 // 선택한 날짜가 오늘보다 이전인지 확인
-                                                alert("납품 요청일은 오늘보다 같거나 이후여야 합니다.");
+                                                window.showToast("납품 요청일은 오늘보다 같거나 이후여야 합니다.", 'error');
                                                 e.target.value = ''; // 잘못된 날짜 선택 시 입력값 초기화
                                             } else {
                                                 // 선택한 날짜가 유효할 경우
                                                 console.log("선택한 날짜:", selectedDate);
                                             }
                                         }
-                                    }
+                                        }
                                     />
                                 </div>
 
                                 <div className="form-group">
                                     <label style={{ opacity: isCreateMode ? 0 : 1 }} >담당자</label>
-                                    <span className="employee-id" style={{display: 'none'}}>{employee ? (
+                                    <span className="employee-id" style={{ display: 'none' }}>{employee ? (
                                         <>
                                             {employee.employeeId}
                                         </>
@@ -287,28 +288,28 @@ function Order() {
                                         'LOADING'
                                     )}</span>
 
-                                    <span className="employee-name" style={{display: 'none'}} >{employee ? (
-                                            <>
-                                                {employee.employeeName}
-                                            </>
+                                    <span className="employee-name" style={{ display: 'none' }} >{employee ? (
+                                        <>
+                                            {employee.employeeName}
+                                        </>
                                     ) : (
                                         <span></span>
                                     )}
                                     </span>
 
                                     <span className="employee-name">
-    {employee ? (
-        <input
-            type="text"
-            className="employee-name box"
-            defaultValue={employee.employeeName}
-            readOnly
-            style={{ opacity: isCreateMode ? 0 : 1 }}
-        />
-    ) : (
-        <span>NOT AVAILABLE</span> // employee가 없을 때 대체 텍스트 제공
-    )}
-</span>
+                                        {employee ? (
+                                            <input
+                                                type="text"
+                                                className="employee-name box"
+                                                defaultValue={employee.employeeName}
+                                                readOnly
+                                                style={{ opacity: isCreateMode ? 0 : 1 }}
+                                            />
+                                        ) : (
+                                            <span>NOT AVAILABLE</span> // employee가 없을 때 대체 텍스트 제공
+                                        )}
+                                    </span>
 
 
                                 </div>
@@ -331,23 +332,23 @@ function Order() {
                                         placeholder="고객사 선택" readOnly />
                                 </div>
 
-                                { !isCreateMode &&
-                                <div className="form-group">
+                                {!isCreateMode &&
+                                    <div className="form-group">
                                         <label>현재 주문 상태</label>
-                                    <span className={`order-status ${orderHStatus}`}>
-                                        {/* 상태에 따른 한글로 텍스트 변경 */}
-                                        {orderHStatus === 'ing' && '결재중'}
-                                        {orderHStatus === 'denied' && '반려'}
-                                        {orderHStatus === 'approved' && '결재완료'}
-                                    </span>
-                                </div>
+                                        <span className={`order-status ${orderHStatus}`}>
+                                            {/* 상태에 따른 한글로 텍스트 변경 */}
+                                            {orderHStatus === 'ing' && '결재중'}
+                                            {orderHStatus === 'denied' && '반려'}
+                                            {orderHStatus === 'approved' && '결재완료'}
+                                        </span>
+                                    </div>
                                 }
                             </div>
 
                         </div>
                         <div className="right">
                             {/* 제품 추가 버튼 - 생성 모드 또는 수정 모드에서만 표시 */}
-                            {(isCreateMode || isEditMode) && customerData.customerName && orderHStatus!=='approved' && orderHStatus !== 'denied' && (
+                            {(isCreateMode || isEditMode) && customerData.customerName && orderHStatus !== 'approved' && orderHStatus !== 'denied' && (
                                 <button className="box color" onClick={isCreateMode ? addProductRow : editProductRow}>
                                     <i className="bi bi-plus-circle"></i> 추가하기
                                 </button>
@@ -358,144 +359,144 @@ function Order() {
                         {/*상세 수정 생성 Mode별 SPA 구현*/}
                         <table className="styled-table">
                             <thead>
-                            <tr>
-                                <th>상품번호</th>
-                                <th>상품명</th>
-                                <th>단가</th>
-                                <th>수량</th>
-                                <th>총 금액</th>
-                                {(isCreateMode || isEditMode) && <th style={{width: '100px'}}>삭제</th>}
-                            </tr>
+                                <tr>
+                                    <th>상품번호</th>
+                                    <th>상품명</th>
+                                    <th>단가</th>
+                                    <th>수량</th>
+                                    <th>총 금액</th>
+                                    {(isCreateMode || isEditMode) && <th style={{ width: '100px' }}>삭제</th>}
+                                </tr>
                             </thead>
                             <tbody>
-                            {/* 하나의 데이터 소스를 조건에 맞게 사용 */}
-                            {customerData.customerName ? (
-                                (isCreateMode ? products : isEditMode ? displayItemEdit : displayItems || []).map((item, index) => (
-                                    <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                className="box"
-                                                value={isCreateMode
-                                                    ? item?.name || ''
-                                                    : isEditMode || isDetailView
-                                                        ? item?.productNm || ''
-                                                        : ''}
-                                                readOnly
-                                                placeholder="상품 선택"
-                                                onChange={(e) => {
-                                                    if (isCreateMode) {
-                                                        handleProductChange(index, 'name', e.target.value);
-                                                    } else {
-                                                        handleProductEdit(index, 'productNm', e.target.value);
-                                                    }
-                                                }}
-                                            />
-                                            {(isCreateMode || isEditMode) && (
-                                                <button className="search-button" onClick={() => openModal(index)}>
-                                                    <i className="bi bi-search"></i>
-                                                </button>
-                                            )}
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text" // type을 text로 변경하여 콤마가 들어간 값을 처리 가능하게 함
-                                                className="box"
-                                                value={isCreateMode
-                                                    ? (item?.price !== undefined ? item.price.toLocaleString() : '')
-                                                    : isEditMode
-                                                        ? (item?.orderDPrice !== undefined ? item.orderDPrice.toLocaleString() : '')
-                                                        : item?.orderDPrice?.toLocaleString() || ''}
-                                                readOnly={!isEditMode && !isCreateMode}
-                                                placeholder="단가 입력"
-                                                onChange={(e) => {
-                                                    // 콤마를 제거한 숫자만 추출
-                                                    const numericValue = Number(e.target.value.replace(/,/g, ''));
-
-                                                    if (isCreateMode) {
-                                                        handleProductChange(index, 'price', numericValue);
-                                                    } else if (isEditMode) {
-                                                        handleProductEdit(index, 'orderDPrice', numericValue);
-                                                    }
-                                                }}
-                                            />
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text" // 콤마가 포함된 값을 처리하기 위해 type을 text로 변경
-                                                className="box"
-                                                value={isCreateMode
-                                                    ? (item?.quantity !== undefined ? item.quantity.toLocaleString() : 0)
-                                                    : isEditMode
-                                                        ? (item?.orderDQty !== undefined ? item.orderDQty.toLocaleString() : 0)
-                                                        : item?.orderDQty?.toLocaleString() || 0}
-                                                readOnly={!isEditMode && !isCreateMode}
-                                                placeholder="수량 입력"
-                                                onChange={(e) => {
-                                                    // 콤마를 제거한 숫자만 추출
-                                                    const numericValue = Number(e.target.value.replace(/,/g, ''));
-
-                                                    // 상태 업데이트: 콤마 없는 숫자를 상태에 저장
-                                                    if (isCreateMode) {
-                                                        handleProductChange(index, 'quantity', numericValue);
-                                                    } else if (isEditMode) {
-                                                        handleProductEdit(index, 'orderDQty', numericValue);
-                                                    }
-                                                }}
-                                            />
-                                        </td>
-                                        <td>
-                                            {((isCreateMode ? (item?.price || 0) * (item?.quantity || 0) : item?.orderDPrice * item?.orderDQty) || 0).toLocaleString()}
-                                        </td>
-                                        {(isCreateMode || isEditMode) && (
-                                            <td style={{width: '100px'}}>
-                                                <button className="box icon del" onClick={() => {
-                                                    const currentProducts = isCreateMode ? products : isEditMode ? displayItemEdit : displayItems || [];
-                                                    // 상품이 없을 경우 알림 표시
-                                                    if (currentProducts.length > 1) {
+                                {/* 하나의 데이터 소스를 조건에 맞게 사용 */}
+                                {customerData.customerName ? (
+                                    (isCreateMode ? products : isEditMode ? displayItemEdit : displayItems || []).map((item, index) => (
+                                        <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    className="box"
+                                                    value={isCreateMode
+                                                        ? item?.name || ''
+                                                        : isEditMode || isDetailView
+                                                            ? item?.productNm || ''
+                                                            : ''}
+                                                    readOnly
+                                                    placeholder="상품 선택"
+                                                    onChange={(e) => {
                                                         if (isCreateMode) {
-                                                            console.log("생성모드");
-                                                            removeProductRow(index);
-                                                        } else if (isEditMode) {
-                                                            console.log("수정모드");
-                                                            removeProducteditRow(index);
+                                                            handleProductChange(index, 'name', e.target.value);
+                                                        } else {
+                                                            handleProductEdit(index, 'productNm', e.target.value);
                                                         }
-                                                    } else {
-                                                        alert("상품은 최소 1개 이상이어야 합니다.");
-                                                    }
-                                                }}>
-                                                    <i className="bi bi-trash"></i> {/* 삭제 아이콘 */}
-                                                </button>
+                                                    }}
+                                                />
+                                                {(isCreateMode || isEditMode) && (
+                                                    <button className="search-button" onClick={() => openModal(index)}>
+                                                        <i className="bi bi-search"></i>
+                                                    </button>
+                                                )}
                                             </td>
-                                        )}
-                                        {/* 숨겨진 상품 코드 */}
-                                        <td style={{display: 'none'}}>
-                                            <input
-                                                type="text"
-                                                value={isCreateMode ? item?.code : isEditMode ? item?.productCd : item?.productCd || ''}
-                                                readOnly
-                                            />
+                                            <td>
+                                                <input
+                                                    type="text" // type을 text로 변경하여 콤마가 들어간 값을 처리 가능하게 함
+                                                    className="box"
+                                                    value={isCreateMode
+                                                        ? (item?.price !== undefined ? item.price.toLocaleString() : '')
+                                                        : isEditMode
+                                                            ? (item?.orderDPrice !== undefined ? item.orderDPrice.toLocaleString() : '')
+                                                            : item?.orderDPrice?.toLocaleString() || ''}
+                                                    readOnly={!isEditMode && !isCreateMode}
+                                                    placeholder="단가 입력"
+                                                    onChange={(e) => {
+                                                        // 콤마를 제거한 숫자만 추출
+                                                        const numericValue = Number(e.target.value.replace(/,/g, ''));
+
+                                                        if (isCreateMode) {
+                                                            handleProductChange(index, 'price', numericValue);
+                                                        } else if (isEditMode) {
+                                                            handleProductEdit(index, 'orderDPrice', numericValue);
+                                                        }
+                                                    }}
+                                                />
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text" // 콤마가 포함된 값을 처리하기 위해 type을 text로 변경
+                                                    className="box"
+                                                    value={isCreateMode
+                                                        ? (item?.quantity !== undefined ? item.quantity.toLocaleString() : 0)
+                                                        : isEditMode
+                                                            ? (item?.orderDQty !== undefined ? item.orderDQty.toLocaleString() : 0)
+                                                            : item?.orderDQty?.toLocaleString() || 0}
+                                                    readOnly={!isEditMode && !isCreateMode}
+                                                    placeholder="수량 입력"
+                                                    onChange={(e) => {
+                                                        // 콤마를 제거한 숫자만 추출
+                                                        const numericValue = Number(e.target.value.replace(/,/g, ''));
+
+                                                        // 상태 업데이트: 콤마 없는 숫자를 상태에 저장
+                                                        if (isCreateMode) {
+                                                            handleProductChange(index, 'quantity', numericValue);
+                                                        } else if (isEditMode) {
+                                                            handleProductEdit(index, 'orderDQty', numericValue);
+                                                        }
+                                                    }}
+                                                />
+                                            </td>
+                                            <td>
+                                                {((isCreateMode ? (item?.price || 0) * (item?.quantity || 0) : item?.orderDPrice * item?.orderDQty) || 0).toLocaleString()}
+                                            </td>
+                                            {(isCreateMode || isEditMode) && (
+                                                <td style={{ width: '100px' }}>
+                                                    <button className="box icon del" onClick={() => {
+                                                        const currentProducts = isCreateMode ? products : isEditMode ? displayItemEdit : displayItems || [];
+                                                        // 상품이 없을 경우 알림 표시
+                                                        if (currentProducts.length > 1) {
+                                                            if (isCreateMode) {
+                                                                console.log("생성모드");
+                                                                removeProductRow(index);
+                                                            } else if (isEditMode) {
+                                                                console.log("수정모드");
+                                                                removeProducteditRow(index);
+                                                            }
+                                                        } else {
+                                                            window.showToast("상품은 최소 1개 이상이어야 합니다.", 'error');
+                                                        }
+                                                    }}>
+                                                        <i className="bi bi-trash"></i> {/* 삭제 아이콘 */}
+                                                    </button>
+                                                </td>
+                                            )}
+                                            {/* 숨겨진 상품 코드 */}
+                                            <td style={{ display: 'none' }}>
+                                                <input
+                                                    type="text"
+                                                    value={isCreateMode ? item?.code : isEditMode ? item?.productCd : item?.productCd || ''}
+                                                    readOnly
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr className="tr_empty">
+                                        <td colSpan="10">
+                                            <div className="no_data">
+                                                <i className="bi bi-exclamation-triangle"></i> 고객사를 먼저 선택해주세요.
+                                            </div>
                                         </td>
                                     </tr>
-                                ))
-                            ) : (
-                                <tr className="tr_empty">
-                                    <td colSpan="10">
-                                        <div className="no_data">
-                                            <i className="bi bi-exclamation-triangle"></i> 고객사를 먼저 선택해주세요.
-                                        </div>
-                                    </td>
-                                </tr>
-                            )}
+                                )}
                             </tbody>
                         </table>
                     </div>
                     {customerData.customerName && (
                         <div className="table_footer_wrapper">
                             <tr>
-                                <td colSpan="5" style={{textAlign: 'right', fontWeight: 'bold', padding: '12px 8px'}}>총 금액 :
-                                    <span style={{marginLeft: "5px"}}>{(
+                                <td colSpan="5" style={{ textAlign: 'right', fontWeight: 'bold', padding: '12px 8px' }}>총 금액 :
+                                    <span style={{ marginLeft: "5px" }}>{(
                                         (isCreateMode ? products : isEditMode ? displayItemEdit : displayItems || [])
                                             .reduce((sum, item) => sum + (isCreateMode ? item?.price || 0 : item?.orderDPrice || 0) * (isCreateMode ? item?.quantity || 0 : item?.orderDQty || 0), 0)
                                     ).toLocaleString()} 원</span>
@@ -519,7 +520,7 @@ function Order() {
                                 </button>
                             </>
                         )}
-                        {isDetailView && orderHStatus === 'ing' &&(
+                        {isDetailView && orderHStatus === 'ing' && (
                             <button className="box color" onClick={() => window.location.href = `/order?no=${orderNo}&mode=edit`}>수정</button>)}
                     </div>
                 </div>
@@ -571,26 +572,26 @@ function Order() {
                                 ) : (
                                     <div className="table_wrap">
                                         <div className="loading">
-                                                <span></span> {/* 첫 번째 원 */}
-                                                <span></span> {/* 두 번째 원 */}
-                                                <span></span> {/* 세 번째 원 */}
+                                            <span></span> {/* 첫 번째 원 */}
+                                            <span></span> {/* 두 번째 원 */}
+                                            <span></span> {/* 세 번째 원 */}
                                         </div>
                                     </div>
-                                        )}
-                                        {/* 페이지네이션 */}
-                                        <div className="pagination">
-                                            {Array.from({length: totalCustomerPages}, (_, i) => i + 1).map(number => (
-                                                <button
-                                                    key={number}
-                                                    onClick={() => handlePageChangeCustomer(number)}
-                                                    className={number === currentPageCustomer ? 'active' : ''}
-                                                >
-                                                    {number}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    </div>
+                                )}
+                                {/* 페이지네이션 */}
+                                <div className="pagination">
+                                    {Array.from({ length: totalCustomerPages }, (_, i) => i + 1).map(number => (
+                                        <button
+                                            key={number}
+                                            onClick={() => handlePageChangeCustomer(number)}
+                                            className={number === currentPageCustomer ? 'active' : ''}
+                                        >
+                                            {number}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 )
             }
@@ -675,7 +676,7 @@ function Order() {
                                             ))}
                                         </tbody>
                                     </table>
-                                ) :  (
+                                ) : (
                                     <div className="table_wrap">
                                         <div className="loading">
                                             <span></span> {/* 첫 번째 원 */}

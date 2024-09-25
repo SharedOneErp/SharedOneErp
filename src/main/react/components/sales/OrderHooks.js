@@ -400,7 +400,7 @@ export const useHooksList = () => {
         closeModal();
     };
 
-    //주문 생성 및 정보 직관화 한 alert 생성
+    //주문 생성
     const handleSubmit = async () => {
 
         // 입력값 검증
@@ -410,18 +410,18 @@ export const useHooksList = () => {
 
         // 정보값 검증
         if (!customerName) {
-            alert("고객 이름을 입력하세요.");
+            window.showToast("고객 이름을 입력하세요.", 'error');
             return; // 제출 중지
         }
         if (!deliveryRequestDate) {
-            alert("납품 날짜를 입력하세요.");
+            window.showToast("납품 날짜를 입력하세요.", 'error');
             return; // 제출 중지
         }
 
         // 제품 검증
         for (let product of products) {
             if (!product.code || !product.price || !product.quantity) {
-                alert("모든 제품 정보가 입력되어야 합니다.");
+                window.showToast("모든 제품 정보가 입력되어야 합니다.", 'error');
                 return; // 제출 중지
             }
         }
@@ -491,16 +491,17 @@ export const useHooksList = () => {
                     ? `제품명: ${firstProduct.name} 외 ${additionalProductsCount}건\n총 수량: ${products.reduce((sum, product) => sum + product.quantity, 0)}개\n총액: ${totalAmount.toLocaleString()}원`
                     : `제품명: ${firstProduct.name}\n수량: ${firstProduct.quantity.toLocaleString()}개\n단가: ${firstProduct.price.toLocaleString()}원\n금액: ${(firstProduct.price * firstProduct.quantity).toLocaleString()}원`;
 
-                alert(`${employeeName}님의 주문 생성이 완료되었습니다.\n\n주문번호: ${order_h_no}\n고객사: ${customerName}\n\n${summaryString}`);
+                // window.showToast(`${employeeName}님의 주문 생성이 완료되었습니다.\n\n주문번호: ${order_h_no}\n고객사: ${customerName}\n\n${summaryString}`);
+                window.showToast(`${employeeName}님의 주문 생성이 완료되었습니다.`);
                 window.location.href = `/order?no=${order_h_no}`;
             } else {
                 const errorText = await response.text();
                 console.error('주문 처리 오류:', errorText);
-                alert("주문 처리 중 오류가 발생했습니다. 다시 확인해주세요");
+                window.showToast("주문 처리 중 오류가 발생했습니다. 다시 확인해주세요", 'error');
             }
         } catch (error) {
             console.error('주문 처리 중 오류 발생:', error.message);
-            alert("주문 처리 중 오류가 발생했습니다. 다시 확인해주세요");
+            window.showToast("주문 처리 중 오류가 발생했습니다. 다시 확인해주세요", 'error');
         }
     };
 
@@ -521,7 +522,7 @@ export const useHooksList = () => {
 
 
             if (!deliveryRequestDate) {
-                alert("납품 날짜를 입력하세요.");
+                window.showToast("납품 날짜를 입력하세요.", 'error');
                 return; // 제출 중지
             }
 
@@ -583,7 +584,7 @@ export const useHooksList = () => {
                     orderDTotalPrice: product.orderDTotalPrice,
                     orderDUpdateDate: new Date().toISOString(),
                     orderDInsertDate: new Date().toISOString(),
-                    orderDDeliveryRequestDate:  deliveryRequestDate || product.orderDDeliveryRequestDate,
+                    orderDDeliveryRequestDate: deliveryRequestDate || product.orderDDeliveryRequestDate,
                 };
 
                 if (product.orderNo) {
@@ -640,43 +641,49 @@ export const useHooksList = () => {
             }
 
             // 6. 성공 후 페이지 이동
-            alert("주문을 성공적으로 수정했습니다.");
+            window.showToast("주문을 성공적으로 수정했습니다.");
             window.location.href = `/order?no=${orderNo}`;
         } catch (error) {
             console.error('주문 수정 중 오류 발생:', error.message);
-            alert("주문 수정 중 오류가 발생했습니다. 다시 확인해주세요.");
+            window.showToast("주문 수정 중 오류가 발생했습니다. 다시 확인해주세요.", 'error');
         }
     };
 
 
     // 주문 업데이트 시 삭제된 제품 목록을 포함하여 전송
     const updateOrder = async () => {
-        const userConfirmed = confirm('주문을 업데이트하시겠습니까?');
-        if (!userConfirmed) return;
 
-        const orderData = {
-            ...order,  // 기존 주문 데이터
-            deletedDetailIds: deletedDetailIds,  // 삭제할 상세 항목 ID들
-            products: products // 현재 제품 목록을 포함
-        };
+        window.confirmCustom("주문을 업데이트하시겠습니까?").then(result => {
+            if (result) {
+                const orderData = {
+                    ...order,  // 기존 주문 데이터
+                    deletedDetailIds: deletedDetailIds,  // 삭제할 상세 항목 ID들
+                    products: products  // 현재 제품 목록을 포함
+                };
 
-        try {
-            const response = await fetch(`/api/order/update/${order.orderNo}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(orderData),
-            });
-
-            if (response.ok) {
-                alert('주문이 업데이트되었습니다.');
-            } else {
-                throw new Error('주문 업데이트 실패');
+                // `fetch` 요청을 `then()`과 `catch()`로 처리
+                fetch(`/api/order/update/${order.orderNo}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData),
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            window.showToast('주문이 업데이트되었습니다.');
+                        } else {
+                            throw new Error('주문 업데이트 실패');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('주문을 업데이트하는 중 오류 발생:', error);
+                        window.showToast('주문을 업데이트하는 중 오류 발생', 'error');
+                    });
             }
-        } catch (error) {
-            alert('주문을 업데이트하는 중 오류 발생');
-        }
+
+        });
+
     };
 
 

@@ -6,8 +6,8 @@ let toastId = 0;
 const Toast = () => {
     const [toasts, setToasts] = useState([]); // 여러 개의 토스트 관리
 
-    // showToast 함수를 useCallback으로 정의하여 토스트 추가(useCallback : showToast 함수를 기억해 두고, toasts 배열이 바뀔 때에만 새로 만드는 역할)
-    const showToast = useCallback((message, type = 'check', duration = 6000) => { // 기본 : 6초동안 표시
+    // 🔴 showToast 함수를 useCallback으로 정의하여 토스트 추가(useCallback : showToast 함수를 기억해 두고, toasts 배열이 바뀔 때에만 새로 만드는 역할)
+    const showToast = useCallback((message, type = 'check', duration = 3000) => { // 기본 : 3초동안 표시
         
         // 중복 메시지 여부 확인
         // const isDuplicate = toasts.some(toast => toast.message === message);
@@ -22,12 +22,12 @@ const Toast = () => {
         }, duration);
     }, [toasts]);
 
-    // 다른 곳에서 이 함수를 쉽게 사용할 수 있도록 window에 추가
+    // 🟡 다른 곳에서 이 함수를 쉽게 사용할 수 있도록 window에 추가
     useEffect(() => {
         window.showToast = showToast; // 전역 함수로 설정 (어디서든 showToast 호출 가능)
     }, [showToast]);
 
-    // 아이콘 선택 함수
+    // 🟡 아이콘 선택 함수
     const getIcon = (type) => {
         switch (type) {
             case 'error':
@@ -38,6 +38,7 @@ const Toast = () => {
         }
     };
 
+    // 🟢 화면
     return (
         <div className="toast-container">
             {toasts.map((toast) => (

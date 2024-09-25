@@ -4,6 +4,7 @@ import axios from 'axios';
 
 export const useHooksList = () => {
 
+  const [isLoading, setLoading] = useState(true); // 로딩 상태 관리
 
   const [category, setCategory] = useState([]);
   const [categoryName, setCategoryName] = useState('');
@@ -55,8 +56,14 @@ export const useHooksList = () => {
   useEffect(() => {
     fetch('/api/category/allPaths')
       .then(response => response.json())
-      .then(data => setCategory(data))
-      .catch(error => console.error('카테고리 목록을 불러오는 데 실패했습니다.', error))
+      .then(data => {
+        setCategory(data);   // 카테고리 데이터 설정
+        setLoading(false); // 로딩 완료 후 false로 설정
+      })
+      .catch(error => {
+        console.error('카테고리 목록을 불러오는 데 실패했습니다.', error);
+        setLoading(false); // 에러 발생 시에도 로딩 상태 false로 설정
+      });
   }, []);
 
   // 대분류 조회
@@ -253,56 +260,54 @@ export const useHooksList = () => {
         selectedCate = topCategories.find(cate => cate.categoryNo === selectedCategory.top);
       }
 
-      const checkDelete = window.confirm(`"${selectedCate.categoryNm}" 카테고리를 삭제하시겠습니까?`);
+      window.confirmCustom(`"${selectedCate.categoryNm}" 카테고리를 삭제하시겠습니까?`).then(result => {
+        if (result) {
+          // 삭제 요청
+          fetch(`/api/category/del/${selectedCate.categoryNo}`, {
+            method: 'DELETE',
+          })
+            .then(response => {
+              if (response.ok) {
+                alert('카테고리가 삭제되었습니다.');
 
-      if (!checkDelete) {
-        return;
-      }
+                if (selectedCate.categoryLevel === 1) {
+                  const updatedCategory = topCategories.filter(cate => cate.categoryNo !== selectedCate.categoryNo);
+                  setTopCategories(updatedCategory);
+                  setMidCategories([]); // 대분류 삭제 시 중분류 초기화
+                  setLowCategories([]);
+                  setSelectedCategory(prev => ({
+                    ...prev,
+                    top: null,
+                    middle: null,
+                    low: null
+                  }));
+                } else if (selectedCate.categoryLevel === 2) {
+                  const updatedCategory = midCategories.filter(cate => cate.categoryNo !== selectedCate.categoryNo);
+                  setMidCategories(updatedCategory);
+                  setLowCategories([]);
+                  setSelectedCategory(prev => ({
+                    ...prev,
+                    middle: null,
+                    low: null
+                  }));
+                } else if (selectedCate.categoryLevel === 3) {
+                  const updatedCategories = lowCategories.filter(cate => cate.categoryNo !== selectedCate.categoryNo);
+                  setLowCategories(updatedCategories);
+                  setSelectedCategory(prev => ({
+                    ...prev,
+                    low: null
+                  }));
+                }
+              }
+            })
+            .catch(error => console.error('카테고리 삭제 실패:', error));
+        }
+      });
 
-      // 삭제 요청
-      fetch(`/api/category/del/${selectedCate.categoryNo}`, {
-        method: 'DELETE',
-      })
-        .then(response => {
-          if (response.ok) {
-            alert('카테고리가 삭제되었습니다.');
-
-            if (selectedCate.categoryLevel === 1) {
-              const updatedCategory = topCategories.filter(cate => cate.categoryNo !== selectedCate.categoryNo);
-              setTopCategories(updatedCategory);
-              setMidCategories([]); // 대분류 삭제 시 중분류 초기화
-              setLowCategories([]);
-              setSelectedCategory(prev => ({
-                ...prev,
-                top: null,
-                middle: null,
-                low: null
-              }));
-            } else if (selectedCate.categoryLevel === 2) {
-              const updatedCategory = midCategories.filter(cate => cate.categoryNo !== selectedCate.categoryNo);
-              setMidCategories(updatedCategory);
-              setLowCategories([]);
-              setSelectedCategory(prev => ({
-                ...prev,
-                middle: null,
-                low: null
-              }));
-            } else if (selectedCate.categoryLevel === 3) {
-              const updatedCategories = lowCategories.filter(cate => cate.categoryNo !== selectedCate.categoryNo);
-              setLowCategories(updatedCategories);
-              setSelectedCategory(prev => ({
-                ...prev,
-                low: null
-              }));
-            }
-          }
-        })
-        .catch(error => console.error('카테고리 삭제 실패:', error));
     } else {
       alert("삭제할 카테고리를 선택하세요.");
     }
   };
-
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // 체크표시 state
@@ -632,5 +637,6 @@ export const useHooksList = () => {
     setMidCategories,
     setLowCategories,
     setSelectedCategory,
+    isLoading,
   };
 };

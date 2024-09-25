@@ -20,9 +20,6 @@ const PriceRow = ({
     index,
     priceInsertDate,
     priceUpdateDate,
-    openConfirmModal,
-    setConfirmedAction,
-    setModalMessage,
 }) => {
 
     // 콤마 추가 함수
@@ -129,35 +126,34 @@ const PriceRow = ({
             updateMessage += `해당 데이터의 <strong>시작일</strong>을 <strong>${updatedStartDate}</strong>으로 수정하시겠습니까?`;
         }
 
-        // 모달 메시지 설정
-        setModalMessage(updateMessage);
+        window.confirmCustom(updateMessage, "500px").then(result => {
+            if (result) {
+                const requestData = [{
+                    priceNo: duplicatePrice.priceNo,  // 기존 데이터의 priceNo 사용
+                    customerNo: duplicatePrice.customerNo, //
+                    productCd: duplicatePrice.productCd, //
+                    priceCustomer: duplicatePrice.priceCustomer,  // 가격
+                    priceStartDate: updatedStartDate,  // 수정된 시작일
+                    priceEndDate: updatedEndDate  // 수정된 종료일
+                }];
 
-        // 모달 열기
-        openConfirmModal();
+                console.log('🔴 기존 데이터 수정 Request Data to be sent:', requestData);
 
-        // 확인 버튼을 누르면 기존 데이터 업데이트 실행
-        setConfirmedAction(() => async () => {
-            // 기존 데이터를 수정하는 요청 데이터 (배열로 감쌈)
-            const requestData = [{
-                priceNo: duplicatePrice.priceNo, // 기존 데이터의 priceNo 사용
-                customerNo: duplicatePrice.customerNo, //
-                productCd: duplicatePrice.productCd, //
-                priceCustomer: duplicatePrice.priceCustomer, // 가격
-                priceStartDate: updatedStartDate, // 수정된 시작일
-                priceEndDate: updatedEndDate // 수정된 종료일
-            }];
-            console.log('🔴 기존 데이터 수정 Request Data to be sent:', requestData);
+                // axios 요청을 then() 체인으로 처리
+                axios.put('/api/price/update', requestData)
+                    .then(response => {
+                        console.log("업데이트 성공:", response.data);
 
-            try {
-                const response = await axios.put('/api/price/update', requestData);
-                console.log("업데이트 성공:", response.data);
-
-                // 여기서 등록/수정 API 호출 진행
-                await submitPriceData(data);
-            } catch (error) {
-                console.error("업데이트 실패:", error);
+                        // 등록/수정 API 호출
+                        return submitPriceData(data);
+                    })
+                    .then(() => {
+                        console.log('Price data submitted successfully.');
+                    })
+                    .catch(error => {
+                        console.error("업데이트 실패 또는 등록 실패:", error);
+                    });
             }
-
         });
 
     };
