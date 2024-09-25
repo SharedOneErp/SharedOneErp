@@ -4,7 +4,7 @@ import {BrowserRouter} from "react-router-dom";
 import Layout from "../../layout/Layout";
 import '../../../resources/static/css/product/ProductList.css'; // 개별 CSS 파일 임포트
 import '../../../resources/static/css/common/Layout.css';
-import {useProductHooks} from "./ProductHooks"; // 상품 관리에 필요한 상태 및 로직을 처리하는 훅
+import {useProductHooks} from "./useProductHooks"; // 상품 관리에 필요한 상태 및 로직을 처리하는 훅
 import {formatDate} from '../../util/dateUtils';
 import ProductDetailModal from './ProductDetailModal';
 import Pagination from '../common/Pagination';
@@ -73,6 +73,8 @@ function ProductList() {
         pageInputValue,
         middleCategories,
         lowCategories,
+        addMiddleCategories,
+        addLowCategories,
     } = useProductHooks(); // 커스텀 훅 사용
 
 
@@ -279,8 +281,10 @@ function ProductList() {
                                     topCategories={topCategories}
                                     midCategory={selectedMiddleCategory}
                                     midCategories={addFilteredMiddleCategories}
+                                    //midCategories={addMiddleCategories}
                                     lowCategory={selectedLowCategory}
                                     lowCategories={addFilteredLowCategories}
+                                    //lowCategories={addLowCategories}
                                     handleInputChange={handleInputChange}
                                     onTopChange={handleAddTopCategoryChange} // 대분류 선택 시 호출
                                     onMidChange={handleAddMiddleCategoryChange} // 중분류 필터링
@@ -307,18 +311,18 @@ function ProductList() {
                                             key={product.productCd}
                                             isEditMode={true}
                                             productData={editableProduct}
-                                            topCategory={editableProduct.topCategoryNo || ''} // 선택된 대분류
-                                            topCategories={topCategories} // 대분류 목록
-                                            midCategory={editableProduct.middleCategoryNo || ''} // 선택된 중분류
-                                            midCategories={filteredEditMiddleCategories} // 중분류 목록
-                                            lowCategory={editableProduct.lowCategoryNo || ''} // 선택된 소분류
-                                            lowCategories={filteredEditLowCategories} // 소분류 목록
-                                            handleInputChange={handleInputChange} // 입력값 변경 처리
-                                            onTopChange={handleFilterTopCategoryChangeForEdit} // 대분류 변경
-                                            onMidChange={handleFilterMiddleCategoryChangeForEdit} // 중분류 변경
-                                            onLowChange={handleFilterLowCategoryChangeForEdit} // 소분류 변경
-                                            onSave={handleConfirmClick} // 저장
-                                            onCancel={handleCancelEdit} // 취소
+                                            topCategory={editableProduct.topCategoryNo || ''}
+                                            topCategories={topCategories}
+                                            midCategory={editableProduct.middleCategoryNo || ''}
+                                            midCategories={filteredEditMiddleCategories}
+                                            lowCategory={editableProduct.lowCategoryNo || ''}
+                                            lowCategories={filteredEditLowCategories}
+                                            handleInputChange={handleInputChange}
+                                            onTopChange={handleFilterTopCategoryChangeForEdit}
+                                            onMidChange={handleFilterMiddleCategoryChangeForEdit}
+                                            onLowChange={handleFilterLowCategoryChangeForEdit}
+                                            onSave={handleConfirmClick}
+                                            onCancel={handleCancelEdit}
                                         />
                                     ) : (
                                         // 기본 모드
