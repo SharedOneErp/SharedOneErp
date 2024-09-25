@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 
 function CategoryModal({
+  category,
   getTopCategory,
   getMidCategory,
   getLowCategory,
@@ -21,6 +22,7 @@ function CategoryModal({
   handleTopHover,
   closeModal,
   handleBackgroundClick,
+  isSubmitting,
 }) {
 
 
@@ -51,7 +53,7 @@ function CategoryModal({
                       }}
                       className={selectedTopCategory === category.categoryNo ? 'selected' : ''}
                     >
-                      <span>{category.categoryNm}</span>
+                      <span className='category-span'>{category.categoryNm}</span>
                       <i className="bi bi-chevron-right"></i>
                     </li>
                   ))}
@@ -67,7 +69,7 @@ function CategoryModal({
                     onChange={(e) => handleInsert(e, 1)}
                     value={insertTop}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
+                      if (e.key === 'Enter' && !isSubmitting) {
                         handleAddButton(1);
                       }
                     }}
@@ -94,7 +96,7 @@ function CategoryModal({
                         onClick={() => handleMidClick(category.categoryNo)}
                         className={selectedMidCategory === category.categoryNo ? 'selected' : ''}
                       >
-                        <span>{category.categoryNm}</span>
+                        <span className='category-span'>{category.categoryNm}</span>
                         <i className="bi bi-chevron-right"></i>
                       </li>
                     ))}
@@ -111,7 +113,7 @@ function CategoryModal({
                     onChange={(e) => handleInsert(e, 2)}
                     value={insertMid}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
+                      if (e.key === 'Enter' && !isSubmitting) {
                         handleAddButton(2);
                       }
                     }}
@@ -140,7 +142,7 @@ function CategoryModal({
                         onClick={() => handleLowClick(category.categoryNo)}
                         className={selectedLowCategory === category.categoryNo ? 'selected' : ''}
                       >
-                        <span>{category.categoryNm}</span>
+                        <span className='category-span'>{category.categoryNm}</span>
                       </li>
                     ))}
                   </ul>
@@ -158,7 +160,7 @@ function CategoryModal({
                       onChange={(e) => handleInsert(e, 3)}
                       value={insertLow}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
+                        if (e.key === 'Enter' && !isSubmitting) {
                           handleAddButton(3);
                         }
                       }}
@@ -169,7 +171,20 @@ function CategoryModal({
             </div>
           </div>
         </div>
+
         <div className='btn_wrap'>
+          <div className='selected-cate'>
+            <label className='floating-label'>선택된 카테고리</label>
+            {selectedLowCategory ? (
+              <span className='input-field' >{getLowCategory.find(category => category.categoryNo === selectedLowCategory)?.categoryNm || '선택된 카테고리 없음'}</span>
+            ) : selectedMidCategory ? (
+              <span className='input-field'>{getMidCategory.find(category => category.categoryNo === selectedMidCategory)?.categoryNm || '선택된 카테고리 없음'}</span>
+            ) : selectedTopCategory ? (
+              <span className='input-field'>{getTopCategory.find(category => category.categoryNo === selectedTopCategory)?.categoryNm || '선택된 카테고리 없음'}</span>
+            ) : (
+              <span>선택된 카테고리가 없습니다</span>
+            )}
+          </div>
           <button type='submit' className='box color_border edit' onClick={handleEditButton}>수정</button>
           <button type='submit' className='box color_border del red' onClick={handleDeleteButton}>삭제</button>
         </div>

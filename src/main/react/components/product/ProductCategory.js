@@ -56,6 +56,7 @@ function ProductCategory() {
         toggleAllCollapse,
         toggleAllCollapseTwo,
         handleBackgroundClick,
+        isSubmitting,
     } = useHooksList();
 
 
@@ -160,6 +161,7 @@ function ProductCategory() {
                 showModal && (
                     <CategoryModal
                         // 필요한 props 전달
+                        category={category}
                         getTopCategory={getTopCategory}
                         getMidCategory={getMidCategory}
                         getLowCategory={getLowCategory}
@@ -179,6 +181,7 @@ function ProductCategory() {
                         handleTopHover={handleTopHover}
                         closeModal={closeModal}
                         handleBackgroundClick={handleBackgroundClick}
+                        isSubmitting={isSubmitting}
                     />
                 )
             }
