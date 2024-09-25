@@ -19,24 +19,27 @@ public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
     
     // 카테고리 목록 조회 메서드
     @Override
-    public List<CategoryDTO> getCategoryList(Integer topCategoryNo, Integer middleCategoryNo, Integer lowCategoryNo) {
+    public List<CategoryDTO> getCategoryList(Integer one, Integer two, Integer three) {
         QCategory category = QCategory.category;
         QCategory middleCategory = new QCategory("middleCategory");
         QCategory topCategory = new QCategory("topCategory");
         
         BooleanBuilder builder = new BooleanBuilder();
 
-        if (topCategoryNo != null || middleCategoryNo != null || lowCategoryNo != null) {
-            builder.and(categoryFilterCondition(topCategoryNo, middleCategoryNo, lowCategoryNo));
+        if (one != null || two != null || three != null) {
+            builder.and(categoryFilterCondition(one, two, three));
         }
         
         return queryFactory.select(Projections.fields(CategoryDTO.class,
                         category.categoryNm.as("lowCategory"),
                         middleCategory.categoryNm.as("middleCategory"),
                         topCategory.categoryNm.as("topCategory"),
-                        category.categoryNo.as("lowCategoryNo"),
-                        middleCategory.categoryNo.as("middleCategoryNo"),
-                        topCategory.categoryNo.as("topCategoryNo")))
+                        category.categoryNo.as("three"),
+                        middleCategory.categoryNo.as("two"),
+                        topCategory.categoryNo.as("one"),
+                        category.categoryLevel.as("lowCategoryLevel"),
+                        middleCategory.categoryLevel.as("middleCategoryLevel"),
+                        topCategory.categoryLevel.as("topCategoryLevel")))
                 .from(category)
                 .leftJoin(category.parentCategory, middleCategory)
                 .leftJoin(middleCategory.parentCategory, topCategory)
@@ -45,21 +48,21 @@ public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
                 .fetch();
     }
     
-    private BooleanBuilder categoryFilterCondition(Integer topCategoryNo, Integer middleCategoryNo, Integer lowCategoryNo) {
+    private BooleanBuilder categoryFilterCondition(Integer one, Integer two, Integer three) {
         QCategory category = QCategory.category;
         QCategory middleCategory = new QCategory("middleCategory");
         QCategory topCategory = new QCategory("topCategory");
 
         BooleanBuilder condition = new BooleanBuilder();
 
-        if (lowCategoryNo != null) {
-            condition.and(category.categoryNo.eq(lowCategoryNo));
+        if (three != null) {
+            condition.and(category.categoryNo.eq(three));
         }
-        if (middleCategoryNo != null) {
-            condition.and(middleCategory.categoryNo.eq(middleCategoryNo));
+        if (two != null) {
+            condition.and(middleCategory.categoryNo.eq(two));
         }
-        if (topCategoryNo != null) {
-            condition.and(topCategory.categoryNo.eq(topCategoryNo));
+        if (one != null) {
+            condition.and(topCategory.categoryNo.eq(one));
         }
 
         return condition;
