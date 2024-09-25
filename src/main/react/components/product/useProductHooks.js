@@ -482,6 +482,7 @@ export const useProductHooks = () => {
         });
 
         // 대분류가 있을 경우 중분류 목록 불러오기
+        // 대분류가 있을 경우 중분류 목록 불러오기
         if (product.topCategoryNo) {
             const filteredMiddle = getFilteredCategories(2, product.topCategoryNo);
             setFilteredEditMiddleCategories(filteredMiddle);
@@ -491,6 +492,10 @@ export const useProductHooks = () => {
                 const filteredLow = getFilteredCategories(3, product.middleCategoryNo);
                 setFilteredEditLowCategories(filteredLow);
             }
+        } else {
+            // 대분류가 선택되지 않은 경우 중분류 및 소분류 초기화
+            setFilteredEditMiddleCategories([]);
+            setFilteredEditLowCategories([]);
         }
     };
 
