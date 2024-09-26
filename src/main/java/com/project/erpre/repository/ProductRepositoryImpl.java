@@ -6,6 +6,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -173,15 +175,15 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                     : product.productNm.containsIgnoreCase(productNm);  // 상품명 조건
         }
 
-        // 🔴 고객 번호 조건 추가 (customerNo가 있을 때만)
+        // 🟢🟢🟢 고객 번호 조건 추가 (customerNo가 있을 때만)
         BooleanExpression customerCondition = null;
-        logger.info("customerNo : "+customerNo);
+        logger.info("\uD83D\uDFE22 customerNo : " + customerNo);
+        // 고객 번호를 통한 조건 추가 (customerNo가 있을 때만)
         if (customerNo != null) {
-            logger.info("customerNo2 : "+customerNo);
-            // price.customer_no가 customerNo와 일치하고, 현재 날짜가 price의 시작과 종료 날짜 사이에 있는 조건
             customerCondition = price.customer.customerNo.eq(customerNo)
                     .and(price.priceStartDate.loe(Date.valueOf(today)))  // 시작 날짜 <= 오늘
-                    .and(price.priceEndDate.goe(Date.valueOf(today)));   // 종료 날짜 >= 오늘 (null일 경우 무기한)
+                    .and(price.priceEndDate.isNull().or(price.priceEndDate.goe(Date.valueOf(today))))  // 종료 날짜가 null이거나 종료 날짜 >= 오늘
+                    .and(price.priceDeleteYn.eq("N"));  // priceDeleteYn이 'N'인 조건 추가
         }
 
         // 🔴 BooleanBuilder 사용하여 조건 추가
@@ -189,12 +191,12 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         if (statusCondition != null) builder.and(statusCondition);
         if (categoryCondition != null) builder.and(categoryCondition);
         if (productCondition != null) builder.and(productCondition);
-        if (customerCondition != null) {
-            // Price와 Product 조인을 통한 고객 필터링 추가
+        if (customerCondition != null) { // Price와 Product 조인을 통한 고객 필터링 추가
             builder.and(customerCondition);
         }
 
-        List<ProductDTO> results = queryFactory.select(Projections.fields(ProductDTO.class,
+        // 가격 테이블 조인 여부에 따라 쿼리 구성
+        JPAQuery<ProductDTO> query = queryFactory.select(Projections.fields(ProductDTO.class,
                         product.productCd,
                         product.productNm,
                         product.productInsertDate,
@@ -212,16 +214,28 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .from(product)
                 .leftJoin(product.category, category)
                 .leftJoin(category.parentCategory, middleCategory)
-                .leftJoin(middleCategory.parentCategory, topCategory)
-                .leftJoin(price).on(product.productCd.eq(price.product.productCd)) // Product와 Price 조인
-                .where(builder)  // 조건 적용
+                .leftJoin(middleCategory.parentCategory, topCategory);
+
+        // 고객 조건이 있을 경우에만 Price와 조인
+        if (customerCondition != null) {
+            query.leftJoin(price).on(product.productCd.eq(price.product.productCd));  // Product와 Price 조인
+            builder.and(customerCondition);  // Price 관련 조건 추가
+        }
+
+        query.where(builder)
+                .distinct()  // 중복 제거
                 .orderBy(product.category.categoryNo.asc(), product.productNm.asc())  // categoryNo와 productNm 기준 오름차순 정렬
                 .offset(pageable.getOffset())  // 페이지 시작 위치
-                .limit(pageable.getPageSize())  // 페이지 크기 설정
-                .fetch();
+                .limit(pageable.getPageSize());  // 페이지 크기 설정
+
+        List<ProductDTO> results = query.fetch();
 
         // 🔴 총 항목 수
         long total = queryFactory.selectFrom(product)
+                .leftJoin(product.category, category)
+                .leftJoin(category.parentCategory, middleCategory)
+                .leftJoin(middleCategory.parentCategory, topCategory)
+                .leftJoin(price).on(product.productCd.eq(price.product.productCd)) // Price와 Product 조인
                 .where(builder)
                 .fetchCount();  // 조건에 맞는 총 개수
 

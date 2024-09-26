@@ -44,7 +44,8 @@ function Order() {
                     productNm: selectedProduct.productNm || '', // 제품 이름을 업데이트
                     orderDPrice: selectedProduct.price || 0,
                     orderDQty: selectedProduct.quantity || 0,
-                    productCd: selectedProduct.productCd || '' // 상품 코드
+                    productCd: selectedProduct.productCd || '', // 상품 코드
+                    priceCustomer: selectedProduct.priceCustomer || '' // 상품 가격
                 };
 
                 setOrderDetails(updatedOrderDetails);
@@ -566,7 +567,7 @@ function Order() {
                 <ProductSearchModal
                     onClose={() => setProductModalOpen(false)}
                     onProductSelect={handleProductSelect}
-                    customerNo={selectedCustomer?.customerNo || null}
+                    customerNo={customerData.customerNo || null}
                 />
             )}
 

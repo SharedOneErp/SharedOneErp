@@ -301,10 +301,10 @@ function ProductSearchModal({ onClose, onProductSelect, customerNo = null }) { /
                                     <tr key={index} onClick={() => onProductSelect(result)}>
                                         <td>{result.productCd || '-'}</td> {/* 상품 코드 */}
                                         <td>{result.lowCategory}</td> {/* 상품 카테고리 */}
-                                        <td>{result.productNm || '-'}/{result.priceCustomer || '-'}</td> {/* 상품명 */}
+                                        <td>{result.productNm || '-'}</td> {/* 상품명 */}
                                         <td>
-                                            {result.productPrice ? (
-                                                `${result.productPrice.toLocaleString()}원`
+                                            {result.priceCustomer ? (
+                                                `${result.priceCustomer.toLocaleString()}원`
                                             ) : (
                                                 '-'
                                             )}
