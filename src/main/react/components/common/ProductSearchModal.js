@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Pagination from './Pagination'; // 페이지네이션 컴포넌트 임포트
 
-function ProductSearchModal({ onClose, onProductSelect }) {
+function ProductSearchModal({ onClose, onProductSelect, customerNo = null }) { // 가격 등록 시 -> 단순 상품 검색, 주문 등록 시 -> 고객사에 해당하는 상품 검색(customerNo)
 
     const [loading, setLoading] = useState(false); // 🔴 로딩 상태 추가
 
@@ -31,18 +31,25 @@ function ProductSearchModal({ onClose, onProductSelect }) {
     // 🔴 상품 조회 함수
     const fetchProducts = () => {
         setLoading(true); // 로딩 시작
-        axios.get('/api/products/productsFilter', {
-            params: {
-                page: currentPage,
-                size: itemsPerPage,
-                topCategoryNo: selectedCategory.top || null,    // 대분류 카테고리
-                middleCategoryNo: selectedCategory.middle || null, // 중분류 카테고리
-                lowCategoryNo: selectedCategory.low || null,    // 소분류 카테고리
-                productCd: searchCode || null,                  // 상품 코드 필터
-                productNm: searchName || null,                 // 상품명 필터
-                status: 'active'                               // 활성화된 상품만 조회
-            },
-        })
+
+        // API 요청에 전달할 파라미터 객체 생성
+        const params = {
+            page: currentPage,
+            size: itemsPerPage,
+            topCategoryNo: selectedCategory.top || null,    // 대분류 카테고리
+            middleCategoryNo: selectedCategory.middle || null, // 중분류 카테고리
+            lowCategoryNo: selectedCategory.low || null,    // 소분류 카테고리
+            productCd: searchCode || null,                  // 상품 코드 필터
+            productNm: searchName || null,                 // 상품명 필터
+            status: 'active',                              // 활성화된 상품만 조회
+        };
+
+        // 🔴 customerNo가 있을 경우에만 추가
+        if (customerNo) {
+            params.customerNo = customerNo;
+        }
+
+        axios.get('/api/products/productsFilter', { params })
             .then((response) => {
                 const data = response.data.content || []; // 서버 응답에서 상품 목록 추출
                 console.log("검색 결과:", data);
@@ -55,6 +62,7 @@ function ProductSearchModal({ onClose, onProductSelect }) {
                 setLoading(false); // 에러 시 로딩 종료
             });
     };
+
 
     // 🟡 컴포넌트 마운트 시 모든 카테고리 가져오기
     useEffect(() => {
@@ -293,7 +301,7 @@ function ProductSearchModal({ onClose, onProductSelect }) {
                                     <tr key={index} onClick={() => onProductSelect(result)}>
                                         <td>{result.productCd || '-'}</td> {/* 상품 코드 */}
                                         <td>{result.lowCategory}</td> {/* 상품 카테고리 */}
-                                        <td>{result.productNm || '-'}</td> {/* 상품명 */}
+                                        <td>{result.productNm || '-'}/{result.priceCustomer || '-'}</td> {/* 상품명 */}
                                         <td>
                                             {result.productPrice ? (
                                                 `${result.productPrice.toLocaleString()}원`

@@ -38,13 +38,14 @@ public class ProductDTO {
     private String productDeleteYn; // 삭제 여부 기본값 'N'
     private Timestamp productDeleteDate; // 삭제 일시
     private BigDecimal productPrice; // 상품 가격
+    private BigDecimal priceCustomer; // 고객사별 상품 가격
 
 
     // 1. 전체 상품 목록 조회 생성자
     public ProductDTO(String productCd, String productNm, LocalDateTime productInsertDate, LocalDateTime productUpdateDate,
                       Timestamp productDeleteDate, String productDeleteYn,
                       String lowCategory, String middleCategory, String topCategory,
-                      Integer lowCategoryNo, Integer middleCategoryNo,Integer topCategoryNo, BigDecimal productPrice) {
+                      Integer lowCategoryNo, Integer middleCategoryNo,Integer topCategoryNo, BigDecimal productPrice, BigDecimal priceCustomer) {
         this.productCd = productCd;
         this.productNm = productNm;
         this.productInsertDate = productInsertDate;
@@ -58,6 +59,7 @@ public class ProductDTO {
         this.middleCategoryNo = middleCategoryNo;
         this.topCategoryNo = topCategoryNo;
         this.productPrice = productPrice;
+        this.priceCustomer = priceCustomer;
     }
 
     // 2. 상품 상세정보 조회 생성자

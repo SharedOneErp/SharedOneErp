@@ -2,12 +2,82 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client'; // ReactDOM을 사용하여 React 컴포넌트를 DOM에 렌더링
 import { BrowserRouter, useSearchParams } from "react-router-dom"; // 리액트 라우팅 관련 라이브러리
 import Layout from "../../layout/Layout"; // 공통 레이아웃 컴포넌트를 임포트 (헤더, 푸터 등)
+import CustomerSearchModal from '../common/CustomerSearchModal'; // 고객사 검색 모달 임포트
+import ProductSearchModal from '../common/ProductSearchModal'; // 상품 검색 모달 임포트
 import { useHooksList } from './OrderHooks'; // 상태 및 로직을 처리하는 훅
 import '../../../resources/static/css/sales/Order.css';
 
 
 
 function Order() {
+
+    // 🔴 고객사검색, 상품 검색
+    const [isCustomerModalOpen, setCustomerModalOpen] = useState(false);
+    const [isProductModalOpen, setProductModalOpen] = useState(false);
+    const [selectedCustomer, setSelectedCustomer] = useState({ customerName: '고객사 선택', customerNo: '' });
+    const [selectedProduct, setSelectedProduct] = useState({ productNm: '상품 선택', productCd: '', productPrice: 0 });
+
+
+    // 🔴🔴🔴🔴 고객사 선택 시 모달을 닫고 버튼에 값 설정
+    const handleCustomerSelect = (selectedCustomer) => {
+        console.log('Selected customer:', selectedCustomer);
+
+        setCustomerData({
+            customerNo: selectedCustomer.customerNo,
+            customerName: selectedCustomer.customerName,
+            customerAddr: selectedCustomer.customerAddr,
+            customerTel: selectedCustomer.customerTel,
+            customerRepresentativeName: selectedCustomer.customerRepresentativeName
+        });
+        setCustomerModalOpen(false);
+    };
+
+    // 🔴🔴🔴🔴 상품 선택 시 모달을 닫고 값 설정
+    const handleProductSelect = (selectedProduct) => {
+
+        if (selectedProductIndex !== null) {
+
+            if (isEditMode) {
+                const updatedOrderDetails = [...orderDetails];
+                updatedOrderDetails[selectedProductIndex] = {
+                    ...updatedOrderDetails[selectedProductIndex],
+                    productNm: selectedProduct.productNm || '', // 제품 이름을 업데이트
+                    orderDPrice: selectedProduct.price || 0,
+                    orderDQty: selectedProduct.quantity || 0,
+                    productCd: selectedProduct.productCd || '' // 상품 코드
+                };
+
+                setOrderDetails(updatedOrderDetails);
+
+            } else {
+
+                const updatedProducts = [...products];
+                // 선택된 상품의 필드가 null인 경우 기본값 0으로 대체
+                updatedProducts[selectedProductIndex] = {
+                    ...selectedProduct,
+                    name: selectedProduct.productNm,
+                    price: selectedProduct.price || 0,
+                    quantity: selectedProduct.quantity || 0,
+                    code: selectedProduct.productCd // 상품 코드를 추가
+                };
+                setProducts(updatedProducts);
+
+            }
+
+        } else {
+            console.error('handleProductSelect error');
+        }
+        setProductModalOpen(false);
+    };
+
+    // 🔴🔴🔴🔴 
+    const openProductModal = (index) => {
+        // 모달을 열기 전, 필요한 상태와 함수들을 먼저 실행
+        setSelectedProductIndex(index); // 선택한 상품의 인덱스 설정
+
+        // 모달 열기
+        setProductModalOpen(true);
+    };
 
     const [role, setRole] = useState('');
     const [loading, setLoading] = useState(true);
@@ -112,7 +182,6 @@ function Order() {
         }
     };
 
-
     // 🔴 커스텀 훅을 통해 상태와 함수 불러오기
     const {
         // 주문 모드 관련 상태
@@ -131,27 +200,7 @@ function Order() {
         orderHStatus,
         orderHTotalPrice,   // 주문 총액
         orderHInsertDate,   // 주문 등록일
-        deliveryDate,       // 납품 요청일
         employee,           // 담당자 정보 (로그인한 사용자 정보)
-
-        // 모달 관련 상태 및 함수
-        showModal,              // 상품 검색 모달 상태
-        customerModalOpen,      // 고객사 검색 모달 상태
-        openModal,              // 상품 검색 모달 열기
-        closeModal,             // 상품 검색 모달 닫기
-        openCustomerModal,      // 고객사 검색 모달 열기
-        closeCustomerModal,     // 고객사 검색 모달 닫기
-        handleCustomerSelect,   // 고객사 선택 처리 함수
-
-        // 검색 관련 상태 및 함수
-        searchQuery,            // 검색어 상태 (상품명 검색어)
-        setSearchQuery,         // 검색어 상태 설정 함수
-        searchCode,             // 상품 코드 검색어 상태
-        setSearchCode,          // 상품 코드 검색어 상태 설정 함수
-        handleSearch,           // 상품 검색 처리 함수
-        customerSearch,         // 고객사 검색 처리 함수
-        searchResults,          // 상품 검색 결과
-        customerSearchResults,  // 고객사 검색 결과
 
         // 상품 및 주문 상세 데이터 변경 함수
         handleProductChange,    // 상품 데이터 변경 처리 함수 (등록 시)
@@ -159,20 +208,6 @@ function Order() {
         addProductRow,          // 상품 행 추가 함수
         removeProductRow,       // 상품 행 제거 함수
         removeProducteditRow,   // 상품 수정 행 제거 함수
-        handleProductSelect,    // 상품 선택 처리 함수 (등록 시)
-        handleProductSelectEdit,// 상품 수정 시 선택 처리 함수
-
-        // 페이지네이션 관련 상태 및 함수
-        currentPageProduct,         // 상품 모달의 현재 페이지 상태
-        setCurrentPageProduct,      // 상품 모달의 현재 페이지 상태 설정 함수
-        handlePageChangeProduct,    // 상품 모달의 페이지 변경 처리 함수
-        currentPageCustomer,        // 고객사 모달의 현재 페이지 상태
-        setCurrentPageCustomer,     // 고객사 모달의 현재 페이지 상태 설정 함수
-        handlePageChangeCustomer,   // 고객사 모달의 페이지 변경 처리 함수
-        paginatedSearchResults,     // 페이지네이션된 상품 검색 결과
-        paginatedCustomerSearchResults, // 페이지네이션된 고객사 검색 결과
-        totalProductPages,          // 상품 검색 결과의 총 페이지 수
-        totalCustomerPages,         // 고객사 검색 결과의 총 페이지 수
 
         // 주문 생성 및 수정 함수
         handleSubmit,   // 주문 생성 처리 함수
@@ -181,19 +216,15 @@ function Order() {
         // 날짜 관련 함수
         formatDateForInput,  // 날짜를 yyyy-mm-dd 형식으로 변환하는 함수
 
-        // 카테고리 선택 관련 상태 및 함수
-        selectedCategory,      // 선택된 카테고리 (대분류, 중분류, 소분류)
-        setSelectedCategory,   // 카테고리 선택 상태 설정 함수
-        handleTopChange,       // 대분류 카테고리 변경 처리 함수
-        handleMiddleChange,    // 중분류 카테고리 변경 처리 함수
-        categories,            // 카테고리 데이터 (대분류, 중분류, 소분류)
-
         displayItems,
         editProductRow,
         displayItemEdit,
+        setCustomerData,
+        selectedProductIndex,
+        setProducts,
+        setOrderDetails,
+        setSelectedProductIndex,
     } = useHooksList();
-
-
 
     return (
         <Layout currentMenu="order">
@@ -221,12 +252,11 @@ function Order() {
                                         placeholder="고객사 선택" readOnly />
                                     <button
                                         className="search-button"
-                                        onClick={openCustomerModal}
+                                        onClick={() => setCustomerModalOpen(true)}
                                         style={{ display: !isEditMode && !isCreateMode ? 'none' : 'block' }}
                                     >
                                         <i className="bi bi-search"></i>
                                     </button>
-
                                 </div>
 
                                 {!isCreateMode && (
@@ -394,10 +424,11 @@ function Order() {
                                                     }}
                                                 />
                                                 {(isCreateMode || isEditMode) && (
-                                                    <button className="search-button" onClick={() => openModal(index)}>
+                                                    <button className="search-button" onClick={() => openProductModal(index)}>
                                                         <i className="bi bi-search"></i>
                                                     </button>
                                                 )}
+
                                             </td>
                                             <td>
                                                 <input
@@ -523,265 +554,21 @@ function Order() {
                     </div>
                 </div>
             </main>
-
             {/* 고객사 검색 모달 */}
-            {
-                customerModalOpen && (
-                    <div className="modal_overlay">
-                        <div className="modal_container search search_customer">
-                            <div className="header">
-                                <div>고객사 검색</div>
-                                <button className="btn_close" onClick={closeCustomerModal}><i className="bi bi-x-lg"></i></button> {/* 모달 닫기 버튼 */}
-                            </div>
-                            <div className="search_wrap">
-                                <input
-                                    type="text"
-                                    className="box"
-                                    placeholder="검색하실 고객사를 입력하세요"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                                <button className="box color_border" onClick={customerSearch}>검색</button>
-                            </div>
-                            <div className="table_wrap">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>고객사</th>
-                                            <th>주소</th>
-                                            <th>연락처</th>
-                                            <th>대표명</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {customerSearchResults.length > 0 ? (
-                                            paginatedCustomerSearchResults.map((result) => (
-                                                <tr key={result.customerNo}
-                                                    onClick={() => handleCustomerSelect(result)}>
-                                                    <td>{result.customerName || '-'}</td> {/* 고객사 이름 */}
-                                                    <td>{result.customerAddr || '-'}</td> {/* 고객사 주소 */}
-                                                    <td>{result.customerTel || '-'}</td> {/* 고객사 연락처 */}
-                                                    <td>{result.customerRepresentativeName || '-'}</td> {/* 대표 이름 */}
-                                                </tr>
-                                            ))
-                                        ) : (
-                                            <tr className="tr_empty">
-                                                <td colSpan="4">
-                                                    <div className="no_data">조회된 결과가 없습니다.</div>
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                            {/* 페이지네이션 */}
-                            <div
-                                className="pagination-container"
-                                style={{ justifyContent: 'space-around' }}
-                            >
-                                <div className="pagination">
-                                    {/* '처음' 버튼 */}
-                                    {currentPageCustomer > 1 && (
-                                        <button className="box icon first" onClick={() => handlePageChangeCustomer(1)}>
-                                            <i className="bi bi-chevron-double-left"></i>
-                                        </button>
-                                    )}
-
-                                    {/* '이전' 버튼 */}
-                                    {currentPageCustomer > 1 && (
-                                        <button className="box icon left" onClick={() => handlePageChangeCustomer(currentPageCustomer - 1)}>
-                                            <i className="bi bi-chevron-left"></i>
-                                        </button>
-                                    )}
-
-                                    {/* 페이지 번호 블록 */}
-                                    {Array.from({ length: Math.min(5, totalCustomerPages) }, (_, index) => {
-                                        const startPage = Math.max(Math.floor((currentPageCustomer - 1) / 5) * 5 + 1, 1);
-                                        const page = startPage + index;
-                                        return (
-                                            page <= totalCustomerPages && (
-                                                <button
-                                                    key={page}
-                                                    onClick={() => handlePageChangeCustomer(page)}
-                                                    className={currentPageCustomer === page ? 'box active' : 'box'}
-                                                >
-                                                    {page}
-                                                </button>
-                                            )
-                                        );
-                                    })}
-
-                                    {/* '다음' 버튼 */}
-                                    {currentPageCustomer < totalCustomerPages && (
-                                        <button className="box icon right" onClick={() => handlePageChangeCustomer(currentPageCustomer + 1)}>
-                                            <i className="bi bi-chevron-right"></i>
-                                        </button>
-                                    )}
-
-                                    {/* '끝' 버튼 */}
-                                    {currentPageCustomer < totalCustomerPages && (
-                                        <button className="box icon last" onClick={() => handlePageChangeCustomer(totalCustomerPages)}>
-                                            <i className="bi bi-chevron-double-right"></i>
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )
-            }
-
-            {/* 상품 검색 모달 */}
-            {
-                showModal && (
-                    <div className="modal_overlay">
-                        <div className="modal_container search search_product">
-                            <div className="header">
-                                <div>상품 검색</div>
-                                <button className="btn_close" onClick={closeModal}><i className="bi bi-x-lg"></i></button> {/* 모달 닫기 버튼 */}
-                            </div>
-                            <div className="search_wrap">
-                                <select className="box" value={selectedCategory.top} onChange={handleTopChange}>
-                                    <option value="">대분류</option>
-                                    {categories.topCategories.map(category => (
-                                        <option key={category.categoryNo}
-                                            value={category.categoryNo}>{category.categoryNm}</option>
-                                    ))}
-                                </select>
-
-                                <select className="box" value={selectedCategory.middle} onChange={handleMiddleChange}
-                                    disabled={!selectedCategory.top}>
-                                    <option value="">중분류</option>
-                                    {categories.middleCategories.map(category => (
-                                        <option key={category.categoryNo}
-                                            value={category.categoryNo}>{category.categoryNm}</option>
-                                    ))}
-                                </select>
-
-                                <select className="box" value={selectedCategory.low} onChange={(e) => setSelectedCategory({
-                                    ...selectedCategory,
-                                    low: e.target.value
-                                })} disabled={!selectedCategory.middle}>
-                                    <option value="">소분류</option>
-                                    {categories.lowCategories.map(category => (
-                                        <option key={category.categoryNo}
-                                            value={category.categoryNo}>{category.categoryNm}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="search_wrap">
-                                <input
-                                    type="text"
-                                    className="box"
-                                    placeholder="상품명"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                                <input
-                                    type="text"
-                                    className="box"
-                                    placeholder="상품코드"
-                                    value={searchCode}
-                                    onChange={(e) => setSearchCode(e.target.value)}
-                                />
-                                <button className="box color_border" onClick={handleSearch}>검색</button>
-                            </div>
-
-                            <div className="table_wrap">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>상품코드</th>
-                                            <th>카테고리</th>
-                                            <th>상품명</th>
-                                            <th>가격</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {searchResults.length > 0 ? (
-                                            paginatedSearchResults.map((result, index) => (
-                                                <tr
-                                                    key={index}
-                                                    onClick={() => isEditMode ? handleProductSelectEdit(result) : handleProductSelect(result)}
-                                                >
-                                                    <td>{result.productCd || '-'}</td> {/* 상품 코드 */}
-                                                    <td>{result.category.categoryNm}</td> {/* 상품 카테고리 */}
-                                                    <td>{result.productNm || '-'}</td> {/* 상품명 */}
-                                                    <td>
-                                                        {result.productPrice ? (
-                                                            `${result.productPrice.toLocaleString()}원`
-                                                        ) : (
-                                                            '-'
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        ) : (
-                                            <tr className="tr_empty">
-                                                <td colSpan="4">
-                                                    <div className="no_data">조회된 결과가 없습니다.</div>
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                            {/* 페이지네이션 */}
-                            <div
-                                className="pagination-container"
-                                style={{ justifyContent: 'space-around' }}
-                            >
-                                <div className="pagination">
-                                    {/* '처음' 버튼 */}
-                                    {currentPageProduct > 1 && (
-                                        <button className="box icon first" onClick={() => handlePageChangeProduct(1)}>
-                                            <i className="bi bi-chevron-double-left"></i>
-                                        </button>
-                                    )}
-
-                                    {/* '이전' 버튼 */}
-                                    {currentPageProduct > 1 && (
-                                        <button className="box icon left" onClick={() => handlePageChangeProduct(currentPageProduct - 1)}>
-                                            <i className="bi bi-chevron-left"></i>
-                                        </button>
-                                    )}
-
-                                    {/* 페이지 번호 블록 */}
-                                    {Array.from({ length: Math.min(5, totalProductPages) }, (_, index) => {
-                                        const startPage = Math.max(Math.floor((currentPageProduct - 1) / 5) * 5 + 1, 1);
-                                        const page = startPage + index;
-                                        return (
-                                            page <= totalProductPages && (
-                                                <button
-                                                    key={page}
-                                                    onClick={() => handlePageChangeProduct(page)}
-                                                    className={currentPageProduct === page ? 'box active' : 'box'}
-                                                >
-                                                    {page}
-                                                </button>
-                                            )
-                                        );
-                                    })}
-
-                                    {/* '다음' 버튼 */}
-                                    {currentPageProduct < totalProductPages && (
-                                        <button className="box icon right" onClick={() => handlePageChangeProduct(currentPageProduct + 1)}>
-                                            <i className="bi bi-chevron-right"></i>
-                                        </button>
-                                    )}
-
-                                    {/* '끝' 버튼 */}
-                                    {currentPageProduct < totalProductPages && (
-                                        <button className="box icon last" onClick={() => handlePageChangeProduct(totalProductPages)}>
-                                            <i className="bi bi-chevron-double-right"></i>
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )
-            }
+            {isCustomerModalOpen && (
+                <CustomerSearchModal
+                    onClose={() => setCustomerModalOpen(false)}
+                    onCustomerSelect={handleCustomerSelect}
+                />
+            )}
+            {/* 상품 검색 모달 -> 고객에 해당하는 상품 정보 가져오기 */}
+            {isProductModalOpen && (
+                <ProductSearchModal
+                    onClose={() => setProductModalOpen(false)}
+                    onProductSelect={handleProductSelect}
+                    customerNo={selectedCustomer?.customerNo || null}
+                />
+            )}
 
         </Layout >
     );
