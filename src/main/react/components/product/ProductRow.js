@@ -22,14 +22,18 @@ const ProductRow = React.memo(({
             {/* 체크박스 칸 */}
             <td>
                 {/* 상품코드 */}
-                <input
-                    type="text"
-                    className="box wp100"
-                    placeholder="상품코드 입력"
-                    value={productData.productCd}
-                    name="productCd"
-                    onChange={handleInputChange}
-                />
+                {isEditMode ? (
+                    <span>{productData.productCd}</span>
+                ) : (
+                    <input
+                        type="text"
+                        className="box wp100"
+                        placeholder="상품코드 입력"
+                        value={productData.productCd}
+                        name="productCd"
+                        onChange={handleInputChange}
+                    />
+                )}
             </td>
             <td>
                 {/* 상품명 */}
