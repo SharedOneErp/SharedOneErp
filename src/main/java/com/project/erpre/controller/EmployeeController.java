@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -142,5 +143,23 @@ public class EmployeeController {
     public ResponseEntity<Boolean> checkEmployeeId(@RequestParam String employeeId) {
         boolean exists = employeeService.existsByEmployeeId(employeeId);
         return ResponseEntity.ok(exists);
+    }
+
+    // 전체 직원 수를 반환하는 API
+    @GetMapping("/employeeCount")
+    public long getTotalEmployeeCount() {
+        return employeeService.getTotalEmployeeCount();
+    }
+
+    @GetMapping("/employeeRecentCount")
+    public ResponseEntity<Long> getRecentHiresCount() {
+        try {
+            int days = 30; // 최근 30일
+            long recentHiresCount = employeeService.getRecentHiresCount(days); // 서비스 호출
+            return ResponseEntity.ok(recentHiresCount); // 성공적으로 직원 수 반환
+        } catch (Exception e) {
+            // 예외가 발생한 경우 500 오류와 함께 null 응답
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 }

@@ -43,6 +43,12 @@ public interface ProductRepository extends JpaRepository<Product, String>, Produ
             @Param("topCategory") Integer topCategory,
             @Param("middleCategory") Integer middleCategory,
             @Param("lowCategory") Integer lowCategory);
+
+    @Query("SELECT COUNT(p) FROM Product p")
+    long countAllProducts();
+
+    @Query("SELECT COUNT(p) FROM Product p WHERE p.productInsertDate >= CURRENT_DATE - 3")
+    long countRecentProducts();
 }
 
 

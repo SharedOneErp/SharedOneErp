@@ -8,7 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -190,6 +193,44 @@ public class OrderService {
 
         logger.info("상세 주문 {} 삭제 완료", detailId); // 삭제 완료 로그
     }
+
+    
+    //전체 수량 카운트 코드
+    public long getTotalOrderCount() {
+        return orderRepository.countOrders();
+    }
+
+    // 특정 상태에 따른 주문 수 계산
+    public long countOrdersByStatus(String status) {
+        return orderRepository.countByOrderHStatus(status);
+    }
+
+    public BigDecimal getApprovedTotalAmount() {
+        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+        LocalDateTime thirtyDaysAgoDateTime = thirtyDaysAgo.atStartOfDay(); // LocalDateTime으로 변환
+        return orderRepository.sumApprovedOrdersLastMonth(thirtyDaysAgoDateTime);
+    }
+
+    public BigDecimal getDeniedTotalAmount() {
+        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+        LocalDateTime thirtyDaysAgoDateTime = thirtyDaysAgo.atStartOfDay(); // LocalDateTime으로 변환
+        return orderRepository.sumDeniedOrdersLastMonth(thirtyDaysAgoDateTime);
+    }
+
+    public String getSettlementDeadline() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime deadline;
+
+        if (now.getDayOfMonth() > 15) {
+            deadline = LocalDateTime.of(now.getYear(), now.getMonth().plus(1), 15, 0, 0);
+        } else {
+            deadline = LocalDateTime.of(now.getYear(), now.getMonth(), 15, 0, 0);
+        }
+
+        return deadline.format(DateTimeFormatter.ofPattern("yyyy년 M월 d일")); // "2024년 9월 15일" 형식
+    }
+
+
 
 
 

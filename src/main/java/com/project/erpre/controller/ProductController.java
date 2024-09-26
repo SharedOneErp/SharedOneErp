@@ -154,5 +154,22 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+
+    @GetMapping("/productCounts")
+    public ResponseEntity<Map<String, Long>> getProductCounts() {
+        try {
+            long totalProductCount = productService.getTotalProductCount();
+            long recentProductCount = productService.getRecentProductCount();
+            Map<String, Long> productCounts = new HashMap<>();
+            productCounts.put("totalProductCount", totalProductCount);
+            productCounts.put("recentProductCount", recentProductCount);
+            return ResponseEntity.ok(productCounts);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
 }
 

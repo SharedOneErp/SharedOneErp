@@ -6,138 +6,123 @@ import '../../../resources/static/css/common/Main.css';
 import axios from 'axios';
 
 function Main() {
-
     const [totalCustomers, setTotalCustomers] = useState(0);
     const [recentCustomers, setRecentCustomers] = useState([]);
     const [renewalCustomers, setRenewalCustomers] = useState([]);
-    const [modalContent, setModalContent] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalType, setModalType] = useState(null); // 모달 타입 추가
+    const [totalEmployees, setTotalEmployees] = useState(0);
+    const [recentHiresCount, setRecentHiresCount] = useState(0);
+    const [orderCount, setOrderCount] = useState(0);
+    const [orderStatusCount, setOrderStatusCount] = useState({
+        ingCount: 0,
+        approvedCount: 0,
+        deniedCount: 0,
+    });
+    const [totalProductCount, setTotalProductCount] = useState(0);
+    const [recentProductCount, setRecentProductCount] = useState(0);
+    const [totalSales, setTotalSales] = useState(0);
+    const [settlementInfo, setSettlementInfo] = useState({
+        approvedTotal: 0,
+        deniedTotal: 0,
+        settlementDeadline: '',
+    });
 
     useEffect(() => {
-        // 총 고객사 수 가져오기
-        axios.get('/api/customer/count')
-            .then(response => {
-                setTotalCustomers(response.data);
-            })
-            .catch(error => {
-                console.error("총 고객사 수를 가져오는 중 오류 발생:", error);
-                window.showToast("총 고객사 수를 가져오는 데 실패했습니다.", 'error');
-            });
+        const fetchData = async () => {
+            try {
+                // 전체 주문 수, 상태별 주문 각각
+                const orderStatusResponse = await axios.get('/api/order/status/count');
+                const { ingCount, approvedCount, deniedCount } = orderStatusResponse.data;
+                setOrderStatusCount({ ingCount, approvedCount, deniedCount });
+                setOrderCount(ingCount + approvedCount + deniedCount);
 
-        // 최근 신규 고객 가져오기
-        axios.get('/api/customer/recent')
-            .then(response => {
-                setRecentCustomers(response.data);
-            })
-            .catch(error => {
-                console.error("최근 신규 고객을 가져오는 중 오류 발생:", error);
-                window.showToast("최근 신규 고객을 가져오는 데 실패했습니다.", 'error');
-            });
+                // 전체 직원 수 가져오기
+                const employeesResponse = await axios.get('/api/employeeCount');
+                setTotalEmployees(employeesResponse.data);
 
-        // 계약 갱신 예정 고객 가져오기
-        axios.get('/api/customer/renewals')
-            .then(response => {
-                setRenewalCustomers(response.data);
-            })
-            .catch(error => {
-                console.error("계약 갱신 예정 고객을 가져오는 중 오류 발생:", error);
-                window.showToast("계약 갱신 예정 고객을 가져오는 데 실패했습니다.", 'error');
-            });
+                // 최근 채용 직원 수
+                const recentHiresResponse = await axios.get('/api/employeeRecentCount');
+                setRecentHiresCount(recentHiresResponse.data);
+
+                // 총 고객사 수 가져오기
+                const customersResponse = await axios.get('/api/customer/count');
+                setTotalCustomers(customersResponse.data);
+
+                // 상품 수를 가져오기
+                const productCountsResponse = await axios.get('/api/products/productCounts');
+                const { totalProductCount, recentProductCount } = productCountsResponse.data;
+                setTotalProductCount(totalProductCount);
+                setRecentProductCount(recentProductCount);
+
+                // 판매량 가져오기
+                const totalSalesResponse = await axios.get('/api/totalSales');
+                setTotalSales(totalSalesResponse.data || 0);
+
+                // 정산 정보 가져오기
+                const settlementResponse = await axios.get('/api/order/settlement');
+                setSettlementInfo(settlementResponse.data);
+
+                // 최근 신규 고객 가져오기
+                const recentCustomersResponse = await axios.get('/api/customer/recent');
+                setRecentCustomers(recentCustomersResponse.data);
+
+                // 계약 갱신 예정 고객 가져오기
+                const renewalCustomersResponse = await axios.get('/api/customer/renewals');
+                setRenewalCustomers(renewalCustomersResponse.data);
+
+            } catch (error) {
+                console.error("데이터를 가져오는 중 오류 발생:", error);
+                window.showToast("데이터를 가져오는 데 실패했습니다.", 'error');
+            }
+        };
+
+        fetchData();
     }, []);
-
-    const openModal = (type) => {
-        setModalType(type);
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setModalType(null);
-    };
-
-    // 모달 내용 렌더링 함수
-    const renderModalContent = () => {
-        if (modalType === 'total') {
-            return (
-                <div>
-                    <h2>총 고객사 수</h2>
-                    <p>총 고객사 수는 {totalCustomers}개 입니다.</p>
-                </div>
-            );
-        } else if (modalType === 'recent') {
-            return (
-                <div>
-                    <h2>최근 신규 고객</h2>
-                    <ul>
-                        {recentCustomers.map(customer => (
-                            <li key={customer.customerNo}>{customer.customerName}</li>
-                        ))}
-                    </ul>
-                </div>
-            );
-        } else if (modalType === 'renewal') {
-            return (
-                <div>
-                    <h2>계약 갱신 예정 고객</h2>
-                    <ul>
-                        {renewalCustomers.map(customer => (
-                            <li key={customer.customerNo}>{customer.customerName}</li>
-                        ))}
-                    </ul>
-                </div>
-            );
-        } else {
-            return null;
-        }
-    };
 
     return (
         <Layout currentMenu="main">
             <main className="main-content dashboard-container">
                 <div className="card card-large">
-                    <h3>인사 관리</h3>
+                    <h3><i className="bi bi-people-fill"></i> 인사 관리</h3>
                     <div className="info-group">
-                        <p>전체 직원 수: 120명</p>
-                        <p>최근 채용: 5명</p>
-                        <p>퇴사 예정: 2명</p>
+                        <p>전체 직원 수: {totalEmployees}명</p>
+                        <p>최근 채용: {recentHiresCount}명</p>
                     </div>
                 </div>
                 <div className="card card-large">
-                    <h3>영업 관리</h3>
+                    <h3><i className="bi bi-bar-chart-line-fill"></i> 영업 관리</h3>
                     <div className="info-group">
-                        <p>결재중: 0건</p>
-                        <p>결재완료: 0건</p>
-                        <p>반려: 0건</p>
+                        <p>총 주문건 수: {orderCount}건</p>
+                        <p>결재중: {orderStatusCount.ingCount}건</p>
+                        <p>결재완료: {orderStatusCount.approvedCount}건</p>
+                        <p>반려: {orderStatusCount.deniedCount}건</p>
                     </div>
                 </div>
                 <div className="card card-large">
-                    <h3>고객 관리</h3>
+                    <h3><i className="bi bi-building"></i> 고객 관리</h3>
                     <div className="info-group">
-                        <p onClick={() => openModal('total')} style={{ cursor: 'pointer', color: 'blue' }}> 총 고객사 수: {totalCustomers}개 </p>
-                        <p onClick={() => openModal('recent')} style={{ cursor: 'pointer', color: 'blue' }}> 최근 신규 고객: {recentCustomers.length}개</p>
-                        <p onClick={() => openModal('renewal')} style={{ cursor: 'pointer', color: 'blue' }}> 계약 갱신 예정: {renewalCustomers.length}개 </p>
+                        <p> 총 고객사 수: {totalCustomers}개 </p>
+                        <p> 최근 신규 고객: {recentCustomers.length}개</p>
+                        <p> 계약 갱신 예정: {renewalCustomers.length}개 </p>
                     </div>
                 </div>
                 <div className="card card-full">
-                    <h3>상품관리</h3>
+                    <h3><i className="bi bi-box-seam"></i> 상품 관리</h3>
                     <div className="info-group">
-                        <p>재고 현황: 1200개</p>
-                        <p>신상품 등록: 8개</p>
-                        <p>최근 판매량: 450개</p>
-                        {/*    넣어도 될 것 같기도 하구요?*/}
+                        <p>상품 전체 수량: {totalProductCount}개</p>
+                        <p>신상품 등록: {recentProductCount}개</p>
+                        <p>최근 판매량: {totalSales}개</p>
                     </div>
                 </div>
                 <div className="card">
-                    <h3>정산관련 안내</h3>
+                    <h3><i className="bi bi-cash-coin"></i> 정산 관련 안내</h3>
                     <div className="info-group">
-                        <p>정산금액: ₩2,500,000</p>
-                        <p>정산 마감일: 2024년 9월 15일</p>
-                        <p>미수금: ₩300,000</p>
+                        <p>정산금액: ₩{(settlementInfo.approvedTotal || 0).toLocaleString()}</p>
+                        <p>정산 마감일: {settlementInfo.settlementDeadline || '정보 없음'}</p>
+                        <p>미수금: ₩{(settlementInfo.deniedTotal || 0).toLocaleString()}</p>
                     </div>
                 </div>
                 <div className="card">
-                    <h3>공지사항</h3>
+                    <h3><i className="bi bi-megaphone-fill"></i> 공지사항</h3>
                     <div className="info-group">
                         <p>새로운 이벤트: 가을 세일</p>
                         <p>공지사항 업데이트: 2024년 9월 1일</p>
@@ -145,25 +130,15 @@ function Main() {
                     </div>
                 </div>
                 <div className="card">
-                    <h3>영업 실적 보고서</h3>
+                    <h3><i className="bi bi-graph-up-arrow"></i> 영업 실적 보고서</h3>
                     <div className="info-group">
                         <p>총 매출: ₩5,000,000</p>
                         <p>총 주문 수: 150건</p>
                         <p>월간 목표 달성율: 85%</p>
                     </div>
                 </div>
-
-                {/* 고객관리 모달 */}
-                {isModalOpen && (
-                    <div className="modal-overlay" onClick={closeModal}>
-                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                            <span className="close-button" onClick={closeModal}>&times;</span>
-                            {renderModalContent()}
-                        </div>
-                    </div>
-                )}
             </main>
-        </Layout >
+        </Layout>
     );
 }
 

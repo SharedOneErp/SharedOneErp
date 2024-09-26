@@ -207,6 +207,15 @@ public class ProductService {
                 .build();
     }
 
+    public long getTotalProductCount() {
+        return productRepository.countAllProducts();
+    }
+
+    public long getRecentProductCount() {
+        return productRepository.countRecentProducts();
+    }
+
+
 
 }
 
