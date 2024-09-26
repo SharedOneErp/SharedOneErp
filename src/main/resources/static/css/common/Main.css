@@ -104,3 +104,109 @@
 p{
     margin: 8px;
 }
+.info-group {
+    padding: 10px 0; /* info-group의 전체 여백 */
+}
+
+.info-group p {
+    display: flex; /* 아이콘과 텍스트를 가로로 정렬 */
+    align-items: center; /* 세로 정렬 */
+    margin-bottom: 10px; /* 각 항목 간의 간격 */
+    font-size: 14px; /* 글자 크기 조절 */
+}
+
+.info-group p i {
+    margin-right: 8px; /* 아이콘과 텍스트 사이의 간격 */
+    font-size: 1.2em; /* 아이콘 크기 조정 */
+}
+
+.info-group p i.bi-people-fill {
+    color: #007bff; /* 파란색 */
+}
+
+.info-group p i.bi-person-circle {
+    color: #28a745; /* 초록색 */
+}
+
+.info-group p i.bi-person-check-fill {
+    color: #ffc107; /* 노란색 */
+}
+
+.info-group p i.bi-person-x-fill {
+    color: #dc3545; /* 빨간색 */
+}
+
+.info-group p i.bi-clock-fill {
+    color: #17a2b8; /* 청록색 */
+}
+
+.info-group p i.bi-check-circle-fill {
+    color: #28a745; /* 초록색 */
+}
+
+.info-group p i.bi-x-circle-fill {
+    color: #dc3545; /* 빨간색 */
+}
+
+.info-group p i.bi-building {
+    color: #007bff; /* 파란색 */
+}
+
+.info-group p i.bi-person-add {
+    color: #ffc107; /* 노란색 */
+}
+
+.info-group p i.bi-arrow-clockwise {
+    color: #17a2b8; /* 청록색 */
+}
+
+.info-group p i.bi-box {
+    color: #007bff; /* 파란색 */
+}
+
+.info-group p i.bi-star-fill {
+    color: #ffc107; /* 노란색 */
+}
+
+.info-group p i.bi-list-check {
+    color: #17a2b8; /* 청록색 */
+}
+
+.info-group p i.bi-bell-fill {
+    color: #ffc107; /* 노란색 */
+}
+
+.info-group p i.bi-info-circle-fill {
+    color: #007bff; /* 파란색 */
+}
+
+.info-group p i.bi-calendar-event {
+    color: #17a2b8; /* 청록색 */
+}
+
+.info-group p i.bi-cash-stack {
+    color: #28a745; /* 초록색 */
+}
+
+.info-group p i.bi-calendar-date {
+    color: #17a2b8; /* 청록색 */
+}
+
+.info-group p i.bi-credit-card {
+    color: #dc3545; /* 빨간색 */
+}
+
+.info-group p i.bi-graph-up-arrow {
+    color: #007bff; /* 파란색 */
+}
+.info-group p i.bi-cash-coin {
+    color: #28a745; /* 초록색 */
+}
+
+.info-group p i.bi-check-all {
+    color: #28a745; /* 초록색 */
+}
+
+.info-group p i.bi-box-seam{
+    color: #007bff; /* 파란색 */
+}
