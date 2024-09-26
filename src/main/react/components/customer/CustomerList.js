@@ -94,7 +94,33 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // 중복 체크
+        //1. 필수 필드 값 검증
+        let valid = true;
+        let newErrors = {
+            customerName: '',
+            customerBusinessRegNo: '',
+            customerTel: '',
+            customerManagerTel: '',
+            customerManagerEmail: '',
+        };
+
+         if (!form.customerName.trim()) {
+            newErrors.customerName = '고객사 이름은 필수 입력 항목입니다.';
+            valid = false;
+        }
+        if (!form.customerBusinessRegNo.trim()) {
+            newErrors.customerBusinessRegNo = '사업자 등록번호는 필수 입력 항목입니다.';
+            valid = false;
+        }
+        // 에러 상태 업데이트
+        setErrors(newErrors);
+
+        // 필수 필드 검증 실패 시 저장 중단
+        if (!valid) {
+            return;
+        }
+
+        //2. 중복 체크
         axios
             .post('/api/customer/checkDuplicate', {
                 customerName: form.customerName,
@@ -110,69 +136,58 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                     return;
                 }
 
-                // 유효성 검사 수행
-                let valid = true;
-                let newErrors = {
-                    customerName: '',
-                    customerBusinessRegNo: '',
-                    customerTel: '',
-                    customerManagerTel: '',
-                    customerManagerEmail: '',
-                };
+        //3. 유효성 검증
+        valid = true;
+        newErrors = {
+            customerName: '',
+            customerBusinessRegNo: '',
+            customerTel: '',
+            customerManagerTel: '',
+            customerManagerEmail: ''
+        };
 
-                // 필수 필드 값 검증
-                if (!form.customerName.trim()) {
-                    newErrors.customerName = '고객사 이름은 필수 입력 항목입니다.';
-                    valid = false;
-                }
-                if (!form.customerBusinessRegNo.trim()) {
-                    newErrors.customerBusinessRegNo = '사업자 등록번호는 필수 입력 항목입니다.';
-                    valid = false;
-                }
+        const customerBusinessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
+        const customerTelRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
+        const customerManagerTelRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+        const customerManagerEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-                // 유효성 검증
-                const customerBusinessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
-                const customerTelRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
-                const customerManagerTelRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
-                const customerManagerEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!customerBusinessRegNoRegex.test(form.customerBusinessRegNo)) {
+            newErrors.customerBusinessRegNo =
+                '사업자 등록번호 형식이 올바르지 않습니다.\n예: 123-45-67890';
+            valid = false;
+        }
+        if (form.customerTel && !customerTelRegex.test(form.customerTel)) {
+            newErrors.customerTel =
+                '고객사 연락처 형식이 올바르지 않습니다.\n예: 010-1234-5678';
+            valid = false;
+        }
+        if (form.customerManagerTel && !customerManagerTelRegex.test(form.customerManagerTel)) {
+            newErrors.customerManagerTel =
+                '담당자 연락처 형식이 올바르지 않습니다.\n예: 02-456-7890';
+            valid = false;
+        }
+        if (form.customerManagerEmail && !customerManagerEmailRegex.test(form.customerManagerEmail)) {
+            newErrors.customerManagerEmail =
+                '담당자 이메일 형식이 올바르지 않습니다.\n예: abc@example.com';
+            valid = false;
+        }
 
-                if (!customerBusinessRegNoRegex.test(form.customerBusinessRegNo)) {
-                    newErrors.customerBusinessRegNo =
-                        '사업자 등록번호 형식이 올바르지 않습니다. 예: 123-45-67890';
-                    valid = false;
-                }
-                if (form.customerTel && !customerTelRegex.test(form.customerTel)) {
-                    newErrors.customerTel =
-                        '고객사 연락처 형식이 올바르지 않습니다. 예: 010-1234-5678';
-                    valid = false;
-                }
-                if (form.customerManagerTel && !customerManagerTelRegex.test(form.customerManagerTel)) {
-                    newErrors.customerManagerTel =
-                        '담당자 연락처 형식이 올바르지 않습니다. 예: 02-456-7890';
-                    valid = false;
-                }
-                if (form.customerManagerEmail && !customerManagerEmailRegex.test(form.customerManagerEmail)) {
-                    newErrors.customerManagerEmail =
-                        '담당자 이메일 형식이 올바르지 않습니다. 예: abc@example.com';
-                    valid = false;
-                }
+        // 에러 상태 업데이트
+        setErrors(newErrors);
 
-                // 에러 상태 업데이트
-                setErrors(newErrors);
+        // 유효성 검사 실패 시 저장 중단
+        if (!valid) {
+            return;
+        }
 
-                // 유효성 검사 실패 시 저장 중단
-                if (!valid) {
-                    return;
-                }
-
-                // 모든 검증을 통과하면 저장 동작 수행
-                onSave(form); // 상위 컴포넌트로 저장된 데이터 전달
-                onClose(); // 모달 닫기
-            })
-            .catch((error) => {
-                console.error('중복 체크 중 오류 발생:', error);
-            });
-    };
+        // 모든 검증을 통과하면 저장 동작 수행
+        onSave(form); // 상위 컴포넌트로 저장된 데이터 전달
+        onClose(); // 모달 닫기
+    })
+    .catch((error) => {
+        console.error('중복 체크 중 오류 발생:', error);
+    });
+};
 
     if (!show) return null; // 모달 표시 여부 체크
 
@@ -204,7 +219,13 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                                 onChange={handleInputChange}
                                 className={errors.customerBusinessRegNo ? 'invalid' : ''} />
                             {errors.customerBusinessRegNo && (
-                                <span className="error-message">{errors.customerBusinessRegNo}</span>)}
+                                <span
+                                    className="error-message"
+                                    dangerouslySetInnerHTML={{
+                                        __html: errors.customerBusinessRegNo.replace(/\n/g, '<br />'),
+                                    }}
+                                />
+                            )}
                         </div>
                         <div className="form-group">
                             <label>대표자명</label>
@@ -231,7 +252,13 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                                 onChange={handleInputChange}
                                 className={errors.customerTel ? 'invalid' : ''} />
                             {errors.customerTel && (
-                                <span className="error-message">{errors.customerTel}</span>)}
+                                <span
+                                    className="error-message"
+                                    dangerouslySetInnerHTML={{
+                                        __html: errors.customerTel.replace(/\n/g, '<br />'),
+                                    }}
+                                />
+                            )}
                         </div>
                         <div className="form-group">
                             <label>팩스번호</label>
@@ -273,7 +300,13 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                                 onChange={handleInputChange}
                                 className={errors.customerManagerTel ? 'invalid' : ''} />
                             {errors.customerManagerTel && (
-                                <span className="error-message">{errors.customerManagerTel}</span>)}
+                                <span
+                                    className="error-message"
+                                    dangerouslySetInnerHTML={{
+                                        __html: errors.customerManagerTel.replace(/\n/g, '<br />'),
+                                    }}
+                                />
+                            )}
                         </div>
                         <div className="form-group">
                             <label>담당자 이메일</label>
@@ -284,7 +317,13 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
                                 onChange={handleInputChange}
                                 className={errors.customerManagerEmail ? 'invalid' : ''} />
                             {errors.customerManagerEmail && (
-                                <span className="error-message">{errors.customerManagerEmail}</span>)}
+                                <span
+                                    className="error-message"
+                                    dangerouslySetInnerHTML={{
+                                        __html: errors.customerManagerEmail.replace(/\n/g, '<br />'),
+                                    }}
+                                />
+                            )}
                         </div>
                         <div className="form-group">
                             <label>국가코드</label>
@@ -401,22 +440,7 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
     // 저장 확인 모달에서 확인을 누르면 실제 저장 동작 수행
     const handleConfirmSave = () => {
 
-        //필수 필드 값 검증
-        if (!editableCustomer.customerName) {
-            window.showToast('고객사 이름은 필수 입력 항목입니다.', 'error');
-            return;
-        }
-        if (!editableCustomer.customerBusinessRegNo) {
-            window.showToast('사업자 등록번호는 필수 입력 항목입니다.', 'error');
-            return;
-        }
-
-        //유효성 검증
-        const customerBusinessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
-        const customerTelRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
-        const customerManagerTelRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
-        const customerManagerEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+        //1. 필수 필드 값 검증
         let valid = true;
         let newErrors = {
             customerName: '',
@@ -426,7 +450,6 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
             customerManagerEmail: ''
         };
 
-        // 필수 필드 값 검증
         if (!editableCustomer.customerName.trim()) {
             newErrors.customerName = '고객사 이름은 필수 입력 항목입니다.';
             valid = false;
@@ -435,22 +458,44 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
             newErrors.customerBusinessRegNo = '사업자 등록번호는 필수 입력 항목입니다.';
             valid = false;
         }
+        // 에러 상태 업데이트
+        setErrors(newErrors);
 
-        // 유효성 검사
+        // 필수 필드 검증 실패 시 저장 중단
+        if (!valid) {
+            setShowSaveConfirmModal(false); // 저장 확인 모달 닫기
+            return;
+        }
+
+        //2. 유효성 검증
+        const customerBusinessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
+        const customerTelRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
+        const customerManagerTelRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+        const customerManagerEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        valid = true;
+        newErrors = {
+            customerName: '',
+            customerBusinessRegNo: '',
+            customerTel: '',
+            customerManagerTel: '',
+            customerManagerEmail: ''
+        };
+
         if (!customerBusinessRegNoRegex.test(editableCustomer.customerBusinessRegNo)) {
-            newErrors.customerBusinessRegNo = '사업자 등록번호 형식이 올바르지 않습니다. 예: 123-45-67890';
+            newErrors.customerBusinessRegNo = '사업자 등록번호 형식이 올바르지 않습니다.\n예: 123-45-67890';
             valid = false;
         }
         if (editableCustomer.customerTel && !customerTelRegex.test(editableCustomer.customerTel)) {
-            newErrors.customerTel = '고객사 연락처 형식이 올바르지 않습니다. 예: 010-1234-5678';
+            newErrors.customerTel = '고객사 연락처 형식이 올바르지 않습니다.\n예: 010-1234-5678';
             valid = false;
         }
         if (editableCustomer.customerManagerTel && !customerManagerTelRegex.test(editableCustomer.customerManagerTel)) {
-            newErrors.customerManagerTel = '담당자 연락처 형식이 올바르지 않습니다. 예: 02-456-7890';
+            newErrors.customerManagerTel = '담당자 연락처 형식이 올바르지 않습니다.\n예: 02-456-7890';
             valid = false;
         }
         if (editableCustomer.customerManagerEmail && !customerManagerEmailRegex.test(editableCustomer.customerManagerEmail)) {
-            newErrors.customerManagerEmail = '담당자 이메일 형식이 올바르지 않습니다. 예: abc@example.com';
+            newErrors.customerManagerEmail = '담당자 이메일 형식이 올바르지 않습니다.\n예: abc@example.com';
             valid = false;
         }
 
@@ -459,15 +504,16 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
 
         // 유효성 검사 실패 시 저장 중단
         if (!valid) {
+            setShowSaveConfirmModal(false); //저장 확인 모달 닫기
             return;
         }
 
         // 모든 검증을 통과하면 저장 동작 수행
         onSave(editableCustomer); // 상위 컴포넌트로 저장된 데이터 전달
         onClose(); //상세 모달 닫기
-        setShowSaveConfirmModal(false); //저장 확인 모달 닫기
+        //setShowSaveConfirmModal(false); //저장 확인 모달 닫기
     };
-
+2
     if (!show || !customer) return null; // 모달 표시 여부 체크
 
     return (
@@ -501,7 +547,13 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                                 readOnly={!isEditMode}
                                 className={errors.customerBusinessRegNo ? 'invalid' : ''} />
                             {errors.customerBusinessRegNo && (
-                                <span className="error-message">{errors.customerBusinessRegNo}</span>)}
+                                <span
+                                    className="error-message"
+                                    dangerouslySetInnerHTML={{
+                                        __html: errors.customerBusinessRegNo.replace(/\n/g, '<br />'),
+                                    }}
+                                />
+                            )}
                         </div>
                         <div className="form-group">
                             <label>대표자명</label>
@@ -533,7 +585,13 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                                 readOnly={!isEditMode}
                                 className={errors.customerTel ? 'invalid' : ''} />
                             {errors.customerTel && (
-                                <span className="error-message">{errors.customerTel}</span>)}
+                                <span
+                                    className="error-message"
+                                    dangerouslySetInnerHTML={{
+                                        __html: errors.customerTel.replace(/\n/g, '<br />'),
+                                    }}
+                                />
+                            )}
                         </div>
                         <div className="form-group">
                             <label>팩스 번호</label>
@@ -578,7 +636,13 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                                 readOnly={!isEditMode}
                                 className={errors.customerManagerTel ? 'invalid' : ''} />
                             {errors.customerManagerTel && (
-                                <span className="error-message">{errors.customerManagerTel}</span>)}
+                                <span
+                                    className="error-message"
+                                    dangerouslySetInnerHTML={{
+                                        __html: errors.customerManagerTel.replace(/\n/g, '<br />'),
+                                    }}
+                                />
+                            )}
                         </div>
                         <div className="form-group">
                             <label>담당자 이메일</label>
@@ -590,7 +654,13 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
                                 readOnly={!isEditMode}
                                 className={errors.customerManagerEmail ? 'invalid' : ''} />
                             {errors.customerManagerEmail && (
-                                <span className="error-message">{errors.customerManagerEmail}</span>)}
+                                <span
+                                    className="error-message"
+                                    dangerouslySetInnerHTML={{
+                                        __html: errors.customerManagerEmail.replace(/\n/g, '<br />'),
+                                    }}
+                                />
+                            )}
                         </div>
                         <div className="form-group">
                             <label>국가 코드</label>
