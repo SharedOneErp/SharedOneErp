@@ -6,6 +6,7 @@ import CustomerSearchModal from '../common/CustomerSearchModal'; // 고객사 �
 import ProductSearchModal from '../common/ProductSearchModal'; // 상품 검색 모달 임포트
 import { useHooksList } from './OrderHooks'; // 상태 및 로직을 처리하는 훅
 import '../../../resources/static/css/sales/Order.css';
+import { color } from 'chart.js/helpers';
 
 
 
@@ -114,7 +115,7 @@ function Order() {
                 window.showToast('해당 페이지에 접근 권한이 없습니다.', 'error');
                 setTimeout(() => {
                     window.location.href = '/main';
-                }, 1500); // 1500 밀리초
+                }, 1000); // 1000 밀리초
             } finally {
             }
         };
@@ -249,7 +250,7 @@ function Order() {
                                 )}
 
                                 <div className="form-group">
-                                    <label>고객사</label>
+                                    <label>고객사<span style={{ color: 'red', marginLeft: '1px' }}>*</span></label>
                                     <input type="hidden" className="box" name="customerNo" value={customerData.customerNo} readOnly />
                                     {/*위는 주문 생성 , 아래는 수정과 변경*/}
                                     <input type="text" className="box" name="customerName" value={customerData.customerName || ''}
@@ -270,8 +271,6 @@ function Order() {
                                             <span className="orderHtotal-price"> {orderHTotalPrice.toLocaleString()}원</span>
                                         </div>
 
-
-
                                         <div className="form-group">
                                             <label>주문 등록일</label>
                                             <input type="date" value={formatDateForInput(orderHInsertDate) || ''} readOnly
@@ -284,7 +283,7 @@ function Order() {
 
                                 <div className="form-group">
                                     {/*위는 주문 생성 , 아래는 수정과 변경*/}
-                                    <label>납품요청일</label>
+                                    <label>납품요청일<span style={{ color: 'red', marginLeft: '1px' }}>*</span></label>
                                     <input
                                         type="date"
                                         className="delivery-date box"
@@ -541,7 +540,7 @@ function Order() {
                     )}
 
                     <div className="order-buttons">
-                        {isCreateMode && <button className="box color" onClick={handleSubmit}><i className="bi bi-floppy"></i> 주문 등록</button>}
+                        {isCreateMode && <button className="box color" onClick={handleSubmit}>결재 요청</button>}
                         {isEditMode && orderHStatus === 'ing' && (<button className="box color" onClick={() => handleEdit(orderNo)}><i className="bi bi-floppy"></i> 주문 수정</button>)}
                         {isDetailView && role === 'admin' && orderHStatus === 'ing' && (
                             <>

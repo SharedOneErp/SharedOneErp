@@ -380,6 +380,7 @@ export const useHooksList = () => {
                     .then(() => {
                         // 상태 업데이트
                         setSelectedItems([]);  // 삭제 후 선택 항목 초기화
+                        setSelectAll(false);   // 전체 선택 체크박스 해제
                     })
                     .catch(error => {
                         console.error("선택 항목 삭제 처리 중 오류 발생:", error);

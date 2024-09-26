@@ -3,25 +3,25 @@
 .menu_product .table_wrap table th:nth-child(1),
 .menu_product .table_wrap table td:nth-child(1) { width: 45px; text-align: center; /* 체크박스 */ } 
 .menu_product .table_wrap table th:nth-child(2),
-.menu_product .table_wrap table td:nth-child(2) { width: 10%; /* 품번 */ }
-.menu_product .table_wrap table th:nth-child(3),
-.menu_product .table_wrap table td:nth-child(3) { width: 14%; /* 상품명 */ }
+.menu_product .table_wrap table td:nth-child(2) { width: 130px; /* 품번 */ }
+/* .menu_product .table_wrap table th:nth-child(3),
+.menu_product .table_wrap table td:nth-child(3) { width: 14%; 상품명 } */
 .menu_product .table_wrap table th:nth-child(4),
-.menu_product .table_wrap table td:nth-child(4) { width: 12%; /* 대분류 */ }
+.menu_product .table_wrap table td:nth-child(4),
 .menu_product .table_wrap table th:nth-child(5),
-.menu_product .table_wrap table td:nth-child(5) { width: 12%; /* 중분류 */ }
+.menu_product .table_wrap table td:nth-child(5),
 .menu_product .table_wrap table th:nth-child(6),
-.menu_product .table_wrap table td:nth-child(6) { width: 12%; /* 소분류 */ }
+.menu_product .table_wrap table td:nth-child(6) { width: 10%; /* 대/중/소분류 */ }
 .menu_product .table_wrap table th:nth-child(7),
-.menu_product .table_wrap table td:nth-child(7) { width: 12%; /* 가격 */ }
+.menu_product .table_wrap table td:nth-child(7) { width: 137px; /* 가격 */ }
 .menu_product .table_wrap table th:nth-child(8),
-.menu_product .table_wrap table td:nth-child(8) { width: 13%; /* 등록일시 */ }
+.menu_product .table_wrap table td:nth-child(8), 
 .menu_product .table_wrap table th:nth-child(9),
-.menu_product .table_wrap table td:nth-child(9) { width: 13%; /* 수정일시 */ }
+.menu_product .table_wrap table td:nth-child(9),
 .menu_product .table_wrap table th:nth-child(10),
-.menu_product .table_wrap table td:nth-child(10) { width: 13%; /* 삭제일시 */ }
+.menu_product .table_wrap table td:nth-child(10) { width: 155px; /* 등록/수정/삭제일시 */ } 
 .menu_product .table_wrap table th:nth-child(11),
-.menu_product .table_wrap table td:nth-child(11) { width: 15%; /* 액션 */ }
+.menu_product .table_wrap table td:nth-child(11) { width: 152px; /* 액션 */ } 
 /* padding 조절 */
 .menu_product .table_wrap table th,
 .menu_product .table_wrap table td { padding: 12px 8px; text-align: left; }
