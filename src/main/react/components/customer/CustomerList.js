@@ -466,13 +466,24 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
             setShowSaveConfirmModal(false); // 저장 확인 모달 닫기
             return;
         }
+        
+        //2. 중복 체크
+        axios
+        .post('/api/customer/checkDuplicate', {
+            customerName: form.customerName,
+            customerBusinessRegNo: form.customerBusinessRegNo,
+        })
+        .then((response) => {
+            if (response.data.isDuplicateName) {
+                window.showToast('이미 존재하는 고객명입니다.', 'error');
+                return;
+            }
+            if (response.data.isDuplicateBusinessRegNo) {
+                window.showToast('이미 존재하는 사업자 등록번호입니다.', 'error');
+                return;
+            }
 
-        //2. 유효성 검증
-        const customerBusinessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
-        const customerTelRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
-        const customerManagerTelRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
-        const customerManagerEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+        //3. 유효성 검증
         valid = true;
         newErrors = {
             customerName: '',
@@ -481,6 +492,11 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
             customerManagerTel: '',
             customerManagerEmail: ''
         };
+
+        const customerBusinessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
+        const customerTelRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
+        const customerManagerTelRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+        const customerManagerEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!customerBusinessRegNoRegex.test(editableCustomer.customerBusinessRegNo)) {
             newErrors.customerBusinessRegNo = '사업자 등록번호 형식이 올바르지 않습니다.\n예: 123-45-67890';
@@ -512,8 +528,12 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
         onSave(editableCustomer); // 상위 컴포넌트로 저장된 데이터 전달
         onClose(); //상세 모달 닫기
         //setShowSaveConfirmModal(false); //저장 확인 모달 닫기
-    };
-2
+    })
+    .catch((error) => {
+        console.error('중복 체크 중 오류 발생:', error);
+    });
+};
+
     if (!show || !customer) return null; // 모달 표시 여부 체크
 
     return (

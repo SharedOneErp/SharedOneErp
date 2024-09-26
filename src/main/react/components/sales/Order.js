@@ -57,7 +57,8 @@ function Order() {
                 updatedProducts[selectedProductIndex] = {
                     ...selectedProduct,
                     name: selectedProduct.productNm,
-                    price: selectedProduct.price || 0,
+                    // price: selectedProduct.price || 0,
+                    price: selectedProduct.priceCustomer || 0,
                     quantity: selectedProduct.quantity || 0,
                     code: selectedProduct.productCd // 상품 코드를 추가
                 };

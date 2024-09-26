@@ -96,5 +96,4 @@ public class OrderDetailController {
         return ResponseEntity.ok(totalSales);
     }
 
-
 }

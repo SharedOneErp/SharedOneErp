@@ -72,7 +72,8 @@ public interface OrderReportRepository extends JpaRepository<Order, Integer> {
             "JOIN od.product p " +
             "JOIN od.order o " +
             "WHERE o.orderHStatus = 'approved' AND o.orderHDeleteYn = 'N' " +
-            "AND o.orderHInsertDate BETWEEN :startDate AND :endDate " +
+            "AND ((o.orderHUpdateDate IS NOT NULL AND o.orderHUpdateDate BETWEEN :startDate AND :endDate) " +
+            "OR (o.orderHUpdateDate IS NULL AND o.orderHInsertDate BETWEEN :startDate AND :endDate)) " +
             "GROUP BY p.productNm " +  // 공백 추가
             "ORDER BY SUM(od.orderDTotalPrice) DESC")
     List<Object[]> countOrdersByProduct(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
@@ -82,7 +83,8 @@ public interface OrderReportRepository extends JpaRepository<Order, Integer> {
             "FROM Order o " +
             "JOIN o.customer c " +
             "WHERE o.orderHStatus = 'approved' AND o.orderHDeleteYn = 'N' " +
-            "AND o.orderHInsertDate BETWEEN :startDate AND :endDate " +
+            "AND ((o.orderHUpdateDate IS NOT NULL AND o.orderHUpdateDate BETWEEN :startDate AND :endDate) " +
+            "OR (o.orderHUpdateDate IS NULL AND o.orderHInsertDate BETWEEN :startDate AND :endDate)) " +
             "GROUP BY c.customerName " +  // 공백 추가
             "ORDER BY SUM(o.orderHTotalPrice) DESC")
     List<Object[]> countOrdersByCustomer(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
@@ -92,7 +94,8 @@ public interface OrderReportRepository extends JpaRepository<Order, Integer> {
             "FROM Order o " +
             "JOIN o.employee e " +
             "WHERE o.orderHStatus = 'approved' AND o.orderHDeleteYn = 'N' " +
-            "AND o.orderHInsertDate BETWEEN :startDate AND :endDate " +
+            "AND ((o.orderHUpdateDate IS NOT NULL AND o.orderHUpdateDate BETWEEN :startDate AND :endDate) " +
+            "OR (o.orderHUpdateDate IS NULL AND o.orderHInsertDate BETWEEN :startDate AND :endDate)) " +
             "GROUP BY e.employeeName " +  // 공백 추가
             "ORDER BY SUM(o.orderHTotalPrice) DESC")
     List<Object[]> countOrdersByEmployee(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
