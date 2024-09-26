@@ -239,7 +239,7 @@ function ProductList() {
                                 </th>
                                 <th>
                                     <div className={`order_wrap ${sortColumn === 'productPrice' ? 'active' : ''}`}>
-                                        <span>가격(원)</span>
+                                        <span>기준가(원)</span>
                                         <button className="btn_order" onClick={() => handleSort('productPrice')}>
                                             <i className={`bi ${sortColumn === 'productPrice' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
                                         </button>
