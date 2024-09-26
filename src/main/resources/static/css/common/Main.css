@@ -40,7 +40,7 @@
 .card h3 i {
     font-size: 1.6em;
     margin-right: 10px;
-    color: #007bff; /* 아이콘 기본 색상 */
+    color: #0058A3; /* 아이콘 기본 색상 */
 }
 
 .info-group {
@@ -84,6 +84,7 @@
     margin: 0 10px;
     max-height: 100px;
     display: block;
+    opacity: 0.9;
 }
 
 /* 반응형 디자인 */
@@ -209,4 +210,18 @@ p{
 
 .info-group p i.bi-box-seam{
     color: #007bff; /* 파란색 */
+}
+.image-container {
+    grid-column: span 2; /* 두 칸을 차지하도록 설정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-image {
+    max-height: 300px; /* 이미지의 최대 높이 설정 */
+    width: 500px; /* 비율을 유지하면서 너비 자동 조정 */
+    margin: 0 10px; /* 좌우 여백 */
+    border-radius: 7px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px; /* 약간의 그림자 효과 */
 }
