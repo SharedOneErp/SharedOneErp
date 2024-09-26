@@ -54,67 +54,73 @@ const PriceRow = ({
     // 🔴🔴🔴 update(기간이 겹치는 기존 데이터 적용일자 조정)
     const handleDuplicateCheck = async (duplicatePrices, inputStartDate, inputEndDate, data) => {
 
-        console.log("🔴 priceData.priceNo : " + priceData.priceNo);
-
-        // 중복 데이터에서 조건에 따라 사용할 데이터를 결정
+        // 🟢 중복 데이터에서 조건에 따라 사용할 데이터를 결정
         let duplicatePrice;
-
-        // 수정 모드일 경우 duplicatePrices[0].priceNo와 priceData.priceNo를 비교하여 처리
+        // 수정 모드에서 현재 수정 중인 데이터를 제외하고 중복 데이터를 선택
         if (isEditMode && duplicatePrices.length > 1) {
-            // 만약 duplicatePrices[0].priceNo와 현재 수정 중인 priceData.priceNo가 같다면 duplicatePrices[1] 사용
-            if (duplicatePrices[0].priceNo === priceData.priceNo) {
-                duplicatePrice = duplicatePrices[1];
-            } else {
-                duplicatePrice = duplicatePrices[0];
-            }
+            duplicatePrice = duplicatePrices.find(price => price.priceNo !== priceData.priceNo);
         } else {
-            // 수정 모드가 아니거나 중복 데이터가 하나일 경우 duplicatePrices[0] 사용
             duplicatePrice = duplicatePrices[0];
         }
-        let updatedStartDate = duplicatePrice.priceStartDate; // 기존 데이터의 값으로 초기화
-        let updatedEndDate = duplicatePrice.priceEndDate;
 
-        // 1️⃣ 특정 하루만 적용되는 데이터 처리 (시작일과 종료일이 동일한 경우)
-        if (duplicatePrice.priceStartDate === duplicatePrice.priceEndDate) {
-            window.showToast(`${duplicatePrice.priceStartDate}에만 해당되는 데이터가 존재합니다. 데이터를 수정해주세요.`, 'error');
+        // 🟢 사용할 데이터 정리
+        const existingStart = duplicatePrice.priceStartDate;
+        const existingEnd = duplicatePrice.priceEndDate;
+        const inputStart = inputStartDate;
+        const inputEnd = inputEndDate;
+        let updatedStartDate = existingStart;
+        let updatedEndDate = existingEnd;
+        console.log("inputStart : " + inputStart);
+        console.log("inputStart < inputEnd : " + (inputStart < inputEnd));
+        console.log("inputStart > inputEnd : " + (inputStart > inputEnd));
+
+        // 🟢 기존 데이터 수정 불가, 입력 데이터를 수정해야 함
+        // 1️⃣ 기존 데이터가 특정 하루만 적용되는 경우
+        if (existingStart === existingEnd) {
+            console.log("case 1");
+            window.showToast(`${existingStart} 에만 해당되는 데이터가 존재합니다.`, 'error');
             return;
         }
 
-        // 2️⃣ 입력 구간이 기존 구간 내에 완전히 포함되는 경우 처리 (예: 기존 1~5일, 입력 2~3일)
-        if (inputStartDate > duplicatePrice.priceStartDate && inputEndDate < duplicatePrice.priceEndDate) {
-            window.showToast(`입력한 기간을 포함하는 데이터가 존재합니다. 데이터를 수정해주세요.`, 'error');
+        // 2️⃣ 입력한 기간이 기존 데이터를 완전히 포함하는 경우 (예: 기존 2~3일, 입력 1~5일)
+        if (inputStart <= existingStart && inputEnd >= existingEnd) {
+            console.log("case 2");
+            window.showToast(`${existingStart}~${existingEnd} 에 해당되는 데이터가 존재합니다.`, 'error');
             return;
         }
 
-        // 3️⃣ 겹치는 데이터의 시작일이나 종료일을 조정
-        // 입력한 시작일이 기존 데이터와 겹칠 경우 -> **기존 데이터의 종료일**을 조정💡
-        if (inputStartDate <= duplicatePrice.priceEndDate && inputStartDate >= duplicatePrice.priceStartDate) {
-            const prevDay = new Date(inputStartDate); // 입력한 시작일 전날로 기존 종료일 조정
-            prevDay.setDate(prevDay.getDate() - 1);
-            updatedEndDate = prevDay.toISOString().split('T')[0]; // yyyy-mm-dd 형식으로 변환
-        }
-
-        // 입력한 종료일이 기존 데이터와 겹칠 경우 -> **기존 데이터의 시작일**을 조정💡
-        if (inputEndDate >= duplicatePrice.priceStartDate && inputEndDate <= duplicatePrice.priceEndDate) {
-            const nextDay = new Date(inputEndDate); // 입력한 종료일 다음 날로 기존 시작일 조정
-            nextDay.setDate(nextDay.getDate() + 1);
-            updatedStartDate = nextDay.toISOString().split('T')[0]; // yyyy-mm-dd 형식으로 변환
-        }
-
+        // 🟢 기존 데이터를 수정, 입력 데이터와 겹치지 않게 시작일 또는 종료일을 조정
         // 겹치는 날짜에 따라 기존 데이터의 시작일 또는 종료일을 수정하는 모달 메시지 설정
         let updateMessage = `해당 고객사와 상품에 해당하는 데이터 중 <br>`;
-
-        // 시작일이 겹치는 경우 - 기존 데이터의 종료일을 조정💡
-        if (inputStartDate <= duplicatePrice.priceEndDate && inputStartDate >= duplicatePrice.priceStartDate) {
-            updateMessage += `${duplicatePrice.priceStartDate} ~ <strong>${duplicatePrice.priceEndDate}</strong> 기간 동안 적용되는 데이터가 있습니다.<br>`;
+        // 3️⃣ 기존 종료일보다 입력 종료일이 큰 경우 -> 기존 데이터의 종료일을 입력 데이터의 시작일 전날로 조정💡1
+        if (inputEnd > existingEnd) {
+            console.log("case 3");
+            const prevDay = new Date(inputStart);
+            prevDay.setDate(prevDay.getDate() - 1);
+            updatedEndDate = prevDay.toISOString().split('T')[0]; // yyyy-mm-dd 형식으로 변환
+            updateMessage += `${existingStart} ~ <strong>${existingEnd}</strong> 기간 동안 적용되는 데이터가 있습니다.<br>`;
             updateMessage += `해당 데이터의 <strong>종료일</strong>을 <strong>${updatedEndDate}</strong>으로 수정하시겠습니까?`;
         }
-        // 종료일이 겹치는 경우 - 기존 데이터의 시작일을 조정💡
-        else if (inputEndDate >= duplicatePrice.priceStartDate && inputEndDate <= duplicatePrice.priceEndDate) {
-            updateMessage += `<strong>${duplicatePrice.priceStartDate}</strong> ~ ${duplicatePrice.priceEndDate} 기간 동안 적용되는 데이터가 있습니다.<br>`;
-            updateMessage += `해당 데이터의 <strong>시작일</strong>을 <strong>${updatedStartDate}</strong>으로 수정하시겠습니까?`;
+        // 4️⃣ 기존 종료일보다 입력 종료일이 작은 경우
+        else {
+            if (inputStart > existingStart) { // 기존 데이터의 종료일을 입력 데이터의 시작일 전날로 조정(기존 데이터가 입력 데이터를 포함)💡1
+                console.log("case 4-1");
+                const prevDay = new Date(inputStart);
+                prevDay.setDate(prevDay.getDate() - 1);
+                updatedEndDate = prevDay.toISOString().split('T')[0]; // yyyy-mm-dd 형식으로 변환
+                updateMessage += `${existingStart} ~ <strong>${existingEnd}</strong> 기간 동안 적용되는 데이터가 있습니다.<br>`;
+                updateMessage += `해당 데이터의 <strong>종료일</strong>을 <strong>${updatedEndDate}</strong>으로 수정하시겠습니까?`;
+            } else { // 기존 데이터의 시작일을 입력 데이터의 종료일 다음날로 조정💡2
+                console.log("case 4-2");
+                const nextDay = new Date(inputEnd);
+                nextDay.setDate(nextDay.getDate() + 1);
+                updatedStartDate = nextDay.toISOString().split('T')[0]; // yyyy-mm-dd 형식으로 변환
+                updateMessage += `<strong>${existingStart}</strong> ~ ${existingEnd} 기간 동안 적용되는 데이터가 있습니다.<br>`;
+                updateMessage += `해당 데이터의 <strong>시작일</strong>을 <strong>${updatedStartDate}</strong>으로 수정하시겠습니까?`;
+            }
         }
 
+        // 🟢 confirm 창
         window.confirmCustom(updateMessage, "500px").then(result => {
             if (result) {
                 const requestData = [{
@@ -126,7 +132,7 @@ const PriceRow = ({
                     priceEndDate: updatedEndDate  // 수정된 종료일
                 }];
 
-                console.log('🔴 기존 데이터 수정 Request Data to be sent:', requestData);
+                console.log('🟢 기존 데이터 수정 Request Data to be sent:', requestData);
 
                 // axios 요청을 then() 체인으로 처리
                 axios.put('/api/price/update', requestData)
@@ -144,7 +150,6 @@ const PriceRow = ({
                     });
             }
         });
-
     };
 
     // 🔴🔴🔴 insert/update(작성/수정 완료 버튼 클릭 시 실행)
@@ -171,16 +176,17 @@ const PriceRow = ({
             const duplicatePrices = duplicateCheckResponse.data; // 중복된 PriceDTO 리스트를 받음
 
             // 중복 확인 및 처리 로직
+            console.log("(isEditMode && duplicatePrices.length > 1) : " + (isEditMode && duplicatePrices.length > 1));
+            console.log("(!isEditMode && duplicatePrices.length > 0) : " + (!isEditMode && duplicatePrices.length > 0));
+            console.log("duplicatePrices.length : " + duplicatePrices.length);
             if ((isEditMode && duplicatePrices.length > 1) || (!isEditMode && duplicatePrices.length > 0)) {
                 // 중복된 데이터가 여러 개일 경우 알림 추가
                 if ((isEditMode && duplicatePrices.length > 2) || (!isEditMode && duplicatePrices.length > 1)) {
-                    window.showToast(`중복된 데이터가 여러개 존재합니다. 기존 데이터를 수정해주세요.`, 'error');
+                    window.showToast(`기간이 중복된 데이터가 여러개 존재합니다. 기존 데이터를 수정해주세요.`, 'error');
                     return;
                 }
-
                 // 중복된 데이터를 처리하는 함수 호출
                 await handleDuplicateCheck(duplicatePrices, data.priceStartDate, data.priceEndDate, data);
-
                 return;  // 모달에서 확인 버튼을 누르기 전까지 업데이트 중단
             }
 

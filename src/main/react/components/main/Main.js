@@ -95,71 +95,71 @@ function Main() {
     return (
         <Layout currentMenu="main">
             <main className="main-content dashboard-container">
-                <div className="card card-large" onClick={() => window.location.href = '/employeeList'}>
-                    <h3><i className="bi bi-people-fill"></i> 인사 관리</h3>
-                    <div className="info-group">
-                        <p><i className="bi bi-person-circle"></i> 전체 직원 수: {totalEmployees}명</p>
-                        <p><i className="bi bi-person-check-fill"></i> 최근 채용 인원: {recentHiresCount}명</p>
-                        <p><i className="bi bi-person-x-fill"></i> 최근 퇴직 인원 : {deletedEmployees}명</p>
-                    </div>
-                </div>
                 <div className="card card-large" onClick={() => window.location.href = '/orderList?mode=Assigned'}>
                     <h3><i className="bi bi-bar-chart-line-fill"></i> 영업 관리</h3>
                     <div className="info-group">
-                        <p><i className="bi bi-clock-fill"></i> 결재중: {orderStatusCount.ingCount}건</p>
-                        <p><i className="bi bi-check-circle-fill"></i> 결재완료: {orderStatusCount.approvedCount}건</p>
-                        <p><i className="bi bi-x-circle-fill"></i> 반려: {orderStatusCount.deniedCount}건</p>
+                        <p><i className="bi bi-clock-fill"></i> 결재중 : {orderStatusCount.ingCount}건</p>
+                        <p><i className="bi bi-check-circle-fill"></i> 결재완료 : {orderStatusCount.approvedCount}건</p>
+                        <p><i className="bi bi-x-circle-fill"></i> 반려 : {orderStatusCount.deniedCount}건</p>
                     </div>
                 </div>
                 <div className="card card-large" onClick={() => window.location.href = '/customerList'}>
                     <h3><i className="bi bi-building"></i> 고객 관리</h3>
                     <div className="info-group">
-                        <p><i className="bi bi-people-fill"></i> 총 고객사 수: {(totalCustomers).toLocaleString()}개</p>
-                        <p><i className="bi bi-person-add"></i> 최근 신규 고객: {(recentCustomers.length).toLocaleString()}개
+                        <p><i className="bi bi-people-fill"></i> 총 고객사 수 : {(totalCustomers).toLocaleString()}개</p>
+                        <p><i className="bi bi-person-add"></i> 최근 신규 고객 : {(recentCustomers.length).toLocaleString()}개
                         </p>
                         <p><i className="bi bi-arrow-clockwise"></i> 계약 갱신
-                            예정: {(renewalCustomers.length).toLocaleString()}개</p>
+                            예정 : {(renewalCustomers.length).toLocaleString()}개</p>
+                    </div>
+                </div>
+                <div className="card card-large" onClick={() => window.location.href = '/employeeList'}>
+                    <h3><i className="bi bi-people-fill"></i> 직원 관리</h3>
+                    <div className="info-group">
+                        <p><i className="bi bi-person-circle"></i> 전체 직원 수 : {totalEmployees}명</p>
+                        <p><i className="bi bi-person-check-fill"></i> 최근 채용 인원 : {recentHiresCount}명</p>
+                        <p><i className="bi bi-person-x-fill"></i> 최근 퇴직 인원  : {deletedEmployees}명</p>
                     </div>
                 </div>
                 <div className="card card-large" onClick={() => window.location.href = '/productList'}>
                     <h3><i className="bi bi-box-seam"></i> 상품 관리</h3>
                     <div className="info-group">
-                        <p><i className="bi bi-box"></i> 상품 전체 수량: {totalProductCount.toLocaleString()}개</p>
-                        <p><i className="bi bi-star-fill"></i> 신상품 등록: {recentProductCount.toLocaleString()}개</p>
-                        <p><i className="bi bi-box-seam"></i> 최근 판매량 : {totalSales.toLocaleString()}개</p>
-                        <p><i className="bi bi-list-check"></i> 월간 총 매출: ₩{last30DaysSales.toLocaleString()}</p>
+                        <p><i className="bi bi-box"></i> 상품 전체 수량 : {totalProductCount.toLocaleString()}개</p>
+                        <p><i className="bi bi-star-fill"></i> 신상품 등록 : {recentProductCount.toLocaleString()}개</p>
+                        <p><i className="bi bi-box-seam"></i> 최근 판매량  : {totalSales.toLocaleString()}개</p>
+                        <p><i className="bi bi-list-check"></i> 월간 총 매출 : ₩{last30DaysSales.toLocaleString()}</p>
                     </div>
                 </div>
                 <div className="image-container">
                     <img src="/img/cardimg.jpg" alt="상품 이미지" className="logo-image"/>
                     <img src="/img/cardimg2.jpg" alt="상품 이미지" className="logo-image"/>
                 </div>
-                <div className="card">
-                    <h3><i className="bi bi-megaphone-fill"></i> 공지사항</h3>
+                <div className="card" onClick={() => window.location.href = '/orderReport'}>
+                    <h3><i className="bi bi-graph-up-arrow"></i> 주문 현황</h3>
                     <div className="info-group">
-                        <p><i className="bi bi-bell-fill"></i> 새로운 이벤트: 쉐어드원 자사 방문일</p>
-                        <p><i className="bi bi-info-circle-fill"></i> 공지사항 업데이트: 2024년 9월 26일</p>
-                        <p><i className="bi bi-calendar-event"></i> 다음 회의 일정: 2024년 9월 27일</p>
+                        <p><i className="bi bi-list-check"></i> 총 주문 수 : {(orderCount).toLocaleString()}건</p>
+                        <p><i className="bi bi-cash-coin"></i> 연간 총 매출 : ₩{(annualSales || 0).toLocaleString()}</p>
+                        <p><i className="bi bi-check-all"></i> 연 매출 목표 달성율 : ₩{(annualSales || 0).toLocaleString()}/₩100,000,000
+                            ({((annualSales / 100000000) * 100).toFixed(2)}%)</p>
                     </div>
                 </div>
                 <div className="card">
-                    <h3><i className="bi bi-cash-coin"></i> 정산 관련 안내</h3>
+                    <h3><i className="bi bi-cash-coin"></i> 정산</h3>
                     <div className="info-group">
-                        <p><i className="bi bi-cash-stack"></i> 정산금액:
+                        <p><i className="bi bi-cash-stack"></i> 정산금액 :
                             ₩{(settlementInfo.approvedTotal || 0).toLocaleString()}</p>
                         <p><i className="bi bi-calendar-date"></i> 정산
-                            마감일: {settlementInfo.settlementDeadline || '정보 없음'}</p>
-                        <p><i className="bi bi-credit-card"></i> 미수금:
+                            마감일 : {settlementInfo.settlementDeadline || '정보 없음'}</p>
+                        <p><i className="bi bi-credit-card"></i> 미수금 :
                             ₩{(settlementInfo.deniedTotal || 0).toLocaleString()}</p>
                     </div>
                 </div>
-                <div className="card" onClick={() => window.location.href = '/orderReport'}>
-                    <h3><i className="bi bi-graph-up-arrow"></i> 영업 실적 보고서</h3>
+                <div className="card">
+                    <h3><i className="bi bi-megaphone-fill"></i> 공지사항</h3>
                     <div className="info-group">
-                        <p><i className="bi bi-list-check"></i> 총 주문 수: {(orderCount).toLocaleString()}건</p>
-                        <p><i className="bi bi-cash-coin"></i> 연간 총 매출: ₩{(annualSales || 0).toLocaleString()}</p>
-                        <p><i className="bi bi-check-all"></i> 연 매출 목표 달성율: ₩{(annualSales || 0).toLocaleString()}/₩100,000,000
-                            ({((annualSales / 100000000) * 100).toFixed(2)}%)</p>
+                        <p><i className="bi bi-bell-fill"></i> 새로운 이벤트 : 쉐어드원 자사 방문일</p>
+                        <p><i className="bi bi-info-circle-fill"></i> 공지사항 업데이트 : 2024년 9월 26일</p>
+                        <p><i className="bi bi-calendar-event"></i> 다음 회의 일정 : 2024년 9월 27일</p>
                     </div>
                 </div>
             </main>

@@ -159,7 +159,9 @@ function OrderList() {
                     // Assigned 모드에 대한 권한 검사
                     if (itsAssignedMode && empData.employeeRole !== 'admin') {
                         window.showToast('해당 페이지에 접근 권한이 없습니다.', 'error');
-                        window.location.href = '/main'; // 권한 없는 사용자는 메인 페이지로 리디렉션
+                        setTimeout(() => {
+                            window.location.href = '/main'; // 권한 없는 사용자는 메인 페이지로 리디렉션
+                        }, 1000); // 1000 밀리초
                         return;
                     }
 
@@ -176,15 +178,19 @@ function OrderList() {
                 }
             } catch (err) {
                 window.showToast('해당 페이지에 접근 권한이 없습니다.', 'error');
-                window.location.href = '/main';
+                setTimeout(() => {
+                    window.location.href = '/main';
+                }, 1000); // 1000 밀리초
             } finally {
                 setLoading(false); // 데이터 로딩 완료
             }
         };
         fetchData();
         // 현재 날짜를 기본값으로 설정
-        const today = new Date().toISOString().split('T')[0];
-        setEndDate(today);
+        const today = new Date();
+        today.setHours(today.getHours() + 9); // UTC 시간에 9시간 더하기 (한국 시간)
+        const formattedToday = today.toISOString().split('T')[0];
+        setEndDate(formattedToday);
     }, [itsAssignedMode]);
 
 
@@ -416,7 +422,9 @@ function OrderList() {
             <main className={`main-content menu_order_list ${role === 'admin' ? 'role_admin' : 'role_normal'}`}>
                 <div className="menu_title">
                     <div className="sub_title">영업 관리</div>
-                    <div className="main_title">{role === 'admin' ? '전체 주문 목록' : '담당 주문 목록'}</div>
+                    <div className="main_title">
+                        {!loading ? (role === 'admin' ? '전체 주문 목록' : '담당 주문 목록') : '주문 목록'}
+                    </div>
                 </div>
                 <div className="menu_content">
                     <div className="search_wrap">
@@ -567,6 +575,12 @@ function OrderList() {
                                                 <span></span> {/* 두 번째 원 */}
                                                 <span></span> {/* 세 번째 원 */}
                                             </div>
+                                        </td>
+                                    </tr>
+                                ) : filteredOrders.length === 0 ? (  // 데이터가 없을 경우 처리
+                                    <tr className="tr_empty">
+                                        <td colSpan={role === 'admin' ? 10 : 9}>
+                                            <div className="no_data"><i className="bi bi-exclamation-triangle"></i>조회된 결과가 없습니다.</div>
                                         </td>
                                     </tr>
                                 ) : (

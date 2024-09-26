@@ -32,6 +32,7 @@ public interface PriceRepository extends JpaRepository<Price, Integer> {
     @Query("SELECT p FROM Price p WHERE "
             + "p.customer.customerNo = :customerNo AND "
             + "p.product.productCd = :productCd AND "
+            + "p.priceDeleteYn = 'N' AND " // 삭제되지 않은 데이터만 조회
             + "((:priceEndDate >= p.priceStartDate AND :priceStartDate <= p.priceEndDate) " // 구간이 겹치는 경우
             + "OR (:priceStartDate <= p.priceStartDate AND :priceEndDate >= p.priceEndDate) " // 등록된 구간이 기존 구간을 완전히 포함하는 경우
             + "OR (p.priceStartDate IS NULL OR p.priceEndDate IS NULL))")  // 기존 데이터의 시작일/종료일이 NULL인 경우도 포함

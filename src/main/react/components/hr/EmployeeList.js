@@ -439,7 +439,7 @@ function EmployeeList() {
                                         </label>
                                     </th>
                                     <th>번호</th>
-                                    <th>직원아이디</th>
+                                    <th>아이디</th>
                                     <th>이름</th>
                                     <th>연락처</th>
                                     {/*<th>이메일</th>*/}
@@ -476,22 +476,27 @@ function EmployeeList() {
                                     (searchEmployee ? filteredEmployees : employees).map((employee, index) => (
                                         <tr key={employee.employeeId}>
                                             <td>
-                                                {/* 삭제된 상태에 따라 조건부 렌더링 */}
+                                                {/* 삭제된 상태에 따라 조건부 렌더링 및 admin 여부 확인 */}
                                                 {employee.employeeDeleteYn !== 'Y' ? (
-                                                    <label className="chkbox_label">
-                                                        <input
-                                                            type="checkbox"
-                                                            className="chkbox"
-                                                            checked={selectedEmployees[index] || false}
-                                                            onChange={() => handleSelect(index)}
-                                                        />
-                                                        <i className="chkbox_icon">
-                                                            <i className="bi bi-check-lg"></i>
-                                                        </i>
-                                                    </label>
+                                                    employee.employeeId === 'admin' ? (
+                                                        <i class="bi bi-pin-angle-fill"></i>
+                                                    ) : (
+                                                        <label className="chkbox_label">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="chkbox"
+                                                                checked={selectedEmployees[index] || false}
+                                                                onChange={() => handleSelect(index)}
+                                                            />
+                                                            <i className="chkbox_icon">
+                                                                <i className="bi bi-check-lg"></i>
+                                                            </i>
+                                                        </label>
+                                                    )
                                                 ) : (
                                                     <span className="label_del">삭제</span>
                                                 )}
+
                                             </td>
                                             <td>{(page - 1) * 20 + index + 1}</td>
                                             <td>{employee.employeeId}</td>

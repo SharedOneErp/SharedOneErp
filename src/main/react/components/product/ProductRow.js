@@ -116,13 +116,13 @@ const ProductRow = React.memo(({
                 <div className='btn_group'>
                     {isEditMode ? (
                         <>
-                            <button className="box small color_border" onClick={onSave}>수정</button>
-                            <button className="box small" onClick={onCancel}>취소</button>
+                            <button className="box color_border" onClick={onSave}>수정</button>
+                            <button className="box" onClick={onCancel}>취소</button>
                         </>
                     ) : (
                         <>
-                            <button className="box small color_borde" onClick={onSave}>추가</button>
-                            <button className="box small" onClick={onCancel}>취소</button>
+                            <button className="box color_border" onClick={onSave}>작성 완료</button>
+                            <button className="box" onClick={onCancel}>취소</button>
                         </>
                     )}
                 </div>

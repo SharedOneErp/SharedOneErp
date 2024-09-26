@@ -112,7 +112,12 @@ function ProductSearchModal({ onClose, onProductSelect, customerNo = null }) { /
         } else {
             setMiddleCategories([]);
         }
-        setSelectedCategory(prev => ({ ...prev, middle: '', low: '' }));
+        setSelectedCategory(prev => {
+            if (prev.middle !== '' || prev.low !== '') {
+                return { ...prev, middle: '', low: '' };
+            }
+            return prev; // 값이 동일하면 상태 업데이트 없음
+        });
         setLowCategories([]);
     }, [selectedCategory.top, allCategories]);
 
@@ -126,12 +131,23 @@ function ProductSearchModal({ onClose, onProductSelect, customerNo = null }) { /
         } else {
             setLowCategories([]);
         }
-        setSelectedCategory(prev => ({ ...prev, low: '' }));
+        setSelectedCategory(prev => {
+            if (prev.low !== '') {
+                return { ...prev, low: '' };
+            }
+            return prev;
+        });
     }, [selectedCategory.middle, allCategories]);
 
     // 🟡 검색 조건이나 페이지가 변경될 때마다 상품 조회
     useEffect(() => {
-        fetchProducts();
+        let isMounted = true; // 컴포넌트가 마운트된 상태인지 확인하는 변수
+        if (isMounted) {
+            fetchProducts(); // 상태가 변경될 때만 실행
+        }
+        return () => {
+            isMounted = false; // 컴포넌트 언마운트 시 API 호출 중단
+        };
     }, [searchCode, searchName, selectedCategory, currentPage]);
 
     // 🟢 페이지 변경 처리 함수
@@ -303,10 +319,19 @@ function ProductSearchModal({ onClose, onProductSelect, customerNo = null }) { /
                                         <td>{result.lowCategory}</td> {/* 상품 카테고리 */}
                                         <td>{result.productNm || '-'}</td> {/* 상품명 */}
                                         <td>
-                                            {result.priceCustomer ? (
-                                                `${result.priceCustomer.toLocaleString()}원`
+                                            {/* 고객사 별 상품 가격 또는 상품 가격(기준가) */}
+                                            {customerNo ? (
+                                                result.priceCustomer ? (
+                                                    `${result.priceCustomer.toLocaleString()}원`
+                                                ) : (
+                                                    '-'
+                                                )
                                             ) : (
-                                                '-'
+                                                result.productPrice ? (
+                                                    `${result.productPrice.toLocaleString()}원`
+                                                ) : (
+                                                    '-'
+                                                )
                                             )}
                                         </td>
                                     </tr>

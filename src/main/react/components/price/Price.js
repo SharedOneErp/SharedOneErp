@@ -277,6 +277,7 @@ function Price() {
                                             <input
                                                 type="checkbox" className="chkbox"
                                                 onChange={handleSelectAllChange}
+                                                checked={selectAll}
                                                 disabled={isAdding || !!editingId}
                                             />
                                             <i className="chkbox_icon">
@@ -303,7 +304,7 @@ function Price() {
                                     </th>
                                     <th>
                                         <div className={`order_wrap ${sortField === 'priceCustomer' ? 'active' : ''}`}>
-                                            <span>가격</span>
+                                            <span>가격(원)</span>
                                             <button className="btn_order" onClick={() => handleSortClick('priceCustomer')}>
                                                 <i className={`bi ${sortField === 'priceCustomer' ? (sortOrder === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
                                             </button>
