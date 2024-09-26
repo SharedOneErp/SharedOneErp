@@ -12,6 +12,7 @@ export const useHooksList = () => {
     const isCreateMode = !orderNo; // 주문번호 없으면 등록 모드
     const isEditMode = mode === 'edit'; // 수정 모드
     const isDetailView = !!orderNo && mode === 'view'; // 상세보기 모드
+    const isResubmitMode = mode ==='resubmit';
     const [order, setOrder] = useState({});  // 주문 정보를 상태로 관리
     const [deletedDetailIds, setDeletedDetailIds] = useState([]);  // 삭제된 제품의 detailId 저장
     // 🔴 useState : 상태 정의 및 초기화
@@ -37,6 +38,7 @@ export const useHooksList = () => {
     const [orderHInsertDate, setOrderHInsertDate] = useState(0);
     const [customerNo, setCustomerNo] = useState('');
     const [employeeId, setEmployeeId] = useState('');
+    let isSubmitting = false;
 
 
     const [customerData, setCustomerData] = useState({
@@ -337,6 +339,9 @@ export const useHooksList = () => {
     //주문 생성
     const handleSubmit = async () => {
 
+        if (isSubmitting) return; // 이미 처리 중이면 중지
+        isSubmitting = true; // 처리 중 상태로 변경
+
         // 입력값 검증
         const customerName = document.querySelector('input[name="customerName"]').value.trim();
         const deliveryDateElement = document.querySelector('.delivery-date');
@@ -439,6 +444,8 @@ export const useHooksList = () => {
         } catch (error) {
             console.error('주문 처리 중 오류 발생:', error.message);
             window.showToast("주문 처리 중 오류가 발생했습니다. 다시 확인해주세요", 'error');
+        } finally {
+            isSubmitting = false; // 상태 복원
         }
     };
 
@@ -589,6 +596,99 @@ export const useHooksList = () => {
         }
     };
 
+    // 반려된 주문을 다시 제출
+    const handleResubmit = async (orderNo) => {
+        try {
+            // 반려된 주문 정보 가져오기
+            const deliveryDateElement = document.querySelector('.delivery-date');
+            const deliveryRequestDate = deliveryDateElement ? formatDateForInput(deliveryDateElement.value) : null;
+
+            if (!deliveryRequestDate) {
+                window.showToast("납품 날짜를 입력하세요.", 'error');
+                return; // 제출 중지
+            }
+
+            console.log('납품 요청일 (deliveryRequestDate):', deliveryRequestDate);
+
+            const totalAmount = displayItemEdit.reduce((sum, product) => sum + product.orderDPrice * product.orderDQty, 0);
+
+            const cleanProducts = displayItemEdit.map((product) => ({
+                productCd: product.productCd,
+                orderDPrice: product.orderDPrice,
+                orderDQty: product.orderDQty,
+                orderDTotalPrice: product.orderDPrice * product.orderDQty,
+                orderDDeliveryRequestDate: deliveryRequestDate || product.orderDDeliveryRequestDate,
+            }));
+
+            const customerNo = document.querySelector('input[name="customerNo"]').value.trim();
+            const employeeId = document.querySelector('.employee-id').textContent.trim();
+
+            // 새로운 주문 데이터를 생성하는 부분
+            const orderData = {
+                customer: { customerNo: customerNo },
+                employee: { employeeId: employeeId },
+                orderHTotalPrice: totalAmount,
+                orderHStatus: "ing", // 새 주문은 진행 중 상태로 생성
+                orderHInsertDate: new Date().toISOString(),
+                orderHUpdateDate: null,
+                orderHDeleteYn: "N"
+            };
+
+            // 1. 새로운 주문 생성 API 호출 (handleSubmit 방식)
+            const response = await fetch('/api/order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const newOrderNo = data.orderNo;
+
+                // 2. 새로운 주문 상세 데이터 제출
+                const orderDetailData = cleanProducts.map((product) => ({
+                    orderNo: newOrderNo, // 새로 생성된 주문 번호에 연결
+                    productCd: product.productCd,
+                    orderDPrice: product.orderDPrice,
+                    orderDQty: product.orderDQty,
+                    orderDTotalPrice: product.orderDTotalPrice,
+                    orderDDeliveryRequestDate: product.orderDDeliveryRequestDate,
+                    orderDInsertDate: new Date().toISOString(),
+                }));
+
+                const detailResponse = await fetch('/api/orderDetails/batch', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderDetailData),
+                });
+
+                if (!detailResponse.ok) {
+                    const errorText = await detailResponse.text();
+                    throw new Error(`상세 주문 처리 중 오류 발생: ${errorText}`);
+                }
+
+                window.showToast("반려된 주문이 성공적으로 다시 제출되었습니다.");
+                setTimeout(() => {
+                    window.location.href = `/order?no=${newOrderNo}`;
+                }, 1500);
+            } else {
+                const errorText = await response.text();
+                console.error('주문 생성 오류:', errorText);
+                window.showToast("주문 생성 중 오류가 발생했습니다.", 'error');
+            }
+        } catch (error) {
+            console.error('주문 재제출 중 오류 발생:', error.message);
+            window.showToast("주문 재제출 중 오류가 발생했습니다.", 'error');
+        }
+    };
+
+
+
+
 
     // 주문 업데이트 시 삭제된 제품 목록을 포함하여 전송
     const updateOrder = async () => {
@@ -654,6 +754,7 @@ export const useHooksList = () => {
         isCreateMode,  // 현재 주문이 등록 모드인지 확인
         isEditMode,    // 현재 주문이 수정 모드인지 확인
         isDetailView,  // 현재 주문이 상세보기 모드인지 확인
+        isResubmitMode, // 반려 주문을 수정 모드에서 등록하는지 확인
 
         // 주문 번호 관련 상태
         orderNo,       // 현재 주문 번호
@@ -678,6 +779,7 @@ export const useHooksList = () => {
         // 주문 생성 및 수정 함수
         handleSubmit,   // 주문 생성 처리 함수
         handleEdit,     // 주문 수정 처리 함수
+        handleResubmit, // 반려 시 주문 재생성 함수
 
         // 날짜 관련 함수
         formatDateForInput,  // 날짜를 yyyy-mm-dd 형식으로 변환하는 함수

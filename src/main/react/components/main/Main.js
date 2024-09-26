@@ -31,6 +31,7 @@ function Main() {
 
     useEffect(() => {
         const fetchData = async () => {
+            const startTime = performance.now(); // 요청 시작 시간
             try {
                 const [
                     orderStatusResponse,
@@ -76,6 +77,11 @@ function Main() {
                 setRecentCustomers(recentCustomersResponse.data);
                 setRenewalCustomers(renewalCustomersResponse.data);
                 setDeletedEmployees(deletedEmployeesResponse.data);
+
+                const endTime = performance.now(); // 요청 종료 시간
+                const duration = endTime - startTime; // 소요 시간 계산
+
+                console.log(`요청 소요 시간: ${duration.toFixed(2)}ms`);
 
             } catch (error) {
                 console.error("데이터를 가져오는 중 오류 발생:", error);
