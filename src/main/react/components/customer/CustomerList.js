@@ -147,8 +147,8 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
         };
 
         const customerBusinessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
-        const customerTelRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
-        const customerManagerTelRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+        const customerTelRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+        const customerManagerTelRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
         const customerManagerEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!customerBusinessRegNoRegex.test(form.customerBusinessRegNo)) {
@@ -158,12 +158,12 @@ function CustomerRegisterModal({ show, onClose, onSave, customerData }) {
         }
         if (form.customerTel && !customerTelRegex.test(form.customerTel)) {
             newErrors.customerTel =
-                '고객사 연락처 형식이 올바르지 않습니다.\n예: 010-1234-5678';
+                '고객사 연락처 형식이 올바르지 않습니다.\n예: 02-456-7890';
             valid = false;
         }
         if (form.customerManagerTel && !customerManagerTelRegex.test(form.customerManagerTel)) {
             newErrors.customerManagerTel =
-                '담당자 연락처 형식이 올바르지 않습니다.\n예: 02-456-7890';
+                '담당자 연락처 형식이 올바르지 않습니다.\n예: 010-1234-5678';
             valid = false;
         }
         if (form.customerManagerEmail && !customerManagerEmailRegex.test(form.customerManagerEmail)) {
@@ -440,98 +440,79 @@ function CustomerDetailModal({ show, onClose, customer, onSave, onDelete }) {
     // 저장 확인 모달에서 확인을 누르면 실제 저장 동작 수행
     const handleConfirmSave = () => {
 
-        //1. 필수 필드 값 검증
-        let valid = true;
-        let newErrors = {
-            customerName: '',
-            customerBusinessRegNo: '',
-            customerTel: '',
-            customerManagerTel: '',
-            customerManagerEmail: ''
-        };
+        // 필수 필드 값 검증
+    let valid = true;
+    let newErrors = {
+        customerName: '',
+        customerBusinessRegNo: '',
+        customerTel: '',
+        customerManagerTel: '',
+        customerManagerEmail: ''
+    };
 
-        if (!editableCustomer.customerName.trim()) {
-            newErrors.customerName = '고객사 이름은 필수 입력 항목입니다.';
-            valid = false;
-        }
-        if (!editableCustomer.customerBusinessRegNo.trim()) {
-            newErrors.customerBusinessRegNo = '사업자 등록번호는 필수 입력 항목입니다.';
-            valid = false;
-        }
-        // 에러 상태 업데이트
-        setErrors(newErrors);
+    if (!editableCustomer.customerName.trim()) {
+        newErrors.customerName = '고객사 이름은 필수 입력 항목입니다.';
+        valid = false;
+    }
+    if (!editableCustomer.customerBusinessRegNo.trim()) {
+        newErrors.customerBusinessRegNo = '사업자 등록번호는 필수 입력 항목입니다.';
+        valid = false;
+    }
 
-        // 필수 필드 검증 실패 시 저장 중단
-        if (!valid) {
-            setShowSaveConfirmModal(false); // 저장 확인 모달 닫기
-            return;
-        }
-        
-        //2. 중복 체크
-        axios
-        .post('/api/customer/checkDuplicate', {
-            customerName: form.customerName,
-            customerBusinessRegNo: form.customerBusinessRegNo,
-        })
-        .then((response) => {
-            if (response.data.isDuplicateName) {
-                window.showToast('이미 존재하는 고객명입니다.', 'error');
-                return;
-            }
-            if (response.data.isDuplicateBusinessRegNo) {
-                window.showToast('이미 존재하는 사업자 등록번호입니다.', 'error');
-                return;
-            }
+    // 에러 상태 업데이트
+    setErrors(newErrors);
 
-        //3. 유효성 검증
-        valid = true;
-        newErrors = {
-            customerName: '',
-            customerBusinessRegNo: '',
-            customerTel: '',
-            customerManagerTel: '',
-            customerManagerEmail: ''
-        };
+    // 필수 필드 검증 실패 시 저장 중단
+    if (!valid) {
+        setShowSaveConfirmModal(false); // 저장 확인 모달 닫기
+        return;
+    }
 
-        const customerBusinessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
-        const customerTelRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
-        const customerManagerTelRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
-        const customerManagerEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // 유효성 검증
+    const customerBusinessRegNoRegex = /^\d{3}-\d{2}-\d{5}$/;
+    const customerTelRegex= /^\d{2,3}-\d{3,4}-\d{4}$/;
+    const customerManagerTelRegex= /^01[0-9]-\d{3,4}-\d{4}$/;
+    const customerManagerEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if (!customerBusinessRegNoRegex.test(editableCustomer.customerBusinessRegNo)) {
-            newErrors.customerBusinessRegNo = '사업자 등록번호 형식이 올바르지 않습니다.\n예: 123-45-67890';
-            valid = false;
-        }
-        if (editableCustomer.customerTel && !customerTelRegex.test(editableCustomer.customerTel)) {
-            newErrors.customerTel = '고객사 연락처 형식이 올바르지 않습니다.\n예: 010-1234-5678';
-            valid = false;
-        }
-        if (editableCustomer.customerManagerTel && !customerManagerTelRegex.test(editableCustomer.customerManagerTel)) {
-            newErrors.customerManagerTel = '담당자 연락처 형식이 올바르지 않습니다.\n예: 02-456-7890';
-            valid = false;
-        }
-        if (editableCustomer.customerManagerEmail && !customerManagerEmailRegex.test(editableCustomer.customerManagerEmail)) {
-            newErrors.customerManagerEmail = '담당자 이메일 형식이 올바르지 않습니다.\n예: abc@example.com';
-            valid = false;
-        }
+    valid = true;
+    newErrors = {
+        customerName: '',
+        customerBusinessRegNo: '',
+        customerTel: '',
+        customerManagerTel: '',
+        customerManagerEmail: ''
+    };
 
-        // 에러 상태 업데이트
-        setErrors(newErrors);
+    if (!customerBusinessRegNoRegex.test(editableCustomer.customerBusinessRegNo)) {
+        newErrors.customerBusinessRegNo = '사업자 등록번호 형식이 올바르지 않습니다.\n예: 123-45-67890';
+        valid = false;
+    }
+    if (editableCustomer.customerTel && !customerTelRegex.test(editableCustomer.customerTel)) {
+        newErrors.customerTel = '고객사 연락처 형식이 올바르지 않습니다.\n예: 02-456-7890';
+        valid = false;
+    }
+    if (editableCustomer.customerManagerTel && !customerManagerTelRegex.test(editableCustomer.customerManagerTel)) {
+        newErrors.customerManagerTel = '담당자 연락처 형식이 올바르지 않습니다.\n예: 010-1234-5678';
+        valid = false;
+    }
+    if (editableCustomer.customerManagerEmail && !customerManagerEmailRegex.test(editableCustomer.customerManagerEmail)) {
+        newErrors.customerManagerEmail = '담당자 이메일 형식이 올바르지 않습니다.\n예: abc@example.com';
+        valid = false;
+    }
 
-        // 유효성 검사 실패 시 저장 중단
-        if (!valid) {
-            setShowSaveConfirmModal(false); //저장 확인 모달 닫기
-            return;
-        }
+    // 에러 상태 업데이트
+    setErrors(newErrors);
 
-        // 모든 검증을 통과하면 저장 동작 수행
-        onSave(editableCustomer); // 상위 컴포넌트로 저장된 데이터 전달
-        onClose(); //상세 모달 닫기
-        //setShowSaveConfirmModal(false); //저장 확인 모달 닫기
-    })
-    .catch((error) => {
-        console.error('중복 체크 중 오류 발생:', error);
-    });
+    // 유효성 검증 실패 시 저장 중단
+    if (!valid) {
+        setShowSaveConfirmModal(false); // 저장 확인 모달 닫기
+        return;
+    }
+
+    // 모든 검증을 통과하면 저장 동작 수행
+    onSave(editableCustomer); // 상위 컴포넌트로 저장된 데이터 전달
+    onClose(); // 상세 모달 닫기
+    setShowSaveConfirmModal(false); // 저장 확인 모달 닫기
 };
 
     if (!show || !customer) return null; // 모달 표시 여부 체크
