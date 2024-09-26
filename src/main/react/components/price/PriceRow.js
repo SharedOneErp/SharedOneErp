@@ -76,7 +76,7 @@ const PriceRow = ({
 
         // 1️⃣ 특정 하루만 적용되는 데이터 처리 (시작일과 종료일이 동일한 경우)
         if (duplicatePrice.priceStartDate === duplicatePrice.priceEndDate) {
-            window.showToast(`${duplicatePrice.priceStartDate}에만 해당되는 데이터가 존재합니다. 데이터를 수정해주세요.`, 'error');
+            window.showToast(`${duplicatePrice.priceStartDate} 에만 해당되는 데이터가 존재합니다. 데이터를 수정해주세요.`, 'error');
             return;
         }
 
@@ -86,33 +86,36 @@ const PriceRow = ({
             return;
         }
 
-        // 3️⃣ 겹치는 데이터의 시작일이나 종료일을 조정
-        // 입력한 시작일이 기존 데이터와 겹칠 경우 -> **기존 데이터의 종료일**을 조정💡
-        if (inputStartDate <= duplicatePrice.priceEndDate && inputStartDate >= duplicatePrice.priceStartDate) {
-            const prevDay = new Date(inputStartDate); // 입력한 시작일 전날로 기존 종료일 조정
-            prevDay.setDate(prevDay.getDate() - 1);
-            updatedEndDate = prevDay.toISOString().split('T')[0]; // yyyy-mm-dd 형식으로 변환
+        // 3️⃣ 기간이 동일함
+        if (inputStartDate === duplicatePrice.priceStartDate && inputEndDate === duplicatePrice.priceEndDate) {
+            window.showToast(`기간이 동일한 데이터가 존재합니다. 데이터를 수정해주세요.`, 'error');
+            return;
         }
 
-        // 입력한 종료일이 기존 데이터와 겹칠 경우 -> **기존 데이터의 시작일**을 조정💡
-        if (inputEndDate >= duplicatePrice.priceStartDate && inputEndDate <= duplicatePrice.priceEndDate) {
+        // 겹치는 데이터의 시작일이나 종료일 조정
+        // 겹치는 날짜에 따라 기존 데이터의 시작일 또는 종료일을 수정하는 모달 메시지 설정
+        let updateMessage = `해당 고객사와 상품에 해당하는 데이터 중 <br>`;
+        
+        // 4️⃣ 
+        if (inputStartDate <= duplicatePrice.priceEndDate && inputStartDate >= duplicatePrice.priceStartDate) {
+            if (inputStartDate === duplicatePrice.priceStartDate && inputEndDate > duplicatePrice.priceEndDate) {
+                window.showToast("입력한 시작일이 기존 데이터의 시작일과 동일하며, 입력한 종료일이 기존 종료일보다 큽니다.", 'error');
+                return;
+            }
             const nextDay = new Date(inputEndDate); // 입력한 종료일 다음 날로 기존 시작일 조정
             nextDay.setDate(nextDay.getDate() + 1);
             updatedStartDate = nextDay.toISOString().split('T')[0]; // yyyy-mm-dd 형식으로 변환
-        }
-
-        // 겹치는 날짜에 따라 기존 데이터의 시작일 또는 종료일을 수정하는 모달 메시지 설정
-        let updateMessage = `해당 고객사와 상품에 해당하는 데이터 중 <br>`;
-
-        // 시작일이 겹치는 경우 - 기존 데이터의 종료일을 조정💡
-        if (inputStartDate <= duplicatePrice.priceEndDate && inputStartDate >= duplicatePrice.priceStartDate) {
-            updateMessage += `${duplicatePrice.priceStartDate} ~ <strong>${duplicatePrice.priceEndDate}</strong> 기간 동안 적용되는 데이터가 있습니다.<br>`;
-            updateMessage += `해당 데이터의 <strong>종료일</strong>을 <strong>${updatedEndDate}</strong>으로 수정하시겠습니까?`;
-        }
-        // 종료일이 겹치는 경우 - 기존 데이터의 시작일을 조정💡
-        else if (inputEndDate >= duplicatePrice.priceStartDate && inputEndDate <= duplicatePrice.priceEndDate) {
             updateMessage += `<strong>${duplicatePrice.priceStartDate}</strong> ~ ${duplicatePrice.priceEndDate} 기간 동안 적용되는 데이터가 있습니다.<br>`;
             updateMessage += `해당 데이터의 <strong>시작일</strong>을 <strong>${updatedStartDate}</strong>으로 수정하시겠습니까?`;
+        }
+
+        // 5️⃣ 
+        if (inputEndDate >= duplicatePrice.priceStartDate && inputEndDate <= duplicatePrice.priceEndDate) {
+            const prevDay = new Date(inputStartDate); // 입력한 시작일 전날로 기존 종료일 조정
+            prevDay.setDate(prevDay.getDate() - 1);
+            updatedEndDate = prevDay.toISOString().split('T')[0]; // yyyy-mm-dd 형식으로 변환
+            updateMessage += `${duplicatePrice.priceStartDate} ~ <strong>${duplicatePrice.priceEndDate}</strong> 기간 동안 적용되는 데이터가 있습니다.<br>`;
+            updateMessage += `해당 데이터의 <strong>종료일</strong>을 <strong>${updatedEndDate}</strong>으로 수정하시겠습니까?`;
         }
 
         window.confirmCustom(updateMessage, "500px").then(result => {

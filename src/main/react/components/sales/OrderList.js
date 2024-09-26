@@ -159,7 +159,9 @@ function OrderList() {
                     // Assigned 모드에 대한 권한 검사
                     if (itsAssignedMode && empData.employeeRole !== 'admin') {
                         window.showToast('해당 페이지에 접근 권한이 없습니다.', 'error');
-                        window.location.href = '/main'; // 권한 없는 사용자는 메인 페이지로 리디렉션
+                        setTimeout(() => {
+                            window.location.href = '/main'; // 권한 없는 사용자는 메인 페이지로 리디렉션
+                        }, 1500); // 1500 밀리초
                         return;
                     }
 
@@ -176,7 +178,9 @@ function OrderList() {
                 }
             } catch (err) {
                 window.showToast('해당 페이지에 접근 권한이 없습니다.', 'error');
-                window.location.href = '/main';
+                setTimeout(() => {
+                    window.location.href = '/main';
+                }, 1500); // 1500 밀리초
             } finally {
                 setLoading(false); // 데이터 로딩 완료
             }

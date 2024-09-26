@@ -112,7 +112,9 @@ function Order() {
                 }
             } catch (err) {
                 window.showToast('해당 페이지에 접근 권한이 없습니다.', 'error');
-                window.location.href = '/main';
+                setTimeout(() => {
+                    window.location.href = '/main';
+                }, 1500); // 1500 밀리초
             } finally {
             }
         };
