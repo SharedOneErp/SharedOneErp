@@ -3,21 +3,21 @@
 .menu_product .table_wrap table th:nth-child(1),
 .menu_product .table_wrap table td:nth-child(1) { width: 45px; text-align: center; /* 체크박스 */ } 
 .menu_product .table_wrap table th:nth-child(2),
-.menu_product .table_wrap table td:nth-child(2) { width: 10%; /* 품번 */ }
+.menu_product .table_wrap table td:nth-child(2) { width: 12%; /* 품번 */ }
 .menu_product .table_wrap table th:nth-child(3),
 .menu_product .table_wrap table td:nth-child(3) { width: 15%; /* 상품명 */ }
 .menu_product .table_wrap table th:nth-child(4),
-.menu_product .table_wrap table td:nth-child(4) { width: 11%; /* 대분류 */ }
+.menu_product .table_wrap table td:nth-child(4) { width: 13%; /* 대분류 */ }
 .menu_product .table_wrap table th:nth-child(5),
-.menu_product .table_wrap table td:nth-child(5) { width: 11%; /* 중분류 */ }
+.menu_product .table_wrap table td:nth-child(5) { width: 13%; /* 중분류 */ }
 .menu_product .table_wrap table th:nth-child(6),
-.menu_product .table_wrap table td:nth-child(6) { width: 11%; /* 소분류 */ }
+.menu_product .table_wrap table td:nth-child(6) { width: 13%; /* 소분류 */ }
 .menu_product .table_wrap table th:nth-child(7),
-.menu_product .table_wrap table td:nth-child(7) { width: 13%; /* 가격 */ }
+.menu_product .table_wrap table td:nth-child(7) { width: 15%; /* 가격 */ }
 .menu_product .table_wrap table th:nth-child(8),
-.menu_product .table_wrap table td:nth-child(8) { width: 13%; /* 등록일시 */ }
+.menu_product .table_wrap table td:nth-child(8) { width: 12%; /* 등록일시 */ }
 .menu_product .table_wrap table th:nth-child(9),
-.menu_product .table_wrap table td:nth-child(9) { width: 13%; /* 수정일시 */ }
+.menu_product .table_wrap table td:nth-child(9) { width: 12%; /* 수정일시 */ }
 .menu_product .table_wrap table th:nth-child(10),
 .menu_product .table_wrap table td:nth-child(10) { width: 12%; /* 삭제일시 */ }
 .menu_product .table_wrap table th:nth-child(11),
