@@ -89,6 +89,7 @@ export const useProductHooks = () => {
 
     ///////////////////////////////////////////////////////////// 함수
 
+    // 🟢 상품 목록 조회
     const fetchProducts = useCallback(() => {
         setIsLoading(true);
         axios
@@ -137,7 +138,6 @@ export const useProductHooks = () => {
                 setIsLoading(false);
             });
     }, [currentPage, itemsPerPage, filterTopCategory, filterMiddleCategory, filterLowCategory, selectedStatus, sortColumn, sortDirection, searchTerm]);
-
 
     // 🟢 초기 상품 목록 및 필터링 조회
     useEffect(() => {
@@ -270,13 +270,11 @@ export const useProductHooks = () => {
 
         return [...Array(endPage - startPage + 1)].map((_, i) => startPage + i);
     }, [currentPage, totalPages]);
-
     const handlePreviousPageGroup = () => {
         if (currentPage > 1) {
             setCurrentPage(Math.max(1, paginationNumbers[0]));
         }
     };
-
     const handleNextPageGroup = () => {
         if (currentPage < totalPages) {
             setCurrentPage(paginationNumbers[paginationNumbers.length - 1] + 1);
@@ -313,12 +311,12 @@ export const useProductHooks = () => {
         const { productCd, productNm, productPrice, categoryNo } = newProductData;
 
         if (!productCd || !productNm || !productPrice) {
-            window.showToast('상품코드, 상품명, 가격을 모두 입력해주세요.', 'error');
+            window.showToast('상품코드, 상품명, 기준가를 모두 입력해주세요.', 'error');
             return;
         }
 
         if (isNaN(productPrice)) {
-            window.showToast('가격은 숫자만 입력할 수 있습니다.', 'error');
+            window.showToast( '기준가는 숫자만 입력할 수 있습니다.', 'error');
             return;
         }
 
@@ -378,7 +376,6 @@ export const useProductHooks = () => {
         setAddLowCategories([]);
     };
 
-
     // 🟡 대분류 선택 시 중분류 목록 가져오기
     const handleAddTopCategoryChange = (e) => {
         const selectedTop = parseInt(e.target.value);
@@ -423,8 +420,7 @@ export const useProductHooks = () => {
             categoryNo: selectedLow !== '' ? selectedLow : null
         }));
     }
-
-    // 🟠 상품 수정 함수
+    
     // 🟠 상품 수정 함수
     const handleEditClick = (product) => {
         setIsEditMode(product.productCd);
@@ -442,19 +438,17 @@ export const useProductHooks = () => {
             productPrice: product.productPrice || 0,
         });
 
-        // 대분류가 있을 경우 중분류 목록 불러오기
-        // 대분류가 있을 경우 중분류 목록 불러오기
         if (product.topCategoryNo) {
             const filteredMiddle = getFilteredCategories(2, product.topCategoryNo);
             setFilteredEditMiddleCategories(filteredMiddle);
 
-            // 중분류가 있을 경우 소분류 목록 불러오기
             if (product.middleCategoryNo) {
                 const filteredLow = getFilteredCategories(3, product.middleCategoryNo);
                 setFilteredEditLowCategories(filteredLow);
+            } else {
+                setFilteredEditLowCategories([]);
             }
         } else {
-            // 대분류가 선택되지 않은 경우 중분류 및 소분류 초기화
             setFilteredEditMiddleCategories([]);
             setFilteredEditLowCategories([]);
         }
@@ -513,6 +507,12 @@ export const useProductHooks = () => {
         });
 
     }
+
+    // 🟠 상품 수정 취소
+    const handleCancelEdit = () => {
+        setIsEditMode(null); // 수정 모드 종료
+        setEditableProduct({}); // 수정된 데이터 초기화
+    };
 
     // 🟠 대분류 변경 시 중분류 목록 가져오기
     const handleFilterTopCategoryChangeForEdit = (e) => {
@@ -702,11 +702,7 @@ export const useProductHooks = () => {
         }
     }, [isEditMode, isAddMode, editableProduct, newProductData]);
 
-    // 수정 모드 취소 시 원래 상태로 돌아가도록 하는 함수
-    const handleCancelEdit = () => {
-        setIsEditMode(null); // 수정 모드 종료
-        setEditableProduct({}); // 수정된 데이터 초기화
-    };
+
 
     // Add Mode 중분류 필터링
     const addFilteredMiddleCategories = useMemo(() => {
@@ -726,47 +722,28 @@ export const useProductHooks = () => {
 
 
     return {
+
         // 조회
-
-        // 등록
-        isAddMode,
-        setIsAddMode,
-        handleCancelAdd,
-        newProductData,
-        handleAddNewProduct,
-
-        // 수정
-        isEditMode,
-        editableProduct,
-        handleEditClick,
-        handleConfirmClick,
-        handleCancelEdit,
-
-        // 삭제
-
-        // 기타
-        handleInputChange,
-
+        isLoading,
+        paginationNumbers,
+        handlePreviousPageGroup,
+        handleNextPageGroup,
         products,
         selectedProducts,
         handleAllSelectProducts,
         handleSelectProduct,
-
-
-        handleDeleteSelected,
+        filteredProducts,
+        searchTerm,
+        setSearchTerm,
+        handleSort,
+        sortColumn,
+        sortDirection,
         filterLowCategory,
         filterMiddleCategory,
         filterTopCategory,
         handleFilterLowCategoryChange,
         handleFilterMiddleCategoryChange,
         handleFilterTopCategoryChange,
-        selectedLowCategory,
-        selectedMiddleCategory,
-        selectedTopCategory,
-        lowCategories,
-        middleCategories,
-        topCategories,
-        handleLowCategoryChange,
         currentPage,
         setCurrentPage,
         itemsPerPage,
@@ -774,36 +751,60 @@ export const useProductHooks = () => {
         totalPages,
         handlePageChange,
         handleItemsPerPageChange,
-        isModalOpen,
-        handleOpenModal,
-        handleCloseModal,
-        productDetail,
-        selectedProductCd,
-        paginationNumbers,
-        handlePreviousPageGroup,
-        handleNextPageGroup,
-        filteredProducts,
-        searchTerm,
-        setSearchTerm,
+        handlePageInputChange,
+
+        // 등록
+        isAddMode,
+        setIsAddMode,
+        handleCancelAdd,
+        newProductData,
+        handleAddNewProduct,
+        addMiddleCategories,
+        addLowCategories,
+        handleAddMiddleCategoryChange,
+        handleAddTopCategoryChange,
         addFilteredMiddleCategories,
         addFilteredLowCategories,
+
+
+        // 수정
+        isEditMode,
+        editableProduct,
+        handleEditClick,
+        handleConfirmClick,
+        handleCancelEdit,
         filteredEditMiddleCategories,
         filteredEditLowCategories,
         handleFilterTopCategoryChangeForEdit,
         handleFilterMiddleCategoryChangeForEdit,
         handleFilterLowCategoryChangeForEdit,
+
+        // 삭제 / 복원
+        handleDeleteSelected,
+        handleRestore,
+
+        // 기타
+        handleInputChange,
+        isModalOpen,
+        handleOpenModal,
+        handleCloseModal,
+        productDetail,
+        selectedProductCd,
+
+
+
+        selectedLowCategory,
+        selectedMiddleCategory,
+        selectedTopCategory,
+        lowCategories,
+        middleCategories,
+        topCategories,
+        handleLowCategoryChange,
+
         handleStatusChange,
         selectedStatus,
-        isLoading,
-        handleRestore,
-        handlePageInputChange,
-        handleSort,
-        sortColumn,
-        sortDirection,
-        addMiddleCategories,
-        addLowCategories,
-        handleAddMiddleCategoryChange,
-        handleAddTopCategoryChange,
+
+
         pageInputValue,
     };
 }

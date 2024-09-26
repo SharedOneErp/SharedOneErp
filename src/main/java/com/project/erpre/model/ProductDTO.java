@@ -26,6 +26,7 @@ public class ProductDTO {
     private Date orderDDeliveryRequestDate;
     private Integer orderDQty;
     private BigDecimal orderDTotalPrice;
+    private BigDecimal orderDPrice;
     private String customerName;
     private Integer categoryNo;
     private Integer topCategoryNo;    // 대분류 번호
@@ -62,7 +63,7 @@ public class ProductDTO {
     // 2. 상품 상세정보 조회 생성자
     public ProductDTO(String productCd, String productNm, LocalDateTime productInsertDate, LocalDateTime productUpdateDate,
                       String employeeName, String customerName, Date orderDDeliveryRequestDate, Integer orderDQty, BigDecimal orderDTotalPrice,
-                      String topCategory, String middleCategory, String lowCategory, BigDecimal productPrice) {
+                      String topCategory, String middleCategory, String lowCategory, BigDecimal productPrice, BigDecimal orderDPrice) {
         this.productCd = productCd;
         this.productNm = productNm;
         this.productInsertDate = productInsertDate;
@@ -76,6 +77,7 @@ public class ProductDTO {
         this.middleCategory = middleCategory;
         this.lowCategory = lowCategory;
         this.productPrice = productPrice;
+        this.orderDPrice = orderDPrice;
     }
 
     // 3. 상품 등록 및 수정 생성자

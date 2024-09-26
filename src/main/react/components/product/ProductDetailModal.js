@@ -3,7 +3,6 @@ import '../../../resources/static/css/product/ProductDetailModal.css';
 import {formatDate} from '../../util/dateUtils';
 import PropTypes from "prop-types";
 import axios from "axios";
-import Layout from "../../layout/Layout";
 
 function ProductDetailModal({productCd, onClose}) { // 파라미터 구조 분해 할당
     const [productDetail, setProductDetail] = useState([]);
@@ -35,7 +34,7 @@ function ProductDetailModal({productCd, onClose}) { // 파라미터 구조 분�
         <div className="modal_overlay" onMouseDown={handleBackgroundClick}>
             <div className="modal_container search">
                 <div className="header">
-                    <div>상품 상세</div>
+                    <div>상품 납품 내역</div>
                     <button className="btn_close" onClick={onClose}><i className="bi bi-x-lg"></i></button>
                     {/* 모달 닫기 버튼 */}
                 </div>
@@ -53,56 +52,60 @@ function ProductDetailModal({productCd, onClose}) { // 파라미터 구조 분�
                 ) : (
                     <div className="product-detail-container">
                         <div className="form-group">
-                            <label htmlFor="productName">상품명</label>
+                            <label htmlFor="productName"><span className="detail-name"> 상 품 명 </span></label>
                             <input type="text" id="productName" value={detail.productNm || ''} readOnly/>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="productCode">상품코드</label>
+                            <label htmlFor="productCode"><sapn className="detail-name"> 상품코드 </sapn></label>
                             <input type="text" id="productCode" value={detail.productCd || ''} readOnly/>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="category">카테고리</label>
+                            <label htmlFor="category"><span className="detail-name"> 카테고리 </span></label>
                             <div className="category-inputs">
-                                <span className="category-item">{detail.topCategory || ''}</span>
-                                <span className="category-item">{detail.middleCategory || ''}</span>
-                                <span className="category-item">{detail.lowCategory || ''}</span>
+                                <span className="category-item top">{detail.topCategory || ''}</span>
+                                <span className="category-item middle">{detail.middleCategory || ''}</span>
+                                <span className="category-item low">{detail.lowCategory || ''}</span>
                             </div>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="registrationDate">상품 등록일</label>
+                            <label htmlFor="registrationDate" className="detail-name"><span>등록일시</span></label>
                             <input type="text" id="registrationDate"
-                                   value={detail.productInsertDate ? formatDate(detail.productInsertDate) : '-'}
+                                   value={detail.productInsertDate ? formatDate(detail.productInsertDate) : ''}
                                    readOnly/>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="updateDate">상품 수정일</label>
+                            <label htmlFor="updateDate"><span className="detail-name">수정일시</span></label>
                             <input type="text" id="updateDate"
-                                   value={detail.productUpdateDate ? formatDate(detail.productUpdateDate) : '-'}
+                                   value={detail.productUpdateDate ? formatDate(detail.productUpdateDate) : ''}
                                    readOnly/>
                         </div>
-                        <table className="transaction-table">
+                        <div  className="table_wrap1">
+                        <table>
                             <thead>
                             <tr>
-                                <th>최근 납품일</th>
+                                <th>납품일자</th>
                                 <th>거래처</th>
                                 <th>수량</th>
-                                <th>매출액(원)</th>
+                                <th>납품가(원)</th>
+                                <th>총매출액(원)</th>
                                 <th>담당자</th>
                             </tr>
                             </thead>
                             <tbody>
                             {productDetail.map((detail, index) => (
                                 <tr key={index}>
-                                    <td>{detail.orderDDeliveryRequestDate ? formatDate(detail.orderDDeliveryRequestDate) : '-'}</td>
-                                    <td>{detail.customerName || '-'}</td>
-                                    <td>{detail.orderDQty || '-'}</td>
-                                    <td>{detail.orderDTotalPrice ? detail.orderDTotalPrice.toLocaleString() : '-'}</td>
-                                    <td>{detail.employeeName || '-'}</td>
+                                    <td>{detail.orderDDeliveryRequestDate ?  detail.orderDDeliveryRequestDate.substring(0, 10) : ''}</td>
+                                    <td>{detail.customerName || ''}</td>
+                                    <td>{detail.orderDQty || ''}</td>
+                                    <td>{detail.orderDPrice ? detail.orderDPrice.toLocaleString() : ''}</td>
+                                    <td>{detail.orderDTotalPrice ? detail.orderDTotalPrice.toLocaleString() : ''}</td>
+                                    <td>{detail.employeeName || ''}</td>
                                 </tr>
                             ))}
                             </tbody>
                         </table>
-                        <p>납품내역은 최근 5건까지 표시됩니다</p>
+                        </div>
+                        <p>납품 내역은 최근 5건까지 표시됩니다. (0건일 경우 표시되지 않음)</p>
                     </div>
                 )}
             </div>

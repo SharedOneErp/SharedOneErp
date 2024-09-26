@@ -255,6 +255,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                         customer.customerName,
                         orderDetail.orderDDeliveryRequestDate,
                         orderDetail.orderDQty,
+                        orderDetail.orderDPrice,
                         orderDetail.orderDTotalPrice,
                         category.categoryNm.as("lowCategory"),
                         middleCategory.categoryNm.as("middleCategory"),
