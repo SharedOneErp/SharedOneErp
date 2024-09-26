@@ -1,9 +1,16 @@
 // src/main/react/components/price/PriceHooks.js
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { formatDate } from '../../util/dateUtils';
 import { format } from 'date-fns';
 import { useDebounce } from '../common/useDebounce'; // useDebounce 훅 임포트
+
+// 🔴 날짜 포맷팅 함수
+function formatDate(date) {
+    if (!date) return null;
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return null; // 유효하지 않은 날짜
+    return format(d, 'yyyy-MM-dd');
+}
 
 export const useHooksList = () => {
 

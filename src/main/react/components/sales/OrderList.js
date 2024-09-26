@@ -191,8 +191,8 @@ function OrderList() {
     useEffect(() => {
         if (Array.isArray(filteredOrders)) {
             // 전체 선택 체크박스 상태 업데이트
-            const isAllSelected = filteredOrders.length > 0 &&
-                filteredOrders.every(order => selectedOrders.has(order.orderNo));
+            const ingOrders = filteredOrders.filter(order => order.orderHStatus === 'ing');
+            const isAllSelected = ingOrders.length > 0 && ingOrders.every(order => selectedOrders.has(order.orderNo));
             setAllSelected(isAllSelected);
         } else {
             setAllSelected(false);
