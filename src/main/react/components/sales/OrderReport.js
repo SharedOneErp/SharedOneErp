@@ -66,7 +66,14 @@ function OrderReport() {
                 const endMonthNum = endMonth.getMonth() + 1;
 
                 // 새로운 반기 구간 라벨을 배열의 뒤에 추가 (최신 반기가 X축의 오른쪽으로 가도록)
-                labels.push(`${startYear}년 ${startMonthNum}월 ~ ${endYear}년 ${endMonthNum}월`);
+                // labels.push(`${startYear}년 ${startMonthNum}월 ~ ${endYear}년 ${endMonthNum}월`);
+                if (endMonthNum <= 6) {
+                    // 상반기인 경우
+                    labels.push(`${endYear}년 상반기`);
+                } else {
+                    // 하반기인 경우
+                    labels.push(`${endYear}년 하반기`);
+                }
             }
 
         } else if (period === "3years") {
