@@ -298,32 +298,6 @@ export const useHooksList = () => {
         setOrderDetails(updatedOrderDetails);
     };
 
-    const openModal = (index) => {
-        setSelectedProductIndex(index);
-        setShowModal(true);
-        setSearchQuery('');
-        setSearchCode('');
-        handleSearch();
-    };
-
-    // 모달 닫기
-    const closeModal = () => {
-        setShowModal(false);
-    };
-
-    // Customer 모달 열기
-    const openCustomerModal = () => {
-        setCustomerModalOpen(true);
-        setSearchQuery('');
-        customerSearch(); // 전체 고객사 목록을 불러오는 함수 호출
-    };
-
-    // Customer 모달 닫기
-    const closeCustomerModal = () => {
-        setCustomerModalOpen(false);
-    };
-
-
     const handleSearch = async () => {
         // URL에 포함할 쿼리 파라미터 생성
         const params = new URLSearchParams({
@@ -358,46 +332,6 @@ export const useHooksList = () => {
             console.error('검색 중 오류 발생:', error);
             setCustomerSearchResults([]);
         }
-    };
-
-    // 상품 선택 처리
-    const handleProductSelect = (selectedProduct) => {
-
-        if (selectedProductIndex !== null) {
-            const updatedProducts = [...products];
-            // 선택된 상품의 필드가 null인 경우 기본값 0으로 대체
-            updatedProducts[selectedProductIndex] = {
-                ...selectedProduct,
-                name: selectedProduct.productNm,
-                price: selectedProduct.price || 0,
-                quantity: selectedProduct.quantity || 0,
-                code: selectedProduct.productCd // 상품 코드를 추가
-            };
-            setProducts(updatedProducts);
-        } else {
-            console.error('handleProductSelect error');
-        }
-        closeModal();
-    };
-
-    //수정시 상품 선택
-    const handleProductSelectEdit = (selectedProduct) => {
-
-        if (selectedProductIndex !== null) {
-            const updatedOrderDetails = [...orderDetails];
-            updatedOrderDetails[selectedProductIndex] = {
-                ...updatedOrderDetails[selectedProductIndex],
-                productNm: selectedProduct.productNm || '', // 제품 이름을 업데이트
-                orderDPrice: selectedProduct.price || 0,
-                orderDQty: selectedProduct.quantity || 0,
-                productCd: selectedProduct.productCd || '' // 상품 코드
-            };
-
-            setOrderDetails(updatedOrderDetails);
-        } else {
-            console.error('handleProductSelectEdit error');
-        }
-        closeModal();
     };
 
     //주문 생성
@@ -493,7 +427,10 @@ export const useHooksList = () => {
 
                 // window.showToast(`${employeeName}님의 주문 생성이 완료되었습니다.\n\n주문번호: ${order_h_no}\n고객사: ${customerName}\n\n${summaryString}`);
                 window.showToast(`${employeeName}님의 주문 생성이 완료되었습니다.`);
-                window.location.href = `/order?no=${order_h_no}`;
+                // 2초 후에 페이지 이동 (토스트 메시지가 충분히 표시될 시간을 확보)
+                setTimeout(() => {
+                    window.location.href = `/order?no=${order_h_no}`;
+                }, 1500); // 1500 밀리초
             } else {
                 const errorText = await response.text();
                 console.error('주문 처리 오류:', errorText);
@@ -642,7 +579,10 @@ export const useHooksList = () => {
 
             // 6. 성공 후 페이지 이동
             window.showToast("주문을 성공적으로 수정했습니다.");
-            window.location.href = `/order?no=${orderNo}`;
+            // 2초 후에 페이지 이동 (토스트 메시지가 충분히 표시될 시간을 확보)
+            setTimeout(() => {
+                window.location.href = `/order?no=${orderNo}`;
+            }, 1500); // 1500 밀리초
         } catch (error) {
             console.error('주문 수정 중 오류 발생:', error.message);
             window.showToast("주문 수정 중 오류가 발생했습니다. 다시 확인해주세요.", 'error');
@@ -686,20 +626,6 @@ export const useHooksList = () => {
 
     };
 
-
-    const handleCustomerSelect = (selectedCustomer) => {
-        console.log('Selected customer:', selectedCustomer);
-
-        setCustomerData({
-            customerNo: selectedCustomer.customerNo,
-            customerName: selectedCustomer.customerName,
-            customerAddr: selectedCustomer.customerAddr,
-            customerTel: selectedCustomer.customerTel,
-            customerRepresentativeName: selectedCustomer.customerRepresentativeName
-        });
-        closeCustomerModal();
-    };
-
     //날짜 형식 처리
     const formatDateForInput = (dateString) => {
         const date = new Date(dateString);
@@ -732,34 +658,15 @@ export const useHooksList = () => {
         // 주문 번호 관련 상태
         orderNo,       // 현재 주문 번호
 
+
         // 주문 관련 데이터 및 상태
         products,           // 상품 리스트
         customerData,       // 고객사 정보
         orderDetails,       // 주문 상세 정보
-        orderHStatus,       // 주문 상태
+        orderHStatus,
         orderHTotalPrice,   // 주문 총액
         orderHInsertDate,   // 주문 등록일
-        deliveryDate,       // 납품 요청일
         employee,           // 담당자 정보 (로그인한 사용자 정보)
-
-        // 모달 관련 상태 및 함수
-        showModal,              // 상품 검색 모달 상태
-        customerModalOpen,      // 고객사 검색 모달 상태
-        openModal,              // 상품 검색 모달 열기
-        closeModal,             // 상품 검색 모달 닫기
-        openCustomerModal,      // 고객사 검색 모달 열기
-        closeCustomerModal,     // 고객사 검색 모달 닫기
-        handleCustomerSelect,   // 고객사 선택 처리 함수
-
-        // 검색 관련 상태 및 함수
-        searchQuery,            // 검색어 상태 (상품명 검색어)
-        setSearchQuery,         // 검색어 상태 설정 함수
-        searchCode,             // 상품 코드 검색어 상태
-        setSearchCode,          // 상품 코드 검색어 상태 설정 함수
-        handleSearch,           // 상품 검색 처리 함수
-        customerSearch,         // 고객사 검색 처리 함수
-        searchResults,          // 상품 검색 결과
-        customerSearchResults,  // 고객사 검색 결과
 
         // 상품 및 주문 상세 데이터 변경 함수
         handleProductChange,    // 상품 데이터 변경 처리 함수 (등록 시)
@@ -767,40 +674,22 @@ export const useHooksList = () => {
         addProductRow,          // 상품 행 추가 함수
         removeProductRow,       // 상품 행 제거 함수
         removeProducteditRow,   // 상품 수정 행 제거 함수
-        handleProductSelect,    // 상품 선택 처리 함수 (등록 시)
-        handleProductSelectEdit,// 상품 수정 시 선택 처리 함수
-
-        // 페이지네이션 관련 상태 및 함수
-        currentPageProduct,         // 상품 모달의 현재 페이지 상태
-        setCurrentPageProduct,      // 상품 모달의 현재 페이지 상태 설정 함수
-        handlePageChangeProduct,    // 상품 모달의 페이지 변경 처리 함수
-        currentPageCustomer,        // 고객사 모달의 현재 페이지 상태
-        setCurrentPageCustomer,     // 고객사 모달의 현재 페이지 상태 설정 함수
-        handlePageChangeCustomer,   // 고객사 모달의 페이지 변경 처리 함수
-        paginatedSearchResults,     // 페이지네이션된 상품 검색 결과
-        paginatedCustomerSearchResults, // 페이지네이션된 고객사 검색 결과
-        totalProductPages,          // 상품 검색 결과의 총 페이지 수
-        totalCustomerPages,         // 고객사 검색 결과의 총 페이지 수
 
         // 주문 생성 및 수정 함수
         handleSubmit,   // 주문 생성 처리 함수
         handleEdit,     // 주문 수정 처리 함수
-        handleDeleteProduct,
-        updateOrder,
 
         // 날짜 관련 함수
         formatDateForInput,  // 날짜를 yyyy-mm-dd 형식으로 변환하는 함수
 
-        // 카테고리 선택 관련 상태 및 함수
-        selectedCategory,      // 선택된 카테고리 (대분류, 중분류, 소분류)
-        setSelectedCategory,   // 카테고리 선택 상태 설정 함수
-        handleTopChange,       // 대분류 카테고리 변경 처리 함수
-        handleMiddleChange,    // 중분류 카테고리 변경 처리 함수
-        categories,            // 카테고리 데이터 (대분류, 중분류, 소분류)
-
         displayItems,
         editProductRow,
         displayItemEdit,
+        setCustomerData,
+        selectedProductIndex,
+        setProducts,
+        setOrderDetails,
+        setSelectedProductIndex,
     };
 
 };

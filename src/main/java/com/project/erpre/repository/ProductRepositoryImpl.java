@@ -1,15 +1,20 @@
 package com.project.erpre.repository;
 
 import com.project.erpre.model.*;
+import com.project.erpre.service.ProductService;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.EntityManager;
 
@@ -20,8 +25,9 @@ import static com.project.erpre.model.QOrder.order;
 import static com.project.erpre.model.QOrderDetail.orderDetail;
 import static com.project.erpre.model.QProduct.product;
 
-
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProductRepositoryImpl.class);
 
     // QueryDSL 사용을 위한 JPAQueryFactory
     private final JPAQueryFactory queryFactory;
@@ -30,7 +36,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         this.queryFactory = new JPAQueryFactory(entityManager);
     }
 
-    // 1. 상품 목록 조회 + 필터링 + 정렬 + 페이징
+    // 🔴 상품 목록 조회 + 필터링 + 정렬 + 페이징
     @Override
     public Page<ProductDTO> productsList(Pageable pageable, String status, Integer topCategoryNo, Integer middleCategoryNo, Integer lowCategoryNo, String productCd, String productNm, String sortColumn, String sortDirection) {
         QProduct product = QProduct.product;
@@ -90,7 +96,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return new PageImpl<>(results, pageable, total);
     }
 
-    // 정렬 조건 설정 메서드
+    // 🔴 정렬 조건 설정 메서드
     private OrderSpecifier<?> getOrderSpecifier(String sortColumn, String sortDirection) {
         QProduct product = QProduct.product;
         QCategory category = QCategory.category;
@@ -127,7 +133,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
             case "productDeleteDate":
                 orderSpecifier = sortDirection.equals("asc") ? product.productDeleteDate.asc() : product.productDeleteDate.desc();
                 break;
-                default:
+            default:
                 orderSpecifier = product.productCd.asc();
                 break;
         }
@@ -135,25 +141,28 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return orderSpecifier;
     }
 
-
-    // 0920 예원 추가 (상품코드, 상품명, 대분류, 중분류, 소분류, 상태별 상품목록 페이징 적용하여 가져오기)
+    // 🔴🔴🔴🔴🔴 0920 예원 추가 (상품코드, 상품명, 대분류, 중분류, 소분류, 상태별 상품목록 페이징 적용하여 가져오기)
     public Page<ProductDTO> findProductsFilter(Pageable pageable, String status,
                                                Integer topCategoryNo, Integer middleCategoryNo, Integer lowCategoryNo,
-                                               String productCd, String productNm) {
+                                               String productCd, String productNm, Integer customerNo) {
         QProduct product = QProduct.product;
         QCategory category = QCategory.category;
         QCategory middleCategory = new QCategory("middleCategory");
         QCategory topCategory = new QCategory("topCategory");
+        QPrice price = QPrice.price; // Price 테이블 사용
 
-        // 상태 조건
+        // 🔴 현재 날짜를 가져옴
+        LocalDate today = LocalDate.now();
+
+        // 🔴 상태 조건
         BooleanExpression statusCondition = (status.equals("all"))
                 ? null
                 : product.productDeleteYn.eq(status.equals("active") ? "N" : "Y");
 
-        // 카테고리 조건
+        // 🔴 카테고리 조건
         BooleanExpression categoryCondition = categoryFilterCondition(topCategoryNo, middleCategoryNo, lowCategoryNo);
 
-        // 상품명/상품코드 조건 (AND 조건)
+        // 🔴 상품명/상품코드 조건 (AND 조건)
         BooleanExpression productCondition = null;
         if (productCd != null && !productCd.isEmpty()) {
             productCondition = product.productCd.containsIgnoreCase(productCd);  // 상품 코드 조건
@@ -164,11 +173,26 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                     : product.productNm.containsIgnoreCase(productNm);  // 상품명 조건
         }
 
-        // BooleanBuilder 사용하여 조건 추가
+        // 🔴 고객 번호 조건 추가 (customerNo가 있을 때만)
+        BooleanExpression customerCondition = null;
+        logger.info("customerNo : "+customerNo);
+        if (customerNo != null) {
+            logger.info("customerNo2 : "+customerNo);
+            // price.customer_no가 customerNo와 일치하고, 현재 날짜가 price의 시작과 종료 날짜 사이에 있는 조건
+            customerCondition = price.customer.customerNo.eq(customerNo)
+                    .and(price.priceStartDate.loe(Date.valueOf(today)))  // 시작 날짜 <= 오늘
+                    .and(price.priceEndDate.goe(Date.valueOf(today)));   // 종료 날짜 >= 오늘 (null일 경우 무기한)
+        }
+
+        // 🔴 BooleanBuilder 사용하여 조건 추가
         BooleanBuilder builder = new BooleanBuilder();
         if (statusCondition != null) builder.and(statusCondition);
         if (categoryCondition != null) builder.and(categoryCondition);
         if (productCondition != null) builder.and(productCondition);
+        if (customerCondition != null) {
+            // Price와 Product 조인을 통한 고객 필터링 추가
+            builder.and(customerCondition);
+        }
 
         List<ProductDTO> results = queryFactory.select(Projections.fields(ProductDTO.class,
                         product.productCd,
@@ -178,6 +202,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                         product.productDeleteDate,
                         product.productDeleteYn,
                         product.productPrice,
+                        price.priceCustomer,  // 고객별 가격 추가
                         category.categoryNm.as("lowCategory"),
                         middleCategory.categoryNm.as("middleCategory"),
                         topCategory.categoryNm.as("topCategory"),
@@ -188,13 +213,14 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .leftJoin(product.category, category)
                 .leftJoin(category.parentCategory, middleCategory)
                 .leftJoin(middleCategory.parentCategory, topCategory)
+                .leftJoin(price).on(product.productCd.eq(price.product.productCd)) // Product와 Price 조인
                 .where(builder)  // 조건 적용
                 .orderBy(product.category.categoryNo.asc(), product.productNm.asc())  // categoryNo와 productNm 기준 오름차순 정렬
                 .offset(pageable.getOffset())  // 페이지 시작 위치
                 .limit(pageable.getPageSize())  // 페이지 크기 설정
                 .fetch();
 
-        // 총 항목 수
+        // 🔴 총 항목 수
         long total = queryFactory.selectFrom(product)
                 .where(builder)
                 .fetchCount();  // 조건에 맞는 총 개수
@@ -202,8 +228,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return new PageImpl<>(results, pageable, total);  // 결과를 Page 객체로 반환
     }
 
-
-    // 0920 예원 추가 2
+    // 🔴 0920 예원 추가 2
     private BooleanExpression categoryFilterCondition(Integer topCategoryNo, Integer middleCategoryNo, Integer lowCategoryNo) {
         QCategory category = QCategory.category;
 
@@ -238,8 +263,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return result;
     }
 
-
-    // 2. 상품 상세정보 조회 (최근 납품내역 5건 포함)
+    // 🔴 상품 상세정보 조회 (최근 납품내역 5건 포함)
     @Override
     public List<ProductDTO> findProductDetailsByProductCd(String productCd) {
         QCategory middleCategory = new QCategory("middleCategory");

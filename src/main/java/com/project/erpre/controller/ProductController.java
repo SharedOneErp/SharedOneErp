@@ -59,10 +59,11 @@ public class ProductController {
             @RequestParam(required = false) Integer lowCategoryNo,  // 소분류 필터
             @RequestParam(defaultValue = "all", required = false) String status,
             @RequestParam(required = false) String productCd,  // 상품 코드 필터
-            @RequestParam(required = false) String productNm   // 상품명 필터
+            @RequestParam(required = false) String productNm,   // 상품명 필터
+            @RequestParam(required = false) Integer customerNo   // 주문 등록 시 선택한 고객사
     ) {
         try {
-            Page<ProductDTO> result = productService.getProductsFilter(page - 1, size, status, topCategoryNo, middleCategoryNo, lowCategoryNo, productCd, productNm);
+            Page<ProductDTO> result = productService.getProductsFilter(page - 1, size, status, topCategoryNo, middleCategoryNo, lowCategoryNo, productCd, productNm, customerNo);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
