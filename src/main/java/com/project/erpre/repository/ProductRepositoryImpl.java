@@ -3,6 +3,7 @@ package com.project.erpre.repository;
 import com.project.erpre.model.*;
 import com.project.erpre.service.ProductService;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -17,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.EntityManager;
 
@@ -196,21 +199,30 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         }
 
         // 가격 테이블 조인 여부에 따라 쿼리 구성
-        JPAQuery<ProductDTO> query = queryFactory.select(Projections.fields(ProductDTO.class,
-                        product.productCd,
-                        product.productNm,
-                        product.productInsertDate,
-                        product.productUpdateDate,
-                        product.productDeleteDate,
-                        product.productDeleteYn,
-                        product.productPrice,
-                        price.priceCustomer,  // 고객별 가격 추가
-                        category.categoryNm.as("lowCategory"),
-                        middleCategory.categoryNm.as("middleCategory"),
-                        topCategory.categoryNm.as("topCategory"),
-                        category.categoryNo.as("lowCategoryNo"),
-                        middleCategory.categoryNo.as("middleCategoryNo"),
-                        topCategory.categoryNo.as("topCategoryNo")))
+        // 🔴 기본 필드 구성
+        List<Expression<?>> selectFields = new ArrayList<>(Arrays.asList(
+                product.productCd,
+                product.productNm,
+                product.productInsertDate,
+                product.productUpdateDate,
+                product.productDeleteDate,
+                product.productDeleteYn,
+                product.productPrice,
+                category.categoryNm.as("lowCategory"),
+                middleCategory.categoryNm.as("middleCategory"),
+                topCategory.categoryNm.as("topCategory"),
+                category.categoryNo.as("lowCategoryNo"),
+                middleCategory.categoryNo.as("middleCategoryNo"),
+                topCategory.categoryNo.as("topCategoryNo")
+        ));
+
+        // 고객 조건이 있을 때만 priceCustomer를 select에 추가
+        if (customerCondition != null) {
+            selectFields.add(price.priceCustomer); // 고객별 가격 추가
+        }
+
+        // 🔴 가격 테이블 조인 여부에 따라 쿼리 구성
+        JPAQuery<ProductDTO> query = queryFactory.select(Projections.fields(ProductDTO.class, selectFields.toArray(new Expression<?>[0])))
                 .from(product)
                 .leftJoin(product.category, category)
                 .leftJoin(category.parentCategory, middleCategory)
