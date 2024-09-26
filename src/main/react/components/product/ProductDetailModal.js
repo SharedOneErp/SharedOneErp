@@ -3,6 +3,7 @@ import '../../../resources/static/css/product/ProductDetailModal.css';
 import {formatDate} from '../../util/dateUtils';
 import PropTypes from "prop-types";
 import axios from "axios";
+import Layout from "../../layout/Layout";
 
 function ProductDetailModal({productCd, onClose}) { // 파라미터 구조 분해 할당
     const [productDetail, setProductDetail] = useState([]);
@@ -40,7 +41,15 @@ function ProductDetailModal({productCd, onClose}) { // 파라미터 구조 분�
                 </div>
 
                 {isLoading ? (
-                    <div className="spinner">정보를 받아오는 중입니다</div>
+                    <tr className = "tr_empty">
+                        <td colSpan="10">
+                            <div className="loading">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </td>
+                    </tr>
                 ) : (
                     <div className="product-detail-container">
                         <div className="form-group">
