@@ -38,7 +38,12 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     BigDecimal sumApprovedOrdersLastMonth(@Param("thirtyDaysAgo") LocalDateTime thirtyDaysAgo);
 
     @Query("SELECT SUM(o.orderHTotalPrice) FROM Order o WHERE o.orderHStatus = 'ing' AND o.orderHInsertDate >= :thirtyDaysAgo")
-    BigDecimal sumDeniedOrdersLastMonth(@Param("thirtyDaysAgo") LocalDateTime thirtyDaysAgo);
+    BigDecimal sumIngOrdersLastMonth(@Param("thirtyDaysAgo") LocalDateTime thirtyDaysAgo);
 
+    @Query("SELECT SUM(o.orderHTotalPrice) FROM Order o WHERE o.orderHStatus = 'approved' AND o.orderHInsertDate >= :oneYearAgo")
+    BigDecimal sumIngOrdersLastYear(@Param("oneYearAgo") LocalDateTime oneYearAgo);
+
+    @Query("SELECT SUM(o.orderHTotalPrice) FROM Order o WHERE o.orderHStatus = 'approved' AND o.orderHInsertDate BETWEEN :startDate AND :endDate")
+    BigDecimal sumTotalSalesForPeriod(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
 }

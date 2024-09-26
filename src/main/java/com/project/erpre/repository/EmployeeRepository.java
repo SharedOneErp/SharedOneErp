@@ -39,8 +39,12 @@ public interface EmployeeRepository extends JpaRepository<Employee, String> {
     // 전체 직원 수
     long count();
 
-    // 최근 채용된 직원 수를 특정 기간 내에 조회
+    // 최근 한달간 채용된 직원 수를 조회
     @Query("SELECT COUNT(e) FROM Employee e WHERE e.employeeInsertDate >= CURRENT_DATE - 30")
     long countRecentHires(int days);
+
+    // 최근 한달간 퇴직한 직원 수를 조회
+    @Query("SELECT COUNT(e) FROM Employee e WHERE e.employeeDeleteYn = 'Y' AND e.employeeDeleteDate >= CURRENT_DATE - 30")
+    long countDeletedEmployeesLast30Days();
 
 }

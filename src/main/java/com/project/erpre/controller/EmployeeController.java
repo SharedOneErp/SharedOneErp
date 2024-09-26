@@ -162,4 +162,11 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    @GetMapping("/employeeCountDeleted")
+    public long getCountOfDeletedEmployeesLast30Days() {
+        return employeeService.countDeletedEmployeesLast30Days();
+    }
+
+
 }
