@@ -49,7 +49,9 @@ const ProductRow = React.memo(({
                         onChange={onTopChange}
                 >
                     <option value="">대분류 선택</option>
-                    {topCategories.map((category) => (
+                    {topCategories
+                        .filter((category) => category.categoryNm !== '대분류')
+                        .map((category) => (
                         <option
                             key={category.categoryNo}
                             value={category.categoryNo}>{category.categoryNm}

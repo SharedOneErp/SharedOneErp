@@ -386,7 +386,15 @@ export const useProductHooks = () => {
 
         if (selectedTop) {
             const filteredMiddle = getFilteredCategories(2, selectedTop);
-            setAddMiddleCategories(filteredMiddle); // 중분류 목록 업데이트
+            setAddMiddleCategories(filteredMiddle);
+            setSelectedMiddleCategory('');
+            setAddLowCategories([]);
+            setSelectedLowCategory('');
+        } else {
+            setAddMiddleCategories([]);
+            setSelectedMiddleCategory('');
+            setAddLowCategories([]);
+            setSelectedLowCategory('');
         }
     }
 
@@ -397,7 +405,11 @@ export const useProductHooks = () => {
 
         if (selectedMiddle) {
             const filteredLow = getFilteredCategories(3, selectedMiddle);
-            setAddLowCategories(filteredLow); // 소분류 목록 업데이트
+            setAddLowCategories(filteredLow);
+            setSelectedLowCategory('');
+        } else {
+            setAddLowCategories([]);
+            setSelectedLowCategory('');
         }
     }
 
@@ -516,6 +528,10 @@ export const useProductHooks = () => {
         if (selectedTopCategoryNo) {
             const filteredMiddle = getFilteredCategories(2, selectedTopCategoryNo);
             setFilteredEditMiddleCategories(filteredMiddle);
+            setFilteredEditLowCategories([]);
+        } else {
+            setFilteredEditMiddleCategories([]);
+            setFilteredEditLowCategories([]);
         }
     };
 
@@ -615,7 +631,7 @@ export const useProductHooks = () => {
             return;
         }
 
-        window.confirmCustom("정말 삭제하시겠습니까?").then(result => {
+        window.confirmCustom("해당 항목을 삭제하시겠습니까?").then(result => {
             if (result) {
                 axios.post('/api/products/delete', selectedProducts.length > 0 ? selectedProducts : productsToDelete, {
                     headers: {
@@ -649,7 +665,7 @@ export const useProductHooks = () => {
             return;
         }
 
-        window.confirmCustom("정말 복원하시겠습니까?").then(result => {
+        window.confirmCustom("해당 항목을 복원하시겠습니까?").then(result => {
             if (result) {
                 axios.put('/api/products/restore', productsToRestore, {
                     headers: {

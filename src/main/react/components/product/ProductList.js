@@ -283,10 +283,8 @@ function ProductList() {
                                     topCategories={topCategories}
                                     midCategory={selectedMiddleCategory}
                                     midCategories={addFilteredMiddleCategories}
-                                    //midCategories={addMiddleCategories}
                                     lowCategory={selectedLowCategory}
                                     lowCategories={addFilteredLowCategories}
-                                    //lowCategories={addLowCategories}
                                     handleInputChange={handleInputChange}
                                     onTopChange={handleAddTopCategoryChange} // 대분류 선택 시 호출
                                     onMidChange={handleAddMiddleCategoryChange} // 중분류 필터링
@@ -367,20 +365,21 @@ function ProductList() {
                                             <td>
                                                 <div className='btn_group'>
                                                     {product.productDeleteYn === 'Y' ? (
-                                                        <button className="box icon restore"
+                                                        <button className="box icon hover_text restore"
                                                                 onClick={() => handleRestore(product.productCd)}>
                                                             <i className="bi bi-arrow-clockwise"></i>{/* 복원 */}
                                                         </button>
                                                     ) : (
                                                         <>
-                                                            <button className="box icon edit"
-                                                                    onClick={() => handleOpenModal(product.productCd)}>납품내역
+                                                            <button className="box icon hover_text detail"
+                                                                    onClick={() => handleOpenModal(product.productCd)}>
+                                                                <i className="bi bi-file-earmark-text"></i>
                                                             </button>
-                                                            <button className="box icon edit"
+                                                            <button className="box icon hover_text edit"
                                                                     onClick={() => handleEditClick(product)}>
                                                                 <i className="bi bi-pencil-square"></i>{/* 수정 */}
                                                             </button>
-                                                            <button className="box icon edit"
+                                                            <button className="box icon hover_text del"
                                                                     onClick={() => handleDeleteSelected(product.productCd)}>
                                                                 <i className="bi bi-trash"></i>{/* 삭제 */}
                                                             </button>

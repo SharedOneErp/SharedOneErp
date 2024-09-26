@@ -13,25 +13,18 @@
 .menu_product .table_wrap table th:nth-child(6),
 .menu_product .table_wrap table td:nth-child(6) { width: 13%; /* 소분류 */ }
 .menu_product .table_wrap table th:nth-child(7),
-.menu_product .table_wrap table td:nth-child(7) { width: 15%; /* 가격 */ }
+.menu_product .table_wrap table td:nth-child(7) { width: 13%; /* 가격 */ }
 .menu_product .table_wrap table th:nth-child(8),
-.menu_product .table_wrap table td:nth-child(8) { width: 12%; /* 등록일시 */ }
+.menu_product .table_wrap table td:nth-child(8) { width: 11%; /* 등록일시 */ }
 .menu_product .table_wrap table th:nth-child(9),
-.menu_product .table_wrap table td:nth-child(9) { width: 12%; /* 수정일시 */ }
+.menu_product .table_wrap table td:nth-child(9) { width: 11%; /* 수정일시 */ }
 .menu_product .table_wrap table th:nth-child(10),
-.menu_product .table_wrap table td:nth-child(10) { width: 12%; /* 삭제일시 */ }
+.menu_product .table_wrap table td:nth-child(10) { width: 11%; /* 삭제일시 */ }
 .menu_product .table_wrap table th:nth-child(11),
-.menu_product .table_wrap table td:nth-child(11) { width: 13%; /* 액션 */ }
+.menu_product .table_wrap table td:nth-child(11) { width: 15%; /* 액션 */ }
 /* padding 조절 */
 .menu_product .table_wrap table th,
 .menu_product .table_wrap table td { padding: 12px 8px; text-align: left; }
-/*!* 추가 모드의 테이블 너비 *!*/
-/*.uniform-width th:nth-child(3), !* 상품명 *!*/
-/*.uniform-width th:nth-child(3),*/
-/*.uniform-width th:nth-child(4), !* 대분류 *!*/
-/*.uniform-width td:nth-child(4),*/
-/*.uniform-width th:nth-child(5), !* 중분류 *!*/
-/*.uniform-width td:nth-child(5),*/
-/*.uniform-width th:nth-child(6), !* 소분류 *!*/
-/*.uniform-width td:nth-child(6) {*/
-/*    width: 10%;*/
+/* 버튼 */
+button.box.icon.detail:hover, button.box.icon.detail:active { border-color: #69696970 !important; color: #696969bb; background-color: #69696908 !important; }
+button.box.icon.hover_text.detail:hover i::after { content: '납품내역'; color: #696969bb; }
