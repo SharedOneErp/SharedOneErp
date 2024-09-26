@@ -52,6 +52,8 @@ export const useHooksList = () => {
     low: ''
   }]);
 
+
+
   // 전체목록 조회
   useEffect(() => {
     fetch('/api/category/allPaths')
@@ -154,28 +156,24 @@ export const useHooksList = () => {
     console.log("대분류 변경 시 selectedCategory.top:", selectedCategory.top);
     if (selectedCategory.top) {
       // selectedCategory.top을 숫자로 변환
-      const topValue = Number(selectedCategory.top);
-      const filteredMiddle = allCategories.filter(cat => cat.parentCategoryNo === topValue);
+      const filteredMiddle = allCategories.filter(cat => cat.parentCategoryNo === selectedCategory.top);
       console.log("필터링된 중분류:", filteredMiddle);
       setMidCategories(filteredMiddle);
     } else {
       setMidCategories([]);
     }
-    setSelectedCategory(prev => ({ ...prev, middle: '', low: '' }));
     setLowCategories([]);
   }, [selectedCategory.top, allCategories]);
 
   // 🟡 중분류 변경 시 소분류 필터링
   useEffect(() => {
     if (selectedCategory.middle) {
-      const middleValue = Number(selectedCategory.middle);
-      const filteredLow = allCategories.filter(cat => cat.parentCategoryNo === middleValue);
+      const filteredLow = allCategories.filter(cat => cat.parentCategoryNo === selectedCategory.middle);
       console.log("필터링된 소분류:", filteredLow);
       setLowCategories(filteredLow);
     } else {
       setLowCategories([]);
     }
-    setSelectedCategory(prev => ({ ...prev, low: '' }));
   }, [selectedCategory.middle, allCategories]);
 
 
@@ -198,6 +196,13 @@ export const useHooksList = () => {
         selectedCate = topCategories.find(cate => cate.categoryNo === selectedCategory.top);
       }
 
+
+      // 수정할 카테고리가 없으면 경고 메시지 출력
+      if (!selectedCate) {
+        window.showToast("수정할 카테고리를 선택하세요.", "error");
+        return;
+      }
+
       const updateCategoryName = prompt("새로운 카테고리 명을 입력하세요", selectedCate ? selectedCate.categoryNm : "");
 
       if (!updateCategoryName || updateCategoryName.trim() === "") {
@@ -217,28 +222,59 @@ export const useHooksList = () => {
           parentCategoryNo: selectedCate.parentCategoryNo
         }),
       })
-        .then(response => response.json())
-        .then(data => {
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(error => {
+              throw new Error(error.message);
+            });
+          }
+          // 수정 성공 메시지 출력
           window.showToast('카테고리가 수정되었습니다.');
 
+          // 대분류 중분류 소분류에 따라 상태를 업데이트
+          const updateCategoryList = (categories, setCategories) => {
+            const updatedCategories = categories.map(cate =>
+              cate.categoryNo === selectedCate.categoryNo ? { ...cate, categoryNm: updateCategoryName } : cate
+            );
+            setCategories(updatedCategories);
+          };
+
+          // 수정된 카테고리 레벨에 따라 상태 업데이트
           if (selectedCate.categoryLevel === 1) {
-            const updatedCategory = topCategories.map(cate =>
+            updateCategoryList(topCategories, setTopCategories);
+
+            // 전체 카테고리 배열(allCategories) 업데이트
+            setAllCategories(prevCategories => prevCategories.map(cate =>
               cate.categoryNo === selectedCate.categoryNo ? { ...cate, categoryNm: updateCategoryName } : cate
-            );
-            setTopCategories(updatedCategory);
+            ));
+
+            //수정 후 모든 카테고리에서 중분류와 소분류를 다시 필터링
+            const filteredMidCategories = allCategories.filter(cate => cate.parentCategoryNo === selectedCate.categoryNo);
+            setMidCategories(filteredMidCategories);
+            setLowCategories([]);
+
           } else if (selectedCate.categoryLevel === 2) {
-            const updatedCategory = midCategories.map(cate =>
+            updateCategoryList(midCategories, setMidCategories);
+
+            // 전체 카테고리 배열(allCategories) 업데이트
+            setAllCategories(prevCategories => prevCategories.map(cate =>
               cate.categoryNo === selectedCate.categoryNo ? { ...cate, categoryNm: updateCategoryName } : cate
-            );
-            setMidCategories(updatedCategory);
+            ));
+
           } else if (selectedCate.categoryLevel === 3) {
-            const updatedCategory = lowCategories.map(cate =>
+            updateCategoryList(lowCategories, setLowCategories);
+
+            // 전체 카테고리 배열(allCategories) 업데이트
+            setAllCategories(prevCategories => prevCategories.map(cate =>
               cate.categoryNo === selectedCate.categoryNo ? { ...cate, categoryNm: updateCategoryName } : cate
-            );
-            setLowCategories(updatedCategory);
+            ));
           }
         })
-        .catch(error => console.error('카테고리 수정 실패:', error));
+        .catch(error => {
+          console.error('카테고리 수정 실패:', error);
+          window.showToast('카테고리 수정 중 오류가 발생했습니다.', "error");
+        });
+
     } else {
       window.showToast("수정할 카테고리를 선택하세요.", "error");
     }
@@ -269,6 +305,11 @@ export const useHooksList = () => {
             .then(response => {
               if (response.ok) {
                 window.showToast('카테고리가 삭제되었습니다.');
+
+                // 전체 카테고리 배열(allCategories)에서 삭제된 카테고리 제거
+                setAllCategories(prevCategories =>
+                  prevCategories.filter(cate => cate.categoryNo !== selectedCate.categoryNo)
+                );
 
                 if (selectedCate.categoryLevel === 1) {
                   const updatedCategory = topCategories.filter(cate => cate.categoryNo !== selectedCate.categoryNo);
@@ -367,7 +408,7 @@ export const useHooksList = () => {
       return; // 이미 요청 중일 때는 추가 요청을 막음
     }
 
-    let categoryName = ''; // 변경 필요 때문 let 사용
+    let categoryName = '';
     let parentCategoryNo = null;
 
     if (categoryLevel === 1) {
@@ -425,24 +466,33 @@ export const useHooksList = () => {
         return response.json();
       })
       .then(data => {
+        // 전체 카테고리 리스트에 새로 추가된 카테고리 반영
+        setAllCategories(prevCategories => [...prevCategories, data]);
+
         // 카테고리 레벨에 따른 리스트 업데이트
         if (categoryLevel === 1) {
           setTopCategories(prevCategory => [...prevCategory, data]);
-          setInsertedTopList([...insertedTopList, data]);
-          setSelectedCategory(prev => ({ ...prev, top: data.categoryNo })); // 등록 시 업데이트
+
+          // 기존배열에 바로 반영함
+          setSelectedCategory(prev => ({
+            ...prev,
+            top: data.categoryNo,
+            middle: '',
+            low: ''
+          })); // 등록 시 업데이트
           setInsertTop('');
           window.showToast('대분류 카테고리가 추가되었습니다.');
 
         } else if (categoryLevel === 2) {
           setMidCategories(prevCategory => [...prevCategory, data]);
-          setInsertedMidList([...insertedMidList, data]);
+
           setSelectedCategory(prev => ({ ...prev, middle: data.categoryNo }));
           setInsertMid('');
           window.showToast('중분류 카테고리가 추가되었습니다.');
 
         } else if (categoryLevel === 3) {
           setLowCategories(prevCategory => [...prevCategory, data]);
-          setInsertedLowList([...insertedLowList, data]);
+
           setSelectedCategory(prev => ({ ...prev, low: data.categoryNo }));
           setInsertLow('');
           window.showToast('소분류 카테고리가 추가되었습니다.');

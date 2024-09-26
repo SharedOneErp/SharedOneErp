@@ -43,8 +43,8 @@
 .cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap .empty_wrap i { margin-right: 5px; } 
 /* 리스트 스타일 */
 .cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap ul.list { list-style-type: none; padding-left: 0; margin: 10px 0; } 
-.cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap ul.list .category-span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 85%; display: inline-block; }
-.cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap ul.list li { position: relative; margin-bottom: 5px; cursor: pointer; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); padding: 8px; text-align: center; overflow: hidden; } 
+.cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap ul.list .category-span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 85%; display: inline-block; } 
+.cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap ul.list li { position: relative; margin-bottom: 5px; cursor: pointer; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); padding: 8px; text-align: center; overflow: hidden; display: flex; align-items: center; justify-content: center; } 
 /* 화살표 아이콘 */
 .cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap ul.list li i { position: absolute; right: 6px; } 
 .cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap ul.list li.selected { border-color: #007CC1; color: #007CC1; font-weight: 600; } 
@@ -57,7 +57,7 @@
 .cate_modal .edit_wrap .level_wrap .content_wrap .input-wrap .search_box input.box.has_text { border-color: #007CC1; } 
 
 /* 선택된 카테고리 */
-.cate_modal .btn_wrap .selected-cate {position: relative; margin-bottom: 5px;  pointer-events: none; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); padding: 8px; text-align: center; border: 1px solid #007CC1; color: #007CC1; font-weight: 600; width: 35%; margin-left: auto; height: 40px; }
-.selected-cate { position: relative; width: 100%; }
-.input-field { width: 100%; font-size: 16px; box-sizing: border-box; display: inline-block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 85%; display: inline-block; }
-.floating-label { position: absolute; font-size: 12px; top: 0%; left: 10px; transform: translateY(-50%); color: #007CC1; pointer-events: none; transition: 0.2s ease all; background-color: white; }
+.cate_modal .btn_wrap .selected-cate { position: relative; margin-bottom: 5px; pointer-events: none; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); padding: 8px; text-align: center; border: 1px solid #007CC1; color: #007CC1; font-weight: 600; width: 35%; margin-left: auto; height: 40px; } 
+.selected-cate { position: relative; width: 100%; } 
+.input-field { width: 100%; font-size: 16px; box-sizing: border-box; display: inline-block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 85%; display: inline-block; } 
+.floating-label { position: absolute; font-size: 12px; top: 0%; left: 10px; transform: translateY(-50%); color: #007CC1; pointer-events: none; transition: 0.2s ease all; background-color: white; } 
