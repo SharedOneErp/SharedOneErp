@@ -38,7 +38,7 @@ function Order() {
 
         if (selectedProductIndex !== null) {
 
-            if (isEditMode) {
+            if (isEditMode || isResubmitMode) {
                 const updatedOrderDetails = [...orderDetails];
                 updatedOrderDetails[selectedProductIndex] = {
                     ...updatedOrderDetails[selectedProductIndex],
@@ -193,6 +193,7 @@ function Order() {
         isCreateMode,  // 현재 주문이 등록 모드인지 확인
         isEditMode,    // 현재 주문이 수정 모드인지 확인
         isDetailView,  // 현재 주문이 상세보기 모드인지 확인
+        isResubmitMode, // 반려 주문을 수정 모드에서 등록하는지 확인
 
         // 주문 번호 관련 상태
         orderNo,       // 현재 주문 번호
@@ -217,6 +218,7 @@ function Order() {
         // 주문 생성 및 수정 함수
         handleSubmit,   // 주문 생성 처리 함수
         handleEdit,     // 주문 수정 처리 함수
+        handleResubmit,
 
         // 날짜 관련 함수
         formatDateForInput,  // 날짜를 yyyy-mm-dd 형식으로 변환하는 함수
@@ -236,13 +238,13 @@ function Order() {
             <main className="main-content menu_order">
                 <div className="menu_title">
                     <div className="sub_title">영업 관리</div>
-                    <div className="main_title">{isCreateMode ? '주문 등록' : isEditMode ? '주문 수정' : '주문 상세보기'}</div>
+                    <div className="main_title">{isCreateMode ? '주문 등록' : isEditMode || isResubmitMode ? '주문 수정' : '주문 상세보기'}</div>
                 </div>
                 <div className="menu_content">
                     <div className="search_wrap">
                         <div className="left">
                             <div className="form-row">
-                                {orderNo && (
+                                {orderNo && !isResubmitMode && (
                                     <div className="form-group">
                                         <label>주문번호</label>
                                         <input type="text" value={orderNo} readOnly className="box readonly" />
@@ -258,13 +260,13 @@ function Order() {
                                     <button
                                         className="search-button"
                                         onClick={() => setCustomerModalOpen(true)}
-                                        style={{ display: !isEditMode && !isCreateMode ? 'none' : 'block' }}
+                                        style={{ display: !isEditMode && !isCreateMode && !isResubmitMode ? 'none' : 'block' }}
                                     >
                                         <i className="bi bi-search"></i>
                                     </button>
                                 </div>
 
-                                {!isCreateMode && (
+                                {!isCreateMode && !isResubmitMode && (
                                     <>
                                         <div className="form-group">
                                             <label>물품 총액</label>
@@ -365,8 +367,9 @@ function Order() {
                                         placeholder="고객사 선택" readOnly />
                                 </div>
 
-                                {!isCreateMode &&
+                                {!isCreateMode && !isResubmitMode &&(
                                     <div className="form-group">
+
                                         <label>현재 주문 상태</label>
                                         <span className={`order-status ${orderHStatus}`}>
                                             {/* 상태에 따른 한글로 텍스트 변경 */}
@@ -375,17 +378,20 @@ function Order() {
                                             {orderHStatus === 'approved' && '결재완료'}
                                         </span>
                                     </div>
-                                }
+                                )}
                             </div>
 
                         </div>
                         <div className="right">
-                            {/* 제품 추가 버튼 - 생성 모드 또는 수정 모드에서만 표시 */}
-                            {(isCreateMode || isEditMode) && customerData.customerName && orderHStatus !== 'approved' && orderHStatus !== 'denied' && (
-                                <button className="box color" onClick={isCreateMode ? addProductRow : editProductRow}>
-                                    <i className="bi bi-plus-circle"></i> 추가하기
-                                </button>
-                            )}
+                            {/* 제품 추가 버튼 - 생성 모드 또는 수정 모드(재생성모드) 에서만 표시 */}
+                            {(isCreateMode || isEditMode || isResubmitMode) &&
+                                customerData.customerName &&
+                                orderHStatus !== 'approved' &&
+                                ((isResubmitMode && orderHStatus === 'denied') || orderHStatus !== 'denied') && (
+                                    <button className="box color" onClick={isCreateMode ? addProductRow : editProductRow}>
+                                        <i className="bi bi-plus-circle"></i> 추가하기
+                                    </button>
+                                )}
                         </div>
                     </div>
                     <div className="table_wrap">
@@ -398,13 +404,13 @@ function Order() {
                                     <th>단가</th>
                                     <th>수량</th>
                                     <th>총 금액</th>
-                                    {(isCreateMode || isEditMode) && <th style={{ width: '100px' }}>삭제</th>}
+                                    {(isCreateMode || isEditMode || isResubmitMode) && <th style={{ width: '100px' }}>삭제</th>}
                                 </tr>
                             </thead>
                             <tbody>
                                 {/* 하나의 데이터 소스를 조건에 맞게 사용 */}
                                 {customerData.customerName ? (
-                                    (isCreateMode ? products : isEditMode ? displayItemEdit : displayItems || []).map((item, index) => (
+                                    (isCreateMode ? products : isEditMode || isResubmitMode ? displayItemEdit : displayItems || []).map((item, index) => (
                                         <tr key={index}>
                                             <td>{index + 1}</td>
                                             <td>
@@ -413,7 +419,7 @@ function Order() {
                                                     className="box"
                                                     value={isCreateMode
                                                         ? item?.name || ''
-                                                        : isEditMode || isDetailView
+                                                        : isEditMode|| isResubmitMode || isDetailView
                                                             ? item?.productNm || ''
                                                             : ''}
                                                     readOnly
@@ -426,7 +432,7 @@ function Order() {
                                                         }
                                                     }}
                                                 />
-                                                {(isCreateMode || isEditMode) && (
+                                                {(isCreateMode || isEditMode || isResubmitMode ) && (
                                                     <button className="search-button" onClick={() => openProductModal(index)}>
                                                         <i className="bi bi-search"></i>
                                                     </button>
@@ -439,10 +445,10 @@ function Order() {
                                                     className="box"
                                                     value={isCreateMode
                                                         ? (item?.price !== undefined ? item.price.toLocaleString() : '')
-                                                        : isEditMode
+                                                        : isEditMode || isResubmitMode
                                                             ? (item?.orderDPrice !== undefined ? item.orderDPrice.toLocaleString() : '')
                                                             : item?.orderDPrice?.toLocaleString() || ''}
-                                                    readOnly={!isEditMode && !isCreateMode}
+                                                    readOnly={!isEditMode && !isResubmitMode && !isCreateMode}
                                                     placeholder="단가 입력"
                                                     onChange={(e) => {
                                                         // 콤마를 제거한 숫자만 추출
@@ -450,7 +456,7 @@ function Order() {
 
                                                         if (isCreateMode) {
                                                             handleProductChange(index, 'price', numericValue);
-                                                        } else if (isEditMode) {
+                                                        } else if (isEditMode || isResubmitMode) {
                                                             handleProductEdit(index, 'orderDPrice', numericValue);
                                                         }
                                                     }}
@@ -462,10 +468,10 @@ function Order() {
                                                     className="box"
                                                     value={isCreateMode
                                                         ? (item?.quantity !== undefined ? item.quantity.toLocaleString() : 0)
-                                                        : isEditMode
+                                                        : isEditMode || isResubmitMode
                                                             ? (item?.orderDQty !== undefined ? item.orderDQty.toLocaleString() : 0)
                                                             : item?.orderDQty?.toLocaleString() || 0}
-                                                    readOnly={!isEditMode && !isCreateMode}
+                                                    readOnly={!isEditMode && !isResubmitMode && !isCreateMode}
                                                     placeholder="수량 입력"
                                                     onChange={(e) => {
                                                         // 콤마를 제거한 숫자만 추출
@@ -474,7 +480,7 @@ function Order() {
                                                         // 상태 업데이트: 콤마 없는 숫자를 상태에 저장
                                                         if (isCreateMode) {
                                                             handleProductChange(index, 'quantity', numericValue);
-                                                        } else if (isEditMode) {
+                                                        } else if (isEditMode || isResubmitMode) {
                                                             handleProductEdit(index, 'orderDQty', numericValue);
                                                         }
                                                     }}
@@ -483,16 +489,16 @@ function Order() {
                                             <td>
                                                 {((isCreateMode ? (item?.price || 0) * (item?.quantity || 0) : item?.orderDPrice * item?.orderDQty) || 0).toLocaleString()}
                                             </td>
-                                            {(isCreateMode || isEditMode) && (
+                                            {(isCreateMode || isEditMode || isResubmitMode) && (
                                                 <td style={{ width: '100px' }}>
                                                     <button className="box icon del" onClick={() => {
-                                                        const currentProducts = isCreateMode ? products : isEditMode ? displayItemEdit : displayItems || [];
+                                                        const currentProducts = isCreateMode ? products : isEditMode || isResubmitMode ? displayItemEdit : displayItems || [];
                                                         // 상품이 없을 경우 알림 표시
                                                         if (currentProducts.length > 1) {
                                                             if (isCreateMode) {
                                                                 console.log("생성모드");
                                                                 removeProductRow(index);
-                                                            } else if (isEditMode) {
+                                                            } else if (isEditMode || isResubmitMode) {
                                                                 console.log("수정모드");
                                                                 removeProducteditRow(index);
                                                             }
@@ -508,7 +514,7 @@ function Order() {
                                             <td style={{ display: 'none' }}>
                                                 <input
                                                     type="text"
-                                                    value={isCreateMode ? item?.code : isEditMode ? item?.productCd : item?.productCd || ''}
+                                                    value={isCreateMode ? item?.code : isEditMode || isResubmitMode ? item?.productCd : item?.productCd || ''}
                                                     readOnly
                                                 />
                                             </td>
@@ -531,7 +537,7 @@ function Order() {
                             <tr>
                                 <td colSpan="5" style={{ textAlign: 'right', fontWeight: 'bold', padding: '12px 8px' }}>총 금액 :
                                     <span style={{ marginLeft: "5px" }}>{(
-                                        (isCreateMode ? products : isEditMode ? displayItemEdit : displayItems || [])
+                                        (isCreateMode ? products : isEditMode || isResubmitMode ? displayItemEdit : displayItems || [])
                                             .reduce((sum, item) => sum + (isCreateMode ? item?.price || 0 : item?.orderDPrice || 0) * (isCreateMode ? item?.quantity || 0 : item?.orderDQty || 0), 0)
                                     ).toLocaleString()} 원</span>
                                 </td>
@@ -541,6 +547,11 @@ function Order() {
 
                     <div className="order-buttons">
                         {isCreateMode && <button className="box color" onClick={handleSubmit}>결재 요청</button>}
+                        {isResubmitMode && (
+                            <button className="box color" onClick={() => handleResubmit(orderNo)}>
+                                 결재 재요청
+                            </button>
+                        )}
                         {isEditMode && orderHStatus === 'ing' && (<button className="box color" onClick={() => handleEdit(orderNo)}><i className="bi bi-floppy"></i> 주문 수정</button>)}
                         {isDetailView && role === 'admin' && orderHStatus === 'ing' && (
                             <>
@@ -554,6 +565,8 @@ function Order() {
                         )}
                         {isDetailView && orderHStatus === 'ing' && (
                             <button className="box color" onClick={() => window.location.href = `/order?no=${orderNo}&mode=edit`}>수정</button>)}
+                        {isDetailView && orderHStatus === 'denied' && (
+                            <button className="box color" onClick={() => window.location.href = `/order?no=${orderNo}&mode=resubmit`}>수정</button>)}
                     </div>
                 </div>
             </main>
