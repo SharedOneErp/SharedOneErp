@@ -122,9 +122,9 @@
 .table_wrap1 table th:nth-child(3),
 .table_wrap1 table td:nth-child(3) {width: 14%;} /* 수량 */
 .table_wrap1 table th:nth-child(4),
-.table_wrap1 table td:nth-child(4) {width: 17%;} /* 판매 가격 */
+.table_wrap1 table td:nth-child(4) {width: 17%;} /* 납품가 */
 .table_wrap1 table th:nth-child(5),
-.table_wrap1 table td:nth-child(5) {width: 17%;} /* 매출액(원) */
+.table_wrap1 table td:nth-child(5) {width: 20%;} /* 매출액(원) */
 .table_wrap1 table th:nth-child(6),
 .table_wrap1 table td:nth-child(6) {width: 10%;} /* 담당자 */
 /* 🟢 로딩 중, 데이터가 없을 때 */
