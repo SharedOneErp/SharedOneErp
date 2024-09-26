@@ -598,6 +598,10 @@ export const useHooksList = () => {
 
     // 반려된 주문을 다시 제출
     const handleResubmit = async (orderNo) => {
+
+        if (isSubmitting) return; // 이미 처리 중이면 중지
+        isSubmitting = true; // 처리 중 상태로 변경
+
         try {
             // 반려된 주문 정보 가져오기
             const deliveryDateElement = document.querySelector('.delivery-date');
@@ -683,6 +687,8 @@ export const useHooksList = () => {
         } catch (error) {
             console.error('주문 재제출 중 오류 발생:', error.message);
             window.showToast("주문 재제출 중 오류가 발생했습니다.", 'error');
+        }finally {
+            isSubmitting=false;
         }
     };
 
