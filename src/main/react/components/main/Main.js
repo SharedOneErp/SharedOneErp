@@ -66,7 +66,7 @@ function Main() {
                 setTotalEmployees(employeesResponse.data);
                 setRecentHiresCount(recentHiresResponse.data);
                 setTotalCustomers(customersResponse.data);
-                setTotalSales(totalSalesResponse.data);
+                setTotalSales(totalSalesResponse.data || 0);
                 const { totalProductCount, recentProductCount } = productCountsResponse.data;
                 setTotalProductCount(totalProductCount);
                 setRecentProductCount(recentProductCount);
@@ -120,7 +120,7 @@ function Main() {
                     <div className="info-group">
                         <p><i className="bi bi-box"></i> 상품 전체 수량: {totalProductCount.toLocaleString()}개</p>
                         <p><i className="bi bi-star-fill"></i> 신상품 등록: {recentProductCount.toLocaleString()}개</p>
-                        <p><i className="bi bi-box-seam"></i> 최근 판매량: {totalSales.toLocaleString()}개</p>
+                        <p><i className="bi bi-box-seam"></i> 최근 판매량 : {totalSales.toLocaleString()}개</p>
                         <p><i className="bi bi-list-check"></i> 월간 총 매출: ₩{last30DaysSales.toLocaleString()}</p>
                     </div>
                 </div>
