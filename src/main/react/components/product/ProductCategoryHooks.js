@@ -201,7 +201,7 @@ export const useHooksList = () => {
       const updateCategoryName = prompt("새로운 카테고리 명을 입력하세요", selectedCate ? selectedCate.categoryNm : "");
 
       if (!updateCategoryName || updateCategoryName.trim() === "") {
-        alert("수정이 취소되었습니다.");
+        window.showToast("수정이 취소되었습니다.");
         return;
       }
 
@@ -219,7 +219,7 @@ export const useHooksList = () => {
       })
         .then(response => response.json())
         .then(data => {
-          alert('카테고리가 수정되었습니다.');
+          window.showToast('카테고리가 수정되었습니다.');
 
           if (selectedCate.categoryLevel === 1) {
             const updatedCategory = topCategories.map(cate =>
@@ -240,7 +240,7 @@ export const useHooksList = () => {
         })
         .catch(error => console.error('카테고리 수정 실패:', error));
     } else {
-      alert("수정할 카테고리를 선택하세요.");
+      window.showToast("수정할 카테고리를 선택하세요.", "error");
     }
   };
 
@@ -268,7 +268,7 @@ export const useHooksList = () => {
           })
             .then(response => {
               if (response.ok) {
-                alert('카테고리가 삭제되었습니다.');
+                window.showToast('카테고리가 삭제되었습니다.');
 
                 if (selectedCate.categoryLevel === 1) {
                   const updatedCategory = topCategories.filter(cate => cate.categoryNo !== selectedCate.categoryNo);
@@ -305,7 +305,7 @@ export const useHooksList = () => {
       });
 
     } else {
-      alert("삭제할 카테고리를 선택하세요.");
+      window.showToast("삭제할 카테고리를 선택하세요.", "error");
     }
   };
 
@@ -372,18 +372,18 @@ export const useHooksList = () => {
 
     if (categoryLevel === 1) {
       if (!insertTop.trim()) {
-        alert('대분류 값을 입력하세요.');
+        window.showToast('대분류 값을 입력하세요.', "error");
         return;
       }
       categoryName = insertTop;
 
     } else if (categoryLevel === 2) {
       if (!selectedCategory.top) {
-        alert('상위 카테고리를 먼저 선택하세요.');
+        window.showToast('상위 카테고리를 먼저 선택하세요.', "error");
         return;
       }
       if (!insertMid.trim()) {
-        alert('중분류 값을 입력하세요.');
+        window.showToast('중분류 값을 입력하세요.', "error");
         return;
       }
       categoryName = insertMid;
@@ -391,11 +391,11 @@ export const useHooksList = () => {
 
     } else if (categoryLevel === 3) {
       if (!selectedCategory.middle) {
-        alert('상위 카테고리를 먼저 선택하세요.');
+        window.showToast('상위 카테고리를 먼저 선택하세요.', "error");
         return;
       }
       if (!insertLow.trim()) {
-        alert('소분류 값을 입력하세요.');
+        window.showToast('소분류 값을 입력하세요.', "error");
         return;
       }
       categoryName = insertLow;
@@ -431,25 +431,25 @@ export const useHooksList = () => {
           setInsertedTopList([...insertedTopList, data]);
           setSelectedCategory(prev => ({ ...prev, top: data.categoryNo })); // 등록 시 업데이트
           setInsertTop('');
-          alert('대분류 카테고리가 추가되었습니다.');
+          window.showToast('대분류 카테고리가 추가되었습니다.');
 
         } else if (categoryLevel === 2) {
           setMidCategories(prevCategory => [...prevCategory, data]);
           setInsertedMidList([...insertedMidList, data]);
           setSelectedCategory(prev => ({ ...prev, middle: data.categoryNo }));
           setInsertMid('');
-          alert('중분류 카테고리가 추가되었습니다.');
+          window.showToast('중분류 카테고리가 추가되었습니다.');
 
         } else if (categoryLevel === 3) {
           setLowCategories(prevCategory => [...prevCategory, data]);
           setInsertedLowList([...insertedLowList, data]);
           setSelectedCategory(prev => ({ ...prev, low: data.categoryNo }));
           setInsertLow('');
-          alert('소분류 카테고리가 추가되었습니다.');
+          window.showToast('소분류 카테고리가 추가되었습니다.');
         }
       })
       .catch(error => {
-        alert(error.message);
+        window.showToast(error.message, "error");
         console.error('카테고리 추가 실패:', error);
       })
       .finally(() => {
@@ -463,7 +463,7 @@ export const useHooksList = () => {
   //중분류 추가 버튼
   const handleMidAddButton = () => {
     if (!insertMid) {
-      alert('중분류 값을 입력하세요')
+      window.showToast('중분류 값을 입력하세요', "error")
     }
   }
 
