@@ -93,7 +93,9 @@ function ProductList() {
                             <select className="box" value={filterTopCategory}
                                     onChange={handleFilterTopCategoryChange}>
                                 <option value="">대분류</option>
-                                {topCategories.map((category) => (
+                                {topCategories
+                                    .filter((category) => category.categoryNm !== '대분류')
+                                    .map((category) => (
                                     <option key={category.categoryNo} value={category.categoryNo}>
                                         {category.categoryNm}
                                     </option>
@@ -112,7 +114,7 @@ function ProductList() {
                             </select>
                             <select className="box" value={filterLowCategory}
                                     onChange={handleFilterLowCategoryChange}
-                                    disabled={!filterMiddleCategory}>
+                                    disabled={!filterTopCategory || !filterMiddleCategory}>
                                 <option value="">소분류</option>
                                 {lowCategories
                                     .map((category, index) => (
