@@ -143,9 +143,14 @@ public class EmployeeService {
         return employeeRepository.count();
     }
 
-    // 최근 채용된 직원 수 가져오기
+    // 최근 한달간 채용된 직원 수 가져오기
     public long getRecentHiresCount(int days) {
         return employeeRepository.countRecentHires(days);
+    }
+
+    // 최근 한달간 은퇴한 직원수 가져오기
+    public long countDeletedEmployeesLast30Days() {
+        return employeeRepository.countDeletedEmployeesLast30Days();
     }
 
 }

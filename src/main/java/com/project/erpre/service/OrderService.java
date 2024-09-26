@@ -211,10 +211,10 @@ public class OrderService {
         return orderRepository.sumApprovedOrdersLastMonth(thirtyDaysAgoDateTime);
     }
 
-    public BigDecimal getDeniedTotalAmount() {
+    public BigDecimal getIngTotalAmount() {
         LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
         LocalDateTime thirtyDaysAgoDateTime = thirtyDaysAgo.atStartOfDay(); // LocalDateTime으로 변환
-        return orderRepository.sumDeniedOrdersLastMonth(thirtyDaysAgoDateTime);
+        return orderRepository.sumIngOrdersLastMonth(thirtyDaysAgoDateTime);
     }
 
     public String getSettlementDeadline() {
@@ -231,7 +231,17 @@ public class OrderService {
     }
 
 
+    public BigDecimal getTotalSalesLastYear() {
+        LocalDateTime oneYearAgo = LocalDateTime.now().minusYears(1);
+        return orderRepository.sumIngOrdersLastYear(oneYearAgo);
+    }
 
+    // 오늘부터 30일간의 매출 계산
+    public BigDecimal getTotalSalesLast30Days() {
+        LocalDateTime today = LocalDateTime.now(); // 현재 날짜와 시간
+        LocalDateTime thirtyDaysAgo = today.minusDays(30); // 30일 전 날짜 계산
+        return orderRepository.sumTotalSalesForPeriod(thirtyDaysAgo, today);
+    }
 
 
 

@@ -241,16 +241,28 @@ public class OrderController {
     public ResponseEntity<?> getSettlementInfo() {
         try {
             BigDecimal approvedTotal = orderService.getApprovedTotalAmount();
-            BigDecimal deniedTotal = orderService.getDeniedTotalAmount();
+            BigDecimal ingTotal = orderService.getIngTotalAmount();
             String settlementDeadline = orderService.getSettlementDeadline();
 
-            SettlementResponse response = new SettlementResponse(approvedTotal, deniedTotal, settlementDeadline);
+            SettlementResponse response = new SettlementResponse(approvedTotal, ingTotal, settlementDeadline);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("정산 정보 조회 중 오류 발생: ", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/annual")
+    public BigDecimal getTotalSalesLastYear() {
+        return orderService.getTotalSalesLastYear();
+    }
+
+    // 오늘부터 30일 동안의 매출 계산
+    @GetMapping("/lastMonth")
+    public BigDecimal getTotalSalesLast30Days() {
+        return orderService.getTotalSalesLast30Days();
+    }
+
 
     // 정산 총액 정보를 담을 DTO 클래스
     @Data
