@@ -5,6 +5,8 @@ import com.project.erpre.repository.CustomerRepository;
 import com.project.erpre.repository.EmployeeRepository;
 import com.project.erpre.service.OrderService;
 import com.project.erpre.service.ProductService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -211,4 +214,69 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/count")
+    public long getOrderCount() {
+        return orderService.getTotalOrderCount();
+    }
+
+    // 상태별 주문 수 조회
+    @GetMapping("/status/count")
+    public ResponseEntity<?> getOrderCountByStatus() {
+        try {
+            // 결재중(ing), 결재완료(approved), 반려(denied) 상태별 주문 수 계산
+            long ingCount = orderService.countOrdersByStatus("ing");
+            long approvedCount = orderService.countOrdersByStatus("approved");
+            long deniedCount = orderService.countOrdersByStatus("denied");
+
+            // 결과를 객체로 반환
+            return new ResponseEntity<>(new OrderStatusCount(ingCount, approvedCount, deniedCount), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    // 정산 정보 조회 API
+    @GetMapping("/settlement")
+    public ResponseEntity<?> getSettlementInfo() {
+        try {
+            BigDecimal approvedTotal = orderService.getApprovedTotalAmount();
+            BigDecimal deniedTotal = orderService.getDeniedTotalAmount();
+            String settlementDeadline = orderService.getSettlementDeadline();
+
+            SettlementResponse response = new SettlementResponse(approvedTotal, deniedTotal, settlementDeadline);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("정산 정보 조회 중 오류 발생: ", e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // 정산 총액 정보를 담을 DTO 클래스
+    @Data
+    @AllArgsConstructor
+    static class SettlementTotalsResponse {
+        private BigDecimal approvedTotal;
+        private BigDecimal deniedTotal;
+    }
+
+    // 정산 정보를 담을 DTO 클래스
+    @Data
+    @AllArgsConstructor
+    static class SettlementResponse {
+        private BigDecimal approvedTotal;
+        private BigDecimal deniedTotal;
+        private String settlementDeadline;
+    }
+
+    // 상태별 주문 수를 담을 DTO 클래스
+    @Data
+    @AllArgsConstructor
+    static class OrderStatusCount {
+        private long ingCount;
+        private long approvedCount;
+        private long deniedCount;
+    }
 }
+
+

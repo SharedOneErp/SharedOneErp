@@ -518,10 +518,10 @@ function OrderList() {
                             {itsAssignedMode && role === 'admin' && (
                                 <>
                                     <button className="box color" onClick={handleApproveSelectedOrders}>
-                                        결재승인
+                                        결재
                                     </button>
                                     <button className="box" onClick={handleDeniedSelectedOrders}>
-                                        반려요청
+                                        반려
                                     </button>
                                 </>
                             )}

@@ -4,8 +4,12 @@ import com.project.erpre.model.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,4 +35,12 @@ public interface EmployeeRepository extends JpaRepository<Employee, String> {
     List<Employee> findByEmployeeDeleteYn(String employeeDeleteYn); //N인것만
 
     boolean existsByEmployeeId(String employeeId); //삭제 된 것도 포함해서 중복ID 가입 불가
+
+    // 전체 직원 수
+    long count();
+
+    // 최근 채용된 직원 수를 특정 기간 내에 조회
+    @Query("SELECT COUNT(e) FROM Employee e WHERE e.employeeInsertDate >= CURRENT_DATE - 30")
+    long countRecentHires(int days);
+
 }

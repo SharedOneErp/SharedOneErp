@@ -142,5 +142,9 @@ public class OrderDetailService {
         return orderDetailRepository.findByOrderOrderNo(orderNo);
     }
 
+    public Long getTotalOrderQuantity() {
+        return orderDetailRepository.sumOrderDQty(); // 모든 판매량을 합산한 값 반환
+    }
+
 
 }

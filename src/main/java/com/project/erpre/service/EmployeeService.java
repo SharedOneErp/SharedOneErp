@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -134,4 +136,16 @@ public class EmployeeService {
     public boolean existsByEmployeeId(String employeeId) {
         return employeeRepository.existsById(employeeId);
     }
+
+
+    // 전체 직원 수 가져오기
+    public long getTotalEmployeeCount() {
+        return employeeRepository.count();
+    }
+
+    // 최근 채용된 직원 수 가져오기
+    public long getRecentHiresCount(int days) {
+        return employeeRepository.countRecentHires(days);
+    }
+
 }

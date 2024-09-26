@@ -89,4 +89,12 @@ public class OrderDetailController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/api/totalSales")
+    public ResponseEntity<Long> getTotalSales() {
+        Long totalSales = orderDetailService.getTotalOrderQuantity();
+        return ResponseEntity.ok(totalSales);
+    }
+
+
 }
