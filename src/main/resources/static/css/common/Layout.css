@@ -175,7 +175,7 @@ input[type="checkbox"]:disabled + .chkbox_icon .bi-check-lg { color: #f6f6f6; }
 @keyframes loading { 0%, 100% { opacity: 0; transform: scale(0.5); } 
 50% { opacity: 1; transform: scale(1.2); } 
  }
-.table_wrap .no_data { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center; font-size: 18px; color: #999; font-weight: 500; } 
+.table_wrap .no_data { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center; font-size: 18px; color: #999; font-weight: 500;cursor: default; } 
 .table_wrap .no_data i { margin-right: 5px; margin-top: 2px; } 
 /* 모달 속 table */
 .modal_container.search .table_wrap table { min-height: 472px; } 

@@ -10,6 +10,7 @@ import { add, format } from 'date-fns';
 import { useDebounce } from '../common/useDebounce';
 
 function EmployeeList() {
+    const [loading, setLoading] = useState(false); // 🔴 로딩 상태 추가
     const [employees, setEmployees] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
@@ -65,37 +66,42 @@ function EmployeeList() {
 
     // 재직자만
     const pageEmployeesN = (page) => {
+        setLoading(true); // 로딩 시작
         axios.get(`/api/employeeList?page=${page}&size=20`)
             .then(response => {
                 console.log('응답 데이터:', response.data);
                 setEmployees(response.data.content);
                 setTotalPages(response.data.totalPages);
                 setSelectedEmployees(new Array(response.data.content.length).fill(false));
-
+                setLoading(false); // 로딩 종료
             })
 
     };
 
     //퇴직자만
     const pageEmployeesY = (page) => {
+        setLoading(true); // 로딩 시작
         axios.get(`/api/employeeListY?page=${page}&size=20`)
             .then(response => {
                 console.log('응답 데이터:', response.data);
                 setEmployees(response.data.content);
                 setTotalPages(response.data.totalPages);
                 setSelectedEmployees(new Array(response.data.content.length).fill(false));
+                setLoading(false); // 로딩 종료
             })
 
     };
 
     //전체직원
     const pageAllEmployees = (page) => {
+        setLoading(true); // 로딩 시작
         axios.get(`/api/allEmployees?page=${page}&size=20`)
             .then(response => {
                 console.log('전체 직원 조회 응답 데이터:', response.data);
                 setEmployees(response.data.content);
                 setTotalPages(response.data.totalPages);
                 setSelectedEmployees(new Array(response.data.content.length).fill(false));
+                setLoading(false); // 로딩 종료
             });
     };
 
@@ -160,7 +166,7 @@ function EmployeeList() {
                 axios.post('/api/deleteEmployees', selectedId)
                     .then(response => {
                         window.showToast("삭제가 완료되었습니다.");
-                        pageEmployeesN(page);  // 삭제 후 페이지 갱신
+                        pageEmployeesN(1);  // 삭제 후 페이지 갱신
                     })
                     .catch(error => {
                         console.error('삭제 중 발생된 에러 : ', error);
@@ -237,7 +243,7 @@ function EmployeeList() {
                         .then(response => {
                             window.showToast('직원이 삭제되었습니다.');
                             closeModifyModal();
-                            pageEmployeesN(page);  // 삭제 후 재직자 목록 갱신
+                            pageEmployeesN(1);  // 삭제 후 재직자 목록 갱신
                         })
                         .catch(error => {
                             console.error('삭제 중 에러 발생:', error);
@@ -445,7 +451,28 @@ function EmployeeList() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(searchEmployee ? filteredEmployees : employees).length > 0 ? (
+                                {loading ? (
+                                    <tr className="tr_empty">
+                                        <td colSpan="10"> {/* 로딩 애니메이션 중앙 배치 */}
+                                            <div className="loading">
+                                                <span></span> {/* 첫 번째 원 */}
+                                                <span></span> {/* 두 번째 원 */}
+                                                <span></span> {/* 세 번째 원 */}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : (searchEmployee ? filteredEmployees : employees).length === 0 ? (
+                                    // 조회된 결과가 없을 때 tr_empty 표시
+                                    <tr className="tr_empty">
+                                        <td colSpan="10">
+                                            <div className="no_data">
+                                                <i className="bi bi-exclamation-triangle"></i>
+                                                조회된 결과가 없습니다.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    //고객 리스트 표시
                                     (searchEmployee ? filteredEmployees : employees).map((employee, index) => (
                                         <tr key={employee.employeeId}>
                                             <td>
@@ -502,16 +529,6 @@ function EmployeeList() {
                                             </td>
                                         </tr>
                                     ))
-                                ) : (
-                                    <tr className="tr_empty">
-                                        <td colSpan="9"> {/* 로딩 애니메이션 중앙 배치 */}
-                                            <div className="loading">
-                                                <span></span> {/* 첫 번째 원 */}
-                                                <span></span> {/* 두 번째 원 */}
-                                                <span></span> {/* 세 번째 원 */}
-                                            </div>
-                                        </td>
-                                    </tr>
                                 )}
                             </tbody>
                         </table>

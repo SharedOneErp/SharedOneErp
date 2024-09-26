@@ -2,8 +2,11 @@ package com.project.erpre.controller;
 
 import com.project.erpre.model.CategoryDTO;
 import com.project.erpre.model.ProductDTO;
+import com.project.erpre.repository.ProductRepositoryImpl;
 import com.project.erpre.service.CategoryService;
 import com.project.erpre.service.ProductService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,8 @@ import java.util.Map;
 @RequestMapping("/api/products")
 @CrossOrigin(origins = "http://localhost:8787") // React 개발 서버 포트
 public class ProductController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     @Autowired
     private ProductService productService;
@@ -49,7 +54,7 @@ public class ProductController {
         }
     }
 
-    // 0920 예원 추가 (상품코드, 상품명, 대분류, 중분류, 소분류, 상태별 상품목록 페이징 적용하여 가져오기)
+    // 🔴 0920 예원 추가 (상품코드, 상품명, 대분류, 중분류, 소분류, 상태별 상품목록 페이징 적용하여 가져오기)
     @GetMapping("/productsFilter")
     public ResponseEntity<Page<ProductDTO>> getProductsFilter(
             @RequestParam(defaultValue = "1") int page,
@@ -63,6 +68,8 @@ public class ProductController {
             @RequestParam(required = false) Integer customerNo   // 주문 등록 시 선택한 고객사
     ) {
         try {
+
+            logger.info("\uD83D\uDD34 customerNo : "+customerNo);
             Page<ProductDTO> result = productService.getProductsFilter(page - 1, size, status, topCategoryNo, middleCategoryNo, lowCategoryNo, productCd, productNm, customerNo);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
