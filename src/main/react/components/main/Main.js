@@ -115,7 +115,7 @@ function Main() {
                             예정: {(renewalCustomers.length).toLocaleString()}개</p>
                     </div>
                 </div>
-                <div className="card card-full" onClick={() => window.location.href = '/productList'}>
+                <div className="card card-large" onClick={() => window.location.href = '/productList'}>
                     <h3><i className="bi bi-box-seam"></i> 상품 관리</h3>
                     <div className="info-group">
                         <p><i className="bi bi-box"></i> 상품 전체 수량: {totalProductCount.toLocaleString()}개</p>
@@ -123,6 +123,10 @@ function Main() {
                         <p><i className="bi bi-box-seam"></i> 최근 판매량 : {totalSales.toLocaleString()}개</p>
                         <p><i className="bi bi-list-check"></i> 월간 총 매출: ₩{last30DaysSales.toLocaleString()}</p>
                     </div>
+                </div>
+                <div className="image-container">
+                    <img src="/img/cardimg.jpg" alt="상품 이미지" className="logo-image"/>
+                    <img src="/img/cardimg2.jpg" alt="상품 이미지" className="logo-image"/>
                 </div>
                 <div className="card">
                     <h3><i className="bi bi-megaphone-fill"></i> 공지사항</h3>
