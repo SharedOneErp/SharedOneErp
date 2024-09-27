@@ -34,20 +34,18 @@ public interface OrderReportRepository extends JpaRepository<Order, Integer> {
     // 반기 구분은 startMonth1과 endMonth1 파라미터를 사용하여 첫 반기를 정의합니다.
     @Query("SELECT " +
             "CASE " +
-            "  WHEN MONTH(CASE WHEN o.orderHUpdateDate IS NOT NULL THEN o.orderHUpdateDate ELSE o.orderHInsertDate END) BETWEEN :startMonth1 AND :endMonth1 THEN 'FirstHalf' " +
+            "  WHEN MONTH(COALESCE(o.orderHUpdateDate, o.orderHInsertDate)) BETWEEN 1 AND 6 THEN 'FirstHalf' " +
             "  ELSE 'SecondHalf' " +
             "END AS halfYear, " +
-            "YEAR(CASE WHEN o.orderHUpdateDate IS NOT NULL THEN o.orderHUpdateDate ELSE o.orderHInsertDate END), " +
-            "COUNT(o), " +  // 주문 건수 추가
-            "SUM(o.orderHTotalPrice) " +  // 총 금액 집계
+            "YEAR(COALESCE(o.orderHUpdateDate, o.orderHInsertDate)), " +
+            "COUNT(o), " +
+            "SUM(o.orderHTotalPrice) " +
             "FROM Order o " +
-            "WHERE o.orderHStatus = 'approved' AND o.orderHDeleteYn = 'N' " +  // 삭제되지 않은 주문만 필터링
-            "AND ((o.orderHUpdateDate IS NOT NULL AND o.orderHUpdateDate BETWEEN :startDate AND :endDate) " +
-            "OR (o.orderHUpdateDate IS NULL AND o.orderHInsertDate BETWEEN :startDate AND :endDate)) " +
-            "GROUP BY halfYear, YEAR(CASE WHEN o.orderHUpdateDate IS NOT NULL THEN o.orderHUpdateDate ELSE o.orderHInsertDate END)")
+            "WHERE o.orderHStatus = 'approved' AND o.orderHDeleteYn = 'N' " +
+            "AND COALESCE(o.orderHUpdateDate, o.orderHInsertDate) BETWEEN :startDate AND :endDate " +
+            "GROUP BY halfYear, YEAR(COALESCE(o.orderHUpdateDate, o.orderHInsertDate)) " +
+            "ORDER BY YEAR(COALESCE(o.orderHUpdateDate, o.orderHInsertDate)), halfYear")
     List<Object[]> countOrdersByHalfYear(
-            @Param("startMonth1") int startMonth1,
-            @Param("endMonth1") int endMonth1,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate
     );

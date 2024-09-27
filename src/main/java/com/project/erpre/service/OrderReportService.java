@@ -23,11 +23,8 @@ public class OrderReportService {
 
         // 반기별 처리
         if (periodType.equals("halfyearly")) {
-            int currentMonth = LocalDateTime.now().getMonthValue();
-            int startMonth = currentMonth - 5; // 첫 반기 시작
-            int endMonth = currentMonth;       // 첫 반기 끝
-            return orderReportRepository.countOrdersByHalfYear(startMonth, endMonth, startDate, endDate);
-        }
+            return orderReportRepository.countOrdersByHalfYear(startDate, endDate);
+        } 
 
         // 연도별 처리
         if (periodType.equals("yearly")) {
