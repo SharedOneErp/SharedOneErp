@@ -160,7 +160,7 @@ function EmployeeList() {
         }
 
         // 선택된 항목이 있을 때만 삭제 확인을 물음
-        window.confirmCustom('선택한 고객을 모두 삭제하시겠습니까?').then(result => {
+        window.confirmCustom('선택한 직원을 삭제하시겠습니까?').then(result => {
             if (result) {
                 // 서버로 삭제 요청 보내기
                 axios.post('/api/deleteEmployees', selectedId)
