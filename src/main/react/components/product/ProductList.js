@@ -198,22 +198,6 @@ function ProductList() {
                                     </label>
                                 </th>
                                 <th>
-                                    <div className={`order_wrap ${sortColumn === 'productCd' ? 'active' : ''}`}>
-                                        <span>상품코드</span>
-                                        <button className="btn_order" onClick={() => handleSort('productCd')}>
-                                            <i className={`bi ${sortColumn === 'productCd' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
-                                        </button>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div className={`order_wrap ${sortColumn === 'productNm' ? 'active' : ''}`}>
-                                        <span>상품명</span>
-                                        <button className="btn_order" onClick={() => handleSort('productNm')}>
-                                            <i className={`bi ${sortColumn === 'productNm' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
-                                        </button>
-                                    </div>
-                                </th>
-                                <th>
                                     <div className={`order_wrap ${sortColumn === 'topCategory' ? 'active' : ''}`}>
                                         <span>대분류</span>
                                         <button className="btn_order" onClick={() => handleSort('topCategory')}>
@@ -234,6 +218,22 @@ function ProductList() {
                                         <span>소분류</span>
                                         <button className="btn_order" onClick={() => handleSort('lowCategory')}>
                                             <i className={`bi ${sortColumn === 'lowCategory' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                        </button>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div className={`order_wrap ${sortColumn === 'productCd' ? 'active' : ''}`}>
+                                        <span>상품코드</span>
+                                        <button className="btn_order" onClick={() => handleSort('productCd')}>
+                                            <i className={`bi ${sortColumn === 'productCd' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
+                                        </button>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div className={`order_wrap ${sortColumn === 'productNm' ? 'active' : ''}`}>
+                                        <span>상품명</span>
+                                        <button className="btn_order" onClick={() => handleSort('productNm')}>
+                                            <i className={`bi ${sortColumn === 'productNm' ? (sortDirection === 'desc' ? 'bi-arrow-down' : 'bi-arrow-up') : 'bi-arrow-up'}`}></i>
                                         </button>
                                     </div>
                                 </th>
@@ -336,28 +336,28 @@ function ProductList() {
                                         >
                                             <td>
                                                 {product.productDeleteYn !== 'Y' ? (
-                                                <label className="chkbox_label">
-                                                    {/* 삭제된 상태가 아닌 경우에만 체크박스 표시 */}
-                                                            <input
-                                                                type="checkbox"
-                                                                className="chkbox"
-                                                                checked={selectedProducts.includes(product.productCd)}
-                                                                onChange={() => handleSelectProduct(product.productCd)}
-                                                                disabled={isAddMode || !!isEditMode}
-                                                            />
-                                                            <i className="chkbox_icon">
-                                                                <i className="bi bi-check-lg"></i>
-                                                            </i>
-                                                </label>
-                                                    ) : (
-                                                        <span className='label_del'>삭제</span>
-                                                    )}
+                                                    <label className="chkbox_label">
+                                                        {/* 삭제된 상태가 아닌 경우에만 체크박스 표시 */}
+                                                        <input
+                                                            type="checkbox"
+                                                            className="chkbox"
+                                                            checked={selectedProducts.includes(product.productCd)}
+                                                            onChange={() => handleSelectProduct(product.productCd)}
+                                                            disabled={isAddMode || !!isEditMode}
+                                                        />
+                                                        <i className="chkbox_icon">
+                                                            <i className="bi bi-check-lg"></i>
+                                                        </i>
+                                                    </label>
+                                                ) : (
+                                                    <span className='label_del'>삭제</span>
+                                                )}
                                             </td>
+                                            <td><span class="label_level level-1">{product.topCategory ? product.topCategory : '-'}</span></td>
+                                            <td><span class="label_level level-2">{product.middleCategory ? product.middleCategory : '-'}</span></td>
+                                            <td><span class="label_level level-3">{product.lowCategory ? product.lowCategory : '-'}</span></td>
                                             <td>{product.productCd}</td>
                                             <td>{product.productNm}</td>
-                                            <td>{product.topCategory ? product.topCategory : '-'}</td>
-                                            <td>{product.middleCategory ? product.middleCategory : '-'}</td>
-                                            <td>{product.lowCategory ? product.lowCategory : '-'}</td>
                                             <td>{product.productPrice ? product.productPrice.toLocaleString() : '-'}</td>
                                             <td>{product.productInsertDate ? formatDate(product.productInsertDate) : '-'}</td>
                                             <td>{product.productUpdateDate ? formatDate(product.productUpdateDate) : '-'}</td>

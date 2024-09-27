@@ -67,7 +67,7 @@ export const useHooksList = () => {
     // 🔴🔴🔴 select
     const fetchData = async () => {
         setLoading(true);
-        const MIN_LOADING_TIME = 300;
+        const MIN_LOADING_TIME = 100;
         const startTime = Date.now();
 
         try {

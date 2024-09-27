@@ -2,7 +2,7 @@
 .menu_order .box { padding: 5px 12px; margin-left: 5px; } 
 .orderDetail-title h3 { font-size: 18px; font-weight: bold; color: #333333; letter-spacing: -0.1px; padding-bottom: 16px; border-bottom: 1px solid #999999; margin: 26px 0 0; position: relative; } 
 .order-detail-container { padding: 20px; } 
-.form-row { display: flex; flex-wrap: wrap; gap: 15px; margin-right: 530px; } 
+.form-row { display: flex; flex-wrap: wrap; gap: 15px; margin-right: 460px; } 
 .form-group { flex: 1 1 30%; display: flex; align-items: center; } 
 .form-group label { margin-right: 8px; font-weight: 500; color: #333; } 
 .order-detail-container
