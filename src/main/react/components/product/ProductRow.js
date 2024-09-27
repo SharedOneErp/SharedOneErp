@@ -21,32 +21,6 @@ const ProductRow = React.memo(({
             <td></td>
             {/* 체크박스 칸 */}
             <td>
-                {/* 상품코드 */}
-                {isEditMode ? (
-                    <span>{productData.productCd}</span>
-                ) : (
-                    <input
-                        type="text"
-                        className="box wp100"
-                        placeholder="상품코드 입력"
-                        value={productData.productCd}
-                        name="productCd"
-                        onChange={handleInputChange}
-                    />
-                )}
-            </td>
-            <td>
-                {/* 상품명 */}
-                <input
-                    type="text"
-                    className="box wp100"
-                    placeholder="상품명 입력"
-                    value={productData.productNm}
-                    name="productNm"
-                    onChange={handleInputChange}
-                />
-            </td>
-            <td>
                 <select className="box wp100"
                         name="topCategory"
                         value={topCategory}
@@ -56,11 +30,11 @@ const ProductRow = React.memo(({
                     {topCategories
                         .filter((category) => category.categoryNm !== '대분류')
                         .map((category) => (
-                        <option
-                            key={category.categoryNo}
-                            value={category.categoryNo}>{category.categoryNm}
-                        </option>
-                    ))}
+                            <option
+                                key={category.categoryNo}
+                                value={category.categoryNo}>{category.categoryNm}
+                            </option>
+                        ))}
                 </select>
             </td>
             <td>
@@ -94,6 +68,32 @@ const ProductRow = React.memo(({
                         </option>
                     ))}
                 </select>
+            </td>
+            <td>
+                {/* 상품코드 */}
+                {isEditMode ? (
+                    <span>{productData.productCd}</span>
+                ) : (
+                    <input
+                        type="text"
+                        className="box wp100"
+                        placeholder="상품코드 입력"
+                        value={productData.productCd}
+                        name="productCd"
+                        onChange={handleInputChange}
+                    />
+                )}
+            </td>
+            <td>
+                {/* 상품명 */}
+                <input
+                    type="text"
+                    className="box wp100"
+                    placeholder="상품명 입력"
+                    value={productData.productNm}
+                    name="productNm"
+                    onChange={handleInputChange}
+                />
             </td>
             <td>
                 {/* 상품 가격 */}

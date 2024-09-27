@@ -43,7 +43,7 @@ function Order() {
                 updatedOrderDetails[selectedProductIndex] = {
                     ...updatedOrderDetails[selectedProductIndex],
                     productNm: selectedProduct.productNm || '', // 제품 이름을 업데이트
-                    orderDPrice: selectedProduct.price || 0,
+                    orderDPrice: selectedProduct.priceCustomer || 0, // 가격 업데이트
                     orderDQty: selectedProduct.quantity || 0,
                     productCd: selectedProduct.productCd || '', // 상품 코드
                     priceCustomer: selectedProduct.priceCustomer || '' // 상품 가격
