@@ -97,7 +97,7 @@ function Login() {
                     {error && <p className="error-message">{error}</p>}
 
                     <div className="recaptcha-container">
-                        <div className="g-recaptcha" data-sitekey="6LdC_EkqAAAAAE6kT_S6sCKilJGJuljygUCmr1he"></div>
+                        <div className="g-recaptcha" data-sitekey="6Lf6TlAqAAAAAD4ezvbWZJj2TGc8_WusXNm9D2f7"></div>
                     </div>
                         <button type="submit" className="login-btn">로그인</button>
                 </form>
