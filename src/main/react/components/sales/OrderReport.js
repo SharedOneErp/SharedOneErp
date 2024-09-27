@@ -55,27 +55,22 @@ function OrderReport() {
                 labels.push(`${year}년 ${month}월`);
             }
         } else if (period === "3halfYears") {
-            for (let i = 2; i >= 0; i--) {  // 2부터 0까지 역순으로 반복
-                let endMonth = new Date(today.getFullYear(), today.getMonth() - i * 6, 1);
-                let startMonth = new Date(endMonth);
-                startMonth.setMonth(startMonth.getMonth() - 5);  // 6개월 전
-
-                const startYear = startMonth.getFullYear();
-                const endYear = endMonth.getFullYear();
-                const startMonthNum = startMonth.getMonth() + 1;
-                const endMonthNum = endMonth.getMonth() + 1;
-
-                // 새로운 반기 구간 라벨을 배열의 뒤에 추가 (최신 반기가 X축의 오른쪽으로 가도록)
-                // labels.push(`${startYear}년 ${startMonthNum}월 ~ ${endYear}년 ${endMonthNum}월`);
-                if (endMonthNum <= 6) {
-                    // 상반기인 경우
-                    labels.push(`${endYear}년 상반기`);
-                } else {
-                    // 하반기인 경우
-                    labels.push(`${endYear}년 하반기`);
+            const today = new Date();
+            let currentYear = today.getFullYear();
+            let currentHalf = today.getMonth() < 6 ? 1 : 2; // 상반기: 1, 하반기: 2
+    
+            for (let i = 2; i >= 0; i--) {
+                let half = currentHalf - i;
+                let year = currentYear;
+    
+                while (half <= 0) {
+                    half += 2;
+                    year -= 1;
                 }
+    
+                const halfLabel = half === 1 ? '상반기' : '하반기';
+                labels.push(`${year}년 ${halfLabel}`);
             }
-
         } else if (period === "3years") {
             for (let i = 2; i >= 0; i--) {
                 const year = today.getFullYear() - i; // 최근 3년
@@ -132,19 +127,24 @@ function OrderReport() {
                     });
                 } else if (period === "3halfYears") {
                     // 최근 3반기 데이터를 처리
+                    processedData = { counts: [0, 0, 0], amounts: [0, 0, 0] };  // 초기값
+                
+                    const labels = generateLabels(period); // 라벨 생성
+                
+                    // 라벨과 데이터를 매핑하기 위한 객체 생성
+                    const labelMap = {};
+                    labels.forEach((label, index) => {
+                        labelMap[label] = index; // 예: {'2023년 하반기': 0, '2024년 상반기': 1, '2024년 하반기': 2}
+                    });
+                
                     response.data.forEach(([halfYear, year, count, totalAmount]) => {
-                        const startMonth = (currentMonth - 5 + 12) % 12; // 현재 달로부터 5개월 전 시작
-                        const endMonth = currentMonth; // 현재 달까지의 데이터
-
-                        if (year === currentYear && startMonth <= endMonth) {
-                            processedData.counts[2] = count;  // 가장 최근 반기 건수
-                            processedData.amounts[2] = totalAmount;  // 가장 최근 반기 금액
-                        } else if (year === currentYear - 1 && startMonth > endMonth) {
-                            processedData.counts[1] = count;  // 그 이전 반기 건수
-                            processedData.amounts[1] = totalAmount;  // 그 이전 반기 금액
-                        } else {
-                            processedData.counts[0] = count;  // 그 이전 반기 건수
-                            processedData.amounts[0] = totalAmount;  // 그 이전 반기 금액
+                        const halfLabel = halfYear === 'FirstHalf' ? '상반기' : '하반기';
+                        const label = `${year}년 ${halfLabel}`;
+                
+                        const index = labelMap[label];
+                        if (index !== undefined) {
+                            processedData.counts[index] = count;
+                            processedData.amounts[index] = totalAmount;
                         }
                     });
                 } else if (period === "3years") {
@@ -211,46 +211,46 @@ function OrderReport() {
             params: { filterType, startDate, endDate }
         })
             .then(response => {
-            const processedData = {
-                counts: response.data.map(item => item[1]), // 주문 건수
-                amounts: response.data.map(item => item[2]) // 주문 금액
-            };
+                const processedData = {
+                    counts: response.data.map(item => item[1]), // 주문 건수
+                    amounts: response.data.map(item => item[2]) // 주문 금액
+                };
 
-            const labels = response.data.map(item => item[0]); // 담당자, 고객사, 상품 이름
+                const labels = response.data.map(item => item[0]); // 담당자, 고객사, 상품 이름
 
-            setChartData({
-                labels: labels,
-                datasets: [
-                    {
-                        label: '총 주문건수',
-                        data: processedData.counts,  // 주문 건수 데이터
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1,
-                        yAxisID: 'y-orders'  // 주문 건수 Y축
-                    },
-                    {
-                        label: '총 주문금액',
-                        data: processedData.amounts,  // 주문 금액 데이터
-                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                        borderColor: 'rgba(153, 102, 255, 1)',
-                        borderWidth: 1,
-                        yAxisID: 'y-amounts'  // 주문 금액 Y축
-                    }
-                ]
-            });
-        })
+                setChartData({
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: '총 주문건수',
+                            data: processedData.counts,  // 주문 건수 데이터
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1,
+                            yAxisID: 'y-orders'  // 주문 건수 Y축
+                        },
+                        {
+                            label: '총 주문금액',
+                            data: processedData.amounts,  // 주문 금액 데이터
+                            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1,
+                            yAxisID: 'y-amounts'  // 주문 금액 Y축
+                        }
+                    ]
+                });
+            })
             .catch(error => {
-            console.error('API 에러:', error.response || error);
-            setChartData(null);
-        });
+                console.error('API 에러:', error.response || error);
+                setChartData(null);
+            });
     };
 
     // 기간에 따른 날짜 변경 처리
     const handleDateRangeChange = (e) => {
         const value = e.target.value;
-         setStartDate(calculateStartDate(value)); // 시작일 동적으로 설정
-         setEndDate(getTodayDate()); // 오늘 날짜를 종료일로 설정
+        setStartDate(calculateStartDate(value)); // 시작일 동적으로 설정
+        setEndDate(getTodayDate()); // 오늘 날짜를 종료일로 설정
         fetchTotalOrders(value); // 새로운 기간에 맞춰 주문 데이터를 가져옴
     };
 
@@ -341,30 +341,30 @@ function OrderReport() {
                                     legend: { position: 'top' },
                                     title: {
                                         display: true,
-                                        text: selectedOrderType === 'employeeOrders' 
+                                        text: selectedOrderType === 'employeeOrders'
                                             ? '최근 3개월 간 담당자별 주문 현황'
-                                            : selectedOrderType === 'customerOrders' 
-                                            ? '최근 3개월 간 고객별 주문 현황'
-                                            : selectedOrderType === 'productOrders'
-                                            ? '최근 3개월 간 상품별 주문 현황'
-                                            : '전체 주문 현황' // 기본값
+                                            : selectedOrderType === 'customerOrders'
+                                                ? '최근 3개월 간 고객별 주문 현황'
+                                                : selectedOrderType === 'productOrders'
+                                                    ? '최근 3개월 간 상품별 주문 현황'
+                                                    : '전체 주문 현황' // 기본값
                                     }
                                 },
                                 scales: {
                                     yOrders: {
                                         type: 'linear',
                                         position: 'left',
-                                        display : false,
+                                        display: false,
                                         title: { display: true, text: '총 주문건수' },
-                                        ticks: { beginAtZero: true}
+                                        ticks: { beginAtZero: true }
                                     },
                                     yAmounts: {
                                         type: 'linear',
                                         position: 'right',
-                                        display : false,
+                                        display: false,
                                         title: { display: true, text: '총 주문금액' },
                                         ticks: { beginAtZero: true },
-                                        grid: { drawOnChartArea: false}
+                                        grid: { drawOnChartArea: false }
                                     }
                                 }
                             }} />
