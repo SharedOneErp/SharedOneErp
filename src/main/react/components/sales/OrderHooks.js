@@ -339,7 +339,7 @@ export const useHooksList = () => {
     //주문 생성
     const handleSubmit = async () => {
 
-        if (isSubmitting) return; // 이미 처리 중이면 중지
+        // if (isSubmitting) return; // 이미 처리 중이면 중지
         isSubmitting = true; // 처리 중 상태로 변경
 
         // 입력값 검증
@@ -599,7 +599,7 @@ export const useHooksList = () => {
     // 반려된 주문을 다시 제출
     const handleResubmit = async (orderNo) => {
 
-        if (isSubmitting) return; // 이미 처리 중이면 중지
+        // if (isSubmitting) return; // 이미 처리 중이면 중지
         isSubmitting = true; // 처리 중 상태로 변경
 
         try {
