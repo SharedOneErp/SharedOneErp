@@ -587,7 +587,13 @@ function OrderList() {
                                     filteredOrders
                                         .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                                         .map(order => (
-                                            <tr key={order.orderNo}>
+                                            <tr key={order.orderNo}
+                                                className={
+                                                    selectedOrders.has(order.orderNo)
+                                                        ? ('selected_row')  // 선택된 행
+                                                        : ''
+                                                }
+                                            >
                                                 {itsAssignedMode && role === 'admin' && (
                                                     <td className="checkbox-input">
                                                         {order.orderHStatus === 'ing' ? (

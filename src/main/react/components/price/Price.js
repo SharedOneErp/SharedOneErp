@@ -45,7 +45,6 @@ function Price() {
         const newOrder = sortField === field ? (sortOrder === 'desc' ? 'asc' : 'desc') : 'asc'; // 정렬 필드가 현재 필드와 일치하면 토글, 일치하지 않으면 오름차순부터 시작
         setSortField(field); // 정렬 필드 설정
         setSortOrder(newOrder); // 새로운 정렬 순서 설정
-        fetchData(); // 데이터를 새로 불러옴
     };
 
     // 🔴 커스텀 훅을 통해 상태와 함수 불러오기
@@ -115,6 +114,7 @@ function Price() {
         setSortField,
         sortOrder,
         setSortOrder,
+        fetchData,
     } = useHooksList();          // 커스텀 훅 사용
 
     // 🟡 UI 및 상태에 따라 렌더링

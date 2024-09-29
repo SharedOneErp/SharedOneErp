@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import '../../../resources/static/css/product/ProductDetailModal.css';
-import {formatDate} from '../../util/dateUtils';
+import { formatDate } from '../../util/dateUtils';
 import PropTypes from "prop-types";
 import axios from "axios";
 
-function ProductDetailModal({productCd, onClose}) { // 파라미터 구조 분해 할당
+function ProductDetailModal({ productCd, onClose }) { // 파라미터 구조 분해 할당
     const [productDetail, setProductDetail] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -40,7 +40,7 @@ function ProductDetailModal({productCd, onClose}) { // 파라미터 구조 분�
                 </div>
 
                 {isLoading ? (
-                    <tr className = "tr_empty">
+                    <tr className="tr_empty">
                         <td colSpan="10">
                             <div className="loading">
                                 <span></span>
@@ -52,12 +52,12 @@ function ProductDetailModal({productCd, onClose}) { // 파라미터 구조 분�
                 ) : (
                     <div className="product-detail-container">
                         <div className="form-group">
-                            <label htmlFor="productName"><span className="detail-name"> 상 품 명 </span></label>
-                            <input type="text" id="productName" value={detail.productNm || ''} readOnly/>
+                            <label htmlFor="productName"><span className="detail-name"> 상품명 </span></label>
+                            <input type="text" className="box" id="productName" value={detail.productNm || ''} readOnly />
                         </div>
                         <div className="form-group">
                             <label htmlFor="productCode"><sapn className="detail-name"> 상품코드 </sapn></label>
-                            <input type="text" id="productCode" value={detail.productCd || ''} readOnly/>
+                            <input type="text" className="box" id="productCode" value={detail.productCd || ''} readOnly />
                         </div>
                         <div className="form-group">
                             <label htmlFor="category"><span className="detail-name"> 카테고리 </span></label>
@@ -69,43 +69,45 @@ function ProductDetailModal({productCd, onClose}) { // 파라미터 구조 분�
                         </div>
                         <div className="form-group">
                             <label htmlFor="registrationDate" className="detail-name"><span>등록일시</span></label>
-                            <input type="text" id="registrationDate"
-                                   value={detail.productInsertDate ? formatDate(detail.productInsertDate) : ''}
-                                   readOnly/>
+                            <input type="text" className="box" id="registrationDate"
+                                value={detail.productInsertDate ? formatDate(detail.productInsertDate) : ''}
+                                readOnly />
                         </div>
                         <div className="form-group">
                             <label htmlFor="updateDate"><span className="detail-name">수정일시</span></label>
-                            <input type="text" id="updateDate"
-                                   value={detail.productUpdateDate ? formatDate(detail.productUpdateDate) : ''}
-                                   readOnly/>
+                            <input type="text" className="box" id="updateDate"
+                                value={detail.productUpdateDate ? formatDate(detail.productUpdateDate) : ''}
+                                readOnly />
                         </div>
-                        <div  className="table_wrap1">
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>납품일자</th>
-                                <th>거래처</th>
-                                <th>수량</th>
-                                <th>납품가(원)</th>
-                                <th>총매출액(원)</th>
-                                <th>담당자</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {productDetail.map((detail, index) => (
-                                <tr key={index}>
-                                    <td>{detail.orderDDeliveryRequestDate ?  detail.orderDDeliveryRequestDate.substring(0, 10) : ''}</td>
-                                    <td>{detail.customerName || ''}</td>
-                                    <td>{detail.orderDQty || ''}</td>
-                                    <td>{detail.orderDPrice ? detail.orderDPrice.toLocaleString() : ''}</td>
-                                    <td>{detail.orderDTotalPrice ? detail.orderDTotalPrice.toLocaleString() : ''}</td>
-                                    <td>{detail.employeeName || ''}</td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
+                        <div className="table_wrap1">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>납품일자</th>
+                                        <th>거래처</th>
+                                        <th>수량</th>
+                                        <th>납품가(원)</th>
+                                        <th>총매출액(원)</th>
+                                        <th>담당자</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {productDetail.map((detail, index) => (
+                                        <tr key={index}>
+                                            <td>{detail.orderDDeliveryRequestDate ? detail.orderDDeliveryRequestDate.substring(0, 10) : ''}</td>
+                                            <td>{detail.customerName || ''}</td>
+                                            <td>{detail.orderDQty || ''}</td>
+                                            <td>{detail.orderDPrice ? detail.orderDPrice.toLocaleString() : ''}</td>
+                                            <td>{detail.orderDTotalPrice ? detail.orderDTotalPrice.toLocaleString() : ''}</td>
+                                            <td>{detail.employeeName || ''}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
-                        <p>납품 내역은 최근 5건까지 표시됩니다. (0건일 경우 표시되지 않음)</p>
+                        <p style={{ fontSize: '14px', color: '#777' }}>
+                            ※ 납품 내역은 최근 5건까지 표시됩니다.
+                        </p>
                     </div>
                 )}
             </div>

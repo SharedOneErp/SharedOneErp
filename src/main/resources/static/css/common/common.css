@@ -1,0 +1,59 @@
+/* src/main/resources/static/css/common/Layout.css */
+/* 🔴 폰트 */
+@font-face { font-family: 'Pretendard'; font-weight: 100; font-style: normal; src: url('https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-Thin.woff') format('woff'); font-display: swap; } 
+@font-face { font-family: 'Pretendard'; font-weight: 200; font-style: normal; src: url('https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-ExtraLight.woff') format('woff'); font-display: swap; } 
+@font-face { font-family: 'Pretendard'; font-weight: 300; font-style: normal; src: url('https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-Light.woff') format('woff'); font-display: swap; } 
+@font-face { font-family: 'Pretendard'; font-weight: 400; font-style: normal; src: url('https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-Regular.woff') format('woff'); font-display: swap; } 
+@font-face { font-family: 'Pretendard'; font-weight: 500; font-style: normal; src: url('https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-Medium.woff') format('woff'); font-display: swap; } 
+@font-face { font-family: 'Pretendard'; font-weight: 600; font-style: normal; src: url('https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-SemiBold.woff') format('woff'); font-display: swap; } 
+@font-face { font-family: 'Pretendard'; font-weight: 700; font-style: normal; src: url('https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-Bold.woff') format('woff'); font-display: swap; } 
+@font-face { font-family: 'Pretendard'; font-weight: 800; font-style: normal; src: url('https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-ExtraBold.woff') format('woff'); font-display: swap; } 
+@font-face { font-family: 'Pretendard'; font-weight: 900; font-style: normal; src: url('https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-Black.woff') format('woff'); font-display: swap; } 
+
+/* 🔴 css 초기화 */
+html, body { font-family: "Pretendard", sans-serif; height: 100%; margin: 0; padding: 0; overflow: hidden; /* body에서 스크롤이 생기지 않도록 설정 */ } 
+* { margin: 0; padding: 0; box-sizing: border-box; } 
+a { text-decoration: none; color: black; } 
+ul, li, ol, dl, dd { list-style: none; margin: 0; } 
+img { max-width: 100%; height: auto; border: 0; } 
+table { border-collapse: collapse; border-spacing: 0; } 
+td, th { padding: 0; } 
+input[type="checkbox"] { cursor: pointer; } 
+button { appearance: none; border: 0; background: transparent; font: inherit; outline: none; cursor: pointer; } 
+button:disabled { cursor: default; } 
+label { margin: 0; font-weight: normal; } 
+p { margin: 0; } 
+
+/* 🔴 기본 박스(button, input, select) */
+.box { font-family: "Pretendard", sans-serif; align-items: center; background: #fff; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); box-sizing: border-box; color: #555; display: inline-flex; flex-shrink: 0; font-size: 16px; font-weight: 500; justify-content: space-between; padding: 8px 12px; min-width: 32px; outline: none; transition: box-shadow .2s, background-color .1s, color .1s, transform .15s; white-space: nowrap; } 
+.box.small { font-size: 13px; } 
+.box.large { font-size: 17px; } 
+.box.icon { padding: 4px 8px; } 
+.box:not(.icon) i { margin-right: 5px; } 
+.box.color { background-color: #007CC1; border-color: #007CC1; color: white; } 
+.box.color_border { border-color:#007CC1; color:#007CC1 } 
+.box.color_border.red { border-color:#ff0b00b3; color:#f50b00 } 
+
+/* 🔴 select */
+select.box { padding: 7px 12px; cursor: pointer; } 
+.select_box { position:relative; } 
+.select_box.selected select { border-color: #007CC1; } 
+
+/* 🔴 버튼 */
+button.box { cursor: pointer; } 
+button.box:not([disabled]):not(.field_error):not(.color_border):not(.active):not(.color):hover { background-color: #fcfcfc; border: 1px solid rgb(36 42 48 / 20%); } 
+button.box:not(.color):not(.color_border):active { background-color: #f7f7f7; border: 1px solid rgb(165 165 165 / 20%); box-shadow: 0 0 2px 1px #b9b9b947; } 
+button.box:disabled { cursor: default; background-color: #eaeaea; border-color: #eaeaea; color: #999; } 
+button.box.btn_search i { margin-left: 5px; } 
+button.box.icon { background-color: transparent; border: 1px solid transparent; } 
+button.box.icon.hover_text:hover i { display: inline-flex; } 
+button.box.icon.hover_text:hover i::after { opacity: 1; font-size: 14px; font-style: normal; margin-left: 3px; color: #007CC1; } 
+button.box.icon.edit:hover, button.box.icon.edit:active { border-color:#007CC1 !important; color:#007CC1; background-color: #e4f1f7a3 !important; } 
+button.box.icon.hover_text.edit:hover i::after { content: '수정'; color: #007CC1; } 
+button.box.icon.del:hover, button.box.icon.del:active { border-color: #c8000070 !important; color: #e00000bb; background-color: #e0000008 !important; } 
+button.box.icon.hover_text.del:hover i::after { content: '삭제'; color: #e00000bb; } 
+button.box.icon.restore:hover, button.box.icon.restore:active { border-color: #04a73f57 !important; color: #04a73fbb; background-color: #04a73f08 !important; } 
+button.box.icon.hover_text.restore:hover i::after { content: '복원'; color: #04a73fbb; } 
+button.box.icon.hover_text.edit_done:hover i::after { content: '수정완료'; } 
+button.box.icon.hover_text.write_done:hover i::after { content: '작성완료'; } 
+button.box.icon.hover_text.cancel:hover i::after { content: '취소'; } 
