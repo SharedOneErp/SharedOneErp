@@ -33,6 +33,7 @@ input::placeholder { color: #888; }
 .vat { vertical-align: top; } 
 /* 🔴 기본 박스(button, input, select) */
 .box { font-family: "Pretendard", sans-serif; align-items: center; background: #fff; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); box-sizing: border-box; color: #555; display: inline-flex; flex-shrink: 0; font-size: 16px; font-weight: 500; justify-content: space-between; padding: 8px 12px; min-width: 32px; outline: none; transition: box-shadow .2s, background-color .1s, color .1s, transform .15s; white-space: nowrap; } 
+.box.disabled { background-color: #fafafa; } 
 .box.small { font-size: 13px; } 
 .box.large { font-size: 17px; } 
 .box.icon { padding: 4px 8px; } 
