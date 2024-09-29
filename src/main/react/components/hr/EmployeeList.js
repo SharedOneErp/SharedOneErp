@@ -615,7 +615,7 @@ function EmployeeList() {
                                     <label>아이디</label>
                                     <input
                                         type='text'
-                                        className='box'
+                                        className='box disabled'
                                         value={selectedEmployee.employeeId}
                                         disabled
                                     />
