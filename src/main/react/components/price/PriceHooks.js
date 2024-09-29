@@ -64,8 +64,11 @@ export const useHooksList = () => {
     const [editingId, setEditingId] = useState(null); // 수정 중인 항목 ID를 저장
     const [editedPriceData, setEditedPriceData] = useState({}); // 수정 중인 항목 데이터를 저장
 
+    const [isInitialRender, setIsInitialRender] = useState(true); // 초기 렌더링 여부를 추적하는 상태 변수
+
     // 🔴🔴🔴 select
     const fetchData = async () => {
+        console.log("🔴 fetch");
         setLoading(true);
         const MIN_LOADING_TIME = 100;
         const startTime = Date.now();
@@ -132,29 +135,36 @@ export const useHooksList = () => {
 
     // 🟡 조건에 따른 가격 리스트 출력
     useEffect(() => {
+        console.log("🔴 fetch 11");
         fetchData();
-    }, [selectedCustomerNo, selectedProductCd, isCurrentPriceChecked, startDate, endDate, targetDate, selectedStatus, currentPage, itemsPerPage, sortField, sortOrder]);
+    }, [selectedCustomerNo, selectedProductCd, startDate, endDate, selectedStatus, currentPage, itemsPerPage, sortField, sortOrder, debouncedCustomerSearchText, debouncedProductSearchText]);
 
-    // 🟡 오늘 적용되는 가격만 보기 체크박스가 체크되었을 때
+    // 🟡 오늘 적용되는 가격만 보기 체크박스가 체크되었을 때 targetDate 관리
     useEffect(() => {
         if (isCurrentPriceChecked) {
-            setTargetDate(today);
+            if (targetDate !== today) {
+                setTargetDate(today);
+            }
         } else {
             if (targetDate === today) {
                 setTargetDate(null); // targetDate가 오늘이면 체크 해제 시 초기화
             }
         }
-    }, [isCurrentPriceChecked, today]);
+    }, [isCurrentPriceChecked]);
 
-    // 🟡 targetDate가 오늘 날짜가 아니면 체크 해제
-    // targetDate가 오늘 날짜가 아니면 체크 해제, 오늘 날짜면 자동으로 체크
+    // 🟡 targetDate가 오늘 날짜가 아니면 체크 해제 (초기 렌더링에서는 실행되지 않도록 제어)
     useEffect(() => {
-        if (targetDate === today) {
-            setIsCurrentPriceChecked(true);  // targetDate가 오늘이면 자동 체크
+        if (!isInitialRender) {
+            if (targetDate === today && !isCurrentPriceChecked) {
+                setIsCurrentPriceChecked(true);
+            } else if (targetDate !== today && isCurrentPriceChecked) {
+                setIsCurrentPriceChecked(false);
+            }
+            fetchData(); // targetDate가 변경될 때 fetchData 실행
         } else {
-            setIsCurrentPriceChecked(false); // targetDate가 오늘이 아니면 체크 해제
+            setIsInitialRender(false); // 초기 렌더링 이후로 설정
         }
-    }, [targetDate, today]);
+    }, [targetDate]);
 
     // 🟡 currentPage가 변경될 때 pageInputValue 업데이트
     useEffect(() => {
@@ -178,16 +188,6 @@ export const useHooksList = () => {
             setSelectAll(selectedItems.length === priceList.length); // 모든 항목이 선택되었을 때 전체 선택 체크박스 체크
         }
     }, [selectedItems, priceList]);
-
-    // 🟡 검색어가 디바운스된 후 fetchData 호출(고객사)
-    useEffect(() => {
-        fetchData();
-    }, [debouncedCustomerSearchText]);
-
-    // 🟡 검색어가 디바운스된 후 fetchData 호출(상품)
-    useEffect(() => {
-        fetchData();
-    }, [debouncedProductSearchText]);
 
     // 🟡 startDate 또는 endDate가 변경될 때 targetDate를 확인하고 해제
     useEffect(() => {
@@ -477,6 +477,7 @@ export const useHooksList = () => {
         setSortField,
         sortOrder,
         setSortOrder,
+        fetchData,
     };
 
 };

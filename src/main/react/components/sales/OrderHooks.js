@@ -685,8 +685,8 @@ export const useHooksList = () => {
                 window.showToast("주문 생성 중 오류가 발생했습니다.", 'error');
             }
         } catch (error) {
-            console.error('주문 재제출 중 오류 발생:', error.message);
-            window.showToast("주문 재제출 중 오류가 발생했습니다.", 'error');
+            console.error('결재 재요청 중 오류 발생:', error.message);
+            window.showToast("결재 재요청 중 오류가 발생했습니다.", 'error');
         }finally {
             isSubmitting=false;
         }

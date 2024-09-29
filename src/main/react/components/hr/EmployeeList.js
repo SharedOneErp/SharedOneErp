@@ -474,7 +474,13 @@ function EmployeeList() {
                                 ) : (
                                     //고객 리스트 표시
                                     (searchEmployee ? filteredEmployees : employees).map((employee, index) => (
-                                        <tr key={employee.employeeId}>
+                                        <tr key={employee.employeeId}
+                                            className={
+                                                selectedEmployees[index]
+                                                    ? ('selected_row')  // 선택된 행
+                                                    : ''
+                                            }
+                                        >
                                             <td>
                                                 {/* 삭제된 상태에 따라 조건부 렌더링 및 admin 여부 확인 */}
                                                 {employee.employeeDeleteYn !== 'Y' ? (

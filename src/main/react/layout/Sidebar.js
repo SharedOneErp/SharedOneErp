@@ -95,7 +95,7 @@ function Sidebar({ currentMenu }) {
                         </li>
                         <li className={currentMenu === 'orderList' ? 'active' : ''}>
                             <a href="#"
-                               onClick={() => handleSubMenuClick('orderList', role === 'admin' ? '/orderList?mode=Assigned' : '/orderList')}>
+                                onClick={() => handleSubMenuClick('orderList', role === 'admin' ? '/orderList?mode=Assigned' : '/orderList')}>
                                 주문 목록
                             </a>
                         </li>
@@ -109,14 +109,14 @@ function Sidebar({ currentMenu }) {
                         <i className="bi bi-cart-check"></i>상품 관리
                     </span>
                     <ul className="submenu">
+                        <li className={currentMenu === 'productCategory' ? 'active' : ''}>
+                            <a href="#" onClick={() => handleSubMenuClick('productCategory', '/productCategory')}>상품 카테고리</a>
+                        </li>
                         <li className={currentMenu === 'productList' ? 'active' : ''}>
-                            <a href="#" onClick={() => handleSubMenuClick('productList', '/productList')}>상품 목록</a>
+                            <a href="#" onClick={() => handleSubMenuClick('productList', '/productList')}>전체 상품 목록</a>
                         </li>
                         <li className={currentMenu === 'productPrice' ? 'active' : ''}>
-                            <a href="#" onClick={() => handleSubMenuClick('productPrice', '/productPrice')}>상품 가격 관리</a>
-                        </li>
-                        <li className={currentMenu === 'productCategory' ? 'active' : ''}>
-                            <a href="#" onClick={() => handleSubMenuClick('productCategory', '/productCategory')}>상품 카테고리 관리</a>
+                            <a href="#" onClick={() => handleSubMenuClick('productPrice', '/productPrice')}>고객사별 상품 가격</a>
                         </li>
                     </ul>
                 </li>

@@ -146,10 +146,10 @@ function Order() {
         }
     };
 
-    const handleApproveOrder = async () => {
+    const handleApproveOrder = async () => {    
         try {
 
-            window.confirmCustom("해당 주문을 승인하시겠습니까? 이 결정은 되돌릴 수 없습니다.").then(result => {
+            window.confirmCustom("해당 주문을 승인하시겠습니까?<br>이 결정은 되돌릴 수 없습니다.").then(result => {
                 if (result) {
                     const result = updateOrderStatus(orderNo, 'approved');
 
@@ -238,7 +238,7 @@ function Order() {
             <main className="main-content menu_order">
                 <div className="menu_title">
                     <div className="sub_title">영업 관리</div>
-                    <div className="main_title">{isCreateMode ? '주문 등록' : isEditMode || isResubmitMode ? '주문 수정' : '주문 상세보기'}</div>
+                    <div className="main_title">{isCreateMode ? '주문 등록' : isEditMode || isResubmitMode ? '주문 수정' : '주문 상세'}</div>
                 </div>
                 <div className="menu_content">
                     <div className="search_wrap">
@@ -337,7 +337,7 @@ function Order() {
                                             <input
                                                 type="text"
                                                 className="employee-name box"
-                                                defaultValue={employee.employeeName}
+                                                value={employee.employeeName}
                                                 readOnly
                                                 style={{ opacity: isCreateMode ? 0 : 1 }}
                                             />
@@ -345,7 +345,6 @@ function Order() {
                                             <span>NOT AVAILABLE</span> // employee가 없을 때 대체 텍스트 제공
                                         )}
                                     </span>
-
 
                                 </div>
                                 <div className="form-group">
@@ -367,7 +366,7 @@ function Order() {
                                         placeholder="고객사 선택" readOnly />
                                 </div>
 
-                                {!isCreateMode && !isResubmitMode &&(
+                                {!isCreateMode && !isResubmitMode && (
                                     <div className="form-group">
 
                                         <label>현재 주문 상태</label>
@@ -419,10 +418,11 @@ function Order() {
                                                     className="box"
                                                     value={isCreateMode
                                                         ? item?.name || ''
-                                                        : isEditMode|| isResubmitMode || isDetailView
+                                                        : isEditMode || isResubmitMode || isDetailView
                                                             ? item?.productNm || ''
                                                             : ''}
                                                     readOnly
+                                                    disabled={isDetailView} // 상세보기 모드일 때 disabled 속성 추가
                                                     placeholder="상품 선택"
                                                     onChange={(e) => {
                                                         if (isCreateMode) {
@@ -432,7 +432,7 @@ function Order() {
                                                         }
                                                     }}
                                                 />
-                                                {(isCreateMode || isEditMode || isResubmitMode ) && (
+                                                {(isCreateMode || isEditMode || isResubmitMode) && (
                                                     <button className="search-button" onClick={() => openProductModal(index)}>
                                                         <i className="bi bi-search"></i>
                                                     </button>
@@ -449,6 +449,7 @@ function Order() {
                                                             ? (item?.orderDPrice !== undefined ? item.orderDPrice.toLocaleString() : '')
                                                             : item?.orderDPrice?.toLocaleString() || ''}
                                                     readOnly={!isEditMode && !isResubmitMode && !isCreateMode}
+                                                    disabled={isDetailView} // 상세보기 모드일 때 disabled 속성 추가
                                                     placeholder="단가 입력"
                                                     onChange={(e) => {
                                                         // 콤마를 제거한 숫자만 추출
@@ -472,6 +473,7 @@ function Order() {
                                                             ? (item?.orderDQty !== undefined ? item.orderDQty.toLocaleString() : 0)
                                                             : item?.orderDQty?.toLocaleString() || 0}
                                                     readOnly={!isEditMode && !isResubmitMode && !isCreateMode}
+                                                    disabled={isDetailView} // 상세보기 모드일 때 disabled 속성 추가
                                                     placeholder="수량 입력"
                                                     onChange={(e) => {
                                                         // 콤마를 제거한 숫자만 추출
@@ -549,10 +551,10 @@ function Order() {
                         {isCreateMode && <button className="box color" onClick={handleSubmit}>결재 요청</button>}
                         {isResubmitMode && (
                             <button className="box color" onClick={() => handleResubmit(orderNo)}>
-                                 결재 재요청
+                                결재 재요청
                             </button>
                         )}
-                        {isEditMode && orderHStatus === 'ing' && (<button className="box color" onClick={() => handleEdit(orderNo)}><i className="bi bi-floppy"></i> 주문 수정</button>)}
+                        {isEditMode && orderHStatus === 'ing' && (<button className="box color" onClick={() => handleEdit(orderNo)}>주문 수정</button>)}
                         {isDetailView && role === 'admin' && orderHStatus === 'ing' && (
                             <>
                                 <button className="box color" onClick={handleApproveOrder}>

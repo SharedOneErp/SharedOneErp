@@ -66,8 +66,9 @@ button.box.icon.hover_text.cancel:hover i::after { content: '취소'; }
 .search_box { position:relative; align-items: center; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); display: inline-flex; font-size: 14px; padding-left: 12px; color: #666; } 
 .search_box.has_text { border-color: #007CC1; padding-left:0px; padding-right: 26px; } 
 .search_box.has_text input { color: #555; } 
-.search_box.has_text i.bi-search { display: none; } 
+.search_box.has_text i { display: none; } 
 .search_box.has_text button { color: #007CC1; } 
+.search_box.has_text button i { display: inline; } 
 .search_box .box { border: none; padding-right: 30px; width: 174px; } 
 /* 플로팅 라벨 스타일 */
 .label_floating { position: absolute; top: calc(50% - 1px); left: 38px; color: #888; font-size: 16px; font-weight: 500; pointer-events: none; transform: translateY(-50%); transition: 0.2s ease all; } 
@@ -175,7 +176,7 @@ input[type="checkbox"]:disabled + .chkbox_icon .bi-check-lg { color: #f6f6f6; }
 @keyframes loading { 0%, 100% { opacity: 0; transform: scale(0.5); } 
 50% { opacity: 1; transform: scale(1.2); } 
  }
-.table_wrap .no_data { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center; font-size: 18px; color: #999; font-weight: 500;cursor: default; } 
+.table_wrap .no_data { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center; font-size: 18px; color: #999; font-weight: 500; cursor: default; } 
 .table_wrap .no_data i { margin-right: 5px; margin-top: 2px; } 
 /* 모달 속 table */
 .modal_container.search .table_wrap table { min-height: 472px; } 
@@ -212,11 +213,11 @@ input[type="checkbox"]:disabled + .chkbox_icon .bi-check-lg { color: #f6f6f6; }
 /* .modal_container.search_customer .table_wrap table th:nth-child(1),
 .modal_container.search_customer .table_wrap table td:nth-child(1) { 고객사 } */
 .modal_container.search_customer .table_wrap table th:nth-child(2),
-.modal_container.search_customer .table_wrap table td:nth-child(2) { width: 150px; /* 주소 */ } 
+.modal_container.search_customer .table_wrap table td:nth-child(2) { width: 255px; /* 주소 */ } 
 .modal_container.search_customer .table_wrap table th:nth-child(3),
-.modal_container.search_customer .table_wrap table td:nth-child(3) { width: 150px; /* 연락처 */ } 
+.modal_container.search_customer .table_wrap table td:nth-child(3) { width: 155x; /* 연락처 */ } 
 .modal_container.search_customer .table_wrap table th:nth-child(4),
-.modal_container.search_customer .table_wrap table td:nth-child(4) { width: 130px; /* 대표명 */ } 
+.modal_container.search_customer .table_wrap table td:nth-child(4) { width: 100px; /* 대표명 */ } 
 /* 상품 검색 */
 .modal_container.search_product .table_wrap table th:nth-child(1),
 .modal_container.search_product .table_wrap table td:nth-child(1) { width: 100px; /* 상품코드 */ } 
