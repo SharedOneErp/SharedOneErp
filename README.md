@@ -1,8 +1,21 @@
+
+# 영업관리 ERP
+
+- **기업 연계 프로젝트** with ㈜ 쉐어드원
+- **개발 기간** : 2024/09/02 ~ 09/27 (4주)
+- **주요 기능**
+    - 직원/고객 관리
+    - 카테고리/상품 관리
+    - 고객사별 상품 가격 관리
+    - 주문 등록 및 승인
+    - 주문 현황 보고서 차트
+<br/>
+
 ## 🧙‍♀️ 팀원
 
-| **조예원** | **김호진** | **박서희** | **손민석** |**심유정** |**한정우** |
+| **👑조예원** | **김호진** | **박서희** | **손민석** |**심유정** |**한정우** |
 | :------: |  :------: | :------: | :------: |:------: |:------: |
-| [<img src="https://avatars.githubusercontent.com/yewon31" height=80> <br/> @yewon31](https://github.com/yewon31) | [<img src="https://avatars.githubusercontent.com/hjKim1597" height=80> <br/> @hjKim1597](https://github.com/hjKim1597) | [<img src="https://avatars.githubusercontent.com/FORrri" height=80> <br/> @FORrri](https://github.com/FORrri) | [<img src="https://avatars.githubusercontent.com/huhuhahahaha" height=80> <br/> @huhuhahahaha](https://github.com/huhuhahahaha) |[<img src="https://avatars.githubusercontent.com/I2hyeon" height=80> <br/> @I2hyeon](https://github.com/I2hyeon) |[<img src="https://avatars.githubusercontent.com/groovyplanet" height=80> <br/> @groovyplanet](https://github.com/groovyplanet) |
+| [<img src="https://avatars.githubusercontent.com/yewon31" height=90> <br/> @yewon31](https://github.com/yewon31) | [<img src="https://avatars.githubusercontent.com/hjKim1597" height=90> <br/> @hjKim1597](https://github.com/hjKim1597) | [<img src="https://avatars.githubusercontent.com/FORrri" height=90> <br/> @FORrri](https://github.com/FORrri) | [<img src="https://avatars.githubusercontent.com/huhuhahahaha" height=90> <br/> @huhuhahahaha](https://github.com/huhuhahahaha) |[<img src="https://avatars.githubusercontent.com/I2hyeon" height=90> <br/> @I2hyeon](https://github.com/I2hyeon) |[<img src="https://avatars.githubusercontent.com/groovyplanet" height=90> <br/> @groovyplanet](https://github.com/groovyplanet) |
 
 <br/>
 
@@ -20,15 +33,32 @@
 
 <br/>
 
+
 ## 🎠 전체 UI
 ![전체 UI(github)](https://github.com/user-attachments/assets/4755cafb-665f-4a94-bc37-91677bbb5eec)
 
 <br/>
 
-## 🎬 프로젝트 발표
+## 🎡 문서
 
 <details>
-  <summary>발표 PPT</summary>
+  <summary>ERD</summary>
+  
+![쉐어드원 3조](https://github.com/user-attachments/assets/1ea8758a-f5c8-41b9-9181-1c8ad141aa5c)
+
+</details>
+
+
+<details>
+  <summary>API 명세서</summary>
+
+![쉐어드원 3조](https://github.com/user-attachments/assets/64d1218b-d171-419a-af74-1d7beea3b370)
+
+</details>
+
+
+<details>
+  <summary>PPT</summary>
  
 ![1 (6)](https://github.com/user-attachments/assets/bd70e56c-ff8f-410f-96cb-a51c106c62d2)
 ![2 (2)](https://github.com/user-attachments/assets/536ee9c4-37fa-4eea-962c-d2741e6e99da)
