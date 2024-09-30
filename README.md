@@ -9,6 +9,7 @@
     - 고객사별 상품 가격 관리
     - 주문 등록 및 승인
     - 주문 현황 보고서 차트
+- **시연영상** : https://www.youtube.com/watch?v=da2D4uyioXY
 <br/>
 
 ## 🧙‍♀️ 팀원
@@ -44,7 +45,8 @@
 <details>
   <summary>ERD</summary>
   
-![쉐어드원 3조](https://github.com/user-attachments/assets/1ea8758a-f5c8-41b9-9181-1c8ad141aa5c)
+![ERD(2)](https://github.com/user-attachments/assets/53f6d577-63fb-4fea-a57b-e1642062783b)
+
 
 </details>
 
