@@ -55,7 +55,7 @@
 
 
 <details>
-  <summary>PPT</summary>
+  <summary>발표 PPT</summary>
  
 ![1 (6)](https://github.com/user-attachments/assets/bd70e56c-ff8f-410f-96cb-a51c106c62d2)
 ![2 (2)](https://github.com/user-attachments/assets/536ee9c4-37fa-4eea-962c-d2741e6e99da)
