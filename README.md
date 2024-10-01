@@ -33,6 +33,39 @@
 | **개발 도구(IDE)** | IntelliJ IDEA, VSCode |
 <br/>
 
+
+
+## 🎡 문서
+
+<details>
+  <summary>E-R Diagram</summary>
+  
+![ERD(2)](https://github.com/user-attachments/assets/53f6d577-63fb-4fea-a57b-e1642062783b)
+
+
+</details>
+
+
+<details>
+  <summary>API 명세서</summary>
+
+![쉐어드원 3조](https://github.com/user-attachments/assets/64d1218b-d171-419a-af74-1d7beea3b370)
+
+</details>
+
+
+<details>
+  <summary>PPT</summary>
+ 
+![1 (6)](https://github.com/user-attachments/assets/bd70e56c-ff8f-410f-96cb-a51c106c62d2)
+![2 (2)](https://github.com/user-attachments/assets/536ee9c4-37fa-4eea-962c-d2741e6e99da)
+![3](https://github.com/user-attachments/assets/9ed942df-1bff-498e-b14c-8224cd3d21e7)
+</details>
+
+
+
+<br/>
+
 ## 🧩 기능 시연
 
 <details>
@@ -89,38 +122,6 @@
     
 ![29](https://github.com/user-attachments/assets/fe335fa5-94b5-4f22-a3ac-098c4c5aa5e7)
 </details>
-
-
-<br/>
-
-
-## 🎡 문서
-
-<details>
-  <summary>E-R Diagram</summary>
-  
-![ERD(2)](https://github.com/user-attachments/assets/53f6d577-63fb-4fea-a57b-e1642062783b)
-
-
-</details>
-
-
-<details>
-  <summary>API 명세서</summary>
-
-![쉐어드원 3조](https://github.com/user-attachments/assets/64d1218b-d171-419a-af74-1d7beea3b370)
-
-</details>
-
-
-<details>
-  <summary>PPT</summary>
- 
-![1 (6)](https://github.com/user-attachments/assets/bd70e56c-ff8f-410f-96cb-a51c106c62d2)
-![2 (2)](https://github.com/user-attachments/assets/536ee9c4-37fa-4eea-962c-d2741e6e99da)
-![3](https://github.com/user-attachments/assets/9ed942df-1bff-498e-b14c-8224cd3d21e7)
-</details>
-
 
 
 <br/>
