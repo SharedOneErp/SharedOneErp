@@ -1,3 +1,10 @@
+//1. 쿼리DSL
+buildscript {
+	ext {
+		queryDslVersion = "5.0.0"
+	}
+}
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.18'  // Spring Boot 플러그인
@@ -18,7 +25,6 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor  // 컴파일 전용 설정에 애노테이션 프로세서 포함
 	}
-	querydsl.extendsFrom compileClasspath  // Querydsl 설정 추가
 }
 
 repositories {
@@ -40,23 +46,31 @@ dependencies {
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.5' 	// Jackson Databind 라이브러리 추가 (Spring Boot 2.7.18에 호환되는 최신 버전)
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.5' // Java 8 Date and Time API (JSR310)를 위한 Jackson 모듈 추가
 	implementation 'org.modelmapper:modelmapper:3.1.0' // ModelMapper : DTO와 엔티티 간의 변환을 자동으로 처리해주는 라이브러리
-	implementation 'com.querydsl:querydsl-jpa:5.0.0' // Querydsl
-	annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jpa' // Querydsl
+	//쿼리DSL
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 }
 
 tasks.named('test') {
 	useJUnitPlatform()  // JUnit 플랫폼 사용
 }
 
-// Querydsl 설정 추가
+///////////////4. 쿼리DSL Q클래스 위치지정////////////////
+def querydslDir = "$buildDir/generated"
+querydsl {
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
 sourceSets {
-	main {
-		java {
-			srcDirs += 'build/generated/sources/annotationProcessor/java/main'
-		}
+	main.java.srcDir querydslDir
+}
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
 	}
+	querydsl.extendsFrom compileClasspath
 }
-
-compileJava {
-	options.annotationProcessorPath = configurations.querydsl // **Annotation Processor 설정 추가**
+compileQuerydsl {
+	options.annotationProcessorPath = configurations.querydsl
 }
+////////////////////////////////////////
