@@ -38,69 +38,56 @@
 <details>
   <summary>1. 로그인 및 메인 대시보드</summary>
     
-![1 로그인](https://github.com/user-attachments/assets/2c23d42e-e2b2-4062-9f52-7b7620936c65)
+![ezgif-7-011ab5f44f](https://github.com/user-attachments/assets/e3996121-ab4d-4793-baa1-820dd19df2a3)
 </details>
 
 <details>
   <summary>2. 직원 관리</summary>
     
-![2 직원_1](https://github.com/user-attachments/assets/60c23118-8811-4019-889c-57d55075fb7c)
-![2 직원_2](https://github.com/user-attachments/assets/ff0f88ff-46d1-492c-ac03-cf2bd7f1cb3f)
+![ezgif-7-a09602c73a](https://github.com/user-attachments/assets/c28905c5-6a62-4c81-8fc4-f5a135be9f7b)
 
 </details>
 <details>
-  <summary>3. 고객사 관리</summary>
+  <summary>3. 고객 관리</summary>
     
-![3_1](https://github.com/user-attachments/assets/18ebc615-1437-4e29-b6e4-e12e08856db3)
-![3_2](https://github.com/user-attachments/assets/c34b49ab-63dc-4979-9bed-81428f010d34)
+![ezgif-7-c7468b2269](https://github.com/user-attachments/assets/813c53d9-d142-4cd1-9464-7cef197726f5)
 
 </details>
 <details>
   <summary>4. 상품 카테고리 관리</summary>
     
-![4_1](https://github.com/user-attachments/assets/36be0f4e-16a3-4029-89f8-a6a2ca7a0118)
-![4_2](https://github.com/user-attachments/assets/6ceae6c0-9d42-4a3e-a09b-82f0a75c9df6)
+![ezgif-2-feffb5d88f](https://github.com/user-attachments/assets/1edbcd0b-6fcb-4e81-aef3-6c308c6a689c)
 
 </details>
 <details>
   <summary>5. 상품 관리</summary>
     
-![5_1](https://github.com/user-attachments/assets/73135f23-28a5-40c6-ba62-ade896190d63)
-![5_2](https://github.com/user-attachments/assets/fa41fbbf-1462-4cb8-82ed-6a839f3eceb5)
-![5_3](https://github.com/user-attachments/assets/458deba3-9862-4457-8913-fd04c8f57c87)
+![ezgif-2-d8ac1ea66c](https://github.com/user-attachments/assets/ecfef993-001b-40dc-8281-2ec2d0e05d28)
 
 </details>
 <details>
   <summary>6. 고객사별 상품 가격 관리</summary>
     
-![6_1](https://github.com/user-attachments/assets/f1477f37-696c-49f8-a047-a95170e8cbfe)
-![6_2](https://github.com/user-attachments/assets/1f4144f2-3902-4e45-acc1-51c1781bc323)
-![6_3](https://github.com/user-attachments/assets/aee5a4b1-5518-4513-a00f-dcb0fa23757a)
-![6_4](https://github.com/user-attachments/assets/8a2eab30-a020-47ef-96e9-c582fac32a97)
-![6_5](https://github.com/user-attachments/assets/50a5541a-4919-4924-a216-f878b1fa37d3)
+![ezgif-2-bb6aeae163](https://github.com/user-attachments/assets/e875d217-fb22-4931-bb98-48a4cfe44601)
 
 </details>
 
 <details>
   <summary>7. 주문 등록</summary>
     
-![7_1](https://github.com/user-attachments/assets/a2ec5f16-e7b1-46ad-9dc3-cd96d287d5fd)
-![7_2](https://github.com/user-attachments/assets/32bfafc6-6bcd-402a-83e8-e54ee0bbeb0a)
+![ezgif-2-7e6254ece8](https://github.com/user-attachments/assets/aacbb196-c5ef-491c-8e89-40d04cd7d10b)
 
 </details>
 <details>
   <summary>8. 주문 목록</summary>
     
-![8_1](https://github.com/user-attachments/assets/27c5336f-246d-49cc-a089-fb6dece16559)
-![8_2](https://github.com/user-attachments/assets/493918d2-b157-446e-a3dd-514e37502d15)
-![8_3](https://github.com/user-attachments/assets/a4cd1453-3faa-41c9-9a91-32f26782fd24)
-![8_4](https://github.com/user-attachments/assets/5ef721f0-d141-44fc-9804-cd1a9807217e)
+![ezgif-2-1d6adb6554](https://github.com/user-attachments/assets/83fd8a7e-4172-42b5-a8f8-65ebb23d6d31)
 
 </details>
 <details>
   <summary>9. 주문 현황 보고서</summary>
     
-![9](https://github.com/user-attachments/assets/7d5fd667-79aa-4450-9a40-9dc3ebe35ea9)
+![ezgif-7-aaa45ddf13](https://github.com/user-attachments/assets/9a5cbb31-b0a1-4f0d-90aa-f4c238b6426d)
 </details>
 
 
