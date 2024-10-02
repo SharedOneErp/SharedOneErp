@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>[[${pageName}]]</title>
+    <link rel="icon" th:href="@{/img/favicon.ico}"/>
+    <!-- 부트스트랩 아이콘 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <div th:if="${session.user != null}" id="root"></div>
+    <div th:unless="${session.user != null}">
+        <script>
+            location.href='/login';
+        </script>
+    </div>
+    <script th:src="@{'/bundle/' + ${pageName} + '.bundle.js'}"></script>
+</body>
+</html>

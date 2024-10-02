@@ -1,0 +1,91 @@
+/* 모달 기본 레이아웃 */
+.modal_container.customer { width: 620px; } 
+.modal_container.customer .modal-actions { margin-top: 5px; } 
+/* 유효성 검사 에러 메시지*/
+.error-message { color: red; font-size: 12px; margin-top: 5px; } 
+.invalid { border-color: red; } 
+/* 확인 모달 스타일 */
+.confirm-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; } 
+.confirm-modal-content { background: white; padding: 20px; border-radius: 8px; max-width: 500px; width: 90%; max-height: 15vh; overflow-y: auto; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); position: relative; text-align: center; } 
+.confirm-modal-content .modal-footer { margin-top: 20px; display: flex; justify-content: center; } 
+.confirm-modal-content .confirm-button,
+.confirm-modal-content .cancel-button { margin: 0 10px; padding: 10px 20px; } 
+/* 모달 스크롤 바 */
+.confirm-modal-content::-webkit-scrollbar { width: 8px; } 
+.confirm-modal-content::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.2); border-radius: 4px; } 
+.confirm-modal-content::-webkit-scrollbar-thumb:hover { background-color: rgba(0, 0, 0, 0.4); } 
+/* 고객 등록 및 상세 모달 폼 */
+.register-form, .detail-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; } 
+.form-group { display: flex; flex-direction: column; margin-bottom: 15px; } 
+.form-group label { margin-bottom: 2px; font-weight: 500; color: #444; margin-left: 2px; font-size: 15px; } 
+.form-group input, 
+.form-group select { padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; transition: border-color 0.3s ease; font-family: "Pretendard", sans-serif; height: 40px; } 
+.form-group input[readonly], .form-group select[readonly],
+.form-group input:disabled, .form-group select:disabled { background-color: #fafafa; } 
+.form-group input:focus, .form-group select:focus { border-color: #007CC1; } 
+.form-group .span_red { color:red } 
+/* 버튼 스타일 */
+.modal-footer { display: flex; justify-content: flex-end; gap: 15px; margin-top: 20px; } 
+.edit-button, .delete-button, .save-button { padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 4%; transition: background-color 0.3s ease; } 
+.edit-button, .save-button { background-color: #007CC1; color: white; } 
+.edit-button:hover, .save-button:hover { background-color: #005fa3; } 
+.delete-button { background-color: #ff4d4d; color: white; } 
+.delete-button:hover { background-color: #d43d3d; } 
+.deleteall-button { padding: 12px 20px; background-color: #ff4d4d; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-left: 10px; } 
+.deleteall-button:hover { background-color: #d43d3d; } 
+/* 등록 버튼 */
+.register-button { padding: 12px 20px; background-color: #007CC1; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-bottom: 20px; } 
+.register-button:hover { background-color: #005fa3; } 
+.submit-button { background-color: #007CC1; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; position: absolute; right: 35px; bottom: 20px; } 
+.submit-button:hover { background-color: #005fa3; } 
+.allcustomer-button { background-color: #007CC1; color: white; padding: 12px 20px; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-left: 10px; } 
+.allcustomer-button:hover { background-color: #005fa3; } 
+.deletedcustomer-button { background-color: #ff4d4d; color: white; padding: 12px 20px; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-left: 10px; } 
+.deletedcustomer-button:hover { background-color: #d43d3d; } 
+/* 테이블 */
+.customer-table { width: 100%; border-collapse: collapse; margin-top: 20px; } 
+.customer-table th, .customer-table td { border: 1px solid #ddd; padding: 8px; text-align: left; } 
+.customer-table th { background-color: #f2f2f2; } 
+.customer-table tr:hover { background-color: #f1f1f1; } 
+/* 검색 필터 */
+.filter-section { margin-bottom: 20px; } 
+.filter-section select,
+.filter-section input,
+.filter-section .search-button { background-color: #f2f2f2; margin-right: 10px; padding: 8px; border-radius: 5px; } 
+.filter-button { background-color: #007CC1; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px; } 
+.filter-button:hover { background-color: #005fa3; } 
+/* 체크박스 및 상세내역 열에는 화살표 제거 */
+th:first-child::after,
+th:last-child::after { content: ""; } 
+/* 페이지네이션 */
+.pagination-buttons { margin-top: 20px; text-align: center; } 
+.pagination-buttons button { display: inline-block; padding: 10px 20px; margin: 0 5px; cursor: pointer; background-color: #f2f2f2; border: none; border-radius: 4px; } 
+.pagination-buttons button:hover { background-color: #e0e0e0; } 
+/* 반응형 처리 */
+@media (max-width: 768px){
+ .modal-content { width: 90%; } 
+ .register-form, .detail-form { grid-template-columns: 1fr; } 
+ }
+/* 🔴 개별 열 너비 지정 */
+.menu_customer .table_wrap table th:nth-child(1),
+.menu_customer .table_wrap table td:nth-child(1) { width: 45px; text-align: center; /* 체크박스 */ } 
+.menu_customer .table_wrap table th:nth-child(2),
+.menu_customer .table_wrap table td:nth-child(2) { width: 80px; /* 번호 */ } 
+/* .menu_customer .table_wrap table th:nth-child(3),
+.menu_customer .table_wrap table td:nth-child(3) { width: 12%; 고객사 } */
+.menu_customer .table_wrap table th:nth-child(4),
+.menu_customer .table_wrap table td:nth-child(4) { width: 17%; /* 사업자등록번호 */ } 
+.menu_customer .table_wrap table th:nth-child(5),
+.menu_customer .table_wrap table td:nth-child(5) { width: 13%; /* 국가코드 */ } 
+.menu_customer .table_wrap table th:nth-child(6),
+.menu_customer .table_wrap table td:nth-child(6) { width: 13%; /* 담당자명 */ } 
+.menu_customer .table_wrap table th:nth-child(7),
+.menu_customer .table_wrap table td:nth-child(7), 
+.menu_customer .table_wrap table th:nth-child(8),
+.menu_customer .table_wrap table td:nth-child(8),
+.menu_customer .table_wrap table th:nth-child(9),
+.menu_customer .table_wrap table td:nth-child(9) { width: 165px; /* 등록/수정/삭제일시 */ } 
+.menu_customer .table_wrap table th:nth-child(10),
+.menu_customer .table_wrap table td:nth-child(10) { width: 100px; /* 액션 */ } 
+ /* 검색어 */
+ .menu_customer .search_box .box { width: 350px; } 

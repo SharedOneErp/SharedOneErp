@@ -1,0 +1,62 @@
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; display: flex; justify-content: center; align-items: center; } 
+.modal-content { background-color: white; padding: 20px; border-radius: 8px; z-index: 1001; width: 100%; max-width: 800px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); position: relative; } 
+.modal-close { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 16px; cursor: pointer; color: #333; } 
+.modal-close:hover { color: #0058A3; } 
+.product-detail-container { display: flex; flex-direction: column; gap: 5px; margin-bottom: 5px; } 
+.modal-bottom { display: flex; justify-content: flex-end; margin-top: 20px; } 
+.modal-close-bottom { background-color: #0058A3; color: white; border: none; padding: 5px 15px; font-size: 14px; cursor: pointer; border-radius: 5px; } 
+.modal-close-bottom:hover { background-color: #004080; } 
+.spinner { display: flex; justify-content: center; align-items: center; font-size: 18px; padding: 20px; } 
+.error-message { display: flex; justify-content: center; align-items: center; font-size: 18px; padding: 20px; } 
+/* 폼 영역 */
+.form-group { display: flex; align-items: center; margin-bottom: 10px; } 
+.form-group.detail-name { display: flex } 
+.form-group label { width: 70px; } 
+.form-group span { display: flex } 
+.form-group input[type="text"] { flex-grow: 1; height: 35px; padding: 5px 10px; border: 1px solid #ccc; border-radius: 5px; cursor: default; } 
+.form-group input[type="text"]:read-only { flex-grow: 1; height: 35px; padding: 5px 10px; border: 1px solid #ccc; border-radius: 5px; cursor: default; } 
+/* 카테고리 */
+.category-inputs { display: flex; gap: 10px; font-size: 12px; font-weight: bold; } 
+.category-item { background-color: #f5f5f5; color: black; padding: 5px 10px; font-size: 14px; border: 1px solid #ddd; border-radius: 5px; text-align: center; } 
+.category-item.top { border: 1px solid #d6ebff; background-color: #f0f8ff; color: #00008b; border-radius: 4px; } 
+.category-item.middle { border: 1px solid #c6f0be; background-color: #e3fad7; color: #0e7933; border-radius: 4px; } 
+.category-item.low { border: 1px solid #eedca687; background-color: #fff1cd; color: #c38218; border-radius: 4px; } 
+/* 테이블 */
+.table_wrap1 { max-height: 300px; overflow: visible; cursor: default; } 
+.table_wrap1 { position: relative; border: 1px solid #ddd; display: flex; flex-direction: column; flex: 1; overflow-y: auto; width: 100%; height: 100%; margin-top: 5px; } 
+.table_wrap1 table { border-collapse: collapse; display: flex; flex-direction: column; } 
+.table_wrap1 table thead { flex: 0 0 auto; position: sticky; top: 0; background-color: #fafafa; border-bottom: 1px solid #ddd; color: #555; font-weight: 500; z-index: 1; } 
+.table_wrap1 table tbody { flex: 1 1 auto; font-size: 15px; } 
+.table_wrap1 table tr { display: table; width: 100%; table-layout: fixed; } 
+.table_wrap1 table tbody tr:not(.tr_empty) { border-bottom: 1px solid #f1f1f1; } 
+.table_wrap1 table:not(.not_hover) tbody tr:not(.tr_empty):not(.tr_input):not(.selected_row):hover { background-color: #f7f7f7; } 
+.table_wrap1 table tbody tr.selected_row,
+.table_wrap1 table tr.tr_input { background-color: #e4f1f7a3; } 
+.table_wrap1 table th { font-weight: 500; } 
+.table_wrap1 table th,
+.table_wrap1 table td { padding: 12px 8px; text-align: left; } 
+.table_wrap1 table th { padding: 11px 8px; } 
+.table_wrap1 table td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
+.table_wrap1 table td b { font-weight: 500; color:#555 } 
+/* 개별 열 너비 지정 */
+.table_wrap1 table th:nth-child(1),
+.table_wrap1 table td:nth-child(1) { width: 20%; } /* 최근 납품일자 */
+/* .table_wrap1 table th:nth-child(2),
+.table_wrap1 table td:nth-child(2) { } 거래처 */
+.table_wrap1 table th:nth-child(3),
+.table_wrap1 table td:nth-child(3) { width: 14%; } /* 수량 */
+.table_wrap1 table th:nth-child(4),
+.table_wrap1 table td:nth-child(4) { width: 17%; } /* 납품가 */
+.table_wrap1 table th:nth-child(5),
+.table_wrap1 table td:nth-child(5) { width: 20%; } /* 매출액(원) */
+.table_wrap1 table th:nth-child(6),
+.table_wrap1 table td:nth-child(6) { width: 10%; } /* 담당자 */
+/* 🟢 로딩 중, 데이터가 없을 때 */
+.loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center; gap: 10px; } 
+.loading span { display: inline-block; width: 13px; height: 13px; background-color: gray; border-radius: 50%; animation: loading 1s 0s linear infinite; } 
+.loading span:nth-child(1) { animation-delay: 0s; background-color: #0058A3; } 
+.loading span:nth-child(2) { animation-delay: 0.2s; background-color: rgba(29, 104, 168, 0.78); } 
+.loading span:nth-child(3) { animation-delay: 0.4s; background-color: rgba(70, 124, 168, 0.6); } 
+@keyframes loading { 0%, 100% { opacity: 0; transform: scale(0.5); } 
+50% { opacity: 1; transform: scale(1.2); } 
+ }

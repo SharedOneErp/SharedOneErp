@@ -1,0 +1,33 @@
+-- 참조무결성을 위한 외래키 제약
+ALTER TABLE m_product
+ADD CONSTRAINT fk_category_no
+FOREIGN KEY (category_no) REFERENCES m_category(category_no);
+
+ALTER TABLE m_price
+ADD CONSTRAINT fk_customer_no
+FOREIGN KEY (customer_no) REFERENCES m_customer(customer_no);
+
+ALTER TABLE m_price
+ADD CONSTRAINT fk_product_cd
+FOREIGN KEY (product_cd) REFERENCES m_product(product_cd);
+
+ALTER TABLE m_category
+ADD CONSTRAINT fk_parent_category_no
+FOREIGN KEY (parent_category_no) REFERENCES m_category(category_no);
+
+ALTER TABLE m_order_h
+ADD CONSTRAINT fk_customer_no
+FOREIGN KEY (customer_no) REFERENCES m_customer(customer_no);
+
+ALTER TABLE m_order_h
+ADD CONSTRAINT fk_employee_id
+FOREIGN KEY (employee_id) REFERENCES m_employee(employee_id);
+
+ALTER TABLE m_order_d
+ADD CONSTRAINT fk_order_h_no
+FOREIGN KEY (order_h_no) REFERENCES m_order_h(order_h_no);
+
+ALTER TABLE m_order_d
+ADD CONSTRAINT fk_product_cd
+FOREIGN KEY (product_cd) REFERENCES m_product(product_cd);
+

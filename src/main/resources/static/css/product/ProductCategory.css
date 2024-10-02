@@ -1,0 +1,63 @@
+/* src/main/resources/static/css/product/ProductCategory.css */
+/* 🟡 리스트 */
+/* search */ 
+.menu_category .search_box .box { width: 250px; } 
+/* table */
+.menu_category .table_wrap table tr.level-three { background-color: #fafafa; } 
+.menu_category .table_wrap table tr.level-three td { padding:10px 8px; } 
+.menu_category .table_wrap table td { padding: 5px 8px; } 
+.menu_category .table_wrap table th:nth-child(1),
+.menu_category .table_wrap table td:nth-child(1) { width: 105px; text-align: center; /* 카테고리 레벨 */ } 
+.menu_category .table_wrap table th:nth-child(2),
+.menu_category .table_wrap table td:nth-child(2) { padding-left: 20px; /* 카테고리 이름 */ } 
+.menu_category .table_wrap table th:nth-child(3),
+.menu_category .table_wrap table td:nth-child(3),
+.menu_category .table_wrap table th:nth-child(4),
+.menu_category .table_wrap table td:nth-child(4) { width: 200px; /* 등록/수정일시 */ } 
+/* 들여쓰기 적용 */
+.menu_category .table_wrap table .indent { display: flex; align-items: center; } 
+.menu_category .table_wrap table .indent.level-2 { margin-left: 20px; } 
+.menu_category .table_wrap table .indent.level-3 { margin-left: 60px; } 
+/* 카테고리 토글 */
+.menu_category .table_wrap table .category_toggle { display: inline-flex; align-items: center; cursor: pointer; padding: 7px 10px; border-radius: 10px; } 
+.menu_category .table_wrap table .category_toggle i { font-size: 12px; margin-right: 5px; } 
+.menu_category .table_wrap table .category_toggle i.bi-caret-down-fill { color: #dadada; } 
+.menu_category .table_wrap table .category_toggle i.bi-caret-right-fill { color: #222; } 
+.menu_category .table_wrap table .category_toggle:hover { background-color: #f8f8f8; } 
+
+
+/* 🔴 모달 */
+.modal_container.cate_modal { width: auto; } 
+.cate_modal .edit_wrap { display: flex; border: 1px solid #ccc; } 
+.cate_modal .btn_wrap { display: flex; justify-content: flex-end; gap: 5px; margin-top: 5px; height: 40px; } 
+/* 각 카테고리 컬럼 */
+.cate_modal .edit_wrap .level_wrap { width: 100%; background-color: white; border-right: 1px solid #ccc; } 
+.cate_modal .edit_wrap .level_wrap:nth-child(3) { border: none; } 
+.cate_modal .edit_wrap .level_wrap h4 { text-align: center; margin-bottom: 5px; font-size: 18px; font-weight: 500; color: #333; background-color: #fafafa; border-bottom: 1px solid #ddd; padding: 8px 0; } 
+.cate_modal .edit_wrap .level_wrap h4 span.list_cnt { font-size: 14px; color: #999; } 
+.cate_modal .edit_wrap .level_wrap button { padding: 5px 10px; margin-left: 5px; background-color: #0058A3; color: white; border: none; cursor: pointer; transition: bac; height: 31px; width: 50px; line-height: 50%; text-align: center; } 
+.cate_modal .edit_wrap .level_wrap button:hover { background-color: #007CC1; } 
+.cate_modal .edit_wrap .level_wrap .content_wrap { padding: 10px; } 
+.cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap { height: 400px; overflow-x: clip; overflow-y: auto; padding: 0 10px; width: 250px; } 
+.cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap .empty_wrap { height: 400px; overflow: auto; padding: 0 10px; display: flex; align-items: center; justify-content: center; color: #777; } 
+.cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap .empty_wrap i { margin-right: 5px; } 
+/* 리스트 스타일 */
+.cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap ul.list { list-style-type: none; padding-left: 0; margin: 10px 0; } 
+.cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap ul.list .category-span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 85%; display: inline-block; } 
+.cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap ul.list li { position: relative; margin-bottom: 5px; cursor: pointer; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); padding: 8px; text-align: center; overflow: hidden; display: flex; align-items: center; justify-content: center; } 
+/* 화살표 아이콘 */
+.cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap ul.list li i { position: absolute; right: 6px; } 
+.cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap ul.list li.selected { border-color: #007CC1; color: #007CC1; font-weight: 600; } 
+.cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap ul.list li:not(.selected):hover, 
+.cate_modal .edit_wrap .level_wrap .content_wrap .list_wrap ul.list li:not(.selected):active { border-color: #555; color: #555; font-weight: 600; } 
+
+/* 추가 input */
+.cate_modal .edit_wrap .level_wrap .content_wrap .input-wrap { display: flex; margin-top: 25px; } 
+.cate_modal .edit_wrap .level_wrap .content_wrap .input-wrap .search_box input.box { width: 90%; padding-right: 0; } 
+.cate_modal .edit_wrap .level_wrap .content_wrap .input-wrap .search_box input.box.has_text { border-color: #007CC1; } 
+
+/* 선택된 카테고리 */
+.cate_modal .btn_wrap .selected-cate { position: relative; margin-bottom: 5px; pointer-events: none; border-radius: 5px; border: 1px solid rgba(36, 42, 48, .14); padding: 8px; text-align: center; border: 1px solid #007CC1; color: #007CC1; font-weight: 600; width: 35%; margin-left: auto; height: 40px; } 
+.selected-cate { position: relative; width: 100%; } 
+.input-field { width: 100%; font-size: 16px; box-sizing: border-box; display: inline-block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 85%; display: inline-block; } 
+.floating-label { position: absolute; font-size: 12px; top: 0%; left: 10px; transform: translateY(-50%); color: #007CC1; pointer-events: none; transition: 0.2s ease all; background-color: white; } 

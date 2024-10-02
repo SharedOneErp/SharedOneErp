@@ -1,24 +1,22 @@
-// src/main/react/components/Layout.js
+// src/main/react/layout/Layout.js
 import React from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import Footer from './Footer';
-import '../../resources/static/css/Layout.css';
+import '../../resources/static/css/common/Layout.css';
+import Toast from '../components/common/Toast'; // 토스트 컴포넌트
+import ConfirmCustom from '../components/common/ConfirmCustom'; // confirm 모달 컴포넌트
 
-function Layout({ children }) {
+function Layout({currentMenu, children}) {
 
     return (
         <div className="container">
-            <Header />
+            <Header/>
             <div className="main-container">
-            <Sidebar />
-            <main className="main-content">
-                <div className="content-wrapper">
-                    { children }
-                </div>
-            </main>
+                <Sidebar currentMenu={currentMenu}/>
+                {children}
+                <Toast /> {/* Toast 메세지 */}
+                <ConfirmCustom /> {/* confirm 모달 */}
             </div>
-            <Footer />
         </div>
     );
 }

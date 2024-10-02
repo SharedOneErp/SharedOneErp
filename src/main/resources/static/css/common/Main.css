@@ -1,0 +1,62 @@
+.dashboard-container { display: grid; grid-template-columns: repeat(3, 1fr); /* 3개의 열로 구성 */
+ grid-gap: 20px; padding: 30px; } 
+.card { padding: 20px; background-color: #fdfdfd; border-radius: 10px; box-shadow: rgba(0, 0, 0, 0.02) 0px 2px 6px, rgba(0, 0, 0, 0.06) 0px -1px 0px inset, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px inset; transition: all 0.3s ease; } 
+.card:hover { transform: translateY(-5px); box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; } 
+.card-large { grid-column: span 1; } 
+.card-full { grid-column: span 3; /* 상품 관리 카드 전체 너비 차지 */
+ padding: 15px; background-color: #ffffff; margin-bottom: 20px; } 
+.card h3 { margin-bottom: 15px; /* 카드 제목 아래 여백 추가 */
+ font-size: 1.5em; display: flex; align-items: center; font-weight: bold; } 
+.card h3 i { font-size: 1.6em; margin-right: 10px; color: #0058A3; /* 아이콘 기본 색상 */ } 
+.info-group { padding: 10px 20px; display: flex; flex-direction: column; } 
+.info-row { display: flex; justify-content: flex-start; /* 아이콘과 텍스트를 왼쪽 정렬 */
+ align-items: center; margin-bottom: 10px; } 
+.info-row p { margin: 0; padding: 5px 0; font-size: 14px; display: flex; align-items: center; } 
+.info-row p i { margin-right: 8px; font-size: 1.2em; color: #495057; /* 아이콘 색상 */ } 
+.info-row p:hover i { color: #007bff; /* 아이콘 hover 시 색상 변화 */ } 
+.image-container { display: flex; justify-content: center; align-items: center; } 
+.logo-image { margin: 0 10px; max-height: 100px; display: block; opacity: 0.9; } 
+/* 반응형 디자인 */
+@media (max-width: 768px){
+ .info-row { flex-direction: column; align-items: flex-start; } 
+ }
+.info-item { margin-bottom: 10px; /* 각 항목 간의 간격을 조절 */ } 
+/* 카드의 전체적인 스타일이 필요할 경우, 여기에 추가 */
+.card { padding: 20px; /* 카드 내부 여백 */ } 
+p { margin: 8px; } 
+.info-group { padding: 10px 0; /* info-group의 전체 여백 */ } 
+.info-group p { display: flex; /* 아이콘과 텍스트를 가로로 정렬 */
+ align-items: center; /* 세로 정렬 */
+ margin-bottom: 10px; /* 각 항목 간의 간격 */
+ font-size: 14px; /* 글자 크기 조절 */ } 
+.info-group p i { margin-right: 8px; /* 아이콘과 텍스트 사이의 간격 */
+ font-size: 1.2em; /* 아이콘 크기 조정 */ } 
+.info-group p i.bi-people-fill { color: #007bff; /* 파란색 */ } 
+.info-group p i.bi-person-circle { color: #28a745; /* 초록색 */ } 
+.info-group p i.bi-person-check-fill { color: #ffc107; /* 노란색 */ } 
+.info-group p i.bi-person-x-fill { color: #dc3545; /* 빨간색 */ } 
+.info-group p i.bi-clock-fill { color: #17a2b8; /* 청록색 */ } 
+.info-group p i.bi-check-circle-fill { color: #28a745; /* 초록색 */ } 
+.info-group p i.bi-x-circle-fill { color: #dc3545; /* 빨간색 */ } 
+.info-group p i.bi-building { color: #007bff; /* 파란색 */ } 
+.info-group p i.bi-person-add { color: #ffc107; /* 노란색 */ } 
+.info-group p i.bi-arrow-clockwise { color: #17a2b8; /* 청록색 */ } 
+.info-group p i.bi-box { color: #007bff; /* 파란색 */ } 
+.info-group p i.bi-star-fill { color: #ffc107; /* 노란색 */ } 
+.info-group p i.bi-list-check { color: #17a2b8; /* 청록색 */ } 
+.info-group p i.bi-bell-fill { color: #ffc107; /* 노란색 */ } 
+.info-group p i.bi-info-circle-fill { color: #007bff; /* 파란색 */ } 
+.info-group p i.bi-calendar-event { color: #17a2b8; /* 청록색 */ } 
+.info-group p i.bi-cash-stack { color: #28a745; /* 초록색 */ } 
+.info-group p i.bi-calendar-date { color: #17a2b8; /* 청록색 */ } 
+.info-group p i.bi-credit-card { color: #dc3545; /* 빨간색 */ } 
+.info-group p i.bi-graph-up-arrow { color: #007bff; /* 파란색 */ } 
+.info-group p i.bi-cash-coin { color: #28a745; /* 초록색 */ } 
+.info-group p i.bi-check-all { color: #28a745; /* 초록색 */ } 
+.info-group p i.bi-box-seam { color: #007bff; /* 파란색 */ } 
+.image-container { grid-column: span 2; /* 두 칸을 차지하도록 설정 */
+ display: flex; justify-content: space-between; align-items: center; margin: 0 -9px; } 
+.logo-image { max-height: 300px; /* 이미지의 최대 높이 설정 */
+ width: 550px; /* 비율을 유지하면서 너비 자동 조정 */
+ margin: 0 10px; /* 좌우 여백 */
+ border-radius: 7px; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px; /* 약간의 그림자 효과 */ } 

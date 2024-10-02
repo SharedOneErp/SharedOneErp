@@ -1,0 +1,32 @@
+/* src/main/resources/static/css/product/ProductList.css */
+/* 🔴 개별 열 너비 지정 */
+.menu_product .table_wrap table th:nth-child(1),
+.menu_product .table_wrap table td:nth-child(1) { width: 45px; text-align: center; /* 체크박스 */ } 
+.menu_product .table_wrap table th:nth-child(2),
+.menu_product .table_wrap table td:nth-child(2),
+.menu_product .table_wrap table th:nth-child(3),
+.menu_product .table_wrap table td:nth-child(3),
+.menu_product .table_wrap table th:nth-child(4),
+.menu_product .table_wrap table td:nth-child(4) { width: 9.5%; /* 대/중/소분류 */ }
+.menu_product .table_wrap table th:nth-child(5),
+.menu_product .table_wrap table td:nth-child(5) { width: 130px; /* 품번 */ }
+/* .menu_product .table_wrap table th:nth-child(6),
+.menu_product .table_wrap table td:nth-child(6) { width: 14%; 상품명 } */
+.menu_product .table_wrap table th:nth-child(7),
+.menu_product .table_wrap table td:nth-child(7) { width: 137px; /* 가격 */ }
+.menu_product .table_wrap table th:nth-child(8),
+.menu_product .table_wrap table td:nth-child(8), 
+.menu_product .table_wrap table th:nth-child(9),
+.menu_product .table_wrap table td:nth-child(9),
+.menu_product .table_wrap table th:nth-child(10),
+.menu_product .table_wrap table td:nth-child(10) { width: 155px; /* 등록/수정/삭제일시 */ } 
+.menu_product .table_wrap table th:nth-child(11),
+.menu_product .table_wrap table td:nth-child(11) { width: 171px; /* 액션 */ } 
+/* padding 조절 */
+.menu_product .table_wrap table th,
+.menu_product .table_wrap table td { padding: 12px 8px; text-align: left; }
+/* 버튼 */
+button.box.icon.detail:hover, button.box.icon.detail:active { border-color: #69696970 !important; color: #696969bb; background-color: #69696908 !important; }
+button.box.icon.hover_text.detail:hover i::after { content: '납품내역'; color: #696969bb; }
+/* 카테고리 선택창 */
+/*select.box {width: 200px !important;}*/

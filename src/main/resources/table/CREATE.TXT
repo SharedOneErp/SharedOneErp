@@ -1,0 +1,109 @@
+-- 1. 고객사
+create table m_customer (
+	customer_no	SERIAL	NOT NULL, -- 고객 번호
+	customer_name	VARCHAR(30)	NOT NULL, -- 고객 이름
+	customer_tel	VARCHAR(50)	NULL, -- 고객사 연락처
+	customer_representative_name	VARCHAR(30)	NULL, -- 대표자명
+	customer_business_reg_no	VARCHAR(50)	NOT NULL, -- 사업자 등록번호
+	customer_addr	VARCHAR(200)	NULL, -- 사업장 주소
+	customer_fax_no	VARCHAR(50)	NULL, -- 팩스번호
+	customer_manager_name	VARCHAR(50)	NULL, -- 고객사 담당자명
+	customer_manager_email	VARCHAR(100)	NULL, -- 고객사 담당자 이메일
+	customer_manager_tel	VARCHAR(50)	NULL, -- 고객사 담당자 연락처
+	customer_country_code	VARCHAR(20)	NULL, -- 국가코드
+	customer_type	VARCHAR(20)	NULL, -- 거래처분류
+	customer_e_tax_invoice_yn	VARCHAR(20)	NULL, -- 전자세금계산서 여부
+	customer_transaction_start_date	timestamp	NULL, -- 거래 시작일
+	customer_transaction_end_date	timestamp	NULL, -- 거래 종료일
+	customer_insert_date	timestamp	NOT NULL	DEFAULT CURRENT_TIMESTAMP, -- 등록일시
+	customer_update_date	timestamp	NULL, -- 수정일시
+	customer_delete_yn	VARCHAR(20)	NOT NULL DEFAULT 'N', -- 삭제 여부 기본값 'N'
+	customer_delete_date	timestamp	NULL, -- 삭제 일시
+	primary key (customer_no) -- 기본 키 설정
+);
+
+-- 2. 상품
+create table m_product (
+    product_cd             varchar(10)      not null, -- 제품 코드
+    category_no            int              null,     -- 카테고리 번호 (m_category 테이블 참조)
+    product_nm             varchar(100)     not null, -- 제품 이름
+    product_price          decimal(15, 2)   not null, -- 제품 가격
+    product_insert_date    timestamp        not null default current_timestamp, -- 제품 등록 일시
+    product_update_date    timestamp        null,     -- 제품 수정 일시
+    product_delete_yn      varchar(20)      not null default 'N', -- 삭제 여부 기본값 'N'
+    product_delete_date    timestamp        null,     -- 삭제 일시
+    primary key (product_cd) -- 기본 키 설정
+);
+
+-- 3. 고객사별 상품 가격
+create table m_price (
+    price_no               serial           not null, -- 가격 번호
+    customer_no            int              not null, -- 고객 번호 (m_customer 테이블 참조)
+    product_cd             varchar(10)      not null, -- 제품 코드 (m_product 테이블 참조)
+    price_customer         decimal(15, 2)   not null, -- 고객별 가격
+    price_start_date       date             null,     -- 가격 적용 시작 일자
+    price_end_date         date             null,     -- 가격 적용 종료 일자
+    price_insert_date      timestamp        not null default current_timestamp, -- 가격 등록 일시
+    price_update_date      timestamp        null,     -- 가격 수정 일시
+    price_delete_yn        varchar(20)      not null default 'N', -- 삭제 여부 기본값 'N'
+    price_delete_date      timestamp        null,     -- 삭제 일시
+    primary key (price_no) -- 기본 키 설정
+);
+
+-- 4. 상품 카테고리
+create table m_category (
+    category_no            serial           not null, -- 카테고리 번호
+    category_level         int              not null, -- 카테고리 레벨
+    parent_category_no     int              null,     -- 상위 카테고리 번호
+    category_nm            varchar(100)     not null, -- 카테고리 이름
+    category_insert_date   timestamp        not null default current_timestamp, -- 카테고리 등록 일시
+    category_update_date   timestamp        null,     -- 카테고리 수정 일시
+    category_delete_yn     varchar(20)      not null default 'N', -- 삭제 여부 기본값 'N'
+    category_delete_date   timestamp        null,     -- 삭제 일시
+    primary key (category_no) -- 기본 키 설정
+);
+
+-- 5. 주문
+create table m_order_h (
+    order_h_no             serial           not null, -- 주문 헤더 번호
+    customer_no            int              not null, -- 고객 번호 (m_customer 테이블 참조)
+    employee_id            varchar(50)      not null, -- 직원 ID (m_employee 테이블 참조)
+    order_h_total_price    decimal(15, 2)   not null, -- 총 주문 금액
+    order_h_status         varchar(10)      null,     -- 주문 상태(ing, approved, denied)
+    order_h_insert_date    timestamp        not null default current_timestamp, -- 주문 등록 일시
+    order_h_update_date    timestamp        null,     -- 주문 수정 일시
+    order_h_delete_yn      varchar(20)      not null default 'N', -- 삭제 여부 기본값 'N'
+    order_h_delete_date    timestamp        null,     -- 삭제 일시
+    primary key (order_h_no) -- 기본 키 설정
+);
+
+-- 6. 주문 상세
+create table m_order_d (
+    order_d_no             serial           not null, -- 주문 상세 번호
+    order_h_no             int              not null, -- 주문 헤더 번호 (m_order_h 테이블 참조)
+    product_cd             varchar(10)      not null, -- 제품 코드 (m_product 테이블 참조)
+    order_d_price          decimal(15, 2)   not null, -- 주문 가격
+    order_d_qty            int              not null, -- 주문 수량
+    order_d_total_price    decimal(15, 2)   not null, -- 총 주문 금액
+    order_d_delivery_request_date timestamp null,     -- 납품 요청 일자
+    order_d_insert_date    timestamp        not null default current_timestamp, -- 주문 상세 등록 일시
+    order_d_update_date    timestamp        null,     -- 주문 상세 수정 일시
+    order_d_delete_yn      varchar(20)      not null default 'N', -- 삭제 여부 기본값 'N'
+    order_d_delete_date    timestamp        null,     -- 삭제 일시
+    primary key (order_d_no) -- 기본 키 설정
+);
+
+-- 7. 직원
+create table m_employee (
+    employee_id            varchar(50)      not null, -- 직원 ID
+    employee_pw            varchar(50)      not null, -- 직원 비밀번호
+    employee_name          varchar(50)      not null,  -- 직원 이름
+    employee_email         varchar(30)      null,     -- 직원 이메일
+    employee_tel           varchar(20)      not null, -- 직원 연락처
+    employee_role          varchar(20)      not null, -- 직원 권한(staff, manager, admin)
+    employee_insert_date   timestamp        not null default current_timestamp, -- 직원 등록 일시
+    employee_update_date   timestamp        null,     -- 직원 수정 일시
+    employee_delete_yn     varchar(20)      not null default 'N', -- 삭제 여부 기본값 'N'
+    employee_delete_date   timestamp        null,     -- 삭제 일시
+    primary key (employee_id) -- 기본 키 설정
+);

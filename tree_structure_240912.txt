@@ -1,0 +1,171 @@
+src 
+├─ .gitignore
+├─ 3653f6f1084e4e6de0be.jpg
+├─ 8ccfb913bbb497ad7295.png
+├─ README.md
+├─ build.gradle
+├─ gradle
+│  └─ wrapper
+│     ├─ gradle-wrapper.jar
+│     └─ gradle-wrapper.properties
+├─ gradlew
+├─ gradlew.bat
+├─ package-lock.json
+├─ package.json
+├─ settings.gradle
+├─ src
+│  ├─ main
+│  │  ├─ java
+│  │  │  └─ com
+│  │  │     └─ project
+│  │  │        └─ erpre
+│  │  │           ├─ ErpreApplication.java
+│  │  │           ├─ config
+│  │  │           │  └─ WebConfig.java
+│  │  │           ├─ controller
+│  │  │           │  ├─ CategoryController.java
+│  │  │           │  ├─ CustomerController.java
+│  │  │           │  ├─ EmployeeController.java
+│  │  │           │  ├─ MainController.java
+│  │  │           │  ├─ OrderController.java
+│  │  │           │  ├─ OrderDetailController.java
+│  │  │           │  ├─ PriceController.java
+│  │  │           │  └─ ProductController.java
+│  │  │           ├─ model
+│  │  │           │  ├─ Category.java
+│  │  │           │  ├─ CategoryDTO.java
+│  │  │           │  ├─ Customer.java
+│  │  │           │  ├─ CustomerDTO.java
+│  │  │           │  ├─ Employee.java
+│  │  │           │  ├─ EmployeeDTO.java
+│  │  │           │  ├─ Order.java
+│  │  │           │  ├─ OrderDTO.java
+│  │  │           │  ├─ OrderDetail.java
+│  │  │           │  ├─ OrderDetailDTO.java
+│  │  │           │  ├─ Price.java
+│  │  │           │  ├─ PriceDTO.java
+│  │  │           │  ├─ Product.java
+│  │  │           │  └─ ProductDTO.java
+│  │  │           ├─ repository
+│  │  │           │  ├─ CategoryRepository.java
+│  │  │           │  ├─ CustomerRepository.java
+│  │  │           │  ├─ EmployeeRepository.java
+│  │  │           │  ├─ OrderDetailRepository.java
+│  │  │           │  ├─ OrderRepository.java
+│  │  │           │  ├─ PriceRepository.java
+│  │  │           │  └─ ProductRepository.java
+│  │  │           ├─ service
+│  │  │           │  ├─ CategoryService.java
+│  │  │           │  ├─ CustomerService.java
+│  │  │           │  ├─ EmployeeService.java
+│  │  │           │  ├─ OrderDetailService.java
+│  │  │           │  ├─ OrderService.java
+│  │  │           │  ├─ PriceService.java
+│  │  │           │  └─ ProductService.java
+│  │  │           └─ util
+│  │  │              ├─ Criteria.java
+│  │  │              └─ PageVO.java
+│  │  ├─ react
+│  │  │  ├─ components
+│  │  │  │  ├─ Main.js
+│  │  │  │  ├─ auth
+│  │  │  │  │  └─ Login.js
+│  │  │  │  ├─ customer
+│  │  │  │  │  └─ CustomerList.js
+│  │  │  │  ├─ hr
+│  │  │  │  │  ├─ EmployeeList.js
+│  │  │  │  │  └─ EmployeeRegister.js
+│  │  │  │  ├─ product
+│  │  │  │  │  ├─ Product.js
+│  │  │  │  │  ├─ ProductCategory.js
+│  │  │  │  │  ├─ ProductDetail2.js
+│  │  │  │  │  ├─ useProductHooks.js
+│  │  │  │  │  ├─ ProductList.js
+│  │  │  │  │  ├─ Price.js
+│  │  │  │  │  ├─ ProductPrice2.js
+│  │  │  │  │  ├─ PriceHooks.js
+│  │  │  │  │  ├─ ProductPriceHooks2.js
+│  │  │  │  │  ├─ PriceModal.js
+│  │  │  │  │  └─ ProductPriceModal2.js
+│  │  │  │  └─ sales
+│  │  │  │     ├─ Order.js
+│  │  │  │     ├─ OrderList.js
+│  │  │  │     ├─ OrderRegister.js
+│  │  │  │     ├─ OrderRegisterApproval.js
+│  │  │  │     ├─ OrderRegisterApprovalDetail.js
+│  │  │  │     └─ OrderReport.js
+│  │  │  ├─ layout
+│  │  │  │  ├─ Footer.js
+│  │  │  │  ├─ Header.js
+│  │  │  │  ├─ Layout.js
+│  │  │  │  └─ Sidebar.js
+│  │  │  └─ util
+│  │  │     └─ dateUtils.js
+│  │  └─ resources
+│  │     ├─ application.properties
+│  │     ├─ log4jdbc.log4j2.properties
+│  │     ├─ logback.xml
+│  │     ├─ static
+│  │     │  ├─ bundle
+│  │     │  │  └─ _
+│  │     │  │     └─ resources
+│  │     │  │        └─ static
+│  │     │  │           └─ img
+│  │     │  │              ├─ calendar.png
+│  │     │  │              └─ search.png
+│  │     │  ├─ css
+│  │     │  │  ├─ Footer.css
+│  │     │  │  ├─ Header.css
+│  │     │  │  ├─ Join.css
+│  │     │  │  ├─ Layout.css
+│  │     │  │  ├─ Login.css
+│  │     │  │  ├─ Main.css
+│  │     │  │  ├─ Sidebar.css
+│  │     │  │  ├─ customer
+│  │     │  │  │  └─ CustomerList.css
+│  │     │  │  ├─ hr
+│  │     │  │  │  ├─ EmployeeList.css
+│  │     │  │  │  └─ EmployeeRegister.css
+│  │     │  │  ├─ product
+│  │     │  │  │  ├─ Product.css
+│  │     │  │  │  ├─ ProductCategory.css
+│  │     │  │  │  ├─ ProductDetail2.css
+│  │     │  │  │  ├─ ProductList.css
+│  │     │  │  │  └─ Price.css
+│  │     │  │  └─ sales
+│  │     │  │     ├─ Order.css
+│  │     │  │     ├─ OrderDetail.css
+│  │     │  │     ├─ OrderList.css
+│  │     │  │     ├─ OrderListAll.css
+│  │     │  │     ├─ OrderListAssigned.css
+│  │     │  │     ├─ OrderRegisterApproval.css
+│  │     │  │     ├─ OrderRegisterApprovalDetail.css
+│  │     │  │     └─ OrderReport.css
+│  │     │  └─ img
+│  │     │     ├─ auth.jpg
+│  │     │     ├─ bell.png
+│  │     │     ├─ calendar.png
+│  │     │     ├─ favicon.ico
+│  │     │     ├─ favicon1.ico
+│  │     │     ├─ favicon2.ico
+│  │     │     ├─ ikea.png
+│  │     │     ├─ logo.png
+│  │     │     ├─ logo2.png
+│  │     │     └─ search.png
+│  │     ├─ table
+│  │     │  ├─ ALTER.TXT
+│  │     │  ├─ CREATE.TXT
+│  │     │  └─ INSERT.TXT
+│  │     └─ templates
+│  │        ├─ login.html
+│  │        ├─ view.html
+│  │        └─ view_login_backup.html
+│  └─ test
+│     └─ java
+│        └─ com
+│           └─ project
+│              └─ erpre
+│                 └─ ErpreApplicationTests.java
+└─ webpack.config.js
+```
+©generated by [Project Tree Generator](https://woochanleee.github.io/project-tree-generator)

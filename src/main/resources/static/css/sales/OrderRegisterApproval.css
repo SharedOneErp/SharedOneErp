@@ -1,0 +1,129 @@
+/*탑 박스*/
+
+.top-container {
+}
+
+/*미들 박스 (검색, 필터)*/
+
+.middle-container {
+    /*border: 1px solid black;*/
+    padding: 10px;
+}
+
+.middle-container .search-box-container {
+    /*border: 1px solid black;*/
+    height: 50px;
+    padding: 10px;
+    margin-top: 15px;
+}
+
+.middle-container .approval-select {
+    height: 32px;
+    font-size: 15px;
+    width: 10%;
+}
+
+.middle-container .search-box {
+    height: 32px;
+    font-size: 13px;
+    margin-left: 7px;
+    width: 70%;
+}
+
+.middle-container .search-button {
+    background-color: #0058A3; /*이케아 네이비*/
+    color: white;
+    margin-left: 5px;
+    width: 10%;
+    /*height: 90%;*/
+}
+
+.middle-container .approval-filter {
+    height: 50px;
+    padding: 13px 1px;
+    /*border: 1px solid black;*/
+}
+
+.approval-filter .btn1, .btn2, .btn3, .btn4 {
+    background-color:  #0058A3;
+    color: white;
+    padding: 7px;
+    border-radius: 1px;
+    border: none;
+    font-size: 15px;
+}
+
+.approval-filter .btn2, .btn3, .btn4 {
+    margin-left: 10px;
+}
+
+/*바텀 박스 (테이블, 페이지, 바텀 버튼)*/
+
+.bottom-container {
+    /*border: 1px solid black;*/
+    margin-top: 20px;
+}
+
+.bottom-container label {
+    display: flex;
+}
+
+.bottom-container p {
+    display: inline;
+    margin-right: 10px;
+}
+
+.bottom-container .approval-list {
+    border: 1px solid;
+    width: 100%;
+    background-color: white;
+    margin-top: 10px;
+    height: 100%;
+}
+
+.bottom-container .approval-list tr {
+    height: 50px;
+    padding: 4px;
+}
+
+.bottom-container .approval-list tbody tr:hover {
+    background-color: rgba(255, 237, 112, 0.75);
+    background-color: #ffdb0036; /* 이케아 노란색 */
+}
+
+.bottom-container .approval-list .approval-list-content {
+    text-align: center;
+}
+
+.bottom-container .approval-page {
+    display: flex;
+    justify-content: center;
+    margin-top: 13px;
+    font-size: 10px;
+}
+
+.bottom-container .approval-page button {
+    padding: 5px;
+    font-size: 16px;
+    margin-left: 7px;
+}
+
+.bottom-container .bottom-button {
+}
+
+.bottom-container .bottom-button .approval-button,
+.bottom-container .bottom-button .delete-button,
+.bottom-container .bottom-button .print-button {
+    background-color: #0058A3;
+    color: white;
+    margin-left: 3px;
+    height: 35px;
+    padding: 8px 2px;
+    width: 50px;
+    line-height: 100%;
+}
+
+.bottom-container .bottom-button .delete-button,
+.bottom-container .bottom-button .print-button {
+    margin-left: 10px;
+}
